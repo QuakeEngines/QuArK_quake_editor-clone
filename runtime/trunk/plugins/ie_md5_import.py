@@ -944,7 +944,7 @@ def load_md5(md5_filename, basepath, actionname):
 
         # QuArK Frames group, frames and frame vertices section.
         framesgroup = quarkx.newobj('Frames:fg') # QuArK Frames group made here.
-        frame = quarkx.newobj('meshframe' + ':mf') # QuArK frame made here.
+        frame = quarkx.newobj('baseframe:mf') # QuArK frame made here.
         comp_mesh = ()
         comp_verts = []
         for vert in mesh.verts: # QuArK frame Vertices made here.
@@ -1024,7 +1024,7 @@ def load_md5(md5_filename, basepath, actionname):
                 QuArK_bones[bone_index].vtx_pos = temp
                 QuArK_bones[bone_index]['component'] = usekey
 
-    # Section below fills the editor.ModelComponentList 'bonelist' for all importing bones and fills the 'meshframe' data.
+    # Section below fills the editor.ModelComponentList 'bonelist' for all importing bones and fills the 'baseframe' data.
     for bone_index in range(len(QuArK_bones)):
         current_bone = QuArK_bones[bone_index]
         if not editor.ModelComponentList['bonelist'].has_key(current_bone.name):
@@ -1034,7 +1034,7 @@ def load_md5(md5_filename, basepath, actionname):
         bone_data = {}
         bone_data['position'] = current_bone.position.tuple
         bone_data['rotmatrix'] = current_bone.rotmatrix.tuple
-        editor.ModelComponentList['bonelist'][current_bone.name]['frames']['meshframe:mf'] = bone_data
+        editor.ModelComponentList['bonelist'][current_bone.name]['frames']['baseframe:mf'] = bone_data
 
     # Section below sets up the QuArK editor.ModelComponentList for each mesh.
     for mesh_index in ModelComponentList.keys():
@@ -1295,7 +1295,7 @@ class md5anim:
         baseframes_list = []
         most_vtxs = 0
         for mesh_counter in range(len(md5_model_comps)):
-            oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+            oldframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['baseframe:mf']
             comp_name = oldframe.parent.parent.name
             baseframe = oldframe.copy()
             baseframe.shortname = filename + " baseframe"
@@ -1311,7 +1311,7 @@ class md5anim:
                             continue
                         our_bone_name = bones[bone_index].name
                         our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
-                        our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['meshframe:mf']
+                        our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['baseframe:mf']
                         our_bone_pos = quarkx.vect(our_bone_data['position'])
                         our_bone_rot = quarkx.matrix(our_bone_data['rotmatrix'])
                         our_weight_pos = (~our_bone_rot) * (oldpos - our_bone_pos)
@@ -1343,11 +1343,11 @@ class md5anim:
             most_vtxs = 0
             for mesh_counter in range(len(md5_model_comps)):
                 progressbar.progress()
-                meshframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['meshframe:mf']
+                baseframe = editor.Root.dictitems[md5_model_comps[mesh_counter]].dictitems['Frames:fg'].dictitems['baseframe:mf']
                 newframe = baseframes_list[mesh_counter].copy()
                 comp_name = baseframes_list[mesh_counter].parent.parent.name
                 newframe.shortname = filename + " frame "+str(frame_counter+1)
-                meshverts = meshframe.vertices
+                meshverts = baseframe.vertices
                 newverts = newframe.vertices
                 for vert_counter in range(len(newverts)):
                     if editor.ModelComponentList[comp_name]['weightvtxlist'].has_key(vert_counter):
@@ -1359,7 +1359,7 @@ class md5anim:
                                 continue
                             our_bone_name = bones[bone_index].name
                             our_weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][our_bone_name]['weight_value']
-                            our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['meshframe:mf']
+                            our_bone_data = editor.ModelComponentList['bonelist'][our_bone_name]['frames']['baseframe:mf']
                             our_bone_pos = quarkx.vect(our_bone_data['position'])
                             our_bone_rot = quarkx.matrix(our_bone_data['rotmatrix'])
                             our_weight_pos = (~our_bone_rot) * (oldpos - our_bone_pos)
@@ -1424,13 +1424,9 @@ def import_md5_model(basepath, md5_filename):
     pth, actionname = os.path.split(md5_filename)
     if md5_filename.endswith(".md5mesh"): # Calls to load the .md5_mesh file.
         RetComponentList, RetQuArK_bone_list, message = load_md5(md5_filename, basepath, actionname) # Loads the model using list of ALL bones as they are created.
-        ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
-        ModelRoot = quarkx.newobj('Model:mr')
-      #  ModelRoot.appenditem(Component)
 
-        return ModelRoot, RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
+        return RetComponentList, RetQuArK_bone_list, message # Using list of ALL bones as they are created.
     else: # Calls to load the .md5_anim file.
-       #   md5anim.load_md5anim(anim, md5_filename)
         skeletongroup = editor.Root.dictitems['Skeleton:bg']  # get the bones group
         bones = skeletongroup.findallsubitems("", ':bone')    # get all bones
         mesh_bones = []
@@ -1488,9 +1484,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
         logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-        ModelRoot, RetComponentList, RetQuArK_bone_list, message = import_md5_model(basepath, filename)
+        RetComponentList, RetQuArK_bone_list, message = import_md5_model(basepath, filename)
 
-        if ModelRoot is None or RetComponentList is None or RetComponentList == []:
+        if RetComponentList is None or RetComponentList == []:
             quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
             quarkx.msgbox("Invalid .md5 model.\n\n    " + filename + "\n\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             try:
@@ -1798,6 +1794,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.44  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.43  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

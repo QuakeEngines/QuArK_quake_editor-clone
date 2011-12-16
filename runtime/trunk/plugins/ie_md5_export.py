@@ -251,11 +251,11 @@ def export_mesh(self, file, filename, exp_list):
         if comp is None:
             #Can't use this component; defaulting!
             comp = exp_list[0]
-        meshframe = comp.dictitems['Frames:fg'].subitems[0] #@
+        baseframe = comp.dictitems['Frames:fg'].subitems[0] #@
         if not self.editor.ModelComponentList['bonelist'].has_key(current_joint.name):
             #@
             pass
-        bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][meshframe.name]
+        bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][baseframe.name]
         bone_pos = bone_data['position']
         bone_rot = bone_data['rotmatrix']
         joint_data = joint_data + [(bone_pos, bone_rot)]
@@ -487,7 +487,7 @@ def export_anim(self, file, filename, exp_list):
         else:
             NumberOfFrames = CurNumberOfFrames
     if NumberOfFrames < 2:
-        quarkx.msgbox("The selected component folders do not have enough frames (missing meshframe and baseframe)!\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+        quarkx.msgbox("The selected component folders do not have enough frames (missing mesh 'baseframe' and '(animation name) baseframe')!\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         return
     frames = exp_list[0].dictitems['Frames:fg'].subitems
     NumberOfFrames -= 2
@@ -825,6 +825,11 @@ def savemodel(root, filename, gamename, nomessage=0):
             if len(object.dictitems['Skins:sg'].subitems) == 0:
                 quarkx.msgbox("Component " + object.shortname + "\nhas no skin textures to export.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
+            if object.dictitems['Frames:fg'].subitems[0].name != "baseframe:mf":
+                quarkx.beep()
+                quarkx.msgbox("MISSING or MISSPLACED MESH baseframe(s) !\n\nAll selected component's FIRST frame must be a static pose\nof that model's part and that frame named 'baseframe' !\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+                return
+
         else: # Calls to save the .md5anim file.
             if not object.dictitems['Frames:fg'] or len(object.dictitems['Frames:fg'].subitems) < 2:
                 quarkx.msgbox("Component " + object.shortname + "\nhas no animation frames to export.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
@@ -834,8 +839,9 @@ def savemodel(root, filename, gamename, nomessage=0):
             if len(object.dictitems['Frames:fg'].subitems) != anim_frames:
                 quarkx.msgbox("Component " + object.shortname + "\nnumber of animation frames\ndoes not equal other components.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
-            if not object.dictitems['Frames:fg'].subitems[1].shortname.endswith("baseframe"):
-                quarkx.msgbox("Component " + object.shortname + "\nsecond frame is not a '(2nd frame name) baseframe'.\nAll components to be exported\nmust have its 2nd frame as a baseframe.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            if not object.dictitems['Frames:fg'].subitems[1].name.endswith(" baseframe:mf"):
+                quarkx.beep()
+                quarkx.msgbox("MISSING or MISSPLACED ANIMATION baseframe(s) !\n\nAll selected component's SECOND frame must be a COPY of your\nFIRST ANIMATION frame with '(space)baseframe' added behind the name.\n\nNOTE !!!\nDo NOT use 'Duplicate Current Frame' function to make the copy !!!\nUse just the 'Duplicate' function or an error will occure.\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
 
     UIExportDialog(root, filename, editor) # Calls the dialog below which calls to save a mesh or animaition file.
@@ -1033,6 +1039,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.13  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #
