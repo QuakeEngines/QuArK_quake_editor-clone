@@ -1101,10 +1101,13 @@ class skc_obj:
             self.Channels.append(channel)
 
             channel = SKC_Bone_Channel()
-            bone_jointType = bonelist[QuArK_bones[i].name]['frames']['baseframe:mf']['SKD_JointType']
-            if (bone_jointType == 2) or (bone_jointType == 3) or (bone_jointType == 4):
-                channel.channels = name + ' rotFK\x00'
-            else:
+            try:
+                bone_jointType = bonelist[QuArK_bones[i].name]['frames']['baseframe:mf']['SKD_JointType']
+                if (bone_jointType == 2) or (bone_jointType == 3) or (bone_jointType == 4):
+                    channel.channels = name + ' rotFK\x00'
+                else:
+                    channel.channels = name + ' rot\x00'
+            except:
                 channel.channels = name + ' rot\x00'
             self.Channels.append(channel)
 
@@ -1409,6 +1412,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/12/11 04:01:57  cdunde
+# Completed support for skdJointType 5 & 6 anim.
+# Fixed components exported without any skins.
+#
 # Revision 1.2  2011/12/10 02:43:22  cdunde
 # Update & corrections for skdJointType 0-4, mesh & anim work perfect.
 # Added support for skdJointType 5 & 6, mesh fine but anim needs work.

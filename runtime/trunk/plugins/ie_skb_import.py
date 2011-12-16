@@ -406,6 +406,7 @@ class skb_obj:
             tobj.logcon ("==========================")
             tobj.logcon ("")
         file.seek(self.ofsBones,0)
+        bonelist = editor.ModelComponentList['bonelist'] # Get the bonelist to fill it in.
         if self.bones == []:
             if self.numBones == 0 and logging == 1:
                 tobj.logcon ("No bones to load into editor")
@@ -437,13 +438,21 @@ class skb_obj:
                     QuArK_Bone['_skb_boneindex'] = str(i)
                     self.bones.append(QuArK_Bone)
                     self.temp_bones.append(bone)
+                    if self.version != 4: # (IS NOT an EF2 file...store the BaseFrame bones data now)
+                        if not bonelist.has_key(QuArK_Bone.name):
+                            bonelist[QuArK_Bone.name] = {}
+                            bonelist[QuArK_Bone.name]['type'] = 'skb'
+                            bonelist[QuArK_Bone.name]['frames'] = {}
+                            bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
+                        bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['position'] = QuArK_Bone.position.tuple
+                        bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['rotmatrix'] = QuArK_Bone.rotmatrix.tuple
+
                     if logging == 1:
                         tobj.logcon ("Bone " + str(i))
                         bone.dump()
 
-            # We don't need this section.
-        if self.version == 4: # (EF2 file)
-            #load the BaseFrame bones ****** QuArK basic, empty bones are created here.
+        if self.version == 4: # (IS an EF2 file)
+            #load the EF2 BaseFrame bones ****** QuArK basic, empty bones are created here.
             if logging == 1:
                 tobj.logcon ("")
                 tobj.logcon ("==========================")
@@ -458,7 +467,6 @@ class skb_obj:
                 binary_format="<4h3hh"
                 factor = 1.0 / 64.0 # to avoid division by zero errors.
                 scale = 1.0 / 32767.0 #To convert rotation values into quaternion-units
-                bonelist = editor.ModelComponentList['bonelist']
                 for i in xrange(0, self.numBones):
                     temp_data = file.read(struct.calcsize(binary_format))
                     data = struct.unpack(binary_format, temp_data)
@@ -1337,6 +1345,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.11  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
