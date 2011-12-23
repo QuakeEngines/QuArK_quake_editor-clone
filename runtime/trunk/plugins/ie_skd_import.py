@@ -1364,11 +1364,14 @@ def check4skin(file, Component, material_name, message, version):
     path = path.rsplit('\\', 1)
     path = skin_path = path[0]
     if shaders_path is not None and version == 5: # First try to find a shader file for the skin texture.
-        files = os.listdir(shaders_path)
         check_files = []
-        for file in files:
-            if file.endswith(".shader"):
-                check_files.append(file)
+        try:
+            files = os.listdir(shaders_path)
+            for file in files:
+                if file.endswith(".shader"):
+                    check_files.append(file)
+        except:
+            pass
         if check_files != []:
             for file in check_files:
                 #read the file in
@@ -1715,6 +1718,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2011/12/23 03:15:18  cdunde
+# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
+# Those should be kept with the individual bones if we decide it is needed.
+#
 # Revision 1.16  2011/12/11 03:58:44  cdunde
 # Removed unused code.
 #
