@@ -1693,7 +1693,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
 
                 # Sets up the 'bonelist' entry of editor.ModelComponentList for the 'baseframe' of all importing bones
                 bonedata = {}
-                bonedata['type'] = "HL"
                 bonedata['frames'] = {}
                 bonedata['frames']['baseframe:mf'] = {}
                 bonedata['frames']['baseframe:mf']['position'] = new_bone.dictspec['position']
@@ -2358,6 +2357,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2011/11/19 06:28:18  cdunde
+# Added frame flags importing and Specifics page setting support.
+#
 # Revision 1.7  2011/11/08 01:41:20  cdunde
 # Removed some unused code.
 #

@@ -1029,7 +1029,6 @@ def load_md5(md5_filename, basepath, actionname):
         current_bone = QuArK_bones[bone_index]
         if not editor.ModelComponentList['bonelist'].has_key(current_bone.name):
             editor.ModelComponentList['bonelist'][current_bone.name] = {}
-        editor.ModelComponentList['bonelist'][current_bone.name]['type'] = "md5"
         editor.ModelComponentList['bonelist'][current_bone.name]['frames'] = {}
         bone_data = {}
         bone_data['position'] = current_bone.position.tuple
@@ -1794,6 +1793,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.45  2011/12/16 01:06:21  cdunde
+# To co-ordinate better with other model format imports and exports.
+# Also file cleanup.
+#
 # Revision 1.44  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

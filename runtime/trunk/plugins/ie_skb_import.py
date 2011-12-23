@@ -441,7 +441,6 @@ class skb_obj:
                     if self.version != 4: # (IS NOT an EF2 file...store the BaseFrame bones data now)
                         if not bonelist.has_key(QuArK_Bone.name):
                             bonelist[QuArK_Bone.name] = {}
-                            bonelist[QuArK_Bone.name]['type'] = 'skb'
                             bonelist[QuArK_Bone.name]['frames'] = {}
                             bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
                         bonelist[QuArK_Bone.name]['frames']['baseframe:mf']['position'] = QuArK_Bone.position.tuple
@@ -474,7 +473,6 @@ class skb_obj:
                     QuArK_Bone = self.bones[i]
                     if not bonelist.has_key(QuArK_Bone.name):
                         bonelist[QuArK_Bone.name] = {}
-                        bonelist[QuArK_Bone.name]['type'] = 'skb'
                         bonelist[QuArK_Bone.name]['frames'] = {}
                         bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
                     bone = self.temp_bones[i]
@@ -678,7 +676,7 @@ class SKA_Frame:
             if parent_index != -1:
                 ska_bone_index = index_to_ska[parent_index]
                 if ska_bone_index == -1:
-                    #Parent is no SKA bone; use SKB base frame data instead
+                    # SKA bone Parent NOT in this animation file, use SKB base frame data instead.
                     parent_bone = QuArK_bones[parent_index]
                     parent_pos = quarkx.vect(parent_bone.dictspec["_skb_baseposition"])
                     temp_rot = parent_bone.dictspec["_skb_baserotmatrix"]
@@ -855,7 +853,6 @@ class ska_obj:
             bone = QuArK_bones[i]
             if not bonelist.has_key(QuArK_bones[i].name):
                 bonelist[bone.name] = {}
-                bonelist[bone.name]['type'] = 'skb'
                 bonelist[bone.name]['frames'] = {}
             if bone.dictspec['parent_name'] == "None":
                 parent_indexes = parent_indexes + [-1]
@@ -946,9 +943,9 @@ class ska_obj:
             tobj.logcon ("============================")
             tobj.logcon ("")
         for i in xrange(0, self.numFrames):
+            frame_name = anim_name + " " + str(i+1)
             frame = SKA_Frame()
             frame.load(file, self.numBones, QuArK_bones, parent_indexes, real_bone_index, index_to_ska)
-            frame_name = anim_name + " " + str(i+1)
             #FIXME: self.type ???
             frame.apply(self.numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index)
             if logging == 1:
@@ -1345,6 +1342,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2011/12/16 08:52:26  cdunde
+# To start getting the skb_import and skd_export working together, still needs work.
+#
 # Revision 1.12  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

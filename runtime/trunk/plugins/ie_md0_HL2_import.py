@@ -4071,7 +4071,6 @@ class Object(object):
 
                     # Sets up the 'bonelist' entry of editor.ModelComponentList for the 'baseframe' of all importing bones
                     bonedata = {}
-                    bonedata['type'] = "HL2"
                     bonedata['frames'] = {}
                     bonedata['frames']['baseframe:mf'] = {}
                     bonedata['frames']['baseframe:mf']['position'] = new_bone.dictspec['position']
@@ -5336,6 +5335,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2011/11/19 06:28:18  cdunde
+# Added frame flags importing and Specifics page setting support.
+#
 # Revision 1.10  2011/05/25 20:55:03  cdunde
 # Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
 #

@@ -1507,7 +1507,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                                                                           (bone_scale[0][1], bone_scale[1][1], bone_scale[2][1]),
                                                                           (bone_scale[0][2], bone_scale[1][2], bone_scale[2][2]))).tuple
                 bonelist[new_bone.name] = {'frames': {'baseframe:mf': frame}}
-                bonelist[new_bone.name]['type'] = 'gr2'
 
         full_bone_vtx_list = {} # { bone_index : { component_full_name : [ vtx, vtx, vtx ...] } }
         for bone_index in range(len(QuArK_bones)):
@@ -2412,6 +2411,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.40  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.39  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.

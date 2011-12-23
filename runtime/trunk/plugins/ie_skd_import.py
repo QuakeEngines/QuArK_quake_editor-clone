@@ -686,7 +686,6 @@ class skd_obj:
                     QuArK_Bone = self.bones[i]
                     if not bonelist.has_key(QuArK_Bone.name):
                         bonelist[QuArK_Bone.name] = {}
-                        bonelist[QuArK_Bone.name]['type'] = 'skd'
                         bonelist[QuArK_Bone.name]['frames'] = {}
                         bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
                     tempmatrix_rotFK = None
@@ -1260,7 +1259,6 @@ class skc_obj:
             bone = QuArK_bones[i]
             if not bonelist.has_key(QuArK_bones[i].name):
                 bonelist[bone.name] = {}
-                bonelist[bone.name]['type'] = 'skd'
                 bonelist[bone.name]['frames'] = {}
             if bone.dictspec['parent_name'] == "None":
                 parent_indexes = parent_indexes + [-1]
@@ -1717,6 +1715,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2011/12/11 03:58:44  cdunde
+# Removed unused code.
+#
 # Revision 1.15  2011/12/02 06:36:20  cdunde
 # Stopped sorting of skd component importing.
 # Throws them out of sequence with skc animation component importing.
