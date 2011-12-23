@@ -911,7 +911,23 @@ class SKC_Frame:
                     bone_rot = bone_rot1.tuple
                     bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
                     bone_quat = matrix2quaternion(bone_rot)
-                    bone_quat = (-bone_quat[0], -bone_quat[1], -bone_quat[2], bone_quat[3])
+                    if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'skb-EF2':
+                        bone_pos1 = quarkx.vect(bonelist[QuArK_bone.name]['frames'][frame_name]['position'])
+                      #  bone_pos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
+                      #  bone_pos = (parent_pos - (~parent_rot * bone_pos1)).tuple
+    #                    bone_pos = bone_pos1.tuple
+                        bone_pos = (bone_pos1 - parent_pos).tuple # BIG IMPROVEMENT
+                    #    bone_pos = (parent_pos - bone_pos1).tuple # FLIPS IT UP SIDE DOWN
+
+                        bone_rot1 = quarkx.matrix(bonelist[QuArK_bone.name]['frames'][frame_name]['rotmatrix'])
+                        m = (~parent_rot * bone_rot1).tuple
+                #1        m = (~bone_rot1 * parent_rot).tuple
+                #1        bone_rot = ((m[0][0], m[1][0], m[2][0], 0.0) ,(m[0][1], m[1][1], m[2][1], 0.0), (m[0][2], m[1][2], m[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
+                        bone_rot = ((m[0][0], m[0][1], m[0][2], 0.0), (m[1][0], m[1][1], m[1][2], 0.0), (m[2][0], m[2][1], m[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
+                        bone_quat = matrix2quaternion(bone_rot)
+                        bone_quat = (-bone_quat[0], -bone_quat[1], -bone_quat[2], bone_quat[3])
+                    else:
+                        bone_quat = (-bone_quat[0], -bone_quat[1], -bone_quat[2], bone_quat[3])
             else:
                 bone_pos = bonelist[QuArK_bone.name]['frames'][frame_name]['position']
                 bone_rot = bonelist[QuArK_bone.name]['frames'][frame_name]['rotmatrix']
@@ -1412,6 +1428,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2011/12/16 08:52:26  cdunde
+# To start getting the skb_import and skd_export working together, still needs work.
+#
 # Revision 1.3  2011/12/11 04:01:57  cdunde
 # Completed support for skdJointType 5 & 6 anim.
 # Fixed components exported without any skins.

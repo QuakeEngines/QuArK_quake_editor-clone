@@ -439,6 +439,7 @@ class skb_obj:
                     self.bones.append(QuArK_Bone)
                     self.temp_bones.append(bone)
                     if self.version != 4: # (IS NOT an EF2 file...store the BaseFrame bones data now)
+                        QuArK_Bone['type'] = 'skb-Alice' # Set our bone type.
                         if not bonelist.has_key(QuArK_Bone.name):
                             bonelist[QuArK_Bone.name] = {}
                             bonelist[QuArK_Bone.name]['frames'] = {}
@@ -471,6 +472,7 @@ class skb_obj:
                     data = struct.unpack(binary_format, temp_data)
 
                     QuArK_Bone = self.bones[i]
+                    QuArK_Bone['type'] = 'skb-EF2' # Set our bone type.
                     if not bonelist.has_key(QuArK_Bone.name):
                         bonelist[QuArK_Bone.name] = {}
                         bonelist[QuArK_Bone.name]['frames'] = {}
@@ -691,6 +693,24 @@ class SKA_Frame:
                 tobj.logcon ("bone " + str(i) + " : absolute")
                 bone.dump()
 
+    def SetupBones(self, numBones, QuArK_bones, bonelist, QuArK_frame_name, real_bone_index):
+        for i in xrange(0, len(self.bones)):
+            if real_bone_index[i] == []:
+                #No corresponding SKB bone
+                continue
+            QuArK_bone = QuArK_bones[real_bone_index[i]]
+            if not bonelist[QuArK_bone.name]['frames'].has_key(QuArK_frame_name):
+                bonelist[QuArK_bone.name]['frames'][QuArK_frame_name] = {}
+            bone = self.bones[i] # self = a Frame
+            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
+            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
+
+            if QuArK_frame_name.endswith(" 1:mf"):
+                baseframe = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
+                bonelist[QuArK_bone.name]['frames'][baseframe] = {}
+                bonelist[QuArK_bone.name]['frames'][baseframe]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
+                bonelist[QuArK_bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
+
     def apply(self, numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index):
             check_name = frame_name + ":mf"
             self.SetupBones(numBones, QuArK_bones, bonelist, check_name, real_bone_index)
@@ -739,24 +759,6 @@ class SKA_Frame:
                     framesgroup.appenditem(baseframe)
                 framesgroup.appenditem(QuArK_frame)
 
-
-    def SetupBones(self, numBones, QuArK_bones, bonelist, QuArK_frame_name, real_bone_index):
-        for i in xrange(0, len(self.bones)):
-            if real_bone_index[i] == []:
-                #No corresponding SKB bone
-                continue
-            QuArK_bone = QuArK_bones[real_bone_index[i]]
-            if not bonelist[QuArK_bone.name]['frames'].has_key(QuArK_frame_name):
-                bonelist[QuArK_bone.name]['frames'][QuArK_frame_name] = {}
-            bone = self.bones[i] # self = a Frame
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
-
-            if QuArK_frame_name.endswith(" 1:mf"):
-                baseframe = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
-                bonelist[QuArK_bone.name]['frames'][baseframe] = {}
-                bonelist[QuArK_bone.name]['frames'][baseframe]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
-                bonelist[QuArK_bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
 
     def dump(self):
         tobj.logcon ("bounds: " + str(self.bounds))
@@ -1342,6 +1344,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2011/12/23 03:15:18  cdunde
+# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
+# Those should be kept with the individual bones if we decide it is needed.
+#
 # Revision 1.13  2011/12/16 08:52:26  cdunde
 # To start getting the skb_import and skd_export working together, still needs work.
 #
