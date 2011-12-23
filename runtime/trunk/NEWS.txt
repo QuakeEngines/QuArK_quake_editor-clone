@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [cdunde/DanielPharos]: Added export support for Half-Life 1 static and animation models with bones .mdl file types.
+          - Still needs work, see TODO NOTES at top of file.
+
 * [cdunde/DanielPharos]: Added export support for MoHAA static and animation models .skd and .skc file types.
 
 * [cdunde]: Added export support for Kingpin static and animation models .mdx file type.
