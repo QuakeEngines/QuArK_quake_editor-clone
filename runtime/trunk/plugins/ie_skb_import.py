@@ -602,7 +602,7 @@ class SKA_BoneName_EF2:
 
 class SKA_Bone:
     #Header Structure       #item of data file, size & type,   description.
-    matrix = (0)*4          #item   0    0-3   4 ints, the bone's quat values.
+    animquat = (0)*4        #item   0    0-3   4 ints, the bone's quat values.
     offset = (0)*3          #item   4    4-6   3 ints, the bone's offset.
     junk1 = 0               #item   7    7     1 int, read in to keep pointer count correct, but DO NOT USE.
     SetPosition = None      #item  ---   ---   for QuArK use only.
@@ -611,7 +611,7 @@ class SKA_Bone:
     binary_format="<4h3hh"  #little-endian (<), see items above.
 
     def __init__(self):
-        self.matrix = (0)*4
+        self.animquat = (0)*4
         self.offset = (0)*3
         self.junk1 = 0
         self.SetPosition = None
@@ -621,18 +621,18 @@ class SKA_Bone:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        self.matrix = (data[0], data[1], data[2], data[3])
+        self.animquat = (data[0], data[1], data[2], data[3])
         self.offset = (data[4], data[5], data[6])
         self.junk1 = data[7]
 
         factor = 0.015625 # = 1/64 to avoid division by zero errors.
         scale = 1.0 / 32768.0 #To convert rotation values into quaternion-units
         self.SetPosition = quarkx.vect((self.offset[0]*factor, self.offset[1]*factor, self.offset[2]*factor))
-        tempmatrix = quaternion2matrix((self.matrix[0] * scale, self.matrix[1] * scale, self.matrix[2] * scale, self.matrix[3] * scale))
+        tempmatrix = quaternion2matrix((self.animquat[0] * scale, self.animquat[1] * scale, self.animquat[2] * scale, self.animquat[3] * scale))
         self.SetRotation = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
 
     def dump(self):
-        tobj.logcon ("quat pos: " + str(self.matrix))
+        tobj.logcon ("quat pos: " + str(self.animquat))
         tobj.logcon ("offset pos: " + str(self.offset))
         tobj.logcon ("junk1: " + str(self.junk1))
         tobj.logcon ("SetPosition: " + str(self.SetPosition))
@@ -706,10 +706,10 @@ class SKA_Frame:
             bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
 
             if QuArK_frame_name.endswith(" 1:mf"):
-                baseframe = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
-                bonelist[QuArK_bone.name]['frames'][baseframe] = {}
-                bonelist[QuArK_bone.name]['frames'][baseframe]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
-                bonelist[QuArK_bone.name]['frames'][baseframe]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
+                anim_baseframe_name = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
+                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name] = {}
+                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
+                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
 
     def apply(self, numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index):
             check_name = frame_name + ":mf"
@@ -899,7 +899,7 @@ class ska_obj:
                 if logging == 1:
                     bone_name.dump()
 
-        # Construct a translation table for ska bone index --> QuArK_bones index number
+        # Construct a conversion table for ska bone index --> QuArK_bones index number
         real_bone_index = None
         if self.version == 3:
             real_bone_index = [[]] * self.numBones
@@ -924,7 +924,7 @@ class ska_obj:
             for bone2_index in range(len(QuArK_bones)):
                 index_to_ska[bone2_index] = bone2_index
         else:
-            #EF2: A translation table to go from a QuArK_bones index number to a SKA index number (or -1 if there's no corresponding SKA bone)
+            #EF2: A conversion table to go from a QuArK_bones index number to a SKA index number (or -1 if there's no corresponding SKA bone)
             for bone2_index in range(len(QuArK_bones)):
                 bone2 = QuArK_bones[bone2_index]
                 bone2_name = bone2.shortname.split("_", 1)[1]
@@ -1344,6 +1344,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2011/12/23 22:36:31  cdunde
+# To get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
+#
 # Revision 1.14  2011/12/23 03:15:18  cdunde
 # To remove all importers bone ['type'] from ModelComponentList['bonelist'].
 # Those should be kept with the individual bones if we decide it is needed.
