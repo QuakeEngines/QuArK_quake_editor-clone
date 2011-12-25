@@ -550,23 +550,29 @@ class skb_obj:
                 tobj.logcon ("==========================")
                 tobj.logcon ("")
             self.ofsBaseFrame = self.file_pointer
-            baseframe_name = Component.dictitems['Frames:fg'].subitems[0].name
+            bonelist = editor.ModelComponentList['bonelist']
             factor = 64.0
             scale = 32767.0 # To convert quaternion-units into rotation values.
+            # Use bonelist for mesh baseframe exporting and NOT the bones themselves.
+            # If another frame is current the bones contain those positions and matrixes.
             for i in xrange(0, self.numBones):
-                QuArK_Bone = QuArK_bones[i]
-                bone_pos = QuArK_Bone.position.tuple
-                bone_rot = QuArK_Bone.rotmatrix.tuple
-                bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
-                bone_rot = matrix2quaternion(bone_rot)
+                QuArK_Bone_name = QuArK_bones[i].name
+                if bonelist.has_key(QuArK_Bone_name):
+                    bone_pos = bonelist[QuArK_Bone_name]['frames']['baseframe:mf']['position']
+                    bone_rot = bonelist[QuArK_Bone_name]['frames']['baseframe:mf']['rotmatrix']
+                    bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
+                    bone_rot = matrix2quaternion(bone_rot)
 
-                bone = self.bones[i]
-                bone.basequat = (int(bone_rot[0] * scale), int(bone_rot[1] * scale), int(bone_rot[2] * scale), int(bone_rot[3] * scale))
-                bone.baseoffset = (int(bone_pos[0] * factor), int(bone_pos[1] * factor), int(bone_pos[2] * factor))
+                    bone = self.bones[i]
+                    bone.basequat = (int(bone_rot[0] * scale), int(bone_rot[1] * scale), int(bone_rot[2] * scale), int(bone_rot[3] * scale))
+                    bone.baseoffset = (int(bone_pos[0] * factor), int(bone_pos[1] * factor), int(bone_pos[2] * factor))
 
-                if logging == 1:
-                    tobj.logcon ("Bone " + str(i))
-                    bone.dump_baseframe()
+                    if logging == 1:
+                        tobj.logcon ("Bone " + str(i))
+                        bone.dump_baseframe()
+                else:
+                    if logging == 1:
+                        tobj.logcon ("UNUSED Bone: " + QuArK_Bone_name.replace(":bone", ""))
 
             self.file_pointer = self.ofsBaseFrame + (self.numBones * (8 * 2))
 
@@ -1162,6 +1168,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2011/12/15 05:59:11  cdunde
+# File cleanup and export vertex offsets for new bones and vertices.
+#
 # Revision 1.9  2011/12/12 23:05:31  cdunde
 # Update to export mesh and animation files without use of original mesh file
 # to setup for model full editing abilities, add & remove bones, faces & vertices
