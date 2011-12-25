@@ -661,7 +661,7 @@ class skd_obj:
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
                     QuArK_Bone['_color'] = MapColor("BoneHandles", SS_MODEL)
-                    QuArK_Bone['_skd_boneindex'] = str(i) # May not need this, if not remove.
+                    QuArK_Bone['_skd_boneindex'] = str(i)
                     self.bones.append(QuArK_Bone)
                     self.temp_bones.append(bone)
 
@@ -1070,7 +1070,7 @@ class SKC_Frame:
         file.seek(current_pointer_count,0)
 
     def apply(self, QuArK_bones, parent_indexes, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name):
-        check_name = frame_name + ":mf"
+        QuArK_frame_name = frame_name + ":mf"
         # A list of bones.name -> bone_index, to speed things up
         ConvertBoneNameToIndex = {}
         for bone_index in range(len(QuArK_bones)):
@@ -1089,11 +1089,11 @@ class SKC_Frame:
                     total_weight_value = 0.0 #To make sure we get a total weight of 1.0 in the end
                     for key in editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter].keys():
                         bone_index = ConvertBoneNameToIndex[key]
-                        if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(frame_name + ':mf'):
+                        if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(QuArK_frame_name):
                             print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
                             continue
-                        Bpos_new = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['position'])
-                        Brot_new = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['rotmatrix'])
+                        Bpos_new = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][QuArK_frame_name]['position'])
+                        Brot_new = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][QuArK_frame_name]['rotmatrix'])
                         try:
                             weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][QuArK_bones[bone_index].name]['weight_value']
                         except:
@@ -1718,6 +1718,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2011/12/23 07:17:09  cdunde
+# Texture handling update.
+#
 # Revision 1.17  2011/12/23 03:15:18  cdunde
 # To remove all importers bone ['type'] from ModelComponentList['bonelist'].
 # Those should be kept with the individual bones if we decide it is needed.
