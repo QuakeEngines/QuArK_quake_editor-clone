@@ -251,13 +251,15 @@ def export_mesh(self, file, filename, exp_list):
         if comp is None:
             #Can't use this component; defaulting!
             comp = exp_list[0]
-        baseframe = comp.dictitems['Frames:fg'].subitems[0] #@
+        baseframe = comp.dictitems['Frames:fg'].dictitems['baseframe:mf']
         if not self.editor.ModelComponentList['bonelist'].has_key(current_joint.name):
-            #@
-            pass
-        bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][baseframe.name]
-        bone_pos = bone_data['position']
-        bone_rot = bone_data['rotmatrix']
+            # This bone has no vertexes assigned to it but could have a child bone for editing the model only.
+            bone_pos = current_joint.position.tuple
+            bone_rot = current_joint.rotmatrix.tuple
+        else:
+            bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][baseframe.name]
+            bone_pos = bone_data['position']
+            bone_rot = bone_data['rotmatrix']
         joint_data = joint_data + [(bone_pos, bone_rot)]
         bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
         bone_rot = matrix2quaternion(bone_rot)
@@ -514,9 +516,14 @@ def export_anim(self, file, filename, exp_list):
         QuArK_frame_matrix[frame_counter] = [[]]*NumberOfBones
         for joint_counter in range(0,NumberOfBones):
             current_joint = joints[joint_counter]
-            bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][frames[frame_counter+2].name]
-            bone_pos = bone_data['position']
-            bone_rot = bone_data['rotmatrix']
+            if not self.editor.ModelComponentList['bonelist'].has_key(current_joint.name):
+                # This bone has no vertexes assigned to it but could have a child bone for editing the model only.
+                bone_pos = current_joint.position.tuple
+                bone_rot = current_joint.rotmatrix.tuple
+            else:
+                bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][frames[frame_counter+2].name]
+                bone_pos = bone_data['position']
+                bone_rot = bone_data['rotmatrix']
             QuArK_frame_position[frame_counter][joint_counter] = quarkx.vect(bone_pos)
             QuArK_frame_matrix[frame_counter][joint_counter] = quarkx.matrix(bone_rot)
 
@@ -1039,6 +1046,10 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2011/12/16 01:06:21  cdunde
+# To co-ordinate better with other model format imports and exports.
+# Also file cleanup.
+#
 # Revision 1.14  2010/11/09 05:48:10  cdunde
 # To reverse previous changes, some to be reinstated after next release.
 #
