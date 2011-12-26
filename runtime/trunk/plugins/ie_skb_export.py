@@ -162,7 +162,7 @@ class SKB_Surface:
         surf_offset_pointer = struct.calcsize(self.binary_format) # Add its header size in bytes (see above).
 
         # Get this Component's baseframe vertices and Component's name.
-        baseframe = Component.dictitems['Frames:fg'].subitems[0]
+        baseframe = Component.dictitems['Frames:fg'].dictitems['baseframe:mf']
         vertices = baseframe.vertices
         comp_name = Component.name
         Tris = Component.triangles
@@ -1168,6 +1168,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2011/12/25 02:29:16  cdunde
+# Correction to avoid exporting bone baseframe data that is incorrect.
+#
 # Revision 1.10  2011/12/15 05:59:11  cdunde
 # File cleanup and export vertex offsets for new bones and vertices.
 #
