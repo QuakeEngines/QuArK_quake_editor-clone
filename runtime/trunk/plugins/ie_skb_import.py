@@ -655,7 +655,8 @@ class SKA_Frame:
         self.delta = (0.0)*3
         self.bones = []
 
-    def load(self, file, numBones, QuArK_bones, parent_indexes, real_bone_index, index_to_ska):
+    def load(self, file, numBones, QuArK_bones, parent_indexes, frame_name, bonelist, real_bone_index, index_to_ska):
+        frame_name = frame_name + ":mf"
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
@@ -693,28 +694,18 @@ class SKA_Frame:
                 tobj.logcon ("bone " + str(i) + " : absolute")
                 bone.dump()
 
-    def SetupBones(self, numBones, QuArK_bones, bonelist, QuArK_frame_name, real_bone_index):
-        for i in xrange(0, len(self.bones)):
-            if real_bone_index[i] == []:
-                #No corresponding SKB bone
-                continue
             QuArK_bone = QuArK_bones[real_bone_index[i]]
-            if not bonelist[QuArK_bone.name]['frames'].has_key(QuArK_frame_name):
-                bonelist[QuArK_bone.name]['frames'][QuArK_frame_name] = {}
-            bone = self.bones[i] # self = a Frame
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position'] = bone.SetPosition.tuple
-            bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix'] = bone.SetRotation.tuple
+            if not bonelist[QuArK_bone.name]['frames'].has_key(frame_name):
+                bonelist[QuArK_bone.name]['frames'][frame_name] = {}
+            bonelist[QuArK_bone.name]['frames'][frame_name]['position'] = bone.SetPosition.tuple
+            bonelist[QuArK_bone.name]['frames'][frame_name]['rotmatrix'] = bone.SetRotation.tuple
 
-            if QuArK_frame_name.endswith(" 1:mf"):
-                anim_baseframe_name = QuArK_frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
-                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name] = {}
-                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name]['position'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['position']
-                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name]['rotmatrix'] = bonelist[QuArK_bone.name]['frames'][QuArK_frame_name]['rotmatrix']
+            if frame_name.endswith(" 1:mf"):
+                anim_baseframe_name = frame_name.rsplit(" ", 1)[0] + " baseframe:mf"
+                bonelist[QuArK_bone.name]['frames'][anim_baseframe_name] = bonelist[QuArK_bone.name]['frames'][frame_name]
 
-    def apply(self, numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index):
-            check_name = frame_name + ":mf"
-            self.SetupBones(numBones, QuArK_bones, bonelist, check_name, real_bone_index)
-
+    def apply(self, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name):
+            QuArK_frame_name = frame_name + ":mf"
             #A list of bones.name -> bone_index, to speed things up
             ConvertBoneNameToIndex = {}
             for bone_index in range(len(QuArK_bones)):
@@ -736,11 +727,11 @@ class SKA_Frame:
                             bone_index = ConvertBoneNameToIndex[key]
                             if bone_index == -1:
                                 continue
-                            if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(frame_name + ':mf'):
+                            if not bonelist[QuArK_bones[bone_index].name]['frames'].has_key(QuArK_frame_name):
                                 print "Warning: Bone %s missing frame %s!" % (QuArK_bones[bone_index].shortname, frame_name)
                                 continue
-                            Bpos = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['position'])
-                            Brot = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][frame_name+':mf']['rotmatrix'])
+                            Bpos = quarkx.vect(bonelist[QuArK_bones[bone_index].name]['frames'][QuArK_frame_name]['position'])
+                            Brot = quarkx.matrix(bonelist[QuArK_bones[bone_index].name]['frames'][QuArK_frame_name]['rotmatrix'])
                             try:
                                 weight_value = editor.ModelComponentList[comp_name]['weightvtxlist'][vert_counter][QuArK_bones[bone_index].name]['weight_value']
                             except:
@@ -947,9 +938,8 @@ class ska_obj:
         for i in xrange(0, self.numFrames):
             frame_name = anim_name + " " + str(i+1)
             frame = SKA_Frame()
-            frame.load(file, self.numBones, QuArK_bones, parent_indexes, real_bone_index, index_to_ska)
-            #FIXME: self.type ???
-            frame.apply(self.numBones, QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name, real_bone_index)
+            frame.load(file, self.numBones, QuArK_bones, parent_indexes, frame_name, bonelist, real_bone_index, index_to_ska)
+            frame.apply(QuArK_bones, bonelist, numComponents, comp_names, baseframes, new_framesgroups, frame_name)
             if logging == 1:
                 tobj.logcon ("---------------------")
                 tobj.logcon ("frame " + str(i))
@@ -1344,6 +1334,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2011/12/24 04:18:16  cdunde
+# Changed misleading variable names.
+#
 # Revision 1.15  2011/12/23 22:36:31  cdunde
 # To get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
 #
