@@ -3146,6 +3146,7 @@ def addbone(editor, comp, pos):
     if name is None:
         name = "NewBone1"
     new_bone = quarkx.newobj(name + ":bone")
+    new_bone['type'] = "qrk" # A QuArK default bone.
     new_bone['flags'] = (0,0,0,0,0,0)
     new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
@@ -3193,6 +3194,7 @@ def continue_bone(editor, bone, pos):
     if name is None:
         name = "NewBone1"
     new_bone = quarkx.newobj(name + ":bone")
+    new_bone['type'] = "qrk" # A QuArK default bone.
     new_bone['flags'] = (0,0,0,0,0,0)
     new_bone['show'] = (1.0,)
     new_bone['component'] = editor.Root.currentcomponent.name
@@ -4787,6 +4789,11 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.167  2011/11/14 07:26:38  cdunde
+#Correction to last changes,
+#some imported models have bones without any vertices assigned to them
+#so we can not remove them to clean up the boneslist or exporting breaks.
+#
 #Revision 1.166  2011/11/13 03:15:09  cdunde
 #To allow the changing of bonecontrol indexes.
 #
