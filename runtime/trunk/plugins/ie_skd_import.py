@@ -640,6 +640,7 @@ class skd_obj:
                     if self.version == 5: # MOHAA
                         nextbone = nextbone + bone.ofsEnd
                     QuArK_Bone = quarkx.newobj(ModelFolder + "_" + bone.name + ":bone")
+                    QuArK_Bone['type'] = 'skd-MOHAA' # Set our bone type.
                     QuArK_Bone['jointType'] = (float(bone.jointType),)
                     for j in range(len(self.temp_bones)):
                         if bone.parent == self.temp_bones[j].name:
@@ -1718,6 +1719,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2011/12/25 09:19:04  cdunde
+# Variable name change.
+#
 # Revision 1.18  2011/12/23 07:17:09  cdunde
 # Texture handling update.
 #

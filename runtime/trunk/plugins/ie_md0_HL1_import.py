@@ -1631,6 +1631,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             for mdlbone in xrange(len(self.bones)):
                 bone = self.bones[mdlbone]
                 new_bone = quarkx.newobj(folder_name + '_' + mdl_name + '_' + bone.name + ':bone')
+                new_bone['type'] = 'HL1' # Set our bone type.
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 bone_pos = quarkx.vect(bone.value[0], bone.value[1], bone.value[2])
@@ -2357,6 +2358,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2011/12/23 03:15:18  cdunde
+# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
+# Those should be kept with the individual bones if we decide it is needed.
+#
 # Revision 1.8  2011/11/19 06:28:18  cdunde
 # Added frame flags importing and Specifics page setting support.
 #

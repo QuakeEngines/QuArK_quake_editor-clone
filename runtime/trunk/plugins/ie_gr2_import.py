@@ -1418,6 +1418,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 # Add bone_group_name to all bones of this group to make compatible with other importers
                 # and allow proper exporting of bones whether structured or not.
                 new_bone = quarkx.newobj(bone_group_name + "_" + current_bone.name + ":bone")
+                new_bone['type'] = 'gr2' # Set our bone type.
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 new_bone['parent_index'] = str(current_bone.parentindex)
@@ -2411,6 +2412,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.41  2011/12/23 03:15:17  cdunde
+# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
+# Those should be kept with the individual bones if we decide it is needed.
+#
 # Revision 1.40  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

@@ -3996,6 +3996,7 @@ class Object(object):
                 for mdlbone in xrange(len(self.bones)):
                     bone = self.bones[mdlbone]
                     new_bone = quarkx.newobj(self.QuArKBonesData[mdlbone][0])
+                    new_bone['type'] = 'HL2' # Set our bone type.
                     new_bone['flags'] = (0,0,0,0,0,0)
                     new_bone['show'] = (1.0,)
                     bone_pos = quarkx.vect(bone.pos[0], bone.pos[1], bone.pos[2])
@@ -5335,6 +5336,10 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2011/12/23 03:15:17  cdunde
+# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
+# Those should be kept with the individual bones if we decide it is needed.
+#
 # Revision 1.11  2011/11/19 06:28:18  cdunde
 # Added frame flags importing and Specifics page setting support.
 #

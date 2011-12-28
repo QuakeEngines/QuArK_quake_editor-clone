@@ -481,6 +481,7 @@ def load_md5(md5_filename, basepath, actionname):
                 temp_name=words[0]
                 ### QuArK note: this is where we start making our bones.
                 new_bone = quarkx.newobj(filename + "_" + temp_name + ":bone")
+                new_bone['type'] = 'md5' # Set our bone type.
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 new_bone['position'] = (float(words[3]), float(words[4]), float(words[5]))
@@ -1793,6 +1794,10 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.46  2011/12/23 03:15:17  cdunde
+# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
+# Those should be kept with the individual bones if we decide it is needed.
+#
 # Revision 1.45  2011/12/16 01:06:21  cdunde
 # To co-ordinate better with other model format imports and exports.
 # Also file cleanup.
