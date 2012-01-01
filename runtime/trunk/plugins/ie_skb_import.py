@@ -431,7 +431,8 @@ class skb_obj:
                     QuArK_Bone.vtx_pos = {}
                     QuArK_Bone['show'] = (1.0,)
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
-                    QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                 #   QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                    QuArK_Bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
                     QuArK_Bone['_color'] = MapColor("BoneHandles", SS_MODEL)
@@ -1334,6 +1335,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2011/12/26 08:03:42  cdunde
+# Combined SetUpBones function with load function to avoid dupe looping, import speedup.
+#
 # Revision 1.16  2011/12/24 04:18:16  cdunde
 # Changed misleading variable names.
 #
