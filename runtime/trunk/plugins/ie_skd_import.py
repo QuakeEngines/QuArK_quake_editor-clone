@@ -689,6 +689,9 @@ class skd_obj:
                         bonelist[QuArK_Bone.name] = {}
                         bonelist[QuArK_Bone.name]['frames'] = {}
                         bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
+                    # tempmatrix_rotFK SHOULD only be used for jointType 2, 3 and 4 that use rotFK
+                    # because it causes others to kick back to using their 'baseframe:mf' matrix
+                    # which usually is a non-rotating matrix.
                     tempmatrix_rotFK = None
                     bone = self.temp_bones[i]
                     jointWeight = 1.0
@@ -707,7 +710,7 @@ class skd_obj:
                         if (qx != 1.0) and (qy != 1.0) and (qz != 1.0):
                             qw = CalcQW(qx, qy, qz)
                             quat = [qx, qy, qz, qw]
-                            tempmatrix_rotFK = quaternion2matrix(quat)
+                            tempmatrix = quaternion2matrix(quat)
                     elif bone.jointType == 1:   #JT_POSROT_SKC
                         bv = bone.values
                         pos = (0.0, 0.0, 0.0)
@@ -1719,6 +1722,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2012/01/01 06:11:28  cdunde
+# To ensure proper 'baseframe:mf' selection.
+#
 # Revision 1.20  2011/12/28 08:28:22  cdunde
 # Setup importer bone['type'] not done yet.
 #
