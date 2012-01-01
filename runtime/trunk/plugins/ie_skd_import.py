@@ -278,7 +278,7 @@ class SKD_Surface:
         skd_verts = []
         file.seek(this_offset + self.ofsVerts,0)
         # Fill this Component's dummy baseframe.
-        baseframe = Component.dictitems['Frames:fg'].subitems[0]
+        baseframe = Component.dictitems['Frames:fg'].dictitems['baseframe:mf']
         mesh = ()
         # Fill this Component's ModelComponentList items.
         bonelist = editor.ModelComponentList['bonelist']
@@ -1719,6 +1719,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2011/12/28 08:28:22  cdunde
+# Setup importer bone['type'] not done yet.
+#
 # Revision 1.19  2011/12/25 09:19:04  cdunde
 # Variable name change.
 #
