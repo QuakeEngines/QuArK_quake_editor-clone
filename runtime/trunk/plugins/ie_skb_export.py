@@ -1137,17 +1137,15 @@ def savemodel(root, filename, gamename):
                 base_file = model_path[0] + "\\" + file
                 break
         if base_file is None:
-            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
-            choice = quarkx.msgbox(".skb base mesh file not found !\n\nDo you wish to have one created ?", MT_INFORMATION, MB_YES|MB_NO)
-            if choice == 6:
-                base_file = filename.replace(".ska", ".skb")
-                message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skb file before the .ska file.
-
-        # Call to write ska file.
-        message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .ska animation file.
-
-    else:
-        message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to write the .skb file only.
+            if filename.endswith(".ska"):
+                quarkx.beep() # Makes the computer "Beep" once.
+                choice = quarkx.msgbox(".skb base mesh file not found !\n\nDo you wish to have one created ?", MT_INFORMATION, MB_YES|MB_NO)
+                if choice == 6:
+                    base_file = filename.replace(".ska", ".skb")
+                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save an .skb mesh file before the .ska animation file.
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skb mesh or .ska animation file only.
+        else:
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skb mesh or .ska animation file only.
 
     try:
         progressbar.close()
@@ -1168,6 +1166,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2011/12/26 21:55:34  cdunde
+# To ensure proper 'baseframe:mf' selection.
+#
 # Revision 1.11  2011/12/25 02:29:16  cdunde
 # Correction to avoid exporting bone baseframe data that is incorrect.
 #
