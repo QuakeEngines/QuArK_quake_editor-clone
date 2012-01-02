@@ -658,7 +658,8 @@ class skd_obj:
                     QuArK_Bone.vtx_pos = {}
                     QuArK_Bone['show'] = (1.0,)
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
-                    QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                 #   QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                    QuArK_Bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
                     QuArK_Bone['_color'] = MapColor("BoneHandles", SS_MODEL)
@@ -689,9 +690,10 @@ class skd_obj:
                         bonelist[QuArK_Bone.name] = {}
                         bonelist[QuArK_Bone.name]['frames'] = {}
                         bonelist[QuArK_Bone.name]['frames']['baseframe:mf'] = {}
-                    # tempmatrix_rotFK SHOULD only be used for jointType 2, 3 and 4 that use rotFK
-                    # because it causes others to kick back to using their 'baseframe:mf' matrix
-                    # which usually is a non-rotating matrix.
+                    # tempmatrix_rotFK CAN NOT be used for jointType 0
+                    # because it causes it to kick back to using its 'baseframe:mf' matrix
+                    # which usually is a non-rotating matrix
+                    # and breaks the importing and exporting of other model formats.
                     tempmatrix_rotFK = None
                     bone = self.temp_bones[i]
                     jointWeight = 1.0
@@ -1722,6 +1724,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2012/01/01 06:29:55  cdunde
+# Fixed improper setting.
+#
 # Revision 1.21  2012/01/01 06:11:28  cdunde
 # To ensure proper 'baseframe:mf' selection.
 #
