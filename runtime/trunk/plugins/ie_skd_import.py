@@ -328,24 +328,32 @@ class SKD_Surface:
                 tobj.logcon ("    -------------")
 
         baseframe['Vertices'] = mesh
-        # Fill each bone's vtx_list and vtx_pos list for this Component.
+
+        # Update the bones.vtxlist, bones.vtx_pos and dictspec['component'] items. The ['draw_offset'] is NOT.
         for bone in bones:
             bone_name = bone.name
             if bonevtxlist.has_key(bone_name):
                 key_count = 0
-                vtx_list = bone.vtxlist
-                for key in vtx_list.keys():
-                    vtx_count = len(vtx_list[key])
+                vtxlist = bone.vtxlist
+                for key in vtxlist.keys():
+                    vtx_count = len(vtxlist[key])
                     if vtx_count > key_count:
                         key_count = vtx_count
-                if not vtx_list.has_key(comp_name):
+                if not vtxlist.has_key(comp_name):
                     keys = bonevtxlist[bone_name].keys()
                     keys.sort()
-                    vtx_list[comp_name] = keys
-                    if len(vtx_list[comp_name]) > key_count:
-                        bone.vtx_pos  = {comp_name: vtx_list[comp_name]}
+                    vtxlist[comp_name] = keys
+                    if len(vtxlist[comp_name]) > key_count:
+                        bone.vtx_pos = {comp_name: vtxlist[comp_name]}
                         bone['component'] = comp_name
-                bone.vtxlist = vtx_list
+                      # Don't set the draw_offset, get's WAY to weird.
+                      #  vertices = baseframe.vertices
+                      #  vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+                      #  for vtx in vtxlist[comp_name]:
+                      #      vtxpos = vtxpos + vertices[vtx]
+                      #      vtxpos = vtxpos/ float(len(vtxlist))
+                      #      bone['draw_offset'] = (bone.position - vtxpos).tuple
+                bone.vtxlist = vtxlist
 
         # Load tris
         if logging == 1:
@@ -1724,6 +1732,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2012/01/02 03:59:26  cdunde
+# To set new bones with non-rotating matrix.
+#
 # Revision 1.22  2012/01/01 06:29:55  cdunde
 # Fixed improper setting.
 #

@@ -190,7 +190,7 @@ class SKB_Surface:
             # boneIndex         item   0    int, the bone index number in list order.
             # weight_value      item   1    float, this is the QuArK ModelComponentList['weightvtxlist'][vertex]['weight_value']
             # vtx_offset        item   2-4  3 floats, offset between the bone position and a vertex's position.
-            binary_format = "<if3f"
+            binary_format = "<if3f" # NOTE: NO class was setup for these.
             vtxweight = {}
             pos = quarkx.vect(0, 0, 0)
             for j in xrange(0, num_weights):
@@ -217,24 +217,32 @@ class SKB_Surface:
               #  tobj.logcon ("    vtxweight " + str(weightvtxlist[i]))
                 tobj.logcon ("    -------------")
         baseframe['Vertices'] = mesh
-        # Fill each bone's vtx_list and vtx_pos list for this Component.
+
+        # Update the bones.vtxlist, bones.vtx_pos and dictspec['component'] items. The ['draw_offset'] is NOT.
         for bone in bones:
             bone_name = bone.name
             if bonevtxlist.has_key(bone_name):
                 key_count = 0
-                vtx_list = bone.vtxlist
-                for key in vtx_list.keys():
-                    vtx_count = len(vtx_list[key])
+                vtxlist = bone.vtxlist
+                for key in vtxlist.keys():
+                    vtx_count = len(vtxlist[key])
                     if vtx_count > key_count:
                         key_count = vtx_count
-                if not vtx_list.has_key(comp_name):
+                if not vtxlist.has_key(comp_name):
                     keys = bonevtxlist[bone_name].keys()
                     keys.sort()
-                    vtx_list[comp_name] = keys
-                    if len(vtx_list[comp_name]) > key_count:
-                        bone.vtx_pos  = {comp_name: vtx_list[comp_name]}
+                    vtxlist[comp_name] = keys
+                    if len(vtxlist[comp_name]) > key_count:
+                        bone.vtx_pos = {comp_name: vtxlist[comp_name]}
                         bone['component'] = comp_name
-                bone.vtxlist = vtx_list
+                      # Don't set the draw_offset, get's WAY to weird.
+                      #  vertices = baseframe.vertices
+                      #  vtxpos = quarkx.vect(0.0, 0.0, 0.0)
+                      #  for vtx in vtxlist[comp_name]:
+                      #      vtxpos = vtxpos + vertices[vtx]
+                      #      vtxpos = vtxpos/ float(len(vtxlist))
+                      #      bone['draw_offset'] = (bone.position - vtxpos).tuple
+                bone.vtxlist = vtxlist
 
         # Load tris
         if logging == 1:
@@ -1335,6 +1343,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2012/01/01 06:10:38  cdunde
+# Changed to non-rotating matrix for new bones.
+#
 # Revision 1.17  2011/12/26 08:03:42  cdunde
 # Combined SetUpBones function with load function to avoid dupe looping, import speedup.
 #
