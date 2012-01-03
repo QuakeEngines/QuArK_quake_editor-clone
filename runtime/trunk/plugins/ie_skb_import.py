@@ -359,7 +359,7 @@ class skb_obj:
         self.ComponentList = []
 
     def load(self, file):
-        global file_version
+        global file_version, progressbar, Strings
         # file.name is the model file & full path, ex: C:\FAKK2\fakk\models\animal\edencow\edencow_base.skb
         # FullPathName is the full path and the full file name being imported with forward slashes.
         FullPathName = file.name.replace("\\", "/")
@@ -406,6 +406,7 @@ class skb_obj:
         else: # (Alice or FAKK2 file)
             self.ofsEnd = data[68]
 
+        progressbar = quarkx.progressbar(2454, self.numSurfaces)
         #load the bones ****** QuArK basic, empty bones are created here.
         if logging == 1:
             tobj.logcon ("")
@@ -507,6 +508,7 @@ class skb_obj:
         next_surf_offset = 0
         message = ""
         for i in xrange(0, self.numSurfaces):
+            progressbar.progress()
             if logging == 1:
                 tobj.logcon ("=====================")
                 tobj.logcon ("PROCESSING SURFACE: " + str(i))
@@ -801,7 +803,7 @@ class ska_obj:
         self.bone_names = []
 
     def load(self, file, Components, QuArK_bones, Exist_Comps, anim_name):
-        global file_version
+        global file_version, progressbar, Strings
         # file.name is the model file & full path, ex: C:\FAKK2\fakk\models\animal\edencow\walk_forwards.ska
         # FullPathName is the full path and the full file name being imported with forward slashes.
         FullPathName = file.name.replace("\\", "/")
@@ -937,6 +939,7 @@ class ska_obj:
                         break
 
         #load the Frames
+        progressbar = quarkx.progressbar(2454, self.numFrames)
         file.seek(self.ofsFrames,0)
         if logging == 1:
             tobj.logcon ("")
@@ -945,6 +948,7 @@ class ska_obj:
             tobj.logcon ("============================")
             tobj.logcon ("")
         for i in xrange(0, self.numFrames):
+            progressbar.progress()
             frame_name = anim_name + " " + str(i+1)
             frame = SKA_Frame()
             frame.load(file, self.numBones, QuArK_bones, parent_indexes, frame_name, bonelist, real_bone_index, index_to_ska)
@@ -1231,7 +1235,7 @@ def loadmodel(root, filename, gamename):
         ComponentList, QuArK_bone_list, existing_bones, message = import_SK_model(base_file) # Calls to load the .skb file before the .ska file.
 
     if ComponentList is None:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
         quarkx.msgbox("Invalid file.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
         try:
             progressbar.close()
@@ -1343,6 +1347,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2012/01/03 07:18:37  cdunde
+# Minor file comments and variable name change for consistency.
+#
 # Revision 1.18  2012/01/01 06:10:38  cdunde
 # Changed to non-rotating matrix for new bones.
 #

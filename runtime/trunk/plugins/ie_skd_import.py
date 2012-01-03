@@ -561,7 +561,7 @@ class skd_obj:
         self.ComponentList = []
 
     def load_mesh(self, file):
-        global file_version
+        global file_version, progressbar, Strings
         # file.name is the model file & full path, ex: C:\MOHAA\Main\models\furniture\chairs\roundedchair.skd
         # FullPathName is the full path and the full file name being imported with forward slashes.
         FullPathName = file.name.replace("\\", "/")
@@ -583,7 +583,7 @@ class skd_obj:
 
         # SKB ident = "SKMD" version = 5 MOHAA.
         if self.ident != "SKMD": # Not a valid .skd file.
-            quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
             quarkx.msgbox("Invalid model.\nEditor can not import it.\n\nMOHAA\n    ident = SKMD version = 5\n\nFile has:\nident = " + self.ident + " version = " + str(self.version), quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return None
 
@@ -622,6 +622,7 @@ class skd_obj:
             self.numMorphTargets = data[74]
             self.ofsMorphTargets = data[75]
 
+        progressbar = quarkx.progressbar(2454, self.numSurfaces)
         #load the bones ****** QuArK basic, empty bones are created here.
         if logging == 1:
             tobj.logcon ("")
@@ -876,6 +877,7 @@ class skd_obj:
         next_surf_offset = 0
         message = ""
         for i in xrange(0, self.numSurfaces):
+            progressbar.progress()
             if logging == 1:
                 tobj.logcon ("=====================")
                 tobj.logcon ("PROCESSING SURFACE: " + str(i))
@@ -1179,7 +1181,7 @@ class skc_obj:
         self.QuArK_Index2Channels = {}
 
     def load_anim(self, file, Components, QuArK_bones, Exist_Comps, anim_name):
-        global file_version
+        global file_version, progressbar, Strings
         # file.name is the model file & full path, ex: C:\MOHAA\Main\models\furniture\chairs\roundedchair.skc
         # FullPathName is the full path and the full file name being imported with forward slashes.
         FullPathName = file.name.replace("\\", "/")
@@ -1308,6 +1310,7 @@ class skc_obj:
                 new_framesgroups = new_framesgroups + [new_framesgroup]
 
         #load the Frames
+        progressbar = quarkx.progressbar(2454, self.numFrames)
         if logging == 1:
             tobj.logcon ("")
             tobj.logcon ("============================")
@@ -1316,6 +1319,7 @@ class skc_obj:
             tobj.logcon ("")
 
         for i in xrange(0, self.numFrames):
+            progressbar.progress()
             frame = SKC_Frame()
             frame_name = anim_name + " " + str(i+1)
             frame.load(file, self, QuArK_bones, parent_indexes, frame_name, bonelist)
@@ -1732,6 +1736,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.24  2012/01/03 07:18:37  cdunde
+# Minor file comments and variable name change for consistency.
+#
 # Revision 1.23  2012/01/02 03:59:26  cdunde
 # To set new bones with non-rotating matrix.
 #
