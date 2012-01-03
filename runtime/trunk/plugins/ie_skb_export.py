@@ -230,7 +230,7 @@ class SKB_Surface:
             for j in xrange(0, vert.num_weights):
                 boneIndex = ConvertBoneNameToIndex[bonenames[j]]
                 weight_value = vert_weights[bonenames[j]]['weight_value']
-                try:
+                try: # Alice, FAKK2 or EF2 model being exported. Could also be for MOHAA, uses vtx_offset as well with changes.
                     vtx_offset = vert_weights[bonenames[j]]['vtx_offset']
                     if weight_value == 1.0:
                         check_pos = vtx_pos.tuple
@@ -251,12 +251,13 @@ class SKB_Surface:
                         for k in xrange(3):
                             temp[k] = (vp[k] * (vo[k] / ovp[k]))
                         vtx_offset = (temp[0], temp[1], temp[2])
-                except:
-                    try:
-                        Bpos = quarkx.vect(bonelist[bonenames[j]]['frames']['baseframe:mf']['position'])
-                        vtx_offset = (vtx_pos - quarkx.vect(Bpos)).tuple
-                    except:
-                        vtx_offset = (0.0, 0.0, 0.0)
+                except: # Handles other model formats, HL1 here, exporting as skb models (mesh only).
+                    try: # only handles a weight_value of 1.0, need to add for more then 1 weight, see how just above here.
+                        Bpos = bonelist[bonenames[j]]['frames']['baseframe:mf']['position']
+                        Brot = quarkx.matrix(bonelist[bonenames[j]]['frames']['baseframe:mf']['rotmatrix'])
+                        vtx_offset = (~Brot * (vtx_pos - quarkx.vect(Bpos))).tuple
+                    except: # Should NEVER happen, no bones? Get rid of the try statement.
+                        vtx_offset = vtx_pos.tuple
 
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
@@ -556,7 +557,8 @@ class skb_obj:
             # Use bonelist for mesh baseframe exporting and NOT the bones themselves.
             # If another frame is current the bones contain those positions and matrixes.
             for i in xrange(0, self.numBones):
-                QuArK_Bone_name = QuArK_bones[i].name
+                QuArK_bone = QuArK_bones[i]
+                QuArK_Bone_name = QuArK_bone.name
                 if bonelist.has_key(QuArK_Bone_name):
                     bone_pos = bonelist[QuArK_Bone_name]['frames']['baseframe:mf']['position']
                     bone_rot = bonelist[QuArK_Bone_name]['frames']['baseframe:mf']['rotmatrix']
@@ -565,7 +567,11 @@ class skb_obj:
 
                     bone = self.bones[i]
                     bone.basequat = (int(bone_rot[0] * scale), int(bone_rot[1] * scale), int(bone_rot[2] * scale), int(bone_rot[3] * scale))
-                    bone.baseoffset = (int(bone_pos[0] * factor), int(bone_pos[1] * factor), int(bone_pos[2] * factor))
+                    # For Half-Life 1 model being exported.
+                    if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
+                        bone.baseoffset = (int(bone_pos[1] * -factor), int(bone_pos[0] * factor), int(bone_pos[2] * factor))
+                    else: # For Alice, FAKK2, EF2 or other model being exported.
+                        bone.baseoffset = (int(bone_pos[0] * factor), int(bone_pos[1] * factor), int(bone_pos[2] * factor))
 
                     if logging == 1:
                         tobj.logcon ("Bone " + str(i))
@@ -1168,6 +1174,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2012/01/03 00:10:02  cdunde
+# Rearranged export calls for better organization of code.
+#
 # Revision 1.13  2012/01/02 08:56:06  cdunde
 # To stop writing skb file twice and speed up exporting of it.
 #
