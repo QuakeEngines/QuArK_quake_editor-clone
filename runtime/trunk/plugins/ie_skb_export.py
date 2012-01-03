@@ -1089,36 +1089,38 @@ def savemodel(root, filename, gamename):
                         break
 
     base_file = None # The full path and file name of the .skb file if we need to call to save it with.
-    QuArK_bones = []
 
     # model_path = two items in a list, the full path to the model folder, and the model file name, ex:
     # model_path = ['C:\\FAKK2\\fakk\\models\\animal\\edencow', 'base_cow.skb' or 'idle_moo.ska']
     model_path = filename.rsplit('\\', 1)
     ModelFolder = model_path[0].rsplit('\\', 1)[1]
 
-    # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
-    ConvertBoneNameToIndex = {}
+    # The bone order in the ska file needs to match the ones in the skb file for Alice & FAKK2 models, EF2 uses bone names.
+    QuArK_bones = []
     new_bones = []
     for group in editor.Root.dictitems['Skeleton:bg'].subitems:
         if group.name.startswith(ModelFolder + "_"):
             group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
-            skd_bones_indexes = {}
+            skb_bones_indexes = {}
             for bone in group_bones:
                 if bone.dictspec.has_key('_skb_boneindex'):
-                    skd_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
+                    skb_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
                 else:
                     new_bones.append(bone)
-            skd_keys = skd_bones_indexes.keys()
+            skd_keys = skb_bones_indexes.keys()
             skd_keys.sort()
             for key in skd_keys:
-                QuArK_bones.append(skd_bones_indexes[key])
+                QuArK_bones.append(skb_bones_indexes[key])
     QuArK_bones = QuArK_bones + new_bones
-    list_count = 0
-    for bone_index in range(len(QuArK_bones)):
-        ConvertBoneNameToIndex[QuArK_bones[bone_index].name] = list_count
-        list_count = list_count + 1
+
+    # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
+    ConvertBoneNameToIndex = {}
+    for QuArK_bone_index in range(len(QuArK_bones)):
+        QuArK_bone = QuArK_bones[QuArK_bone_index]
+        ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
+
     if len(QuArK_bones) == 0:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+        quarkx.beep() # Makes the computer "Beep" once.
         quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
         return
 
@@ -1166,6 +1168,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2012/01/02 08:56:06  cdunde
+# To stop writing skb file twice and speed up exporting of it.
+#
 # Revision 1.12  2011/12/26 21:55:34  cdunde
 # To ensure proper 'baseframe:mf' selection.
 #
