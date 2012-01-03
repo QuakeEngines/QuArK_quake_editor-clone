@@ -1317,25 +1317,38 @@ def savemodel(root, filename, gamename):
                         break
 
     base_file = None # The full path and file name of the .skd file if we need to call to save it with.
-    QuArK_bones = []
 
     # model_path = two items in a list, the full path to the model folder, and the model file name, ex:
     # model_path = ['C:\\MOHAA\\main\\models\\animal\\dog', 'german_shepherd.skd' or 'dog_run.skc']
     model_path = filename.rsplit('\\', 1)
     ModelFolder = model_path[0].rsplit('\\', 1)[1]
 
-    # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
-    ConvertBoneNameToIndex = {}
-    list_count = 0
+    # The bone order in the skc file needs to match the ones in the skd file for MOHAA models.
+    QuArK_bones = []
+    new_bones = []
     for group in editor.Root.dictitems['Skeleton:bg'].subitems:
         if group.name.startswith(ModelFolder + "_"):
             group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
-            for bone_index in range(len(group_bones)):
-                ConvertBoneNameToIndex[group_bones[bone_index].name] = list_count
-                list_count = list_count + 1
-            QuArK_bones = QuArK_bones + group_bones
+            skd_bones_indexes = {}
+            for bone in group_bones:
+                if bone.dictspec.has_key('_skd_boneindex'):
+                    skd_bones_indexes[int(bone.dictspec['_skd_boneindex'])] = bone
+                else:
+                    new_bones.append(bone)
+            skd_keys = skd_bones_indexes.keys()
+            skd_keys.sort()
+            for key in skd_keys:
+                QuArK_bones.append(skd_bones_indexes[key])
+    QuArK_bones = QuArK_bones + new_bones
+
+    # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
+    ConvertBoneNameToIndex = {}
+    for QuArK_bone_index in range(len(QuArK_bones)):
+        QuArK_bone = QuArK_bones[QuArK_bone_index]
+        ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
+
     if len(QuArK_bones) == 0:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
+        quarkx.beep() # Makes the computer "Beep" once.
         quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
         return
 
@@ -1348,58 +1361,15 @@ def savemodel(root, filename, gamename):
                 base_file = model_path[0] + "\\" + file
                 break
         if base_file is None:
-            if filename.endswith(".skd"):
-                message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skd file only.
-            else:
-                quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
-                choice = quarkx.msgbox(".skd base mesh file not found !\n\nDo you wish to have one created ?\n\nIf you answer NO the .skc file CAN NOT be saved.", MT_INFORMATION, MB_YES|MB_NO)
+            if filename.endswith(".skc"):
+                quarkx.beep() # Makes the computer "Beep" once.
+                choice = quarkx.msgbox(".skd base mesh file not found !\n\nDo you wish to have one created ?", MT_INFORMATION, MB_YES|MB_NO)
                 if choice == 6:
                     base_file = filename.replace(".skc", ".skd")
-                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skd file before the .skc file.
-                else:
-                    return
-        if filename.endswith(".skc") and base_file is not None:
-            # The bone order in the skc file needs to match the one in the skd file for MoHAA models
-            # Ugly hack: Partially copied and modified code from the importer!
-            QuArKBoneNames = []
-            import ie_skd_import
-            file = open(base_file, "rb")
-            try:
-                binary_format = "<4si64c12i"
-                temp_data = file.read(struct.calcsize(binary_format))
-                data = struct.unpack(binary_format, temp_data)
-
-                numBones = data[67]
-                ofsBones = data[68]
-                file.seek(ofsBones,0)
-                for i in xrange(0, numBones):
-                    bone = ie_skd_import.SKD_Bone()
-                    bone.load(file)
-                    QuArKBoneNames += [ModelFolder + "_" + bone.name + ":bone"]
-            finally:
-                file.close()
-            
-            # Now, recreate the relevant bone lists in this new order
-            QuArK_bones_new = [None] * len(QuArKBoneNames)
-            for QuArK_bone in QuArK_bones:
-                try:
-                    index = operator.indexOf(QuArKBoneNames, QuArK_bone.name)
-                except:
-                    index = -1
-                if index == -1:
-                    #Not found; add to back
-                    QuArK_bones_new += [QuArK_bone]
-                else:
-                    QuArK_bones_new[index] = QuArK_bone
-            QuArK_bones = QuArK_bones_new
-
-            ConvertBoneNameToIndex = {}
-            for QuArK_bone_index in range(len(QuArK_bones)):
-                QuArK_bone = QuArK_bones[QuArK_bone_index]
-                ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
-
-            # Call to write skc file.
-            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skc animation file.
+                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skd mesh file before the .skc animation file.
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skd mesh or .skc animation file only.
+        else:
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skd mesh or .skc animation file only.
 
     try:
         progressbar.close()
@@ -1420,6 +1390,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2012/01/02 04:00:36  cdunde
+# Update to get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
+#
 # Revision 1.5  2011/12/23 22:36:31  cdunde
 # To get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
 #
