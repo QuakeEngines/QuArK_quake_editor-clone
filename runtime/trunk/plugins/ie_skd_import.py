@@ -919,6 +919,7 @@ class skd_obj:
             self.surfaceList.append(surface)
             self.ComponentList.append(Component)
 
+        progressbar.close()
         return self, message
 
     def dump(self):
@@ -1332,7 +1333,7 @@ class skc_obj:
                 frame.dump()
                 tobj.logcon ("=====================")
                 tobj.logcon ("")
-                
+
         return new_framesgroups
 
     def dump(self):
@@ -1585,6 +1586,7 @@ def loadmodel(root, filename, gamename):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     base_file = None # The full path and file name of the .skd file if we need to call to load it with.
+    existing_bones = None
     QuArK_bone_list = []
     ComponentList = []
     Exist_Comps = []
@@ -1593,6 +1595,11 @@ def loadmodel(root, filename, gamename):
     # model_path = ['C:\\MOHAA\\Main\\models\\furniture\\chairs', 'roundedchair.skd' or 'roundedchair.skc']
     model_path = filename.rsplit('\\', 1)
     ModelFolder = model_path[0].rsplit('\\', 1)[1]
+
+    for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+        if group.name.startswith(ModelFolder + "_"):
+            existing_bones = 1
+            break
 
     for item in editor.Root.subitems:
         if item.type == ":mc" and item.name.startswith(ModelFolder + "_"):
@@ -1618,25 +1625,29 @@ def loadmodel(root, filename, gamename):
                 return
 
     ### Lines below here loads the model into the opened editor's current model.
-    if base_file is None:
+    if filename.endswith(".skd"):
         ComponentList, QuArK_bone_list, existing_bones, message = import_SK_model(filename) # Calls to load the .skd file.
-    else:
+        if ComponentList is None:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+            quarkx.msgbox("Invalid file.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            try:
+                progressbar.close()
+            except:
+                pass
+            ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+            return
+    elif existing_bones is None:
         ComponentList, QuArK_bone_list, existing_bones, message = import_SK_model(base_file) # Calls to load the .skd file before the .skc file.
+        if ComponentList is None:
+            quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
+            quarkx.msgbox("Invalid file.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            try:
+                progressbar.close()
+            except:
+                pass
+            ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+            return
 
-    if ComponentList is None:
-        quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
-        quarkx.msgbox("Invalid file.\nEditor can not import it.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-        try:
-            progressbar.close()
-        except:
-            pass
-        ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
-        return
-
-    for group in editor.Root.dictitems['Skeleton:bg'].subitems:
-        if group.name.startswith(ModelFolder + "_"):
-            existing_bones = 1
-            break
     if existing_bones is None:
         newbones = []
         for bone in range(len(QuArK_bone_list)): # Using list of ALL bones.
@@ -1647,6 +1658,24 @@ def loadmodel(root, filename, gamename):
                 for parent in QuArK_bone_list:
                     if parent.name == boneobj.dictspec['parent_name']:
                         parent.appenditem(boneobj)
+    if QuArK_bone_list == []:
+        new_bones = []
+        for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+            if group.name.startswith(ModelFolder + "_"):
+                group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
+                skd_bones_indexes = {}
+                for bone in group_bones:
+                    if bone.dictspec.has_key('_skd_boneindex'):
+                        skd_bones_indexes[int(bone.dictspec['_skd_boneindex'])] = bone
+                    else:
+                        new_bones.append(bone)
+                skd_keys = skd_bones_indexes.keys()
+                skd_keys.sort()
+                for key in skd_keys:
+                    QuArK_bone_list.append(skd_bones_indexes[key])
+        QuArK_bone_list = QuArK_bone_list + new_bones
+        message = ""
+        ComponentList = Exist_Comps
 
     new_framesgroups = None
     if editor.form is None: # Step 2 to import model from QuArK's Explorer.
@@ -1736,6 +1765,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.25  2012/01/03 08:42:22  cdunde
+# Setup progressbars.
+#
 # Revision 1.24  2012/01/03 07:18:37  cdunde
 # Minor file comments and variable name change for consistency.
 #
