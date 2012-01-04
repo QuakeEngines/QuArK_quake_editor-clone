@@ -353,8 +353,12 @@ class SKD_Surface:
                 try:
                     vtx_offset = vert_weights[bonenames[j]]['vtx_offset']
                 except:
+                    QuArK_bone = QuArK_bones[boneIndex]
                     if vert.num_weights == 1:
-                        vtx_offset = (vtx_pos - Bpos).tuple
+                        if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                            vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
+                        else:
+                            vtx_offset = (vtx_pos - Bpos).tuple
                     else:
                         try:
                             bone = skd_bones[boneIndex]
@@ -365,7 +369,10 @@ class SKD_Surface:
                             else:
                                 vtx_offset = (vtx_pos - Bpos).tuple
                         except:
-                            vtx_offset = (0.0, 0.0, 0.0)
+                            if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                                vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
+                            else:
+                                vtx_offset = (0.0, 0.0, 0.0)
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
                     tobj.logcon ("    boneIndex " + str(boneIndex))
@@ -687,11 +694,21 @@ class skd_obj:
                         parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
                         bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
                         bone.basepos = (bone_pos1 - parent_pos).tuple
-                    else:
-                        # For EF2 & others
+                    elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'skb-EF2':
+                        # For EF2
                         bone.basepos = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position']
+                    elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                        # For MD5
+                        parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
+                        bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
+                        parent_rot = quarkx.matrix(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['rotmatrix'])
+                        bone.basepos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
                     bone_rot = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix']
                 bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
+                if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                    bone_rot = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
+                    m = (~bone_rot * parent_rot).tuple
+                    bone_rot = ((m[0][0], m[1][0], m[2][0], 0.0) ,(m[0][1], m[1][1], m[2][1], 0.0), (m[0][2], m[1][2], m[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
                 bone_quat = matrix2quaternion(bone_rot)
 
                 if bone_quat[0] == 0 and bone_quat[1] == 0 and bone_quat[2] == 0:
@@ -1390,6 +1407,11 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2012/01/03 00:14:09  cdunde
+# Update to export mesh and animation files without use of original mesh file
+# to setup for model full editing abilities, add & remove bones, faces & vertices
+# and also work with original files if no editing is done.
+#
 # Revision 1.6  2012/01/02 04:00:36  cdunde
 # Update to get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
 #
