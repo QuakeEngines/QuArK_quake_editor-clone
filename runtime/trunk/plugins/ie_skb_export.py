@@ -1072,6 +1072,10 @@ def savemodel(root, filename, gamename):
         if not item.name.endswith(":mc"):
             quarkx.msgbox("Improper Selection !\n\nYou can ONLY select\ncomponent folders for exporting.\n\nAn item that is not\na component folder\nis in your selections.\nDeselect it and try again.", MT_ERROR, MB_OK)
             return
+        if item.dictitems['Frames:fg'].subitems[0].name != "baseframe:mf":
+            quarkx.beep()
+            quarkx.msgbox("MISSING or MISSPLACED MESH baseframe(s) !\n\nAll selected component's FIRST frame must be a static pose\nof that model's part and that frame named 'baseframe' !\n\nCorrect and try again.", MT_ERROR, MB_OK)
+            return
 
     comp_count = 0
     frame_count = []
@@ -1174,6 +1178,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2012/01/03 00:24:16  cdunde
+# To get Alice, FAKK2 & EF2 skb_exporter to work with Half-Life 1 HL1_importer models.
+#
 # Revision 1.14  2012/01/03 00:10:02  cdunde
 # Rearranged export calls for better organization of code.
 #

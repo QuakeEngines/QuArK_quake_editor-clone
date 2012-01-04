@@ -1311,6 +1311,10 @@ def savemodel(root, filename, gamename):
         if not item.name.endswith(":mc"):
             quarkx.msgbox("Improper Selection !\n\nYou can ONLY select\ncomponent folders for exporting.\n\nAn item that is not\na component folder\nis in your selections.\nDeselect it and try again.", MT_ERROR, MB_OK)
             return
+        if item.dictitems['Frames:fg'].subitems[0].name != "baseframe:mf":
+            quarkx.beep()
+            quarkx.msgbox("MISSING or MISSPLACED MESH baseframe(s) !\n\nAll selected component's FIRST frame must be a static pose\nof that model's part and that frame named 'baseframe' !\n\nCorrect and try again.", MT_ERROR, MB_OK)
+            return
 
     comp_count = 0
     frame_count = []
@@ -1407,6 +1411,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2012/01/04 04:53:39  cdunde
+# To get MoHAA skd_exporter to work with Doom3 & Quake4 md5_importer models.
+#
 # Revision 1.7  2012/01/03 00:14:09  cdunde
 # Update to export mesh and animation files without use of original mesh file
 # to setup for model full editing abilities, add & remove bones, faces & vertices
