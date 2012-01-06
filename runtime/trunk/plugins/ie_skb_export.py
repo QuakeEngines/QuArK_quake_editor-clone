@@ -84,7 +84,7 @@ class SKB_Bone:
         else:
             self.parent = ConvertBoneNameToIndex[bone.dictspec['parent_name']]
         self.flags = 0
-        self.name = bone.shortname.replace(ModelFolder + "_", "")
+        self.name = bone.shortname.split("_", 1)[1]
 
     def save(self, file):
         tmpData = [0]*3
@@ -826,10 +826,10 @@ class ska_obj:
         if self.version == 4:
             #EF2 has bone_names
             for i in xrange(0, self.numBones):
-                current_bone = QuArK_bones[i]
-                if current_bone.dictspec['parent_name'] != "None":
-                    parent_bone = QuArK_bones[ConvertBoneNameToIndex[QuArK_bones[i].dictspec['parent_name']]]
-                    vect_diff = current_bone.position - parent_bone.position
+                QuArK_bone = QuArK_bones[i]
+                if QuArK_bone.dictspec['parent_name'] != "None":
+                    parent_bone = QuArK_bones[ConvertBoneNameToIndex[QuArK_bone.dictspec['parent_name']]]
+                    vect_diff = QuArK_bone.position - parent_bone.position
                     vect_diff = vect_diff.tuple
                     ID = math.sqrt((vect_diff[0] * vect_diff[0]) + (vect_diff[1] * vect_diff[1]) + (vect_diff[2] * vect_diff[2]))
                 else:
@@ -837,7 +837,7 @@ class ska_obj:
                 
                 bone_name = SKA_BoneName_EF2()
                 bone_name.ID = ID
-                bone_name.name = QuArK_bones[i].shortname.split("_", 1)[1]
+                bone_name.name = QuArK_bone.shortname.split("_", 1)[1]
                 self.bone_names.append(bone_name)
                 if logging == 1:
                     tobj.logcon ("BoneName " + str(i))
@@ -1178,6 +1178,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2012/01/04 21:25:30  cdunde
+# Added check for needed baseframe.
+#
 # Revision 1.15  2012/01/03 00:24:16  cdunde
 # To get Alice, FAKK2 & EF2 skb_exporter to work with Half-Life 1 HL1_importer models.
 #
