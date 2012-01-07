@@ -144,15 +144,15 @@ class SKD_Bone:
         self.parent_index = -1
         self.jointWeight = [1.,180.,1.]
 
-    def fill(self, bone, ConvertBoneNameToIndex):
-        self.name = bone.shortname.replace(ModelFolder + "_", "")
+    def fill(self, bone, ConvertBoneNameToIndex, ModelFolder):
+        self.name = bone.shortname.replace(ModelFolder + "_", "", 1)
         if bone.dictspec['parent_name'] == "None":
             self.parent = "worldbone"
         else:
             parent_name = bone.dictspec['parent_name']
             self.parent_index = ConvertBoneNameToIndex[parent_name]
             parent_name = parent_name.split(":bone")[0]
-            parent_name = parent_name.replace(ModelFolder + "_", "")
+            parent_name = parent_name.replace(ModelFolder + "_", "", 1)
             self.parent = parent_name
 
         if bonelist.has_key(bone.name) and bonelist[bone.name]['frames'].has_key('baseframe:mf') and bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_JointType'):
@@ -165,7 +165,7 @@ class SKD_Bone:
             if bonelist[bone.name]['frames']['baseframe:mf'].has_key('SKD_JointRefs'):
                 self.refs = ""
                 for bone_ref in bonelist[bone.name]['frames']['baseframe:mf']['SKD_JointRefs']:
-                    bone_ref = bone_ref.replace(ModelFolder + "_", "")
+                    bone_ref = bone_ref.replace(ModelFolder + "_", "", 1)
                     bone_ref = bone_ref.replace(":bone", "") + "\x00"
                     self.refs += bone_ref
         else:
@@ -659,7 +659,7 @@ class skd_obj:
 ######################################################
 # FILL SKD OBJ DATA STRUCTURE
 ######################################################
-    def fill_skd_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+    def fill_skd_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
         message = ""
         self.file_pointer = self.header_size # Update our pointer for the file header that will be written first in the "save" call.
 
@@ -675,7 +675,7 @@ class skd_obj:
         for i in xrange(0, self.numBones):
             bone = SKD_Bone()
             QuArK_bone = QuArK_bones[i]
-            bone.fill(QuArK_bone, ConvertBoneNameToIndex)
+            bone.fill(QuArK_bone, ConvertBoneNameToIndex, ModelFolder)
             QuArK_bone_name = QuArK_bone.name
             # Use bonelist for mesh baseframe exporting and NOT the bones themselves.
             # If another frame is current the bones contain those positions and matrixes.
@@ -772,8 +772,7 @@ class skd_obj:
         self.ofsSurfaces = self.file_pointer
         FullPathName = file.name.replace("\\", "/")
         FolderPath = FullPathName.rsplit("/", 1)
-        FolderPath, ModelName = FolderPath[0], FolderPath[1].split(".")[0]
-        ModelFolder = FolderPath.rsplit("/", 1)[1]
+        ModelName = FolderPath[1].split(".")[0]
         use_count = None
         for i in xrange(0, self.numSurfaces):
             if logging == 1:
@@ -786,8 +785,8 @@ class skd_obj:
             name = Component.shortname
             surf_name = None
             if name.find(ModelFolder + "_") and name.find(ModelName + "_"):
-                surf_name = name.replace(ModelFolder + "_", "")
-                surf_name = surf_name.replace(ModelName + "_", "")
+                surf_name = name.replace(ModelFolder + "_", "", 1)
+                surf_name = surf_name.replace(ModelName + "_", "", 1)
             if surf_name is None:
                 surf_name = name.split("_")
                 surf_name = surf_name[len(surf_name)-1]
@@ -1052,7 +1051,7 @@ class skc_obj:
         for channel in self.Channels:
             channel.save(file)
 
-    def fill_skc_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, QuArK_frame_names):
+    def fill_skc_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, QuArK_frame_names, ModelFolder):
         message = ""
         self.numChannels = len(QuArK_bones) * 2 # 2 for each bone, 1 for pos & 1 for quat values.
         # 48 = skc_obj header size & SKC_Frame size, 16 = SKC_Frame_Channel size.
@@ -1116,7 +1115,7 @@ class skc_obj:
         for i in xrange(0, len(QuArK_bones)):
             name = QuArK_bones[i].shortname
             try:
-                name = name.replace(ModelFolder + "_", "")
+                name = name.replace(ModelFolder + "_", "", 1)
             except:
                 pass
             channel = SKC_Bone_Channel()
@@ -1227,7 +1226,7 @@ def quaternion_normalize(q):
 # CALL TO EXPORT ANIMATION (.skc) FILE
 ############################
 # QuArK_bones = A list of all the bones in the QuArK's "Skeleton:bg" folder, in their proper tree-view order, to get our bones from.
-def save_skc(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+def save_skc(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
     file = open(filename, "wb")
     skc = skc_obj() # Making an "instance" of this class.
   #  skc.name = filename.rsplit("\\", 1)[1] # Original files do not use this.
@@ -1241,7 +1240,7 @@ def save_skc(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
     skc.numFrames = len(QuArK_frame_names)
 
     # Fill the needed data for exporting.
-    message = skc.fill_skc_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, QuArK_frame_names) # Calling this class function to read the file data and create the animation frames.
+    message = skc.fill_skc_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, QuArK_frame_names, ModelFolder) # Calling this class function to read the file data and create the animation frames.
 
     #actually write it to disk
     skc.save(file)
@@ -1255,7 +1254,7 @@ def save_skc(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
 ############################
 # CALL TO EXPORT MESH (.skd) FILE
 ############################
-def save_skd(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+def save_skd(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
     file = open(filename, "wb")
     skd = skd_obj() # Making an "instance" of this class.
     skd.name = filename.rsplit("\\", 1)[1]
@@ -1263,7 +1262,7 @@ def save_skd(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
     skd.numBones = len(QuArK_bones)
 
     # Fill the needed data for exporting.
-    message = skd.fill_skd_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex)
+    message = skd.fill_skd_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder)
 
     #actually write it to disk
     skd.save(file)
@@ -1277,11 +1276,11 @@ def save_skd(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
 #########################################
 # CALLS TO EXPORT MESH (.skd) and ANIMATION (.skc) FILE
 #########################################
-def export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+def export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
     if filename.endswith(".skd"): # Calls to write the .skd base mesh model file.
-        message = save_skd(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex)
+        message = save_skd(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder)
     else: # Calls to write the .skc animation file.
-        message = save_skc(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex)
+        message = save_skc(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder)
 
     return message
 
@@ -1347,6 +1346,7 @@ def savemodel(root, filename, gamename):
     # The bone order in the skc file needs to match the ones in the skd file for MOHAA models.
     QuArK_bones = []
     new_bones = []
+    # Try to get needed bones by the folder name the model file is in.
     for group in editor.Root.dictitems['Skeleton:bg'].subitems:
         if group.name.startswith(ModelFolder + "_"):
             group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
@@ -1362,16 +1362,48 @@ def savemodel(root, filename, gamename):
                 QuArK_bones.append(skd_bones_indexes[key])
     QuArK_bones = QuArK_bones + new_bones
 
-    # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
-    ConvertBoneNameToIndex = {}
-    for QuArK_bone_index in range(len(QuArK_bones)):
-        QuArK_bone = QuArK_bones[QuArK_bone_index]
-        ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
+    # Try to get needed bones by the model file name.
+    if len(QuArK_bones) == 0:
+        files = os.listdir(model_path[0])
+        foundbones = 0
+        for file in files:
+            name = file.rsplit(".", 1)[0]
+            for comp in QuArK_comps:
+                if comp.shortname.startswith(name):
+                    for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+                        if group.shortname.startswith(name):
+                            ModelFolder = name
+                            foundbones = 1
+                            break
+                if foundbones == 1:
+                    break
+            if foundbones == 1:
+                break
+        for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+            if group.name.startswith(ModelFolder + "_"):
+                group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
+                skd_bones_indexes = {}
+                for bone in group_bones:
+                    if bone.dictspec.has_key('_skd_boneindex'):
+                        skd_bones_indexes[int(bone.dictspec['_skd_boneindex'])] = bone
+                    else:
+                        new_bones.append(bone)
+                skd_keys = skd_bones_indexes.keys()
+                skd_keys.sort()
+                for key in skd_keys:
+                    QuArK_bones.append(skd_bones_indexes[key])
+        QuArK_bones = QuArK_bones + new_bones
 
     if len(QuArK_bones) == 0:
         quarkx.beep() # Makes the computer "Beep" once.
         quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
         return
+
+    # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
+    ConvertBoneNameToIndex = {}
+    for QuArK_bone_index in range(len(QuArK_bones)):
+        QuArK_bone = QuArK_bones[QuArK_bone_index]
+        ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
 
     logging, tobj, starttime = ie_utils.default_start_logging(exportername, textlog, filename, "EX") ### Use "EX" for exporter text, "IM" for importer text.
 
@@ -1387,10 +1419,10 @@ def savemodel(root, filename, gamename):
                 choice = quarkx.msgbox(".skd base mesh file not found !\n\nDo you wish to have one created ?", MT_INFORMATION, MB_YES|MB_NO)
                 if choice == 6:
                     base_file = filename.replace(".skc", ".skd")
-                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save the .skd mesh file before the .skc animation file.
-            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skd mesh or .skc animation file only.
+                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calls to save the .skd mesh file before the .skc animation file.
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calls to save a .skd mesh or .skc animation file only.
         else:
-            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skd mesh or .skc animation file only.
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calls to save a .skd mesh or .skc animation file only.
 
     try:
         progressbar.close()
@@ -1411,6 +1443,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2012/01/04 21:25:30  cdunde
+# Added check for needed baseframe.
+#
 # Revision 1.8  2012/01/04 04:53:39  cdunde
 # To get MoHAA skd_exporter to work with Doom3 & Quake4 md5_importer models.
 #
