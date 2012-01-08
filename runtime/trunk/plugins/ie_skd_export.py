@@ -280,7 +280,7 @@ class SKD_Surface:
         self.ofsCollapseIndex = 0
 
         self.Triangles = []
-        self.Vert_coords = {}
+        self.Vert_coords = []
         self.CollapseMapVerts = []
 
     def fill(self, Component, skd_bones, QuArK_bones, ConvertBoneNameToIndex):
@@ -293,8 +293,8 @@ class SKD_Surface:
         Tris = Component.triangles
         skinsize = Component.dictspec['skinsize']
 
-        self.numTriangles = len(Tris)
-        self.numVerts = len(vertices)
+        UVs_of_vert = {}
+        old_verts = [] #For quick saving of duplicate x,y,z + weights
 
         # Fill the Triangles and UVs vert_coord data.
         self.ofsTriangles = surf_offset_pointer
@@ -302,20 +302,47 @@ class SKD_Surface:
             tobj.logcon ("-----------------------------------")
             tobj.logcon ("Triangle vert_indexes, numTriangles: " + str(self.numTriangles))
             tobj.logcon ("-----------------------------------")
-        for i in xrange(0, self.numTriangles):
+        for i in xrange(0, len(Tris)):
             tri = SKD_Triangle()
             Ctri = Tris[i]
-            tri.fill(Ctri)
+            new_Ctri = []
             if logging == 1:
                 tobj.logcon ("tri " + str(i) + " " + str(tri.indices))
             for j in xrange(3):
-                if not Ctri[j][0] in self.Vert_coords.keys():
-                    vert_coord = SKD_Vertex()
-                    vert_coord.fill(Ctri[j], skinsize)
-                    self.Vert_coords[Ctri[j][0]] = vert_coord
+                vert_index = Ctri[j][0]
+                vert_coord = SKD_Vertex()
+                vert_coord.fill(Ctri[j], skinsize)
+                if UVs_of_vert.has_key(vert_index):
+                    #We've seen this vert_index before
+                    FoundAVert = 0
+                    for k in xrange(len(UVs_of_vert[vert_index])):
+                        UV = UVs_of_vert[vert_index][k]
+                        if (abs(UV[0] - vert_coord.uv[0]) < 0.001) and (abs(UV[1] - vert_coord.uv[1]) < 0.001):
+                            #Same UV; recycle vert
+                            new_vert_index = UV[2]
+                            FoundAVert = 1
+                            break
+                    if not FoundAVert:
+                        #Same vert_index, but different UV: split it!
+                        new_vert_index = len(old_verts)
+                        old_verts += [vert_index]
+                        self.Vert_coords.append(vert_coord)
+                        UVs_of_vert[vert_index] += [(vert_coord.uv[0], vert_coord.uv[1], new_vert_index)]
+                else:
+                    #Totally new vert_index
+                    new_vert_index = len(old_verts)
+                    old_verts += [vert_index]
+                    self.Vert_coords.append(vert_coord)
+                    UVs_of_vert[vert_index] = [(vert_coord.uv[0], vert_coord.uv[1], new_vert_index)]
+                new_Ctri += [(new_vert_index, vert_coord.uv[0], vert_coord.uv[1])]
+            tri.fill(new_Ctri)
             self.Triangles.append(tri)
         if logging == 1:
             tobj.logcon ("")
+
+        self.numTriangles = len(self.Triangles)
+        self.numVerts = len(old_verts)
+
         surf_offset_pointer = surf_offset_pointer + (self.numTriangles * (3 * 4))
 
         # Fill the Tex Coords normal and weights data.
@@ -332,7 +359,8 @@ class SKD_Surface:
         for i in xrange(0, self.numVerts):
             verts_pointer = verts_pointer + (7 * 4) # Count for (see class SKD_Vertex).
             vert = self.Vert_coords[i]
-            vert_weights = weightvtxlist[i]
+            old_vert_index = old_verts[i]
+            vert_weights = weightvtxlist[old_vert_index]
             bonenames = vert_weights.keys()
             vert.num_weights = len(bonenames)
             if logging == 1:
@@ -344,7 +372,9 @@ class SKD_Surface:
             # weight_value      item   1    float, this is the QuArK ModelComponentList['weightvtxlist'][vertex]['weight_value']
             # vtx_offset        item   2-4  3 floats, offset between the bone position and a vertex's position.
             verts_pointer = verts_pointer + (vert.num_weights * (5 * 4)) # binary_format = "<if3f" or 5 items @ 4 bytes ea.
-            vtx_pos = vertices[i]
+
+            vtx_pos = vertices[old_vert_index]
+
             for j in xrange(0, vert.num_weights):
                 boneIndex = ConvertBoneNameToIndex[bonenames[j]]
                 weight_value = vert_weights[bonenames[j]]['weight_value']
@@ -371,8 +401,10 @@ class SKD_Surface:
                         except:
                             if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
                                 vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
+                            elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
+                                vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
                             else:
-                                vtx_offset = (0.0, 0.0, 0.0)
+                                vtx_offset = vtx_pos.tuple
                 if logging == 1:
                     tobj.logcon ("  weight " + str(j))
                     tobj.logcon ("    boneIndex " + str(boneIndex))
@@ -382,6 +414,7 @@ class SKD_Surface:
                 vert.weights[j] = [boneIndex, weight_value, vtx_offset]
 
             if logging == 1:
+        #        tobj.logcon ("    vtxweight " + str(weightvtxlist[old_vert_index]))
                 tobj.logcon ("    -------------")
 
         # CollapseMap data here - the reduction of number of model mesh faces when viewed further away.
@@ -689,7 +722,15 @@ class skd_obj:
                     bone_rot1 = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
                     bone_rot = (~parent_rot * bone_rot1).tuple
                 else: # Handles other model format bones.
-                    if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'skb-Alice':
+                    if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
+                      #  bone_pos1 = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position']
+                      #  bone.basepos = (-bone_pos1[1], bone_pos1[0], bone_pos1[2])
+                      #  bone.basepos = bone_pos1
+                        parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
+                        bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
+                        parent_rot = quarkx.matrix(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['rotmatrix'])
+                        bone.basepos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
+                    elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'skb-Alice':
                         # For Alice & FAKK2
                         parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
                         bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
@@ -705,7 +746,12 @@ class skd_obj:
                         bone.basepos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
                     bone_rot = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix']
                 bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
-                if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
+                   bone_rot = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
+                   m = (~bone_rot * parent_rot).tuple
+                   bone_rot = ((m[0][0], m[0][1], m[0][2], 0.0) ,(m[1][0], m[1][1], m[1][2], 0.0), (m[2][0], m[2][1], m[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
+                 #   bone_rot = ((1.0, 0.0, 0.0, 0.0) ,(0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0), (0.0, 0.0, 0.0, 1.0))
+                elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
                     bone_rot = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
                     m = (~bone_rot * parent_rot).tuple
                     bone_rot = ((m[0][0], m[1][0], m[2][0], 0.0) ,(m[0][1], m[1][1], m[2][1], 0.0), (m[0][2], m[1][2], m[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
@@ -1443,6 +1489,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2012/01/07 02:09:42  cdunde
+# To enhance working with Quake4 md5 models.
+#
 # Revision 1.9  2012/01/04 21:25:30  cdunde
 # Added check for needed baseframe.
 #
