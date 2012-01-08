@@ -78,13 +78,14 @@ class SKB_Bone:
             self.baseoffset = (0)*3
             self.basejunk1 = 0
 
-    def fill(self, bone, ConvertBoneNameToIndex):
+    def fill(self, bone, ConvertBoneNameToIndex, ModelFolder):
+        self.name = bone.shortname.replace(ModelFolder + "_", "", 1)
         if bone.dictspec['parent_name'] == "None":
             self.parent = -1
         else:
             self.parent = ConvertBoneNameToIndex[bone.dictspec['parent_name']]
         self.flags = 0
-        self.name = bone.shortname.split("_", 1)[1]
+
 
     def save(self, file):
         tmpData = [0]*3
@@ -489,7 +490,7 @@ class skb_obj:
 ######################################################
 # FILL SKB OBJ DATA STRUCTURE
 ######################################################
-    def fill_skb_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+    def fill_skb_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
         message = ""
         self.file_pointer = self.header_size # Update our pointer for the file header that will be written first in the "save" call.
 
@@ -503,7 +504,8 @@ class skb_obj:
         self.ofsBones = self.file_pointer
         for i in xrange(0, self.numBones):
             bone = SKB_Bone()
-            bone.fill(QuArK_bones[i], ConvertBoneNameToIndex)
+            QuArK_bone = QuArK_bones[i]
+            bone.fill(QuArK_bone, ConvertBoneNameToIndex, ModelFolder)
             self.bones.append(bone)
             if logging == 1:
                 tobj.logcon ("Bone " + str(i))
@@ -811,7 +813,7 @@ class ska_obj:
             for bone in frame.bones:
                 bone.save(file)
 
-    def fill_ska_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+    def fill_ska_obj(self, file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
         message = ""
         self.file_pointer = self.header_size # Update our pointer for the file header that will be written first in the "save" call.
 
@@ -837,7 +839,10 @@ class ska_obj:
                 
                 bone_name = SKA_BoneName_EF2()
                 bone_name.ID = ID
-                bone_name.name = QuArK_bone.shortname.split("_", 1)[1]
+                try:
+                    bone_name.name = QuArK_bone.shortname.replace(ModelFolder + "_", "", 1)
+                except:
+                    bone_name.name = QuArK_bone.shortname.split("_", 1)[1]
                 self.bone_names.append(bone_name)
                 if logging == 1:
                     tobj.logcon ("BoneName " + str(i))
@@ -851,7 +856,7 @@ class ska_obj:
         for i in xrange(0, numComponents):
             comp_names = comp_names + [QuArK_comps[i].name]
             framesgroup = QuArK_comps[i].dictitems['Frames:fg']
-            baseframes = baseframes + [framesgroup.subitems[0]]
+            baseframes = baseframes + [framesgroup.dictitems['baseframe:mf']]
             framesgroups = framesgroups + [framesgroup]
 
         #Get the QuArK's ModelComponentList['bonelist'].
@@ -997,7 +1002,7 @@ def quaternion_normalize(q):
 # CALL TO EXPORT ANIMATION (.ska) FILE
 ############################
 # QuArK_bones = A list of all the bones in the QuArK's "Skeleton:bg" folder, in their proper tree-view order, to get our bones from.
-def save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+def save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
     file = open(filename, "wb")
     ska = ska_obj() # Making an "instance" of this class.
     ska.name = filename.rsplit("\\", 1)[1]
@@ -1005,7 +1010,7 @@ def save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
     ska.numBones = len(QuArK_bones)
 
     # Fill the needed data for exporting.
-    message = ska.fill_ska_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calling this class function to read the file data and create the animation frames.
+    message = ska.fill_ska_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calling this class function to read the file data and create the animation frames.
 
     #actually write it to disk
     ska.save(file)
@@ -1019,7 +1024,7 @@ def save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
 ############################
 # CALL TO EXPORT MESH (.skb) FILE
 ############################
-def save_skb(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+def save_skb(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
     file = open(filename, "wb")
     skb = skb_obj() # Making an "instance" of this class.
     skb.name = filename.rsplit("\\", 1)[1]
@@ -1027,7 +1032,7 @@ def save_skb(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
     skb.numBones = len(QuArK_bones)
 
     # Fill the needed data for exporting.
-    message = skb.fill_skb_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex)
+    message = skb.fill_skb_obj(file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder)
 
     #actually write it to disk
     skb.save(file)
@@ -1041,11 +1046,11 @@ def save_skb(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
 #########################################
 # CALLS TO EXPORT MESH (.skb) and ANIMATION (.ska) FILE
 #########################################
-def export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex):
+def export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder):
     if filename.endswith(".skb"): # Calls to write the .skb base mesh model file.
-        message = save_skb(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex)
+        message = save_skb(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder)
     else: # Calls to write the .ska animation file.
-        message = save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex)
+        message = save_ska(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder)
 
     return message
 
@@ -1108,6 +1113,7 @@ def savemodel(root, filename, gamename):
     # The bone order in the ska file needs to match the ones in the skb file for Alice & FAKK2 models, EF2 uses bone names.
     QuArK_bones = []
     new_bones = []
+    # Try to get needed bones by the folder name the model file is in.
     for group in editor.Root.dictitems['Skeleton:bg'].subitems:
         if group.name.startswith(ModelFolder + "_"):
             group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
@@ -1117,22 +1123,54 @@ def savemodel(root, filename, gamename):
                     skb_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
                 else:
                     new_bones.append(bone)
-            skd_keys = skb_bones_indexes.keys()
-            skd_keys.sort()
-            for key in skd_keys:
+            skb_keys = skb_bones_indexes.keys()
+            skb_keys.sort()
+            for key in skb_keys:
                 QuArK_bones.append(skb_bones_indexes[key])
     QuArK_bones = QuArK_bones + new_bones
+
+    # Try to get needed bones by the model file name.
+    if len(QuArK_bones) == 0:
+        files = os.listdir(model_path[0])
+        foundbones = 0
+        for file in files:
+            name = file.rsplit(".", 1)[0]
+            for comp in QuArK_comps:
+                if comp.shortname.startswith(name):
+                    for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+                        if group.shortname.startswith(name):
+                            ModelFolder = name
+                            foundbones = 1
+                            break
+                if foundbones == 1:
+                    break
+            if foundbones == 1:
+                break
+        for group in editor.Root.dictitems['Skeleton:bg'].subitems:
+            if group.name.startswith(ModelFolder + "_"):
+                group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
+                skb_bones_indexes = {}
+                for bone in group_bones:
+                    if bone.dictspec.has_key('_skb_boneindex'):
+                        skb_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
+                    else:
+                        new_bones.append(bone)
+                skb_keys = skb_bones_indexes.keys()
+                skb_keys.sort()
+                for key in skb_keys:
+                    QuArK_bones.append(skb_bones_indexes[key])
+        QuArK_bones = QuArK_bones + new_bones
+
+    if len(QuArK_bones) == 0:
+        quarkx.beep() # Makes the computer "Beep" once.
+        quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
+        return
 
     # A dictionary list by bones.name = (QuArK_bones)list_index to speed things up.
     ConvertBoneNameToIndex = {}
     for QuArK_bone_index in range(len(QuArK_bones)):
         QuArK_bone = QuArK_bones[QuArK_bone_index]
         ConvertBoneNameToIndex[QuArK_bone.name] = QuArK_bone_index
-
-    if len(QuArK_bones) == 0:
-        quarkx.beep() # Makes the computer "Beep" once.
-        quarkx.msgbox("Could not export model.\nNo bones for a selected component exist.", MT_ERROR, MB_OK)
-        return
 
     choice = quarkx.msgbox("The file can be exported as either a\n    version 3 = for Alice or FAKK2 = Yes\nor\n    version 4 = for EF2 = No\n\nDo you wish version 3 for Alice or FAKK2 ?", MT_CONFIRMATION, MB_YES|MB_NO)
     if choice == 6:
@@ -1154,10 +1192,10 @@ def savemodel(root, filename, gamename):
                 choice = quarkx.msgbox(".skb base mesh file not found !\n\nDo you wish to have one created ?", MT_INFORMATION, MB_YES|MB_NO)
                 if choice == 6:
                     base_file = filename.replace(".ska", ".skb")
-                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save an .skb mesh file before the .ska animation file.
-            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skb mesh or .ska animation file only.
+                    message = export_SK_model(base_file, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calls to save an .skb mesh file before the .ska animation file.
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calls to save a .skb mesh or .ska animation file only.
         else:
-            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex) # Calls to save a .skb mesh or .ska animation file only.
+            message = export_SK_model(filename, QuArK_comps, QuArK_bones, ConvertBoneNameToIndex, ModelFolder) # Calls to save a .skb mesh or .ska animation file only.
 
     try:
         progressbar.close()
@@ -1178,6 +1216,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2012/01/06 05:35:44  cdunde
+# Change for proper way to remove folder name from bones being exported.
+#
 # Revision 1.16  2012/01/04 21:25:30  cdunde
 # Added check for needed baseframe.
 #
