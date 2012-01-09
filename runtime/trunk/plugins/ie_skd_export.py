@@ -385,7 +385,11 @@ class SKD_Surface:
                 except:
                     QuArK_bone = QuArK_bones[boneIndex]
                     if vert.num_weights == 1:
-                        if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                        # For HL1
+                        if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
+                            vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
+                        # For MD5
+                        elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
                             vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
                         else:
                             vtx_offset = (vtx_pos - Bpos).tuple
@@ -399,9 +403,11 @@ class SKD_Surface:
                             else:
                                 vtx_offset = (vtx_pos - Bpos).tuple
                         except:
-                            if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
+                            # For HL1, but never uses this because it does not split weights.
+                            if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
                                 vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
-                            elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
+                            # For MD5
+                            elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
                                 vtx_offset = (~Brot * (vtx_pos-Bpos)).tuple
                             else:
                                 vtx_offset = vtx_pos.tuple
@@ -722,35 +728,34 @@ class skd_obj:
                     bone_rot1 = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
                     bone_rot = (~parent_rot * bone_rot1).tuple
                 else: # Handles other model format bones.
+                    # For HL1
                     if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
-                      #  bone_pos1 = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position']
-                      #  bone.basepos = (-bone_pos1[1], bone_pos1[0], bone_pos1[2])
-                      #  bone.basepos = bone_pos1
                         parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
                         bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
                         parent_rot = quarkx.matrix(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['rotmatrix'])
                         bone.basepos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
+                    # For Alice & FAKK2
                     elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'skb-Alice':
-                        # For Alice & FAKK2
                         parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
                         bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
                         bone.basepos = (bone_pos1 - parent_pos).tuple
+                    # For EF2
                     elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'skb-EF2':
-                        # For EF2
                         bone.basepos = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position']
+                    # For MD5
                     elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
-                        # For MD5
                         parent_pos = quarkx.vect(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['position'])
                         bone_pos1 = quarkx.vect(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['position'])
                         parent_rot = quarkx.matrix(bonelist[QuArK_parent_name]['frames']['baseframe:mf']['rotmatrix'])
                         bone.basepos = (~parent_rot * (bone_pos1 - parent_pos)).tuple
                     bone_rot = bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix']
                 bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
+                # For HL1
                 if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'HL1':
                    bone_rot = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
                    m = (~bone_rot * parent_rot).tuple
                    bone_rot = ((m[0][0], m[0][1], m[0][2], 0.0) ,(m[1][0], m[1][1], m[1][2], 0.0), (m[2][0], m[2][1], m[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
-                 #   bone_rot = ((1.0, 0.0, 0.0, 0.0) ,(0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0), (0.0, 0.0, 0.0, 1.0))
+                # For MD5
                 elif QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'] == 'md5':
                     bone_rot = quarkx.matrix(bonelist[QuArK_bone_name]['frames']['baseframe:mf']['rotmatrix'])
                     m = (~bone_rot * parent_rot).tuple
@@ -1489,6 +1494,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2012/01/08 23:54:10  cdunde
+# Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
+#
 # Revision 1.10  2012/01/07 02:09:42  cdunde
 # To enhance working with Quake4 md5 models.
 #
