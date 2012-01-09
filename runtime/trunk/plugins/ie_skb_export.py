@@ -261,25 +261,27 @@ class SKB_Surface:
                 weight_value = vert_weights[bonenames[j]]['weight_value']
                 try: # Alice, FAKK2 or EF2 model being exported. Could also be for MOHAA, uses vtx_offset as well with changes.
                     vtx_offset = vert_weights[bonenames[j]]['vtx_offset']
-                    if weight_value == 1.0:
-                        check_pos = vtx_pos.tuple
-                        if str(check_pos) != str(vtx_offset):
-                            vtx_offset = check_pos
-                    else:
-                        vtx_offsets = quarkx.vect(0.0, 0.0, 0.0)
-                        for k in xrange(0, vert.num_weights):
-                            vtx_offsets += quarkx.vect(vert_weights[bonenames[k]]['vtx_offset'])
-                        ovp = (vtx_offsets / vert.num_weights).tuple             # ovp = original vtx_pos (computed)
-                        cp = (round(ovp[0],6), round(ovp[1],6), round(ovp[2],6)) # cp = compare vtx pos
-                        vp = vtx_pos.tuple
-                        if (fix_offsets is None) and ((abs(cp[0]) > abs(vp[0])+0.1) or (abs(cp[0]) < abs(vp[0])-0.1) or (abs(cp[1]) > abs(vp[1])+0.1) or (abs(cp[1]) < abs(vp[1])-0.1) or (abs(cp[2]) > abs(vp[2])+0.1) or (abs(cp[2]) < abs(vp[2])-0.1)):
-                            fix_offsets = 1
-                    if fix_offsets is not None:
-                        temp = [0.0, 0.0, 0.0]
-                        vo = vert_weights[bonenames[j]]['vtx_offset']
-                        for k in xrange(3):
-                            temp[k] = (vp[k] * (vo[k] / ovp[k]))
-                        vtx_offset = (temp[0], temp[1], temp[2])
+                    QuArK_bone = QuArK_bones[boneIndex]
+                    if QuArK_bone.dictspec.has_key('type') and QuArK_bone.dictspec['type'].startswith('skb-'):
+                        if weight_value == 1.0:
+                            check_pos = vtx_pos.tuple
+                            if str(check_pos) != str(vtx_offset):
+                                vtx_offset = check_pos
+                        else:
+                            vtx_offsets = quarkx.vect(0.0, 0.0, 0.0)
+                            for k in xrange(0, vert.num_weights):
+                                vtx_offsets += quarkx.vect(vert_weights[bonenames[k]]['vtx_offset'])
+                            ovp = (vtx_offsets / vert.num_weights).tuple             # ovp = original vtx_pos (computed)
+                            cp = (round(ovp[0],6), round(ovp[1],6), round(ovp[2],6)) # cp = compare vtx pos
+                            vp = vtx_pos.tuple
+                            if (fix_offsets is None) and ((abs(cp[0]) > abs(vp[0])+0.1) or (abs(cp[0]) < abs(vp[0])-0.1) or (abs(cp[1]) > abs(vp[1])+0.1) or (abs(cp[1]) < abs(vp[1])-0.1) or (abs(cp[2]) > abs(vp[2])+0.1) or (abs(cp[2]) < abs(vp[2])-0.1)):
+                                fix_offsets = 1
+                        if fix_offsets is not None:
+                            temp = [0.0, 0.0, 0.0]
+                            vo = vert_weights[bonenames[j]]['vtx_offset']
+                            for k in xrange(3):
+                                temp[k] = (vp[k] * (vo[k] / ovp[k]))
+                            vtx_offset = (temp[0], temp[1], temp[2])
                 except: # Handles other model formats, HL1 here, exporting as skb models (mesh only).
                     try: # only handles a weight_value of 1.0, need to add for more then 1 weight, see how just above here.
                         Bpos = bonelist[bonenames[j]]['frames']['baseframe:mf']['position']
@@ -1244,6 +1246,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2012/01/08 21:55:52  cdunde
+# Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
+#
 # Revision 1.18  2012/01/08 21:49:04  cdunde
 # To enhance working with Quake4 md5 models.
 #
