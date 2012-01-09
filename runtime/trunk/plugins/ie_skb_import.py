@@ -917,7 +917,8 @@ class ska_obj:
                 bone_name = bone.name
                 for bone2_index in range(len(QuArK_bones)):
                     bone2 = QuArK_bones[bone2_index]
-                    bone2_name = bone2.shortname.split("_", 1)[1]
+                  #  bone2_name = bone2.shortname.split("_", 1)[1]
+                    bone2_name = bone2.shortname.replace(ModelFolder + "_", "", 1)
                     if bone_name == bone2_name:
                         real_bone_index[bone_index] = bone2_index
                         break
@@ -930,7 +931,8 @@ class ska_obj:
             #EF2: A conversion table to go from a QuArK_bones index number to a SKA index number (or -1 if there's no corresponding SKA bone)
             for bone2_index in range(len(QuArK_bones)):
                 bone2 = QuArK_bones[bone2_index]
-                bone2_name = bone2.shortname.split("_", 1)[1]
+              #  bone2_name = bone2.shortname.split("_", 1)[1]
+                bone2_name = bone2.shortname.replace(ModelFolder + "_", "", 1)
                 index_to_ska[bone2_index] = -1
                 for bone_index in range(len(self.bone_names)):
                     bone = self.bone_names[bone_index]
@@ -1376,6 +1378,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2012/01/04 06:59:04  cdunde
+# New method to stop need of loading mesh file every time an animation file is loaded.
+# Speeds up animation loading and avoids overwriting editing that has already taken place.
+#
 # Revision 1.20  2012/01/03 08:42:22  cdunde
 # Setup progressbars.
 #
