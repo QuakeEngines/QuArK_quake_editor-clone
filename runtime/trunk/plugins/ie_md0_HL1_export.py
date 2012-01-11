@@ -2600,6 +2600,10 @@ def savemodel(root, filename, gamename, nomessage=0):
         if not object.name.endswith(":mc"):
             quarkx.msgbox("Improper Selection !\n\nYou can ONLY select component folders for exporting.\n\nAn item that is not a component folder\nis in your selections.\n\nDeselect it and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
+            if object.dictitems['Frames:fg'].subitems[0].name != "baseframe:mf":
+                quarkx.beep()
+                quarkx.msgbox("MISSING or MISSPLACED MESH baseframe(s) !\n\nAll selected component's FIRST frame must be a static pose\nof that model's part and that frame named 'baseframe' !\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+                return
         if not framesgroup or len(framesgroup.subitems) == 0:
             quarkx.msgbox("No frames exist for " + object.shortname + ".\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
@@ -2611,6 +2615,9 @@ def savemodel(root, filename, gamename, nomessage=0):
         if len(framesgroup.subitems) != frame_count:
             quarkx.msgbox("Number of frames of selected components do not match.\nMatch the frames for each component and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
             return
+    if editor.Root.currentcomponent.currentframe.name != "baseframe:mf":
+        quarkx.msgbox("Baseframe not selected:\n\nYou need to select a components 'baseframe'\nbefore exporting and then try again.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+        return
 
     comp_group = ComponentList[0].name.split("_")
     comp_count = len(ComponentList)
@@ -2620,28 +2627,12 @@ def savemodel(root, filename, gamename, nomessage=0):
             return
         else:
             comp_group = comp_group[0].split(":mc")
-    elif len(comp_group) == 2:
-        comp_group1 = comp_group[0] + "_"
-        comp_group = comp_group1
+    else:
+        comp_group = comp_group[0] + "_"
         for comp in ComponentList:
-            if not comp.name.startswith(comp_group1):
+            if not comp.name.startswith(comp_group):
                 quarkx.msgbox("No Component Group !\n\nTo export you must add a GroupName and '_'.\nto the begining of each\ncomponent(s) and all related tags, bboxes and bone names\nthat you want included in the model file.\n\nCorrect it and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
-    else:
-        comp_group1 = comp_group[0] + "_"
-        comp_group2 = comp_group[0] + "_" + comp_group[1] + "_"
-        comp_group = comp_group2
-        for comp in ComponentList:
-            if comp_group2 is not None and comp.name.startswith(comp_group2):
-                continue
-            else:
-                if comp.name.startswith(comp_group1):
-                    comp_group = comp_group1
-                    comp_group2 = None
-                    continue
-                else:
-                    quarkx.msgbox("No Component Group !\n\nTo export you must add a GroupName and '_'.\nto the begining of each\ncomponent(s) and all related tags, bboxes and bone names\nthat you want included in the model file.\n\nCorrect it and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-                    return
 
     UIExportDialog(root, filename, editor, comp_group) # Calls the dialog below which calls to save a model file.
     return
@@ -2975,4 +2966,8 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2011/12/23 22:33:43  cdunde
+# Added export support for Half-Life 1 static and animation models with bones .mdl file types.
+# Still needs work, see TODO NOTES at top of file.
+#
 #

@@ -38,6 +38,7 @@ importername = "ie_md0_HL1_import.py"
 textlog = "HL1mdl_ie_log.txt"
 progressbar = None
 mdl = None
+UseName = ""
 
 ######################################################
 # MDL Model Constants from -> hlmviewer source file -> studio.h -> STUDIO MODELS
@@ -1358,16 +1359,29 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.tagsgroup = []         # A list of tag (attachment) groups to store tag frames into for each tag.
 
     def load(self, file, folder_name, mdl_name, message):
-        global progressbar
+        global progressbar, UseName
         # file = the actual .mdl model file being read in, imported.
         # folder_name = name of the folder the .mdl model file is in.
         # mdl_name = just the basic name of the .mdl file, ex: barney
         # message = "" and empty string to add needed messages to.
+        FolderName = folder_name
+        FileName = mdl_name
+        FolderName = FolderName.split("_")
+        for i in range(len(FolderName)):
+            if not FolderName[i][0].isdigit():
+                FolderName[i] = FolderName[i].capitalize()
+        FolderName = "".join(FolderName)
+        FileName = FileName.split("_")
+        for i in range(len(FileName)):
+            if not FileName[i][0].isdigit():
+                FileName[i] = FileName[i].capitalize()
+        FileName = "".join(FileName)
+        UseName = "".join([FolderName, FileName])
 
         # To avoid dupeicate skin names from being imported, we change the name.
         used_skin_names = []
         for item in editor.Root.subitems:
-            if item.type == ":mc" and not item.name.startswith(folder_name + "_" + mdl_name + "_"):
+            if item.type == ":mc" and not item.name.startswith(UseName + "_"):
                 for skin in item.dictitems['Skins:sg'].subitems:
                     used_skin_names = used_skin_names + [skin.shortname]
         def check_skin_name(skin_name, used_skin_names=used_skin_names):
@@ -1518,7 +1532,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             except:
                 pass
             name = name.split(".")[0]
-            Component = quarkx.newobj(folder_name + '_' + mdl_name + '_' + name + ' textures' + ':mc')
+            Component = quarkx.newobj(UseName + '_' + name + ' textures' + ':mc')
             sdogroup = quarkx.newobj('SDO:sdo')
             # Create the "Skins:sg" group.
             skinsize = (self.skins_group[0].width, self.skins_group[0].height)
@@ -1577,7 +1591,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                   #  self.bodyparts[i].models[j].meshes[k].dump()
 
                     # Now we start creating our Import Component and name it.
-                    Component = quarkx.newobj(folder_name + '_' + mdl_name + '_' + name + ' ' + str(k) + ':mc')
+                    Component = quarkx.newobj(UseName + '_' + name + ' ' + str(k) + ':mc')
                     sdogroup = quarkx.newobj('SDO:sdo')
                     # Create the "Skins:sg" group.
                     try:
@@ -1598,7 +1612,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     # Add bone controls if any.
                     for control in self.bone_controls:
                         bone = self.bones[control.bone]
-                        Component['bone_control_'+ str(control.index)] = folder_name + '_' + mdl_name + '_' + bone.name + ':bone'
+                        Component['bone_control_'+ str(control.index)] = UseName + '_' + bone.name + ':bone'
                     ComponentList = ComponentList + [Component]
 
         # load the attachment data, for position processing with bones they belong to.
@@ -1609,13 +1623,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 attachment = mdl_attachment().load(file)
                 if not self.attachments.has_key(attachment.bone):
                     self.attachments[attachment.bone] = {}
-                    self.attachments[attachment.bone]['bone_name'] = folder_name + '_' + mdl_name + '_' + self.bones[attachment.bone].name + ':bone'
+                    self.attachments[attachment.bone]['bone_name'] = UseName + '_' + self.bones[attachment.bone].name + ':bone'
                     self.attachments[attachment.bone]['tag_pos'] = {}
                 self.attachments[attachment.bone]['tag_pos'][i] = attachment.org
               #  attachment.dump()
                 # Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
                 tag_name = 'tag_weapon' + str(i+1)
-                newtag = quarkx.newobj(folder_name + '_' + mdl_name + '_' + tag_name + ':tag')
+                newtag = quarkx.newobj(UseName + '_' + tag_name + ':tag')
                 newtag['Component'] = tag_comp.name
                 newtag['bone'] = self.attachments[attachment.bone]['bone_name']
                 self.tagsgroup = self.tagsgroup + [newtag]
@@ -1630,7 +1644,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         if len(self.bones) != 0 and len(ComponentList) != 0:
             for mdlbone in xrange(len(self.bones)):
                 bone = self.bones[mdlbone]
-                new_bone = quarkx.newobj(folder_name + '_' + mdl_name + '_' + bone.name + ':bone')
+                new_bone = quarkx.newobj(UseName + '_' + bone.name + ':bone')
                 new_bone['type'] = 'HL1' # Set our bone type.
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
@@ -2229,13 +2243,8 @@ def loadmodel(root, filename, gamename, nomessage=0):
     bonelist = editor.ModelComponentList['bonelist']
     bboxlist = editor.ModelComponentList['bboxlist']
     frame_name = ComponentList[0].dictitems['Frames:fg'].subitems[0].name
-    bbg_name = filename.split("\\")
-    folder = bbg_name[len(bbg_name)-2]
-    file = bbg_name[len(bbg_name)-1]
-    file = file.split(".")[0]
-    bbg_name = folder + "_" + file
     if editor.form is not None:
-        bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
+        bboxgroup = quarkx.newobj("BBoxes " + UseName + ":bbg")
         bboxgroup['show'] = (1.0,)
         for bone in range(len(QuArK_bones)):
             bonename = QuArK_bones[bone].name
@@ -2251,7 +2260,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
         if len(bboxgroup.subitems) !=0:
             undo.put(editor_dictitems['Misc:mg'], bboxgroup)
     else:
-        bboxgroup = quarkx.newobj("BBoxes "+bbg_name+":bbg")
+        bboxgroup = quarkx.newobj("BBoxes " + UseName + ":bbg")
         bboxgroup['show'] = (1.0,)
         for bone in range(len(QuArK_bones)):
             bonename = QuArK_bones[bone].name
@@ -2358,6 +2367,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2011/12/28 08:28:22  cdunde
+# Setup importer bone['type'] not done yet.
+#
 # Revision 1.9  2011/12/23 03:15:18  cdunde
 # To remove all importers bone ['type'] from ModelComponentList['bonelist'].
 # Those should be kept with the individual bones if we decide it is needed.
