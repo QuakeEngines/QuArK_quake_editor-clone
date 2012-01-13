@@ -138,6 +138,13 @@ def vector_by_matrix(p, m):
         p[0] * m[0][2] + p[1] * m[1][2] + p[2] * m[2][2]
        ]
 
+def reverse_vector_by_matrix(p, m):
+    return [
+        p[0] / m[0][0] - p[1] / m[1][0] - p[2] / m[2][0],
+        p[0] / m[0][1] - p[1] / m[1][1] - p[2] / m[2][1],
+        p[0] / m[0][2] - p[1] / m[1][2] - p[2] / m[2][2]
+       ]
+
 
 ######################################################
 # WRITES MESH & ANIMATION SHADERS SECTION
@@ -232,8 +239,30 @@ def export_mesh(self, file, filename, exp_list):
     #Write the joints section
     file.write('joints {\n')
     joint_data = []
+    temp_joint_data = None
     for current_joint in joints:
+        if current_joint.dictspec.has_key('type') and current_joint.dictspec['type'] == 'skb-EF2' and temp_joint_data is None:
+            temp_joint_data = {}
+            bonelist = self.editor.ModelComponentList['bonelist']
+            for joint in joints:
+                bone_name = joint.name
+                if joint.dictspec['parent_name'] == "None":
+                    bone_data = bonelist[bone_name]['frames']['baseframe:mf']
+                    temp_joint_data[bone_name] = [bone_data['position'], bone_data['rotmatrix']]
+                else:
+                    parent_name = joint.dictspec['parent_name']
+                    bone_data = bonelist[bone_name]['frames']['baseframe:mf']
+                    bone_pos = quarkx.vect(bone_data['position'])
+                    tempmatrix = bone_data['rotmatrix']
+                    bone_rot = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
+                    parent_data = temp_joint_data[parent_name]
+                    parent_pos = quarkx.vect(parent_data[0])
+                    parent_rot = quarkx.matrix(parent_data[1])
+                    bone_pos = ((parent_rot * bone_pos) + parent_pos).tuple
+                    bone_rot = (parent_rot * bone_rot).tuple
+                    temp_joint_data[bone_name] = [bone_pos, bone_rot]
         joint_name = current_joint.shortname.split("_", 1)[1]
+        joint_name = joint_name.replace(" ", "_")
         parent_index = -1
         parent_bone_name = ""
         if current_joint.dictspec['parent_name'] != "None":
@@ -260,6 +289,10 @@ def export_mesh(self, file, filename, exp_list):
             bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][baseframe.name]
             bone_pos = bone_data['position']
             bone_rot = bone_data['rotmatrix']
+            if current_joint.dictspec.has_key('type') and current_joint.dictspec['type'] == 'skb-EF2':
+                bone_data = temp_joint_data[current_joint.name]
+                bone_pos = bone_data[0]
+                bone_rot = bone_data[1]
         joint_data = joint_data + [(bone_pos, bone_rot)]
         bone_rot = ((bone_rot[0][0], bone_rot[0][1], bone_rot[0][2], 0.0), (bone_rot[1][0], bone_rot[1][1], bone_rot[1][2], 0.0), (bone_rot[2][0], bone_rot[2][1], bone_rot[2][2], 0.0), (0.0, 0.0, 0.0, 1.0))
         bone_rot = matrix2quaternion(bone_rot)
@@ -335,7 +368,22 @@ def export_mesh(self, file, filename, exp_list):
                     bone_pos = quarkx.vect(bone_pos)
                     bone_rot = joint_data[bone_index][1]
                     bone_rot = quarkx.matrix(bone_rot)
-                    weight_pos = (~bone_rot) * (current_vertex - bone_pos)
+                    # For Alice, FAKK2 or EF2 model being exported.
+                    if joints[bone_index].dictspec.has_key('type') and joints[bone_index].dictspec['type'].startswith('skb-'):
+                        weight_pos = quarkx.vect(weightvtxlist[vert_index][key]['vtx_offset'])
+                     #   vo = weightvtxlist[vert_index][key]['vtx_offset']
+                     #   br = bone_rot.tuple
+                     #   m = [[1,1,1]]*3
+                     #   for i in range(3):
+                     #       for j in range(3):
+                     #           if br[i][j] == 0:
+                     #               continue
+                     #           m[i][j] = br[i][j]
+                     #   pos = reverse_vector_by_matrix(vo, m)
+                     #   wv = weight_value
+                     #   weight_pos = quarkx.vect((pos[0]-vo[0])/wv, (pos[1]-vo[1])/wv, (pos[2]-vo[2])/wv)
+                    else:
+                        weight_pos = (~bone_rot) * (current_vertex - bone_pos)
                     pos_x, pos_y, pos_z = weight_pos.tuple
                     weight_set += [(bone_index, weight_value, pos_x, pos_y, pos_z)]
                 
@@ -384,7 +432,11 @@ def export_mesh(self, file, filename, exp_list):
                 bone_pos = quarkx.vect(bone_pos)
                 bone_rot = joint_data[bone_index][1]
                 bone_rot = quarkx.matrix(bone_rot)
-                weight_pos = (~bone_rot) * (current_vertex - bone_pos)
+                # For EF2 model being exported.
+                if joints[bone_index].dictspec.has_key('type') and joints[bone_index].dictspec['type'] == 'skb-EF2':
+                    weight_pos = ((bone_rot * current_vertex) + bone_pos) * weight_value
+                else:
+                    weight_pos = (~bone_rot) * (current_vertex - bone_pos)
                 pos_x, pos_y, pos_z = weight_pos.tuple
                 
                 weights += [(bone_index, weight_value, pos_x, pos_y, pos_z)]
@@ -644,6 +696,7 @@ def export_anim(self, file, filename, exp_list):
             FlagStartIndex[joint_counter] = FlagStartIndex[joint_counter-1] + NumberOfFlags
         current_joint = joints[joint_counter]
         joint_name = current_joint.shortname.split("_", 1)[1]
+        joint_name = joint_name.replace(" ", "_")
         parent_index = joints_parent_index[joint_counter]
         if parent_index == -1:
             parent_bone_name = ""
@@ -1046,6 +1099,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2011/12/25 03:57:30  cdunde
+# Update to ensure proper mesh baseframe bone position and matrix exporting.
+#
 # Revision 1.15  2011/12/16 01:06:21  cdunde
 # To co-ordinate better with other model format imports and exports.
 # Also file cleanup.
