@@ -1145,18 +1145,22 @@ def savemodel(root, filename, gamename):
     new_bones = []
     # Try to get needed bones by the folder name the model file is in.
     for group in editor.Root.dictitems['Skeleton:bg'].subitems:
-        if group.name.startswith(ModelFolder + "_"):
-            group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
-            skb_bones_indexes = {}
-            for bone in group_bones:
-                if bone.dictspec.has_key('_skb_boneindex'):
-                    skb_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
-                else:
-                    new_bones.append(bone)
-            skb_keys = skb_bones_indexes.keys()
-            skb_keys.sort()
-            for key in skb_keys:
-                QuArK_bones.append(skb_bones_indexes[key])
+        for comp in QuArK_comps:
+            checkname = comp.shortname.split("_", 1)[0]
+            if group.name.startswith(checkname + "_"):
+                group_bones = group.findallsubitems("", ':bone') # Make a list of all bones in this group.
+                skb_bones_indexes = {}
+                for bone in group_bones:
+                    if bone.dictspec.has_key('_skb_boneindex'):
+                        skb_bones_indexes[int(bone.dictspec['_skb_boneindex'])] = bone
+                    else:
+                        new_bones.append(bone)
+                skb_keys = skb_bones_indexes.keys()
+                skb_keys.sort()
+                for key in skb_keys:
+                    QuArK_bones.append(skb_bones_indexes[key])
+                ModelFolder = checkname
+                break
     QuArK_bones = QuArK_bones + new_bones
 
     # Try to get needed bones by the model file name.
@@ -1246,6 +1250,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2012/01/09 23:09:54  cdunde
+# Not all model formats process their vtx_offset the same.
+#
 # Revision 1.19  2012/01/08 21:55:52  cdunde
 # Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
 #
