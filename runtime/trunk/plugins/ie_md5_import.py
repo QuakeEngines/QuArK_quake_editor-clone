@@ -568,7 +568,7 @@ def load_md5(md5_filename, basepath, actionname):
                 current_line=lines[line_counter]
                 words=current_line.split()
                 if words and words[0]=="shader":
-                    temp_name=str(words[1])
+                    temp_name=str(" ".join(words[1:]))
                     temp_name=temp_name[1:-1]
                     md5_model[mesh_counter].shader=temp_name
                 if words and words[0]=="vert":
@@ -1794,6 +1794,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.47  2011/12/28 08:28:22  cdunde
+# Setup importer bone['type'] not done yet.
+#
 # Revision 1.46  2011/12/23 03:15:17  cdunde
 # To remove all importers bone ['type'] from ModelComponentList['bonelist'].
 # Those should be kept with the individual bones if we decide it is needed.
