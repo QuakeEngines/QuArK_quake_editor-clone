@@ -540,11 +540,14 @@ def export_anim(self, file, filename, exp_list):
             return
         else:
             NumberOfFrames = CurNumberOfFrames
-    if NumberOfFrames < 2:
-        quarkx.msgbox("The selected component folders do not have enough frames (missing mesh 'baseframe' and '(animation name) baseframe')!\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-        return
     frames = exp_list[0].dictitems['Frames:fg'].subitems
-    NumberOfFrames -= 2
+
+    #Filter out all the baseframes, since we don't need them for MD5
+    UseOnlyTheseFrames = []
+    for frame_counter in range(0,NumberOfFrames):
+        if not frames[frame_counter].shortname.endswith("baseframe"):
+            UseOnlyTheseFrames += [frame_counter]
+    NumberOfFrames = len(UseOnlyTheseFrames)
 
     joints = self.bones
     NumberOfBones = len(joints)
@@ -573,7 +576,7 @@ def export_anim(self, file, filename, exp_list):
                 bone_pos = current_joint.position.tuple
                 bone_rot = current_joint.rotmatrix.tuple
             else:
-                bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][frames[frame_counter+2].name]
+                bone_data = self.editor.ModelComponentList['bonelist'][current_joint.name]['frames'][frames[UseOnlyTheseFrames[frame_counter]].name]
                 bone_pos = bone_data['position']
                 bone_rot = bone_data['rotmatrix']
             QuArK_frame_position[frame_counter][joint_counter] = quarkx.vect(bone_pos)
@@ -669,7 +672,7 @@ def export_anim(self, file, filename, exp_list):
         current_min = [None, None, None]
         current_max = [None, None, None]
         for object in exp_list:
-            vertices = object.dictitems['Frames:fg'].subitems[frame_counter+2].vertices
+            vertices = object.dictitems['Frames:fg'].subitems[UseOnlyTheseFrames[frame_counter]].vertices
             for vert in vertices:
                 vert = vert.tuple
                 for i in range(0,3):
@@ -899,10 +902,6 @@ def savemodel(root, filename, gamename, nomessage=0):
             if len(object.dictitems['Frames:fg'].subitems) != anim_frames:
                 quarkx.msgbox("Component " + object.shortname + "\nnumber of animation frames\ndoes not equal other components.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
-            if not object.dictitems['Frames:fg'].subitems[1].name.endswith(" baseframe:mf"):
-                quarkx.beep()
-                quarkx.msgbox("MISSING or MISSPLACED ANIMATION baseframe(s) !\n\nAll selected component's SECOND frame must be a COPY of your\nFIRST ANIMATION frame with '(space)baseframe' added behind the name.\n\nNOTE !!!\nDo NOT use 'Duplicate Current Frame' function to make the copy !!!\nUse just the 'Duplicate' function or an error will occure.\n\nCorrect and try again.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
-                return
 
     UIExportDialog(root, filename, editor) # Calls the dialog below which calls to save a mesh or animaition file.
     return
@@ -1099,6 +1098,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2012/01/13 08:04:27  cdunde
+# To get MD5 exporter to work with Alice, FAKK2 & EF2 skb_importer models.
+#
 # Revision 1.16  2011/12/25 03:57:30  cdunde
 # Update to ensure proper mesh baseframe bone position and matrix exporting.
 #
