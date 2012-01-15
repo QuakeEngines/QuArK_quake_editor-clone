@@ -316,10 +316,48 @@ def export_mesh(self, file, filename, exp_list):
         comp = exp_list[comp_index]
         triangles = comp.triangles
         vertices = comp.dictitems['Frames:fg'].subitems[0].vertices
+        texWidth, texHeight = comp.dictitems['Skins:sg'].subitems[0].dictspec['Size']
+
+        #Split any vertex having multiple U,V coordinates into separate vertices
+        UVs_of_vert = {}
+        old_verts = [] #For quick saving of duplicate x,y,z + weights
+        new_triangles = []
+        new_vertices = []
+        for i in xrange(0, len(triangles)):
+            new_triangle = []
+            for j in xrange(3):
+                vert_index = triangles[i][j][0]
+                vert_coord = [triangles[i][j][1] / texWidth, triangles[i][j][2] / texHeight]
+                if UVs_of_vert.has_key(vert_index):
+                    #We've seen this vert_index before
+                    FoundAVert = 0
+                    for k in xrange(len(UVs_of_vert[vert_index])):
+                        UV = UVs_of_vert[vert_index][k]
+                        if (abs(UV[0] - vert_coord[0]) < 0.001) and (abs(UV[1] - vert_coord[1]) < 0.001):
+                            #Same UV; recycle vert
+                            new_vert_index = UV[2]
+                            FoundAVert = 1
+                            break
+                    if not FoundAVert:
+                        #Same vert_index, but different UV: split it!
+                        new_vert_index = len(old_verts)
+                        old_verts += [vert_index]
+                        UVs_of_vert[vert_index] += [(vert_coord[0], vert_coord[1], new_vert_index)]
+                        new_vertices += [vertices[vert_index]]
+                else:
+                    #Totally new vert_index
+                    new_vert_index = len(old_verts)
+                    old_verts += [vert_index]
+                    UVs_of_vert[vert_index] = [(vert_coord[0], vert_coord[1], new_vert_index)]
+                    new_vertices += [vertices[vert_index]]
+                new_triangle += [(new_vert_index, vert_coord[0], vert_coord[1])]
+            new_triangles += [new_triangle]
+        vertices = new_vertices
+        triangles = new_triangles
+
         weightvtxlist = None
         if self.editor.ModelComponentList.has_key(comp.name) and self.editor.ModelComponentList[comp.name].has_key('weightvtxlist'):
             weightvtxlist = self.editor.ModelComponentList[comp.name]['weightvtxlist']
-        texWidth, texHeight = comp.dictitems['Skins:sg'].subitems[0].dictspec['Size']
 
         # Starts the "mesh" section.
         file.write('mesh {\n')
@@ -341,6 +379,8 @@ def export_mesh(self, file, filename, exp_list):
         file.write('\tshader "%s"\n' % shader)
         file.write('\n')
 
+        self.mesh_vtx_errors = [] # For self.mesh_errors data output below.
+
         # Build the weights, and compute their proper index numbers
         #Note: The vert_index stored in weight_sets is only used in position calculations,
         #so even when that set of weights is being shared by multiple vertices,
@@ -352,36 +392,58 @@ def export_mesh(self, file, filename, exp_list):
         for vert_index in range(len(vertices)):
             # Creates weight data for the "weight" section below.
             current_vertex = vertices[vert_index]
-            if weightvtxlist is not None and weightvtxlist.has_key(vert_index):
+            old_vert_index = old_verts[vert_index]
+            if weightvtxlist is not None and weightvtxlist.has_key(old_vert_index):
                 blend_index = -1 #Calculated later
-                blend_count = len(weightvtxlist[vert_index])
+                blend_count = len(weightvtxlist[old_vert_index])
                 
                 #Create the weight_set for this vertex
                 weight_set = []
-                sorted_keys = weightvtxlist[vert_index].keys()
+                sorted_keys = weightvtxlist[old_vert_index].keys()
                 #Sort on bone_index: (although not strictly speaking needed, it is nicer)
                 sorted_keys = sorted(sorted_keys, key=lambda sort_me: bone_name_to_index[sort_me])
                 for key in sorted_keys:
                     bone_index = bone_name_to_index[key]
-                    weight_value = weightvtxlist[vert_index][key]['weight_value']
+                    weight_value = weightvtxlist[old_vert_index][key]['weight_value']
                     bone_pos = joint_data[bone_index][0]
                     bone_pos = quarkx.vect(bone_pos)
                     bone_rot = joint_data[bone_index][1]
                     bone_rot = quarkx.matrix(bone_rot)
                     # For Alice, FAKK2 or EF2 model being exported.
                     if joints[bone_index].dictspec.has_key('type') and joints[bone_index].dictspec['type'].startswith('skb-'):
-                        weight_pos = quarkx.vect(weightvtxlist[vert_index][key]['vtx_offset'])
-                     #   vo = weightvtxlist[vert_index][key]['vtx_offset']
-                     #   br = bone_rot.tuple
-                     #   m = [[1,1,1]]*3
-                     #   for i in range(3):
-                     #       for j in range(3):
-                     #           if br[i][j] == 0:
-                     #               continue
-                     #           m[i][j] = br[i][j]
-                     #   pos = reverse_vector_by_matrix(vo, m)
-                     #   wv = weight_value
-                     #   weight_pos = quarkx.vect((pos[0]-vo[0])/wv, (pos[1]-vo[1])/wv, (pos[2]-vo[2])/wv)
+                        weight_pos = quarkx.vect(weightvtxlist[old_vert_index][key]['vtx_offset'])
+                     #1   vo = weightvtxlist[old_vert_index][key]['vtx_offset']
+                     #1   br = bone_rot.tuple
+                     #1   m = [[1,1,1]]*3
+                     #1   for i in range(3):
+                     #1       for j in range(3):
+                     #1           if br[i][j] == 0:
+                     #1               continue
+                     #1           m[i][j] = br[i][j]
+                     #1   pos = reverse_vector_by_matrix(vo, m)
+                     #1   wv = weight_value
+                     #1   weight_pos = quarkx.vect((pos[0]-vo[0])/wv, (pos[1]-vo[1])/wv, (pos[2]-vo[2])/wv)
+                #2        fix_offsets = None
+                #2        vtx_offset = weightvtxlist[old_vert_index][key]['vtx_offset']
+                #2        if weight_value == 1.0:
+                #2            check_pos = current_vertex.tuple
+                #2            if str(check_pos) != str(vtx_offset):
+                #2                weight_pos = quarkx.vect(check_pos)
+                #2        else:
+                #2            vtx_offsets = quarkx.vect(0.0, 0.0, 0.0)
+                #2            for k in xrange(0, len(sorted_keys)):
+                #2                vtx_offsets += quarkx.vect(weightvtxlist[old_vert_index][key]['vtx_offset'])
+                #2            ovp = (vtx_offsets / len(sorted_keys)).tuple             # ovp = original current_vertex (computed)
+                #2            cp = (round(ovp[0],6), round(ovp[1],6), round(ovp[2],6)) # cp = compare vtx pos
+                #2            vp = current_vertex.tuple
+                #2            if (fix_offsets is None) and ((abs(cp[0]) > abs(vp[0])+0.1) or (abs(cp[0]) < abs(vp[0])-0.1) or (abs(cp[1]) > abs(vp[1])+0.1) or (abs(cp[1]) < abs(vp[1])-0.1) or (abs(cp[2]) > abs(vp[2])+0.1) or (abs(cp[2]) < abs(vp[2])-0.1)):
+                #2                fix_offsets = 1
+                #2        if fix_offsets is not None:
+                #2            temp = [0.0, 0.0, 0.0]
+                #2            vo = weightvtxlist[old_vert_index][key]['vtx_offset']
+                #2            for k in xrange(3):
+                #2                temp[k] = (vp[k] * (vo[k] / ovp[k]))
+                #2            weight_pos = quarkx.vect(temp[0], temp[1], temp[2])
                     else:
                         weight_pos = (~bone_rot) * (current_vertex - bone_pos)
                     pos_x, pos_y, pos_z = weight_pos.tuple
@@ -443,28 +505,27 @@ def export_mesh(self, file, filename, exp_list):
                 weight_sets += [(blend_index, blend_count)]
                 vert_blends += [(blend_index, blend_count)]
                 # For vertex error report output.
-                self.mesh_vtx_errors = self.mesh_vtx_errors + [vert_index]
+                self.mesh_vtx_errors = self.mesh_vtx_errors + [old_vert_index]
 
         # Writes the "vert" section.
         Strings[2452] = comp.shortname + "\n" + Strings[2452]
         progressbar = quarkx.progressbar(2452, len(vertices))
         file.write('\tnumverts %i\n' % len(vertices))
 
-        self.mesh_vtx_errors = [] # For self.mesh_errors data output below.
         for vert_index in range(len(vertices)):
             progressbar.progress()
             for tri in range(len(triangles)):
                 if triangles[tri][0][0] == vert_index:
-                    U = triangles[tri][0][1] / texWidth
-                    V = triangles[tri][0][2] / texHeight
+                    U = triangles[tri][0][1]
+                    V = triangles[tri][0][2]
                     break
                 elif triangles[tri][1][0] == vert_index:
-                    U = triangles[tri][1][1] / texWidth
-                    V = triangles[tri][1][2] / texHeight
+                    U = triangles[tri][1][1]
+                    V = triangles[tri][1][2]
                     break
                 elif triangles[tri][2][0] == vert_index:
-                    U = triangles[tri][2][1] / texWidth
-                    V = triangles[tri][2][2] / texHeight
+                    U = triangles[tri][2][1]
+                    V = triangles[tri][2][2]
                     break
             U = ie_utils.NicePrintableFloat(U)
             V = ie_utils.NicePrintableFloat(V)
@@ -1098,6 +1159,10 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2012/01/14 22:49:08  cdunde
+# Change by DanielPharos to skip over baseframes which are not used
+# and allow other model formats to be exported as MD5 files.
+#
 # Revision 1.17  2012/01/13 08:04:27  cdunde
 # To get MD5 exporter to work with Alice, FAKK2 & EF2 skb_importer models.
 #
