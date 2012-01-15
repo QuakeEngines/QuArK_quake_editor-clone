@@ -487,7 +487,7 @@ def load_md5(md5_filename, basepath, actionname):
                 new_bone['position'] = (float(words[3]), float(words[4]), float(words[5]))
                 new_bone.position = quarkx.vect(new_bone.dictspec['position'])
                 new_bone['parent_index'] = words[1] # QuArK code, this is NOT an integer but a string of its integer value.
-                if bone_counter == 0:
+                if int(new_bone.dictspec['parent_index']) == -1:
                     new_bone['parent_name'] = "None"
                     new_bone['bone_length'] = (0.0, 0.0, 0.0)
                 else:
@@ -1794,6 +1794,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.48  2012/01/14 22:51:03  cdunde
+# Change by DanielPharos to avoid cutting off shader names incorrectly because they have spaces in them.
+#
 # Revision 1.47  2011/12/28 08:28:22  cdunde
 # Setup importer bone['type'] not done yet.
 #
