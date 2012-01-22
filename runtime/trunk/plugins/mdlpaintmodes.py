@@ -137,7 +137,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
             RGBEnd = quarkpy.qutils.ColorToRGB(PenEndColor)
 
         if view.info["viewname"] != "skinview":
-            if paintobject != [] and (flagsmouse == 552 or flagsmouse == 1064): # or flagsmouse == 2088):
+            if paintobject != [] and (flagsmouse == 552 or flagsmouse == 1064):
                 pixelpositions = quarkpy.mdlutils.TexturePixelLocation(editor, view, x, y, paintobject)
                 pixU, pixV = pixelpositions[0]
 
@@ -373,19 +373,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV+radius
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if NewPaintColor > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if NewPaintColor < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if NewPaintColor > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if NewPaintColor < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -396,19 +396,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV+fill
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -418,19 +418,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV-radius+1
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]  # To setup an empty list to use below.
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
 
@@ -440,19 +440,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV+fill
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]  # To setup an empty list to use below.
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
                                 radius = radius + 1
@@ -480,19 +480,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV+radius
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if NewPaintColor > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if NewPaintColor < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if NewPaintColor > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if NewPaintColor < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -503,19 +503,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV+fill
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]  # To setup an empty list to use below.
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -525,19 +525,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV-radius
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
 
@@ -547,19 +547,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=pixV+fill
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
                                 radius = radius + 1
@@ -593,19 +593,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV+radius)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if NewPaintColor > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if NewPaintColor < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if NewPaintColor > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if NewPaintColor < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -615,19 +615,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV+fill)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -638,19 +638,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV-radius+1)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
 
@@ -661,19 +661,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV+fill)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
                                 radius = radius + 1
@@ -705,19 +705,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV+radius)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if NewPaintColor > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if NewPaintColor < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if NewPaintColor > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if NewPaintColor < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -727,19 +727,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV+fill)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
@@ -750,19 +750,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV-radius)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
 
@@ -773,19 +773,19 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     V=int(pixV+fill)
                                     if checkUVs(U, V) == 1:
                                         if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                             rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                             if editor.Root.currentcomponent.currentskin['Pal']:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                 if int(NewPaintColor) > 255:
-                                                     NewPaintColor = NewPaintColor - 255
-                                                 if int(NewPaintColor) < 0:
-                                                     NewPaintColor = NewPaintColor + 255
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             color = int(NewPaintColor)
+                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                            if editor.Root.currentcomponent.currentskin['Pal']:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                                if int(NewPaintColor) > 255:
+                                                    NewPaintColor = NewPaintColor - 255
+                                                if int(NewPaintColor) < 0:
+                                                    NewPaintColor = NewPaintColor + 255
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            color = int(NewPaintColor)
                                         quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
                                 radius = radius + 1
@@ -987,7 +987,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
                                 negcord = -fill
                                 while fill >= negcord+1:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV+radius
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1003,7 +1003,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
                                 while fill > negcord:
                                     U=pixU-radius+1
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1018,7 +1018,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
                                 negcord = -fill
                                 while fill <= negcord+1:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV-radius+1
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1035,7 +1035,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 negcord = -fill
                                 while fill <= negcord+1:
                                     U=pixU+radius
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1059,7 +1059,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
                                 negcord = -fill
                                 while fill >= negcord:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV+radius
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1075,7 +1075,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
                                 while fill >= negcord:
                                     U=pixU-radius
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1090,7 +1090,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
                                 negcord = -fill
                                 while fill <= negcord:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV-radius
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1107,7 +1107,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 negcord = -fill
                                 while fill <= negcord:
                                     U=pixU+radius
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1162,14 +1162,11 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                             NewPaintColor = OldPalColor
                         else:
                             OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                            if OldPixelColor < PenStartColor:
-                                NewPaintColor = PenStartColor
-                            else:
-                                NewColor = [0, 0, 0]
-                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                for i in range(0, 3):
-                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((OldPixelColor[i] - Opacity)))
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
                         quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
 
                     elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
@@ -1215,99 +1212,123 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                         V = V + texHeight
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPalColor < StartPalette:
-                                                 NewPaintColor = StartPalette
-                                             else:
-                                                 NewPaintColor = int(OldPalColor - (Opacity*10))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPalColor < StartPalette:
+                                                NewPaintColor = StartPalette
+                                            else:
+                                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPixelColor < PenStartColor:
+                                                NewPaintColor = PenStartColor
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                 OldPalColor = StartPalette
-                                             if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                 OldPalColor = EndPalette
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                                OldPalColor = StartPalette
+                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                                OldPalColor = EndPalette
 
-                                             if OldPalColor <= (StartPalette + EndPalette)*.5:
-                                                 NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
-                                             else:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                            if OldPalColor <= (StartPalette + EndPalette)*.5:
+                                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
+                                            else:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                         if U == pixU and V == pixV:
-                                             fill = fill - 1
-                                             continue
-                                         OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range (0, 3):
-                                                 NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             NewColor = [0, 0, 0]
-                                             OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                             NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if U == pixU and V == pixV:
+                                            fill = fill - 1
+                                            continue
+                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range (0, 3):
+                                                NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+
+                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                                        if U == pixU and V == pixV:
+                                            fill = fill - 1
+                                            continue
+                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                                        else:
+                                            NewPaintColor = RGBEnd
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            for i in range(0, 3):
+                                                if OldPixelColor[2-i] < NewPaintColor[2-i]:
+                                                    check = OldPixelColor[i] + (OldPixelColor[i] * Opacity)
+                                                    if check > RGBEnd[i]:
+                                                        check = RGBEnd[i]
+                                                elif OldPixelColor[2-i] > NewPaintColor[2-i]:
+                                                    check = OldPixelColor[i] - (OldPixelColor[i] * Opacity)
+                                                    if check < RGBEnd[i]:
+                                                        check = RGBEnd[i]
+                                                else:
+                                                    check = RGBEnd[i]
+                                                NewColor[2-i] = int(check)
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
                                 fill = radius-1      ### Draws left line, bottom to top.
                                 negradius = -radius
-                                while fill > negradius:
+                                while fill > negradius+1:
                                     U=pixU-radius+1
                                     V=pixV+fill
                                     if U > texWidth - 1:
@@ -1320,99 +1341,96 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                         V = V + texHeight
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPalColor < StartPalette:
-                                                 NewPaintColor = StartPalette
-                                             else:
-                                                 NewPaintColor = int(OldPalColor - (Opacity*10))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPalColor < StartPalette:
+                                                NewPaintColor = StartPalette
+                                            else:
+                                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPixelColor < PenStartColor:
+                                                NewPaintColor = PenStartColor
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                 OldPalColor = StartPalette
-                                             if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                 OldPalColor = EndPalette
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                                OldPalColor = StartPalette
+                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                                OldPalColor = EndPalette
 
-                                             if OldPalColor > (StartPalette + EndPalette)*.5:
-                                                 NewPaintColor = int((EndPalette * (1 - rFactor)) + (StartPalette * rFactor))
-                                             else:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if OldPalColor > (StartPalette + EndPalette)*.5:
+                                                NewPaintColor = int((EndPalette * (1 - rFactor)) + (StartPalette * rFactor))
+                                            else:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
 
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                         if U == pixU and V == pixV:
-                                             fill = fill - 1
-                                             continue
-                                         OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range (0, 3):
-                                                 NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             NewColor = [0, 0, 0]
-                                             OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                             NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if U == pixU and V == pixV:
+                                            fill = fill - 1
+                                            continue
+                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range (0, 3):
+                                                NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill - 1
 
                                 fill = -radius+1     ### Draws top line, left to right.
-                                while fill <= radius:
+                                while fill < radius:
                                     U=pixU+fill
                                     V=pixV-radius+1
                                     if U > texWidth - 1:
@@ -1425,99 +1443,96 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                         V = V + texHeight
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPalColor < StartPalette:
-                                                 NewPaintColor = StartPalette
-                                             else:
-                                                 NewPaintColor = int(OldPalColor - (Opacity*10))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPalColor < StartPalette:
+                                                NewPaintColor = StartPalette
+                                            else:
+                                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPixelColor < PenStartColor:
+                                                NewPaintColor = PenStartColor
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                 OldPalColor = StartPalette
-                                             if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                 OldPalColor = EndPalette
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                                OldPalColor = StartPalette
+                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                                OldPalColor = EndPalette
 
-                                             if OldPalColor <= (StartPalette + EndPalette)*.5:
-                                                 NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
-                                             else:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
+                                            if OldPalColor <= (StartPalette + EndPalette)*.5:
+                                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
+                                            else:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
 
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                         if U == pixU and V == pixV:
-                                             fill = fill + 1
-                                             continue
-                                         OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range (0, 3):
-                                                 NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             NewColor = [0, 0, 0]
-                                             OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                             NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if U == pixU and V == pixV:
+                                            fill = fill + 1
+                                            continue
+                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range (0, 3):
+                                                NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
 
                                 fill = -radius+1     ### Draws right line, top to bottom.
-                                while fill <= radius:
+                                while fill < radius:
                                     U=pixU+radius
                                     V=pixV+fill
                                     if U > texWidth - 1:
@@ -1530,93 +1545,90 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                         V = V + texHeight
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPalColor < StartPalette:
-                                                 NewPaintColor = StartPalette
-                                             else:
-                                                 NewPaintColor = int(OldPalColor - (Opacity*10))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPalColor < StartPalette:
+                                                NewPaintColor = StartPalette
+                                            else:
+                                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if OldPixelColor < PenStartColor:
+                                                NewPaintColor = PenStartColor
+                                            else:
+                                                NewColor = [0, 0, 0]
+                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                                for i in range(0, 3):
+                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                 OldPalColor = StartPalette
-                                             if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                 OldPalColor = EndPalette
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                                OldPalColor = StartPalette
+                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                                OldPalColor = EndPalette
 
-                                             if OldPalColor > (StartPalette + EndPalette)*.5:
-                                                 NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
-                                             else:
-                                                 NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if OldPalColor > (StartPalette + EndPalette)*.5:
+                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
+                                            else:
+                                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
 
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                             if OldPixelColor < PenStartColor:
-                                                 NewPaintColor = PenStartColor
-                                             else:
-                                                 NewColor = [0, 0, 0]
-                                                 OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                 for i in range(0, 3):
-                                                     NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                 NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                         if U == pixU and V == pixV:
-                                             fill = fill + 1
-                                             continue
-                                         OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range (0, 3):
-                                                 NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                             NewColor = [0, 0, 0]
-                                             OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                             NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
+                                        if U == pixU and V == pixV:
+                                            fill = fill + 1
+                                            continue
+                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range (0, 3):
+                                                NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                            NewColor = [0, 0, 0]
+                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                            NewPaintColor = quarkpy.qutils.ColorToRGB(NewPaintColor)
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = (NewPaintColor[i] * Opacity) + (OldPixelColor[i] * (1 - Opacity))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
 
                                     quarkx.setpixel(texshortname, texparent, U, V, color)
                                     fill = fill + 1
@@ -1652,20 +1664,23 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill - 1
 
                                 fill = radius        ### Draws left line, bottom to top.
@@ -1682,20 +1697,23 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill - 1
 
                                 fill = -radius       ### Draws top line, left to right.
@@ -1711,20 +1729,23 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill + 1
 
                                 fill = -radius       ### Draws right line, top to bottom.
@@ -1740,20 +1761,23 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill + 1
                                 radius = radius + 1
 
@@ -1782,7 +1806,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
                                 negcord = -fill
                                 while fill >= negcord+1:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV+radius
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1793,26 +1817,29 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill - 1
 
                                 fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
                                 while fill > negcord:
                                     U=pixU-radius+1
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1822,26 +1849,29 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill - 1
 
                                 fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
                                 negcord = -fill
                                 while fill <= negcord+1:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV-radius+1
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1852,27 +1882,30 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill + 1
 
                                 fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
                                 negcord = -fill
                                 while fill <= negcord+1:
                                     U=pixU+radius
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1882,20 +1915,23 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill + 1
                                 radius = radius + 1
 
@@ -1921,7 +1957,7 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                 fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
                                 negcord = -fill
                                 while fill >= negcord:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV+radius
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1932,26 +1968,29 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if NewPaintColor > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if NewPaintColor < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if NewPaintColor > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if NewPaintColor < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill - 1
 
                                 fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
                                 while fill >= negcord:
                                     U=pixU-radius
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -1961,26 +2000,29 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill - 1
 
                                 fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
                                 negcord = -fill
                                 while fill <= negcord:
-                                    U=pixU+fill
+                                    U=pixU+int(fill)
                                     V=pixV-radius
                                     if U > texWidth - 1:
                                         U = U - texWidth
@@ -1991,27 +2033,30 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill + 1
 
                                 fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
                                 negcord = -fill
                                 while fill <= negcord:
                                     U=pixU+radius
-                                    V=pixV+fill
+                                    V=pixV+int(fill)
                                     if U > texWidth - 1:
                                         U = U - texWidth
                                     if U < 0:
@@ -2021,20 +2066,23 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
                                     if V < 0:
                                         V = V + texHeight
                                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                         rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                         if editor.Root.currentcomponent.currentskin['Pal']:
-                                             NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                             if int(NewPaintColor) > 255:
-                                                 NewPaintColor = NewPaintColor - 255
-                                             if int(NewPaintColor) < 0:
-                                                 NewPaintColor = NewPaintColor + 255
-                                         else:
-                                             NewColor = [0, 0, 0]
-                                             for i in range(0, 3):
-                                                 NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                             NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                         color = int(NewPaintColor)
-                                    quarkx.setpixel(texshortname, texparent, U, V, color)
+                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                                        if editor.Root.currentcomponent.currentskin['Pal']:
+                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                            if int(NewPaintColor) > 255:
+                                                NewPaintColor = NewPaintColor - 255
+                                            if int(NewPaintColor) < 0:
+                                                NewPaintColor = NewPaintColor + 255
+                                        else:
+                                            NewColor = [0, 0, 0]
+                                            for i in range(0, 3):
+                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                                        color = int(NewPaintColor)
+                                    try:
+                                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                                    except:
+                                        pass
                                     fill = fill + 1
                                 radius = radius + 1
 
@@ -2162,10 +2210,10 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
         items =
             "RING PATTERN" $0D
             "RANDOM PATTERN" $0D
-            "TWO COLOR BLIND" $0D
-            "MULTI COLOR BLIND" $0D
-            "VIEW COLOR BLIND" $0D
-            "5 Test item"
+            "TWO COLOR BLEND" $0D
+            "MULTI COLOR BLEND" $0D
+            "VIEW COLOR BLEND" $0D
+            "VIEW 2 RGB BLEND"
         values =
             "0" $0D
             "1" $0D
@@ -2836,6 +2884,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2011/11/17 01:19:02  cdunde
+# Setup BBox drag toolbar button to work correctly with other toolbar buttons.
+#
 # Revision 1.7  2011/03/04 06:50:28  cdunde
 # Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
 #
