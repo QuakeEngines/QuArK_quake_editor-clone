@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.534  2011/07/31 16:30:31  danielpharos
+//Massive moving around of QuArK SAS stuff and SteamFS things.
+//
 //Revision 1.533  2011/07/31 10:55:16  danielpharos
 //Updated Source engine configurations. (Note: QuArKSAS source2007 missing, and source2007 codepath probably wrong.)
 //
@@ -11878,6 +11881,7 @@ QQRKSRC1
       Component:mc =
       {
         show = $01
+        skinsize = '64 64'
         Skins:sg =
         {
           type = $02
