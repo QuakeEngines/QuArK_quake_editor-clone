@@ -41,7 +41,8 @@ from quarkpy.maputils import *
 
 parent = quarkpy.qhandles.RectangleDragObject
 
-
+#====================================================
+# General functions for this file.
 def paintcursor(editor):
     "Changes cursor in views based on viewmode type"
 
@@ -85,10 +86,4247 @@ def paintcursor(editor):
             else:
                 view.cursor = CR_ARROW
 
+
+def checkUVs(mdl_editor, pixU, pixV, skin):
+    texWidth, texHeight = skin["Size"]
+    if (pixU < 0) or (pixU > texWidth-1) or (pixV < 0) or (pixV > texHeight-1):
+        return 0
+    else:
+        return 1
+
+
+#====================================================
+# Below deals with the different sections of the editor's TexViews and SkinView.
+# Below deals with the different sections of the editor's TexViews Solid paint functions.
+def TexViewSolid(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, paintcolor, PenWidth):
+    editor = mdl_editor
+    newImage = skin
+    ### Saves the original color for the pixel about to be colored.
+    UV = str(pixU) + "," + str(pixV)
+    if not skinuvlist.has_key(UV):
+        OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+        if OrgColor == 0:
+            OrgColor = 1
+        skinuvlist[UV] = [OrgColor]
+
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+        UV = str(pixU) + "," + str(pixV)
+        if skinuvlist.has_key(UV):
+            color = skinuvlist[UV][0]
+            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
+            del skinuvlist[UV]
+
+    else:
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, paintcolor) # Draws the center pixel, where clicked.
+
+    # For rectangle shape.
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_PaintShape"] == "rectangle":
+        if not PenWidth&1: # PenWidth is even, solid paint, rectangle.
+            radius = 1
+            while radius <= PenWidth*.5:
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius+1:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius-1      ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill > negradius:
+                    U=pixU-radius+1
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius+1     ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius+1
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius+1     ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # PenWidth is odd, solid paint, rectangle.
+            radius = 1
+            while radius <= int(PenWidth*.5):
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius        ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU-radius
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius       ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius       ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    else:  # For ellipse (round) shape.
+           # Formula adapted from http://www.mathopenref.com/chord.html
+
+        if not PenWidth&1: # PenWidth is even, solid paint, ellipse (round).
+            radius = 1
+            while radius <= PenWidth*.5+1:
+                r = PenWidth*.5+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord+1:
+                    U=int(pixU+fill)
+                    V=int(pixV+radius)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill > negcord:
+                    U=int(pixU-radius+1)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=int(pixU+fill)
+                    V=int(pixV-radius+1)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=int(pixU+radius)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # PenWidth is odd, solid paint, ellipse (round).
+            radius = 1
+            while radius <= int(PenWidth*.5)+1:
+                r = int(PenWidth*.5)+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord:
+                    U=int(pixU+fill)
+                    V=int(pixV+radius)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill >= negcord:
+                    U=int(pixU-radius)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord:
+                    U=int(pixU+fill)
+                    V=int(pixV-radius)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord:
+                    U=int(pixU+radius)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            paintcolor = None
+
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                paintcolor = skinuvlist[UV][0]
+
+                        if paintcolor:
+                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    editor.Root.currentcomponent.currentskin = newImage
+    for v in editor.layout.views:
+        if v.viewmode == "tex":
+            v.invalidate(1)
+
+    if editor.layout.skinview is not None:
+        skin = editor.Root.currentcomponent.currentskin
+        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+        editor.layout.skinview.backgroundimage = skin,
+        editor.layout.skinview.repaint()
+
+
+# Below deals with the different sections of the editor's TexViews Airbrush functions.
+def TexViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette=None, EndPalette=None, RGBStart=None, RGBEnd=None):
+    editor = mdl_editor
+    newImage = skin
+    radius = 1
+    ### Saves the original color for the pixel about to be colored.
+    UV = str(pixU) + "," + str(pixV)
+    if not skinuvlist.has_key(UV):
+        OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+        if OrgColor == 0:
+            OrgColor = 1
+        skinuvlist[UV] = [OrgColor]
+
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+        OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+        if Pal:
+            rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+        else:
+            NewPaintColor = RGBEnd
+            NewColor = [0, 0, 0]
+            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+            for i in range(0, 3):
+                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                NewColor[2-i] = int(check)
+            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
+
+    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+        if skinuvlist.has_key(UV):
+            color = skinuvlist[UV][0]
+            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
+            del skinuvlist[UV]
+
+    else:
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, airbrushcolor) # Draws the center pixel, where clicked.
+
+    # For rectangle shape
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_SprayShape"] == "rectangle":
+        if not BrushWidth&1: # BrushWidth is even, airbrush, rectangle.
+            while radius <= BrushWidth*.5:
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+                if Pal:
+                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                else:
+                    NewColor = [0, 0, 0]
+                    for i in range (0, 3):
+                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius+1:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if NewPaintColor > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if NewPaintColor < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius-1      ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill > negradius:
+                    U=pixU-radius+1
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius+1     ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius+1
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius+1     ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # BrushWidth is odd, airbrush, rectangle.
+            while radius <= int(BrushWidth*.5):
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
+                if Pal:
+                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                else:
+                    NewColor = [0, 0, 0]
+                    for i in range (0, 3):
+                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if NewPaintColor > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if NewPaintColor < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1 # This IS correct, do not change.
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius        ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU-radius
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius       ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius       ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    else:  # For airbrush, ellipse (round) shape.
+           # Formula adapted from http://www.mathopenref.com/chord.html
+
+        if not BrushWidth&1: # BrushWidth is even, airbrush, ellipse (round).
+            while radius <= BrushWidth*.5+1:
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+                if Pal:
+                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                else:
+                    NewColor = [0, 0, 0]
+                    for i in range (0, 3):
+                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+                r = BrushWidth*.5+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord+1:
+                    U=int(pixU+fill)
+                    V=int(pixV+radius)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if NewPaintColor > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if NewPaintColor < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill > negcord:
+                    U=int(pixU-radius+1)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=int(pixU+fill)
+                    V=int(pixV-radius+1)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=int(pixU+radius)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # BrushWidth is odd, airbrush, ellipse (round).
+            while radius <= int(BrushWidth*.5)+1:
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
+                if Pal:
+                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                else:
+                    NewColor = [0, 0, 0]
+                    for i in range (0, 3):
+                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+
+                r = int(BrushWidth*.5)+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord:
+                    U=int(pixU+fill)
+                    V=int(pixV+radius)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if NewPaintColor > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if NewPaintColor < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill >= negcord:
+                    U=int(pixU-radius)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord:
+                    U=int(pixU+fill)
+                    V=int(pixV-radius)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord:
+                    U=int(pixU+radius)
+                    V=int(pixV+fill)
+                    if checkUVs(editor, U, V, skin) == 1:
+                        UV = str(U) + "," + str(V)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OrgColor == 0:
+                                OrgColor = 1
+                            skinuvlist[UV] = [OrgColor]
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                            color = None
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                if int(NewPaintColor) > 255:
+                                    NewPaintColor = NewPaintColor - 255
+                                if int(NewPaintColor) < 0:
+                                    NewPaintColor = NewPaintColor + 255
+                            else:
+                                NewColor = [0, 0, 0]
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                    if NewColor[2-i] > 255:
+                                        adj = int(NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                    if NewColor[2-i] < 0:
+                                        adj = int(-NewColor[2-i]/255)
+                                        NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if Pal:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            else:
+                                NewPaintColor = RGBEnd
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                    NewColor[2-i] = int(check)
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            color = int(NewPaintColor)
+
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                color = skinuvlist[UV][0]
+
+                        if color:
+                            quarkx.setpixel(texshortname, texparent, U, V, color)
+                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                                if skinuvlist.has_key(UV):
+                                    del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    editor.Root.currentcomponent.currentskin = newImage
+    for v in editor.layout.views:
+        if v.viewmode == "tex":
+            v.invalidate(1)
+
+    if editor.layout.skinview is not None:
+        skin = editor.Root.currentcomponent.currentskin
+        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+        editor.layout.skinview.backgroundimage = skin,
+        editor.layout.skinview.repaint()
+
+
+
+#====================================================
+# Below deals with the different sections of the SkinView.
+# Below deals with the different sections of the SkinView Solid paint functions.
+def SkinViewSolid(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, paintcolor, PenWidth):
+    editor = mdl_editor
+    newImage = skin
+    texWidth, texHeight = skin["Size"]
+    texWidth, texHeight = int(texWidth), int(texHeight)
+    ### Saves the original color for the pixel about to be colored.
+    UV = str(pixU) + "," + str(pixV)
+    if not skinuvlist.has_key(UV):
+        OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+        if OrgColor == 0:
+            OrgColor = 1
+        skinuvlist[UV] = [OrgColor]
+
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+        if skinuvlist.has_key(UV):
+            color = skinuvlist[UV][0]
+            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
+            del skinuvlist[UV]
+
+    else:
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, paintcolor) # Draws the center pixel, where clicked.
+
+    # For rectangle shape.
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_PaintShape"] == "rectangle":
+        if not PenWidth&1: # PenWidth is even, solid paint, rectangle.
+            radius = 1
+            while radius <= PenWidth*.5:
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius+1:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius-1      ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill > negradius:
+                    U=pixU-radius+1
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeighttexHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius+1     ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius+1
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius+1     ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # PenWidth is odd, solid paint, rectangle.
+            radius = 1
+            while radius <= int(PenWidth*.5):
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius        ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU-radius
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius       ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius       ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    else:  # For ellipse (round) shape.
+           # Formula adapted from http://www.mathopenref.com/chord.html
+
+        if not PenWidth&1: # PenWidth is even, solid paint, ellipse (round).
+            radius = 1
+            while radius <= PenWidth*.5+1:
+                r = PenWidth*.5+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord+1:
+                    U=pixU+int(fill)
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill > negcord:
+                    U=pixU-radius+1
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=pixU+int(fill)
+                    V=pixV-radius+1
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=pixU+radius
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # PenWidth is odd, solid paint, ellipse (round).
+
+            radius = 1
+            while radius <= int(PenWidth*.5)+1:
+                r = int(PenWidth*.5)+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord:
+                    U=pixU+int(fill)
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill >= negcord:
+                    U=pixU-radius
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord:
+                    U=pixU+int(fill)
+                    V=pixV-radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord:
+                    U=pixU+radius
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        paintcolor = None
+                        if skinuvlist.has_key(UV):
+                            paintcolor = skinuvlist[UV][0]
+
+                    if paintcolor:
+                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    editor.Root.currentcomponent.currentskin = newImage
+
+    skin = editor.Root.currentcomponent.currentskin
+    editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+    editor.layout.skinview.backgroundimage = skin,
+    editor.layout.skinview.repaint()
+
+    for v in editor.layout.views:
+        if v.viewmode == "tex":
+            v.invalidate(1)
+
+
+# Below deals with the different sections of the SkinView Airbrush functions.
+def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette=None, EndPalette=None, RGBStart=None, RGBEnd=None):
+    editor = mdl_editor
+    newImage = skin
+    texWidth, texHeight = skin["Size"]
+    texWidth, texHeight = int(texWidth), int(texHeight)
+    radius = 1
+    ### Saves the original color for the pixel about to be colored.
+    UV = str(pixU) + "," + str(pixV)
+    if not skinuvlist.has_key(UV):
+        OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+        if OrgColor == 0:
+            OrgColor = 1
+        skinuvlist[UV] = [OrgColor]
+
+    ### Sections below draw the First Pixel in the Center for each as needed.
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
+        if Pal:
+            OldPalColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+            if OldPalColor < StartPalette:
+                NewPaintColor = StartPalette
+            else:
+                NewPaintColor = int(OldPalColor - (Opacity*10))
+            if NewPaintColor > 255:
+                NewPaintColor = NewPaintColor - 255
+            if NewPaintColor < 0:
+                NewPaintColor = NewPaintColor + 255
+        else:
+            OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+            if OldPixelColor < PenStartColor:
+                NewPaintColor = PenStartColor
+            else:
+                NewColor = [0, 0, 0]
+                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                for i in range(0, 3):
+                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
+
+    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3": ### Draws the center pixel
+        if Pal:
+            OldPalColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                OldPalColor = StartPalette
+            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                OldPalColor = EndPalette
+            NewPaintColor = OldPalColor
+        else:
+            OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+            NewColor = [0, 0, 0]
+            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+            for i in range(0, 3):
+                NewColor[2-i] = abs(int((OldPixelColor[i] - Opacity)))
+            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
+
+    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+        if Pal:
+            if Opacity == 0:
+                Opacity = 1
+            rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+        else:
+            UV = str(pixU) + "," + str(pixV)
+            if skinuvlist.has_key(UV):
+                OrgPixelColor = skinuvlist[UV][0]
+                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
+
+    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+        OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
+        if Pal:
+            rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+        else:
+            NewPaintColor = RGBEnd
+            NewColor = [0, 0, 0]
+            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+            for i in range(0, 3):
+                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                NewColor[2-i] = int(check)
+            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
+
+    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+        UV = str(pixU) + "," + str(pixV)
+        if skinuvlist.has_key(UV):
+            color = skinuvlist[UV][0]
+            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
+            del skinuvlist[UV]
+
+    else:
+        quarkx.setpixel(texshortname, texparent, pixU, pixV, airbrushcolor) # Draws the center pixel, where clicked.
+
+    # For rectangle shape
+    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_SprayShape"] == "rectangle":
+
+        if not BrushWidth&1: # BrushWidth is even, airbrush, rectangle.
+            while radius <= BrushWidth*.5:
+
+                # Below resets the airbrush color as rings are drawn from center, outwards.
+                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
+                    rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+                    if Pal:
+                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                    else:
+                        NewColor = [0, 0, 0]
+                        for i in range (0, 3):
+                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                    color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius+1:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPalColor < StartPalette:
+                                NewPaintColor = StartPalette
+                            else:
+                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPixelColor < PenStartColor:
+                                NewPaintColor = PenStartColor
+                            else:
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                OldPalColor = StartPalette
+                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                OldPalColor = EndPalette
+
+                            if OldPalColor <= (StartPalette + EndPalette)*.5:
+                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
+                            else:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius-1      ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill > negradius+1:
+                    U=pixU-radius+1
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPalColor < StartPalette:
+                                NewPaintColor = StartPalette
+                            else:
+                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPixelColor < PenStartColor:
+                                NewPaintColor = PenStartColor
+                            else:
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                OldPalColor = StartPalette
+                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                OldPalColor = EndPalette
+
+                            if OldPalColor > (StartPalette + EndPalette)*.5:
+                                NewPaintColor = int((EndPalette * (1 - rFactor)) + (StartPalette * rFactor))
+                            else:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius+1     ### Draws top line, left to right.
+                while fill < radius:
+                    U=pixU+fill
+                    V=pixV-radius+1
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPalColor < StartPalette:
+                                NewPaintColor = StartPalette
+                            else:
+                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPixelColor < PenStartColor:
+                                NewPaintColor = PenStartColor
+                            else:
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                OldPalColor = StartPalette
+                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                OldPalColor = EndPalette
+
+                            if OldPalColor <= (StartPalette + EndPalette)*.5:
+                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
+                            else:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
+
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius+1     ### Draws right line, top to bottom.
+                while fill < radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPalColor < StartPalette:
+                                NewPaintColor = StartPalette
+                            else:
+                                NewPaintColor = int(OldPalColor - (Opacity*10))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if OldPixelColor < PenStartColor:
+                                NewPaintColor = PenStartColor
+                            else:
+                                NewColor = [0, 0, 0]
+                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                                for i in range(0, 3):
+                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
+                                OldPalColor = StartPalette
+                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
+                                OldPalColor = EndPalette
+
+                            if OldPalColor > (StartPalette + EndPalette)*.5:
+                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
+                            else:
+                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
+
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # BrushWidth is odd, airbrush, rectangle.
+            while radius <= int(BrushWidth*.5):
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
+                    rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
+                    if Pal:
+                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                    else:
+                        NewColor = [0, 0, 0]
+                        for i in range (0, 3):
+                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                    color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+
+                fill = radius        ### Draws bottom line, right to left.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU+fill
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = radius        ### Draws left line, bottom to top.
+                negradius = -radius
+                while fill >= negradius:
+                    U=pixU-radius
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = -radius       ### Draws top line, left to right.
+                while fill <= radius:
+                    U=pixU+fill
+                    V=pixV-radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = -radius       ### Draws right line, top to bottom.
+                while fill <= radius:
+                    U=pixU+radius
+                    V=pixV+fill
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    else:  # For airbrush, ellipse (round) shape.
+           # Formula adapted from http://www.mathopenref.com/chord.html
+
+        if not BrushWidth&1: # BrushWidth is even, airbrush, ellipse (round).
+            while radius <= BrushWidth*.5+1:
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
+                    rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
+                    if Pal:
+                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                    else:
+                        NewColor = [0, 0, 0]
+                        for i in range (0, 3):
+                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                    color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+                r = BrushWidth*.5+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord+1:
+                    U=pixU+int(fill)
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill > negcord:
+                    U=pixU-radius+1
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=pixU+int(fill)
+                    V=pixV-radius+1
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord+1:
+                    U=pixU+radius
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+        else: # BrushWidth is odd, airbrush, ellipse (round).
+            while radius <= int(BrushWidth*.5)+1:
+
+                # Below resets the airbrush color as rings are draw from center, outwards.
+                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
+                    rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
+                    if Pal:
+                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                    else:
+                        NewColor = [0, 0, 0]
+                        for i in range (0, 3):
+                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
+                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                    color = NewPaintColor
+
+                # Below draws the rings from center, outwards.
+                r = int(BrushWidth*.5)+1
+                d = radius
+                cord = math.sqrt((r*r)-(d*d)) * 2
+
+                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
+                negcord = -fill
+                while fill >= negcord:
+                    U=pixU+int(fill)
+                    V=pixV+radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if NewPaintColor > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if NewPaintColor < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
+                while fill >= negcord:
+                    U=pixU-radius
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill - 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill - 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill - 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
+                negcord = -fill
+                while fill <= negcord:
+                    U=pixU+int(fill)
+                    V=pixV-radius
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+
+                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
+                negcord = -fill
+                while fill <= negcord:
+                    U=pixU+radius
+                    V=pixV+int(fill)
+                    if U > texWidth - 1:
+                        U = U - texWidth
+                    if U < 0:
+                        U = U + texWidth
+                    if V > texHeight - 1:
+                        V = V - texHeight
+                    if V < 0:
+                        V = V + texHeight
+                    UV = str(U) + "," + str(V)
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
+                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if OrgColor == 0:
+                            OrgColor = 1
+                        skinuvlist[UV] = [OrgColor]
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
+                        color = None
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
+                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            if int(NewPaintColor) > 255:
+                                NewPaintColor = NewPaintColor - 255
+                            if int(NewPaintColor) < 0:
+                                NewPaintColor = NewPaintColor + 255
+                        else:
+                            NewColor = [0, 0, 0]
+                            for i in range(0, 3):
+                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
+                                if NewColor[2-i] > 255:
+                                    adj = int(NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] - (255 * adj)
+                                if NewColor[2-i] < 0:
+                                    adj = int(-NewColor[2-i]/255)
+                                    NewColor[2-i] = NewColor[2-i] + (255 * adj)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
+                        if Pal:
+                            if U == pixU and V == pixV:
+                                fill = fill + 1
+                                continue
+                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                            color = int(NewPaintColor)
+                        else:
+                            if skinuvlist.has_key(UV):
+                                OrgPixelColor = skinuvlist[UV][0]
+                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+                                color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
+                        if U == pixU and V == pixV:
+                            fill = fill + 1
+                            continue
+                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+                        if Pal:
+                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
+                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
+                        else:
+                            NewPaintColor = RGBEnd
+                            NewColor = [0, 0, 0]
+                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
+                            for i in range(0, 3):
+                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
+                                NewColor[2-i] = int(check)
+                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        color = int(NewPaintColor)
+
+                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                        if skinuvlist.has_key(UV):
+                            color = skinuvlist[UV][0]
+
+                    if color:
+                        quarkx.setpixel(texshortname, texparent, U, V, color)
+                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
+                            if skinuvlist.has_key(UV):
+                                del skinuvlist[UV]
+
+                    fill = fill + 1
+                radius = radius + 1
+
+    editor.Root.currentcomponent.currentskin = newImage
+
+    skin = editor.Root.currentcomponent.currentskin
+    editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
+    editor.layout.skinview.backgroundimage = skin,
+    editor.layout.skinview.repaint()
+
+    for v in editor.layout.views:
+        if v.viewmode == "tex":
+            v.invalidate(1)
+
+
+
+#====================================================
+# Below deals with the different sections of the PaintManager.
+# Handles all textured views of the editor.
+def TexViews(mdl_editor, view, x, y, flagsmouse, skin, Pal, skinuvlist, pixelpositions, tb2, Opacity):
+    editor = mdl_editor
+    texshortname = skin.shortname
+    texparent = skin.parent
+    StartPalette = EndPalette = RGBStart = RGBEnd = None
+
+    # Sets what color sources are available based on texture image file type.
+    if Pal: # 8 bit textures
+        paintcolor = airbrushcolor = StartPalette = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PalettePenColor"])
+        EndPalette = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PaletteBrushColor"])
+    else: # 24 bit textures
+        paintcolor = airbrushcolor = PenStartColor = MapColor("Paint_RGBPenColor", SS_MODEL)
+        PenEndColor = MapColor("Paint_RGBBrushColor", SS_MODEL)
+        if (paintcolor < 0) or (airbrushcolor < 0) or (PenStartColor < 0) or (PenEndColor < 0):
+            quarkx.msgbox("You have an improper 'Black'\nRGB color selection.\n\nReselect your 'Black' color\nfrom the top color panel section.", MT_ERROR, MB_OK)
+            return
+        RGBStart = quarkpy.qutils.ColorToRGB(PenStartColor)
+        RGBEnd = quarkpy.qutils.ColorToRGB(PenEndColor)
+
+    pixU, pixV = pixelpositions[0]
+    if checkUVs(editor, pixU, pixV, skin) == 0:
+        return
+
+    # Paints a single solid color in one of the editor's textured views, Skin-view repaints to show changes.
+    if tb2.tb.buttons[1].state == 2:
+        PenWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
+        TexViewSolid(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, paintcolor, PenWidth)
+
+    # Paints an airbrush effect using selected Start and End colors and changes\spreads the color
+    # as the "radius" increases, from center to outer ring, based on the "Airbrush" width setting.
+    if tb2.tb.buttons[2].state == 2:
+        BrushWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
+        TexViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette, EndPalette, RGBStart, RGBEnd)
+
+    # This button paint area is setup for patterns but not being used yet.
+    if tb2.tb.buttons[3].state == 2:
+        cv = view.canvas()
+        cv.penwidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
+        spray = 0
+        cv.pencolor = cv.brushcolor = cv.getpixel(x,y) # Gets the color from the view.
+        brushwidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
+        cv.brushstyle = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"])
+        while spray != brushwidth:
+            cv.pencolor = cv.pencolor + (2 * spray) # Make colorspread amount variable
+            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_SprayShape"] == "rectangle":
+                cv.rectangle(x-(3 * spray),y-(3 * spray),x+(3 * spray),y+(3 * spray)) # Make fanspray amount variable
+            else:
+                cv.ellipse(x-(3 * spray),y-(3 * spray),x+(3 * spray),y+(3 * spray)) # Make fanspray amount variable
+            spray = spray + 1 # Make interval amount variable
+
+
+# Handles the Skin-view.
+def SkinView(mdl_editor, view, x, y, flagsmouse, skin, Pal, skinuvlist, pixU, pixV, tb2, Opacity):
+    editor = mdl_editor
+    texshortname = skin.shortname
+    texparent = skin.parent
+    StartPalette = EndPalette = RGBStart = RGBEnd = None
+
+    # Line below skips painting pixels based on setting for map grid
+    # Might be able to use for opacity look of colors or airbrushing.
+    #  list = map(quarkx.ftos, editor.aligntogrid(view.space(quarkx.vect(x, y, 0))).tuple + editor.aligntogrid(view.space(quarkx.vect(x, y, 0))).tuple)
+
+    # Sets what color sources are available based on texture image file type.
+    if Pal: # 8 bit textures
+        paintcolor = airbrushcolor = StartPalette = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PalettePenColor"])
+        EndPalette = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PaletteBrushColor"])
+    else: # 24 bit textures
+        paintcolor = airbrushcolor = PenStartColor = MapColor("Paint_RGBPenColor", SS_MODEL)
+        PenEndColor = MapColor("Paint_RGBBrushColor", SS_MODEL)
+        if (paintcolor < 0) or (airbrushcolor < 0) or (PenStartColor < 0) or (PenEndColor < 0):
+            quarkx.msgbox("You have an improper 'Black'\nRGB color selection.\n\nReselect your 'Black' color\nfrom the top color panel section.", MT_ERROR, MB_OK)
+            return
+        RGBStart = quarkpy.qutils.ColorToRGB(PenStartColor)
+        RGBEnd = quarkpy.qutils.ColorToRGB(PenEndColor)
+
+    # Paints a single solid color in the Skin-view, editor's textured views repaints to show changes.
+    if tb2.tb.buttons[1].state == 2:
+        PenWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
+        SkinViewSolid(editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, paintcolor, PenWidth)
+
+    # Paints an airbrush effect using selected Start and End colors and changes\spreads the color
+    # as the "radius" increases, from center to outer ring, based on the "Airbrush" width setting.
+    if tb2.tb.buttons[2].state == 2:
+        BrushWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
+        SkinViewAirbrush(editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette, EndPalette, RGBStart, RGBEnd)
+
+
 #====================================================
 # Below deals with the PaintManager to pass mouse actions
 # to specific buttons that deal with the actual painting functions.
-
 def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
 
     paintcursor(editor)
@@ -98,6 +4336,9 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
     comp = editor.Root.currentcomponent
     comp_name = comp.name
     skin = comp.currentskin
+    if skin.shortname is None or skin.parent is None:
+        return
+
     skin_name = skin.name
     Pal = None
     if skin['Pal']:
@@ -114,13 +4355,6 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
     if skinuvlistcount > int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_EraserSize"]):
         paintuvlist[skin_name] = {}
         skinuvlist = paintuvlist[skin_name]
-
-    def checkUVs(pixU, pixV, editor=editor):
-        texWidth, texHeight = skin["Size"]
-        if (pixU < 0) or (pixU > texWidth-1) or (pixV < 0) or (pixV > texHeight-1):
-            return 0
-        else:
-            return 1
 
     if view.info["viewname"] != "skinview":
         if view.viewmode != "tex":
@@ -141,3956 +4375,17 @@ def PaintManager(editor, view, x, y, flagsmouse, modelfacelist):
     if tb2.tb.buttons[1].state == 2 or tb2.tb.buttons[2].state == 2 or tb2.tb.buttons[3].state == 2: # The Solid Paint and Airbrush Paint mode buttons
         import quarkpy.qutils
         Opacity = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_Opacity"])*.01
-        PenWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
-
-        # Sets what color sources are available based on texture image file type.
-        if Pal: # 8 bit textures
-            paintcolor = airbrushcolor = StartPalette = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PalettePenColor"])
-            EndPalette = int(quarkx.setupsubset(SS_MODEL, "Colors")["Paint_PaletteBrushColor"])
-        else: # 24 bit textures
-            paintcolor = airbrushcolor = PenStartColor = MapColor("Paint_RGBPenColor", SS_MODEL)
-            PenEndColor = MapColor("Paint_RGBBrushColor", SS_MODEL)
-            if (paintcolor < 0) or (airbrushcolor < 0) or (PenStartColor < 0) or (PenEndColor < 0):
-                quarkx.msgbox("You have an improper 'Black'\nRGB color selection.\n\nReselect your 'Black' color\nfrom the top color panel section.", MT_ERROR, MB_OK)
-                return
-            RGBStart = quarkpy.qutils.ColorToRGB(PenStartColor)
-            RGBEnd = quarkpy.qutils.ColorToRGB(PenEndColor)
 
         if view.info["viewname"] != "skinview":
             if paintobject != [] and (flagsmouse == 552 or flagsmouse == 1064):
                 pixelpositions = quarkpy.mdlutils.TexturePixelLocation(editor, view, x, y, paintobject)
-                pixU, pixV = pixelpositions[0]
-
-                # Paints a single color in one of the editor's textured views, Skin-view repaints to show changes.
-                if tb2.tb.buttons[1].state == 2:
-                    texshortname = skin.shortname
-                    texparent = skin.parent
-                    if texshortname is None or texparent is None:
-                        return
-                    newImage = skin
-                    if checkUVs(pixU, pixV) == 0:
-                        return
-
-                    PenWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
-
-                    ### Saves the original color for the pixel about to be colored.
-                    UV = str(pixU) + "," + str(pixV)
-                    if not skinuvlist.has_key(UV):
-                        OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                        if OrgColor == 0:
-                            OrgColor = 1
-                        skinuvlist[UV] = [OrgColor]
-
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                        UV = str(pixU) + "," + str(pixV)
-                        if skinuvlist.has_key(UV):
-                            color = skinuvlist[UV][0]
-                            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
-                            del skinuvlist[UV]
-
-                    else:
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, paintcolor) # Draws the center pixel, where clicked.
-
-                    # For rectangle shape.
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_PaintShape"] == "rectangle":
-                        if not PenWidth&1: # PenWidth is even, solid paint, rectangle.
-                            radius = 1
-                            while radius <= PenWidth*.5:
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius+1:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius-1      ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill > negradius:
-                                    U=pixU-radius+1
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius+1     ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius+1
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius+1     ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # PenWidth is odd, solid paint, rectangle.
-                            radius = 1
-                            while radius <= int(PenWidth*.5):
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius        ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU-radius
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius       ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius       ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                    else:  # For ellipse (round) shape.
-                           # Formula adapted from http://www.mathopenref.com/chord.html
-
-                        if not PenWidth&1: # PenWidth is even, solid paint, ellipse (round).
-                            radius = 1
-                            while radius <= PenWidth*.5+1:
-                                r = PenWidth*.5+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord+1:
-                                    U=int(pixU+fill)
-                                    V=int(pixV+radius)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill > negcord:
-                                    U=int(pixU-radius+1)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=int(pixU+fill)
-                                    V=int(pixV-radius+1)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=int(pixU+radius)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # PenWidth is odd, solid paint, ellipse (round).
-                            radius = 1
-                            while radius <= int(PenWidth*.5)+1:
-                                r = int(PenWidth*.5)+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord:
-                                    U=int(pixU+fill)
-                                    V=int(pixV+radius)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill >= negcord:
-                                    U=int(pixU-radius)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=int(pixU+fill)
-                                    V=int(pixV-radius)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=int(pixU+radius)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            paintcolor = None
-
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                paintcolor = skinuvlist[UV][0]
-
-                                        if paintcolor:
-                                            quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                    editor.Root.currentcomponent.currentskin = newImage
-                    for v in editor.layout.views:
-                        if v.viewmode == "tex":
-                            v.invalidate(1)
-
-                    if editor.layout.skinview is not None:
-                        skin = editor.Root.currentcomponent.currentskin
-                        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-                        editor.layout.skinview.backgroundimage = skin,
-                        editor.layout.skinview.repaint()
-
-                # Paints an airbrush effect using selected Start and End colors and changes\spreads the color
-                # as the "radius" increases, from center to outer ring, based on the "Airbrush" width setting.
-
-                if tb2.tb.buttons[2].state == 2:
-                    if checkUVs(pixU, pixV) == 0:
-                        return
-
-                    newImage = skin
-                    texshortname = skin.shortname
-                    texparent = skin.parent
-
-                    BrushWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
-                    radius = 1
-
-                    ### Saves the original color for the pixel about to be colored.
-                    UV = str(pixU) + "," + str(pixV)
-                    if not skinuvlist.has_key(UV):
-                        OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                        if OrgColor == 0:
-                            OrgColor = 1
-                        skinuvlist[UV] = [OrgColor]
-
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                        OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                        if Pal:
-                            rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                        else:
-                            NewPaintColor = RGBEnd
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                NewColor[2-i] = int(check)
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
-
-                    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                        if skinuvlist.has_key(UV):
-                            color = skinuvlist[UV][0]
-                            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
-                            del skinuvlist[UV]
-
-                    else:
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, airbrushcolor) # Draws the center pixel, where clicked.
-
-                    # For rectangle shape
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_SprayShape"] == "rectangle":
-                        if not BrushWidth&1: # BrushWidth is even, airbrush, rectangle.
-                            while radius <= BrushWidth*.5:
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                                if Pal:
-                                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                else:
-                                    NewColor = [0, 0, 0]
-                                    for i in range (0, 3):
-                                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius+1:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if NewPaintColor > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if NewPaintColor < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius-1      ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill > negradius:
-                                    U=pixU-radius+1
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius+1     ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius+1
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius+1     ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # BrushWidth is odd, airbrush, rectangle.
-                            while radius <= int(BrushWidth*.5):
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
-                                if Pal:
-                                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                else:
-                                    NewColor = [0, 0, 0]
-                                    for i in range (0, 3):
-                                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if NewPaintColor > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if NewPaintColor < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1 # This IS correct, do not change.
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius        ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU-radius
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]  # To setup an empty list to use below.
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius       ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius       ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                    else:  # For airbrush, ellipse (round) shape.
-                           # Formula adapted from http://www.mathopenref.com/chord.html
-
-                        if not BrushWidth&1: # BrushWidth is even, airbrush, ellipse (round).
-                            while radius <= BrushWidth*.5+1:
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                                if Pal:
-                                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                else:
-                                    NewColor = [0, 0, 0]
-                                    for i in range (0, 3):
-                                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-                                r = BrushWidth*.5+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord+1:
-                                    U=int(pixU+fill)
-                                    V=int(pixV+radius)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if NewPaintColor > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if NewPaintColor < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill > negcord:
-                                    U=int(pixU-radius+1)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=int(pixU+fill)
-                                    V=int(pixV-radius+1)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=int(pixU+radius)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # BrushWidth is odd, airbrush, ellipse (round).
-                            while radius <= int(BrushWidth*.5)+1:
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
-                                if Pal:
-                                    NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                else:
-                                    NewColor = [0, 0, 0]
-                                    for i in range (0, 3):
-                                        NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                    NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-
-                                r = int(BrushWidth*.5)+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord:
-                                    U=int(pixU+fill)
-                                    V=int(pixV+radius)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if NewPaintColor > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if NewPaintColor < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill >= negcord:
-                                    U=int(pixU-radius)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=int(pixU+fill)
-                                    V=int(pixV-radius)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=int(pixU+radius)
-                                    V=int(pixV+fill)
-                                    if checkUVs(U, V) == 1:
-                                        UV = str(U) + "," + str(V)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                            OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OrgColor == 0:
-                                                OrgColor = 1
-                                            skinuvlist[UV] = [OrgColor]
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                            color = None
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                            rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                if int(NewPaintColor) > 255:
-                                                    NewPaintColor = NewPaintColor - 255
-                                                if int(NewPaintColor) < 0:
-                                                    NewPaintColor = NewPaintColor + 255
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if Pal:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                                NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            else:
-                                                NewPaintColor = RGBEnd
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                    NewColor[2-i] = int(check)
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                            color = int(NewPaintColor)
-
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                color = skinuvlist[UV][0]
-
-                                        if color:
-                                            quarkx.setpixel(texshortname, texparent, U, V, color)
-                                            if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                                if skinuvlist.has_key(UV):
-                                                    del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                    editor.Root.currentcomponent.currentskin = newImage
-                    for v in editor.layout.views:
-                        if v.viewmode == "tex":
-                            v.invalidate(1)
-
-                    if editor.layout.skinview is not None:
-                        skin = editor.Root.currentcomponent.currentskin
-                        editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-                        editor.layout.skinview.backgroundimage = skin,
-                        editor.layout.skinview.repaint()
-
-                # This button paint area is setup for patterns but not being used yet.
-                if tb2.tb.buttons[3].state == 2:
-                    cv = view.canvas()
-                    cv.penwidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
-                    spray = 0
-                    cv.pencolor = cv.brushcolor = cv.getpixel(x,y) # Gets the color from the view.
-                    brushwidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
-                    cv.brushstyle = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"])
-                    while spray != brushwidth:
-                        cv.pencolor = cv.pencolor + (2 * spray) # Make colorspread amount variable
-                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_SprayShape"] == "rectangle":
-                            cv.rectangle(x-(3 * spray),y-(3 * spray),x+(3 * spray),y+(3 * spray)) # Make fanspray amount variable
-                        else:
-                            cv.ellipse(x-(3 * spray),y-(3 * spray),x+(3 * spray),y+(3 * spray)) # Make fanspray amount variable
-                        spray = spray + 1 # Make interval amount variable
-
+                TexViews(editor, view, x, y, flagsmouse, skin, Pal, skinuvlist, pixelpositions, tb2, Opacity)
 
               ### This section is for strictly painting in the Skin-view
         else: ### and passes to the editor's textured views when invalidated.
-
-              # Line below skips painting pixels based on setting for map grid
-              # Might be able to use for opacity look of colors or airbrushing.
-              #  list = map(quarkx.ftos, editor.aligntogrid(view.space(quarkx.vect(x, y, 0))).tuple + editor.aligntogrid(view.space(quarkx.vect(x, y, 0))).tuple)
-
             if flagsmouse == 552 or flagsmouse == 1064:
                 pixU, pixV = quarkpy.mdlutils.TexturePixelLocation(editor, view, x, y)
-                texshortname = skin.shortname
-                texparent = skin.parent
-                texWidth, texHeight = skin["Size"]
-                texWidth, texHeight = int(texWidth), int(texHeight)
-
-                ### Saves the original color for the pixel about to be colored.
-                UV = str(pixU) + "," + str(pixV)
-                if not skinuvlist.has_key(UV):
-                    OrgColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                    if OrgColor == 0:
-                        OrgColor = 1
-                    skinuvlist[UV] = [OrgColor]
-
-                newImage = skin
-
-                # From here down are the drawing routines for the Skin-view.
-                if tb2.tb.buttons[1].state == 2:
-                    PenWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_PenWidth"])
-
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                        if skinuvlist.has_key(UV):
-                            color = skinuvlist[UV][0]
-                            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
-                            del skinuvlist[UV]
-
-                    else:
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, paintcolor) # Draws the center pixel, where clicked.
-
-                    # For rectangle shape.
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_PaintShape"] == "rectangle":
-                        if not PenWidth&1: # PenWidth is even, solid paint, rectangle.
-                            radius = 1
-                            while radius <= PenWidth*.5:
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius+1:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius-1      ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill > negradius:
-                                    U=pixU-radius+1
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeighttexHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius+1     ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius+1
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius+1     ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # PenWidth is odd, solid paint, rectangle.
-                            radius = 1
-                            while radius <= int(PenWidth*.5):
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius        ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU-radius
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius       ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius       ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                    else:  # For ellipse (round) shape.
-                           # Formula adapted from http://www.mathopenref.com/chord.html
-
-                        if not PenWidth&1: # PenWidth is even, solid paint, ellipse (round).
-                            radius = 1
-                            while radius <= PenWidth*.5+1:
-                                r = PenWidth*.5+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord+1:
-                                    U=pixU+int(fill)
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill > negcord:
-                                    U=pixU-radius+1
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=pixU+int(fill)
-                                    V=pixV-radius+1
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=pixU+radius
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # PenWidth is odd, solid paint, ellipse (round).
-
-                            radius = 1
-                            while radius <= int(PenWidth*.5)+1:
-                                r = int(PenWidth*.5)+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord:
-                                    U=pixU+int(fill)
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill >= negcord:
-                                    U=pixU-radius
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=pixU+int(fill)
-                                    V=pixV-radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=pixU+radius
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        paintcolor = None
-                                        if skinuvlist.has_key(UV):
-                                            paintcolor = skinuvlist[UV][0]
-
-                                    if paintcolor:
-                                        quarkx.setpixel(texshortname, texparent, U, V, paintcolor)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                # Paints an airbrush effect using selected Start and End colors and changes\spreads the color
-                # as the "radius" increases, from center to outer ring, based on the "Airbrush" width setting.
-                if tb2.tb.buttons[2].state == 2:
-                    BrushWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
-                    radius = 1
-
-                    ### Sections below draw the First Pixel in the Center for each as needed.
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                        if Pal:
-                            OldPalColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                            if OldPalColor < StartPalette:
-                                NewPaintColor = StartPalette
-                            else:
-                                NewPaintColor = int(OldPalColor - (Opacity*10))
-                            if NewPaintColor > 255:
-                                NewPaintColor = NewPaintColor - 255
-                            if NewPaintColor < 0:
-                                NewPaintColor = NewPaintColor + 255
-                        else:
-                            OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                            if OldPixelColor < PenStartColor:
-                                NewPaintColor = PenStartColor
-                            else:
-                                NewColor = [0, 0, 0]
-                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                for i in range(0, 3):
-                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
-
-                    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3": ### Draws the center pixel
-                        if Pal:
-                            OldPalColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                OldPalColor = StartPalette
-                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                OldPalColor = EndPalette
-                            NewPaintColor = OldPalColor
-                        else:
-                            OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                NewColor[2-i] = abs(int((OldPixelColor[i] - Opacity)))
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
-
-                    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                        if Pal:
-                            if Opacity == 0:
-                                Opacity = 1
-                            rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                        else:
-                            UV = str(pixU) + "," + str(pixV)
-                            if skinuvlist.has_key(UV):
-                                OrgPixelColor = skinuvlist[UV][0]
-                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
-
-                    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                        OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-                        if Pal:
-                            rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                        else:
-                            NewPaintColor = RGBEnd
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                NewColor[2-i] = int(check)
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
-
-                    elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                        UV = str(pixU) + "," + str(pixV)
-                        if skinuvlist.has_key(UV):
-                            color = skinuvlist[UV][0]
-                            quarkx.setpixel(texshortname, texparent, pixU, pixV, color) # Draws the center pixel, where clicked.
-                            del skinuvlist[UV]
-
-                    else:
-                        quarkx.setpixel(texshortname, texparent, pixU, pixV, airbrushcolor) # Draws the center pixel, where clicked.
-
-                    # For rectangle shape
-                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_SprayShape"] == "rectangle":
-
-                        if not BrushWidth&1: # BrushWidth is even, airbrush, rectangle.
-                            while radius <= BrushWidth*.5:
-
-                                # Below resets the airbrush color as rings are drawn from center, outwards.
-                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
-                                    rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                                    if Pal:
-                                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                    else:
-                                        NewColor = [0, 0, 0]
-                                        for i in range (0, 3):
-                                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                    color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius+1:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPalColor < StartPalette:
-                                                NewPaintColor = StartPalette
-                                            else:
-                                                NewPaintColor = int(OldPalColor - (Opacity*10))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPixelColor < PenStartColor:
-                                                NewPaintColor = PenStartColor
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                OldPalColor = StartPalette
-                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                OldPalColor = EndPalette
-
-                                            if OldPalColor <= (StartPalette + EndPalette)*.5:
-                                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
-                                            else:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius-1      ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill > negradius+1:
-                                    U=pixU-radius+1
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPalColor < StartPalette:
-                                                NewPaintColor = StartPalette
-                                            else:
-                                                NewPaintColor = int(OldPalColor - (Opacity*10))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPixelColor < PenStartColor:
-                                                NewPaintColor = PenStartColor
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                OldPalColor = StartPalette
-                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                OldPalColor = EndPalette
-
-                                            if OldPalColor > (StartPalette + EndPalette)*.5:
-                                                NewPaintColor = int((EndPalette * (1 - rFactor)) + (StartPalette * rFactor))
-                                            else:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius+1     ### Draws top line, left to right.
-                                while fill < radius:
-                                    U=pixU+fill
-                                    V=pixV-radius+1
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPalColor < StartPalette:
-                                                NewPaintColor = StartPalette
-                                            else:
-                                                NewPaintColor = int(OldPalColor - (Opacity*10))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPixelColor < PenStartColor:
-                                                NewPaintColor = PenStartColor
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                OldPalColor = StartPalette
-                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                OldPalColor = EndPalette
-
-                                            if OldPalColor <= (StartPalette + EndPalette)*.5:
-                                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
-                                            else:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
-
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius+1     ### Draws right line, top to bottom.
-                                while fill < radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "2":
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPalColor < StartPalette:
-                                                NewPaintColor = StartPalette
-                                            else:
-                                                NewPaintColor = int(OldPalColor - (Opacity*10))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if OldPixelColor < PenStartColor:
-                                                NewPaintColor = PenStartColor
-                                            else:
-                                                NewColor = [0, 0, 0]
-                                                OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                                for i in range(0, 3):
-                                                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "3":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            OldPalColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            if (OldPalColor < StartPalette and StartPalette <= EndPalette) or (OldPalColor > StartPalette and StartPalette > EndPalette):
-                                                OldPalColor = StartPalette
-                                            if (OldPalColor > EndPalette and StartPalette <= EndPalette) or (OldPalColor < EndPalette and EndPalette < StartPalette):
-                                                OldPalColor = EndPalette
-
-                                            if OldPalColor > (StartPalette + EndPalette)*.5:
-                                                NewPaintColor = int((StartPalette * (1 - rFactor)) + (OldPalColor * rFactor))
-                                            else:
-                                                NewPaintColor = int((OldPalColor * (1 - rFactor)) + (EndPalette * rFactor))
-
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # BrushWidth is odd, airbrush, rectangle.
-                            while radius <= int(BrushWidth*.5):
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
-                                    rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
-                                    if Pal:
-                                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                    else:
-                                        NewColor = [0, 0, 0]
-                                        for i in range (0, 3):
-                                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                    color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-
-                                fill = radius        ### Draws bottom line, right to left.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU+fill
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = radius        ### Draws left line, bottom to top.
-                                negradius = -radius
-                                while fill >= negradius:
-                                    U=pixU-radius
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = -radius       ### Draws top line, left to right.
-                                while fill <= radius:
-                                    U=pixU+fill
-                                    V=pixV-radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = -radius       ### Draws right line, top to bottom.
-                                while fill <= radius:
-                                    U=pixU+radius
-                                    V=pixV+fill
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                    else:  # For airbrush, ellipse (round) shape.
-                           # Formula adapted from http://www.mathopenref.com/chord.html
-
-                        if not BrushWidth&1: # BrushWidth is even, airbrush, ellipse (round).
-                            while radius <= BrushWidth*.5+1:
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
-                                    rFactor = abs((float(radius-1)/float((BrushWidth*.5)-1)) * (1 - Opacity))
-                                    if Pal:
-                                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                    else:
-                                        NewColor = [0, 0, 0]
-                                        for i in range (0, 3):
-                                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                    color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-                                r = BrushWidth*.5+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord+1:
-                                    U=pixU+int(fill)
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill > negcord:
-                                    U=pixU-radius+1
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=pixU+int(fill)
-                                    V=pixV-radius+1
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = ((round(cord*.5 - .5)-1)*-1)+1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord+1:
-                                    U=pixU+radius
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill + 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                        else: # BrushWidth is odd, airbrush, ellipse (round).
-                            while radius <= int(BrushWidth*.5)+1:
-
-                                # Below resets the airbrush color as rings are draw from center, outwards.
-                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "0":
-                                    rFactor = abs((float(radius+1)/float(((BrushWidth+1)*.5))) * (1 - Opacity))
-                                    if Pal:
-                                        NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                    else:
-                                        NewColor = [0, 0, 0]
-                                        for i in range (0, 3):
-                                            NewColor[2-i] = int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor))
-                                        NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                    color = NewPaintColor
-
-                                # Below draws the rings from center, outwards.
-                                r = int(BrushWidth*.5)+1
-                                d = radius
-                                cord = math.sqrt((r*r)-(d*d)) * 2
-
-                                fill = round(cord*.5 - .5)-1  ### Draws bottom line, right to left.
-                                negcord = -fill
-                                while fill >= negcord:
-                                    U=pixU+int(fill)
-                                    V=pixV+radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if NewPaintColor > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if NewPaintColor < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = round(cord*.5 - .5)-1  ### Draws left line, bottom to top.
-                                while fill >= negcord:
-                                    U=pixU-radius
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(radius-fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
-                                        if Pal:
-                                            if U == pixU and V == pixV:
-                                                fill = fill - 1
-                                                continue
-                                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                            color = int(NewPaintColor)
-                                        else:
-                                            if skinuvlist.has_key(UV):
-                                                OrgPixelColor = skinuvlist[UV][0]
-                                                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
-                                                NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
-                                                color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill - 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill - 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws top line, left to right.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=pixU+int(fill)
-                                    V=pixV-radius
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-
-                                fill = (round(cord*.5 - .5)-1)*-1  ### Draws right line, top to bottom.
-                                negcord = -fill
-                                while fill <= negcord:
-                                    U=pixU+radius
-                                    V=pixV+int(fill)
-                                    if U > texWidth - 1:
-                                        U = U - texWidth
-                                    if U < 0:
-                                        U = U + texWidth
-                                    if V > texHeight - 1:
-                                        V = V - texHeight
-                                    if V < 0:
-                                        V = V + texHeight
-                                    UV = str(U) + "," + str(V)
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "6" and not skinuvlist.has_key(UV):
-                                        OrgColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if OrgColor == 0:
-                                            OrgColor = 1
-                                        skinuvlist[UV] = [OrgColor]
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] != "0":
-                                        color = None
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "1":
-                                        rFactor = abs((float(fill)/float(radius)) * (1 - Opacity))
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            if int(NewPaintColor) > 255:
-                                                NewPaintColor = NewPaintColor - 255
-                                            if int(NewPaintColor) < 0:
-                                                NewPaintColor = NewPaintColor + 255
-                                        else:
-                                            NewColor = [0, 0, 0]
-                                            for i in range(0, 3):
-                                                NewColor[2-i] = abs(int((RGBStart[i] * (1 - rFactor)) + (RGBEnd[i] * rFactor)))
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "5":
-                                        if U == pixU and V == pixV:
-                                            fill = fill + 1
-                                            continue
-                                        OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                                        if Pal:
-                                            NewPaintColor = int((StartPalette * (1 - rFactor)) + (EndPalette * rFactor))
-                                            NewPaintColor = (NewPaintColor * Opacity) + (OldPixelColor * (1 - Opacity))
-                                        else:
-                                            NewPaintColor = RGBEnd
-                                            NewColor = [0, 0, 0]
-                                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                                            for i in range(0, 3):
-                                                check = NewPaintColor[i] * (Opacity*.1) + (OldPixelColor[i] * (1-(Opacity*.1)))
-                                                NewColor[2-i] = int(check)
-                                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
-                                        color = int(NewPaintColor)
-
-                                    if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                        if skinuvlist.has_key(UV):
-                                            color = skinuvlist[UV][0]
-
-                                    if color:
-                                        quarkx.setpixel(texshortname, texparent, U, V, color)
-                                        if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "6":
-                                            if skinuvlist.has_key(UV):
-                                                del skinuvlist[UV]
-
-                                    fill = fill + 1
-                                radius = radius + 1
-
-                editor.Root.currentcomponent.currentskin = newImage
-
-                skin = editor.Root.currentcomponent.currentskin
-                editor.layout.skinview.background = quarkx.vect(-int(skin["Size"][0]*.5),-int(skin["Size"][1]*.5),0), 1.0, 0, 1
-                editor.layout.skinview.backgroundimage = skin,
-                editor.layout.skinview.repaint()
-
-                for v in editor.layout.views:
-                    if v.viewmode == "tex":
-                        v.invalidate(1)
+                SkinView(editor, view, x, y, flagsmouse, skin, Pal, skinuvlist, pixU, pixV, tb2, Opacity)
 
 
 class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
@@ -4920,6 +5215,11 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2012/01/26 22:44:42  cdunde
+# Fixed airbrush function for all textured views and skin view.
+# Added eraser function for all textured views and skin view.
+# Added RGB2GRAYSCALE function for skin view only.
+#
 # Revision 1.9  2012/01/22 07:57:44  cdunde
 # File cleanup and minor corrections.
 #
