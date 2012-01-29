@@ -2393,7 +2393,7 @@ def SkinViewSolid(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texp
 
 
 # Below deals with the different sections of the SkinView Airbrush functions.
-def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette=None, EndPalette=None, RGBStart=None, RGBEnd=None):
+def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette=None, EndPalette=None, PenStartColor=None, RGBStart=None, RGBEnd=None):
     editor = mdl_editor
     newImage = skin
     texWidth, texHeight = skin["Size"]
@@ -4293,7 +4293,7 @@ def SkinView(mdl_editor, view, x, y, flagsmouse, skin, Pal, skinuvlist, pixU, pi
     editor = mdl_editor
     texshortname = skin.shortname
     texparent = skin.parent
-    StartPalette = EndPalette = RGBStart = RGBEnd = None
+    StartPalette = EndPalette = PenStartColor = RGBStart = RGBEnd = None
 
     # Line below skips painting pixels based on setting for map grid
     # Might be able to use for opacity look of colors or airbrushing.
@@ -4321,7 +4321,7 @@ def SkinView(mdl_editor, view, x, y, flagsmouse, skin, Pal, skinuvlist, pixU, pi
     # as the "radius" increases, from center to outer ring, based on the "Airbrush" width setting.
     if tb2.tb.buttons[2].state == 2:
         BrushWidth = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushWidth"])
-        SkinViewAirbrush(editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette, EndPalette, RGBStart, RGBEnd)
+        SkinViewAirbrush(editor, skin, Pal, skinuvlist, Opacity, texshortname, texparent, pixU, pixV, airbrushcolor, BrushWidth, StartPalette, EndPalette, PenStartColor, RGBStart, RGBEnd)
 
 
 #====================================================
@@ -5215,6 +5215,10 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2012/01/28 08:12:56  cdunde
+# Broke down functions to avoid crash of Python for too many if statements in one function.
+# Also did some function drawing fixes and added more functions to other areas.
+#
 # Revision 1.10  2012/01/26 22:44:42  cdunde
 # Fixed airbrush function for all textured views and skin view.
 # Added eraser function for all textured views and skin view.
