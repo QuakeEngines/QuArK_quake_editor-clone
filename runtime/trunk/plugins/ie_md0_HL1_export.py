@@ -14,22 +14,6 @@ QuArK Model Editor exporter for original Half-Life .mdl model files.
 """
 FILE TODO LIST
 
-NOTE 1 (use, case sensitive, to find location in this file )
-=======
-Right now ALL vertex weights are being assigned to the 1ST BONE
-by the codes default setting for a bone.
-We need to give a proper "bone_index" as we loop through the weights section.
-    ---------
-    Procedure: (done but commented out to stop mesh distortion, need to now fix vertex positioning with bones.)
-    ---------
-    Use our editor.ModelComponentList[comp.name]['weightvtxlist']
-    The "key" being the "i" counter as we loop through a component's vertexes.
-    Test IF more then ONE weight, then get the LARGEST 'weight_value' bone & BREAK.
-    Use that bone.name to find it's exported bone.index and pass that bone.index
-        to the vertexes mdl_vert_info. (need a QuArK_bones 2 self.bones dictionary list.
-			see importers lines 1716, 1720 & 1729
-		self.bodyparts[i].models[j].verts_info.append(mdl_vert_info())
-
 NOTE 2 (use, case sensitive, to find location in this file )
 ======
 Commented out code changes very small negative values to just 0.0
@@ -1881,12 +1865,9 @@ def fill_mdl(dlg):
             bone.bone_index = i
             QuArK_bone = mdl.QuArK_bones[i]
             QuArK_bone_name2bone_index[QuArK_bone.name] = i # Fill this quick cross reference dictionary list.
-        #    print "--------------------"
-        #    print "bone name", QuArK_bone.name
             bone.name = QuArK_bone.shortname.replace(dlg.comp_group, "")
             bone.parent = -1
             parent = QuArK_bone.dictspec['parent_name']
-        #    print "parent", parent
             parent_matrix = None
             for j in xrange(0, mdl.num_bones):
                 if mdl.QuArK_bones[j].name == parent:
@@ -1907,20 +1888,14 @@ def fill_mdl(dlg):
                 mdl.bone_controls.append(bone_conttrol)
             mdl.num_bone_controls = len(mdl.bone_controls)
 
-        #    print "QuArKbone_pos", QuArK_bone.position
             if parent != "None":
-        #        print "parent_pos", parent_pos
-        #        print "parent_matrix", parent_matrix
                 pos = (~parent_matrix * (QuArK_bone.position - parent_pos)).tuple
                 m = ~parent_matrix * QuArK_bone.rotmatrix
                 m = m.tuple
-        #        print "QuArK_bone_matrix", QuArK_bone.rotmatrix.tuple
             else:
                 pos = QuArK_bone.position.tuple
                 m = ~QuArK_bone.rotmatrix
-            #    m = quarkx.matrix((0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0)) # testing this flipped model right-side-up...so we may need to swap x and y.
                 m = m.tuple
-        #        print "QuArK_bone_matrix", QuArK_bone.rotmatrix.tuple
             if parent != "None":
                 m = [[m[0][0],m[0][1],m[0][2],0], [m[1][0],m[1][1],m[1][2],0], [m[2][0],m[2][1],m[2][2],0], [0,0,0,1]]
               ## One way, using parent.
@@ -2120,13 +2095,10 @@ def fill_mdl(dlg):
                             if not key in mesh_verts.keys():
                                 vert_index += 1
                                 mesh_verts[key] = k
-                                vertex = mdl_vertex()
-                                vertex.v = fv[k].tuple
-                                verts.append(vertex)
-                                verts_info = mdl_vert_info()
 
+                                verts_info = mdl_vert_info()
                                 ## NOTE 1 of HL1 EXPORTER NOTES at top of this file.
-                                """if weightvtxlist is not None:
+                                if weightvtxlist is not None:
                                     try:
                                         vert_weights = weightvtxlist[vert_index]
                                     except:
@@ -2147,9 +2119,23 @@ def fill_mdl(dlg):
                                         if mdl.QuArK_bones[l].vtxlist.has_key(dlg.comp_group + comp.name):
                                             if k in mdl.QuArK_bones[l].vtxlist[dlg.comp_group + comp.name]:
                                                 verts_info.bone_index = l
-                                                break"""
+                                                break
 
                                 vert_infos.append(verts_info)
+
+                                # Calculate vertex position to store
+                                vert_pos = fv[k].tuple
+                                bone = mdl.QuArK_bones[verts_info.bone_index]
+                                bp = bone.position
+                                br = bone.rotmatrix
+                                vert_pos = quarkx.vect(vert_pos[0], vert_pos[1], vert_pos[2])
+                                vert_pos = (~br) * (vert_pos - bp)
+                                vert_pos = vert_pos.tuple
+
+                                vertex = mdl_vertex()
+                                vertex.v = vert_pos
+                                verts.append(vertex)
+
                         QuArK_mesh_verts.append(mesh_verts)
                         model.numverts += len(verts)
                         model.verts.append(verts)
@@ -2177,7 +2163,6 @@ def fill_mdl(dlg):
                     comp = QuArK_list[k]
                     if comp.name.find(model.name) != -1:
                         mesh_index += 1
-#                        print "OUR Component group, model nbr, mesh nbr ->", comp.name ,j, k
                         framesgroup = comp.dictitems['Frames:fg'].subitems
                         for frame in framesgroup:
                             if frame.name.find("baseframe") != -1:
@@ -2229,23 +2214,18 @@ def fill_mdl(dlg):
         mdl.texture_data_offset = mdl.skins_offset + (mdl.num_skins * 4) # 4 = 1 int, NO mdl_skin class.
         next_skin_offset = 0
         for i in xrange(mdl.num_skins):
-#            print "OUR skin numb ->", i
             skin_info = mdl_skin_info()
             skin_info.name = dlg.skins[i].name
             size = dlg.skins[i].dictspec['Size']
             skin_info.width = int(size[0])
             skin_info.height = int(size[1])
-#            print "what is next_skin_offset ->", next_skin_offset, type(next_skin_offset)
             skin_info.skin_offset = mdl.texture_data_offset + next_skin_offset
-#            print "IS skin_offset an int? ->", skin_info.skin_offset, type(skin_info.skin_offset)
             skin_info.dump()
             if dlg.skins[i].dictspec.has_key('Pal'): # in 8 bit format
                 next_skin_offset += skin_info.width * skin_info.height # Each pixel = 1 type "B" = 1 byte.
                 next_skin_offset += 256 * 3 # The skin's Palette data = 256 pixels * 3 type "B" at 1 byte\ea. for a RGB value.
-#                print "skin is 8 bit next_skin_offset ->", next_skin_offset, type(next_skin_offset)
             else: # in 24 bit format (needs fixing)
                 next_skin_offset += ((skin_info.width * skin_info.height) * 3) + 54 # Each pixel = 3 type "B" = 1 bytes\ea + bmp_header size.
-#                print "skin is 24 bit next_skin_offset ->", next_skin_offset, type(next_skin_offset)
                 
             mdl.skins_group.append(skin_info)
         mdl.length = mdl.texture_data_offset + next_skin_offset
@@ -2454,20 +2434,17 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
       #  file.write(data)
 
         # write the skins group data, texture_index_offset
-#        print "skins_group", file.tell()
         for i in xrange(self.num_skins):
             self.skins_group[i].save(file)
           #  self.skins_group[i].dump()
 
         # write the skins index data (no class was given), skins_offset
-#        print "skins index", file.tell()
         for i in xrange(self.num_skins):
             binary_format = "<i"
             data = struct.pack(binary_format, i)
             file.write(data)
 
         # write the skin image data for each skin, texture_data_offset
-#        print "texture_data_offset", file.tell()
         for i in xrange(self.num_skins):
             skin = self.skins_group[i]
             skin_width = skin.width
@@ -2966,6 +2943,10 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2012/01/11 19:25:45  cdunde
+# To remove underscore lines from folder and model names then combine them with one
+# underscore line at the end for proper editor functions separation capabilities later.
+#
 # Revision 1.1  2011/12/23 22:33:43  cdunde
 # Added export support for Half-Life 1 static and animation models with bones .mdl file types.
 # Still needs work, see TODO NOTES at top of file.
