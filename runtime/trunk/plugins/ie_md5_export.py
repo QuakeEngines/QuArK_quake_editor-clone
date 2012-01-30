@@ -444,6 +444,12 @@ def export_mesh(self, file, filename, exp_list):
                 #2            for k in xrange(3):
                 #2                temp[k] = (vp[k] * (vo[k] / ovp[k]))
                 #2            weight_pos = quarkx.vect(temp[0], temp[1], temp[2])
+                    elif joints[bone_index].dictspec.has_key('type') and joints[bone_index].dictspec['type'].startswith('skd-MOHAA'):
+                        weight_pos = quarkx.vect(weightvtxlist[old_vert_index][key]['vtx_offset'])
+                        bonelist = self.editor.ModelComponentList['bonelist']
+                        bone_jointType = bonelist[key]['frames']['baseframe:mf']['SKD_JointType']
+                        if bone_jointType == 1:
+                            weight_pos = weight_pos
                     else:
                         weight_pos = (~bone_rot) * (current_vertex - bone_pos)
                     pos_x, pos_y, pos_z = weight_pos.tuple
@@ -1159,6 +1165,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2012/01/15 04:39:32  cdunde
+# Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
+#
 # Revision 1.18  2012/01/14 22:49:08  cdunde
 # Change by DanielPharos to skip over baseframes which are not used
 # and allow other model formats to be exported as MD5 files.
