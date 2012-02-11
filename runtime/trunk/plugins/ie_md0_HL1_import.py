@@ -1335,7 +1335,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     hitboxes = {}
     attachments = {}
     bodyparts = []
-    anim_seqs_data = []
 
     tex_coords = []
     faces = []
@@ -1351,7 +1350,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.hitboxes = {}          # A dictionary list of the hitboxes, the key being the bone number it is attached to.
         self.attachments = {}       # A dictionary list of the attachments, the key being the bone number it is attached to.
         self.bodyparts = []         # A list of the bodyparts.
-        self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_pivots, seq_panims, seq_frames from SetUpBones function.
 
         self.tex_coords = []        # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
         self.faces = []             # A list of the triangles.
@@ -1482,13 +1480,6 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             self.demand_seq_groups[i].load(file)
           #  self.demand_seq_groups[i].dump()
 
-        # load the animation sequence descriptions data.
-        file.seek(ofsBegin + self.anim_seq_offset, 0)
-        for i in xrange(self.num_anim_seq):
-            self.sequence_descs.append(mdl_sequence_desc())
-            self.sequence_descs[i].load(file)
-          #  self.sequence_descs[i].dump()
-
         # load the skins group data
         file.seek(ofsBegin + self.texture_index_offset, 0)
         for i in xrange(self.num_skins):
@@ -1560,6 +1551,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             Component.appenditem(framesgroup)
 
             ComponentList = ComponentList + [Component]
+
+        # load the animation sequence descriptions data.
+        file.seek(ofsBegin + self.anim_seq_offset, 0)
+        for i in xrange(self.num_anim_seq):
+            self.sequence_descs.append(mdl_sequence_desc()) # Just need to read in but not append to list if not selected to load.
+            self.sequence_descs[i].load(file)
+          #  self.sequence_descs[i].dump()
 
         # load the bodyparts data and their models
         file.seek(ofsBegin + self.bodyparts_offset, 0)
@@ -2367,6 +2365,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2012/01/11 19:25:45  cdunde
+# To remove underscore lines from folder and model names then combine them with one
+# underscore line at the end for proper editor functions separation capabilities later.
+#
 # Revision 1.10  2011/12/28 08:28:22  cdunde
 # Setup importer bone['type'] not done yet.
 #
