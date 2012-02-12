@@ -14,21 +14,6 @@ QuArK Model Editor exporter for original Half-Life .mdl model files.
 """
 FILE TODO LIST
 
-NOTE 2 (use, case sensitive, to find location in this file )
-======
-Commented out code changes very small negative values to just 0.0
-for Euler Angle values that MAY be messing up proper rotation of model
-when we go to re-import.
-Only effecting Child bones right now.
-   (relates to NOTE 3 below)
-
-NOTE 3 (use, case sensitive, to find location in this file )
-======
-My need to make like the upper section of the code for
-  +-math.py and the current "cy != +-1" to 0.998 amount.
-ALSO may need to change that 0.998 amount to something smaller
-for better accuracy of the conversion from matrix2euler.
-
 NOTE 4 (use, case sensitive, to find location in this file )
 ======
 ex: bone.scale = [scale, scale, scale, 0.00001, 0.00001, 0.00001]
@@ -235,9 +220,9 @@ def EulerAngle2Quaternion(angles): # Was AngleQuaternion in ie_md0_HL1_import.py
             cx*cy*sz - sx*sy*cz, # Z
             cx*cy*cz + sx*sy*sz] # W
 
-def Quaternion2EulerAngle(quaternion, parent="None"):
+def Quaternion2EulerAngle(quaternion):
     # Return Euler angles from quaternion for specified axis sequence.
-    return matrix2euler(quaternion2matrix(quaternion), parent)
+    return matrix2euler(quaternion2matrix(quaternion))
 
 def quaternion2matrix(quaternion):
     q = quaternion
@@ -246,39 +231,20 @@ def quaternion2matrix(quaternion):
             [2.0*q[0]*q[2] - 2.0*q[3]*q[1], 2.0*q[1]*q[2] + 2.0*q[3]*q[0], 1.0-2.0*q[0]*q[0] - 2.0*q[1]*q[1], 0.0],
             [0.0                          , 0.0                          , 0.0                              , 1.0]]
 
-def matrix2euler(matrix, parent="None"):
+def matrix2euler(matrix):
     # Return Euler angles from rotation matrix for specified axis sequence.
     M = matrix
-    if parent == "None":
-        if M[1][0] > 0.998: # NOTE 3 of HL1 EXPORTER NOTES at top of this file.
-            ax = math.atan2( M[0][2], M[2][2])
-            ay = math.pi * .5 # NOTE 3 of HL1 EXPORTER NOTES at top of this file.
-            az = 0.0
-            return [ax, ay, az]
-        if M[1][0] < 0.998:
-            ax = math.atan2( M[0][2], M[2][2])
-            ay = -math.pi * .5 # NOTE 3 of HL1 EXPORTER NOTES at top of this file.
-            az = 0.0
-            return [ax, ay, az]
-
-        ax = math.atan2(-M[2][0], M[0][0])
-        ay = math.atan2(-M[1][2], M[1][1])
-        az = math.asin(M[1][0])
-
-        return [ax, ay, az]
-
+    cy = math.sqrt(M[0][0]*M[0][0] + M[1][0]*M[1][0])
+    if cy < 0.001:
+        ax = math.atan2(-M[1][2], M[1][1])
+        ay = math.atan2(-M[2][0], cy)
+        az = 0.0
     else:
-        cy = math.sqrt(M[0][0]*M[0][0] + M[1][0]*M[1][0])
-        if cy != 1 and cy != -1: # NOTE 3 of HL1 EXPORTER NOTES at top of this file.
-            ax = math.atan2( M[2][1], M[2][2])
-            ay = math.atan2(-M[2][0], cy)
-            az = math.atan2( M[1][0], M[0][0])
-        else:
-            ax = math.atan2(-M[1][2], M[1][1])
-            ay = math.atan2(-M[2][0], cy)
-            az = 0.0
+        ax = math.atan2( M[2][1], M[2][2])
+        ay = math.atan2(-M[2][0], cy)
+        az = math.atan2( M[1][0], M[0][0])
 
-        return [ax, ay, az]
+    return [ax, ay, az]
 
 
 # ================================================
@@ -384,12 +350,58 @@ def make_bmp_header(header):
 ######################################################
 # MDL Exporter Functions, QuArK's own
 ######################################################
-def Read_mdl_bone_anim_value(self, file, file_offset):
-    file.seek(file_offset, 0)
-    anim_value = mdl_bone_anim_value()
-    anim_value.load(file)
-   # anim_value.dump()
-    return anim_value
+def ConvertToHL1AnimData(data):
+    result = []
+    valid = 0
+    total = 0
+    value = 40000 #Note: Make sure this number is out-of-range of a 'signed short integer'
+    chain = []
+    repeating = 0
+    for i in xrange(len(data)):
+        if data[i] != value:
+            if repeating:
+                x = mdl_bone_anim_value()
+                x.set_valid_total(valid, total)
+                result += [x]
+                result += chain
+                chain = []
+                valid = 0
+                total = 0
+                repeating = 0
+            x = mdl_bone_anim_value()
+            x.set_value(data[i])
+            value = data[i]
+            chain += [x]
+            valid += 1
+            total += 1
+        else:
+            repeating = 1
+            total += 1
+        if total == 255: #Max length
+            x = mdl_bone_anim_value()
+            x.set_valid_total(valid, total)
+            result += [x]
+            result += chain
+            chain = []
+            valid = 0
+            total = 0
+            repeating = 0
+
+    if total != 0: #Save last bit of data
+        x = mdl_bone_anim_value()
+        x.set_valid_total(valid, total)
+        result += [x]
+        result += chain
+        chain = []
+        valid = 0
+        total = 0
+        repeating = 0
+
+    # Convert to struct.pack-ed data
+    final_result = ""
+    for x in result:
+        final_result += x.data
+    return final_result
 
 
 def mesh_normals(comp_name, faces, verts, bones, num_bones):
@@ -1508,33 +1520,33 @@ class mdl_pivots: # Done cdunde from -> hlmviewer source file -> studio.h -> mst
 
 class mdl_bone_anim_value: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanimvalue_t
                             #item of data file, size & type,   description
-    valid = 0               #item  0     unsigned char int, 1 byte.
-    total = 0               #item  1     unsigned char int, 1 byte.
-    value = 0               #item  0-1   signed short int, 2 bytes.
+    #valid = 0               #item  0     unsigned char int, 1 byte.
+    #total = 0               #item  1     unsigned char int, 1 byte.
+    #value = 0               #item  0-1   signed short int, 2 bytes.
+
+    #Please use the set_valid_total and set_value functions!
+    data = ""
 
     #This is a C++ union (two different ways to read the same bitstream); we'll do both at the same time
     binary_format1 = "<2B" #little-endian (<), see #item descriptions above.
     binary_format2 = "<h" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.valid = 0
-        self.total = 0
-        self.value = 0
+        self.data = ""
 
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format1))
-        data = struct.unpack(self.binary_format1, temp_data)
-        self.valid = data[0]
-        self.total = data[1]
-        data = struct.unpack(self.binary_format2, temp_data)
-        self.value = data[0]
-        return self
+    def set_valid_total(self, valid, total):
+        self.data = struct.pack(self.binary_format1, valid, total)
+
+    def set_value(self, value):
+        self.data = struct.pack(self.binary_format2, value)
+
+    def save(self, file):
+        #Note: This function is actually not used; see ConvertToHL1AnimData
+        file.write(self.data)
 
     def dump(self):
         print "MDL Anim Frames"
-        print "valid: ", self.valid
-        print "total: ", self.total
-        print "value: ", self.value
+        print "data: ", self.data
         print "===================="
 
 def CalcBoneAdj(self, m_controller, m_mouth):
@@ -1859,23 +1871,23 @@ def fill_mdl(dlg):
 
         # Setup quick cross reference dictionary lists.
         QuArK_bone_name2bone_index = {}
+        for i in xrange(0, mdl.num_bones):
+            QuArK_bone = mdl.QuArK_bones[i]
+            QuArK_bone_name2bone_index[QuArK_bone.name] = i # Fill this quick cross reference dictionary list.
 
         for i in xrange(0, mdl.num_bones):
             bone = mdl_bone()
             bone.bone_index = i
             QuArK_bone = mdl.QuArK_bones[i]
-            QuArK_bone_name2bone_index[QuArK_bone.name] = i # Fill this quick cross reference dictionary list.
             bone.name = QuArK_bone.shortname.replace(dlg.comp_group, "")
             bone.parent = -1
             parent = QuArK_bone.dictspec['parent_name']
             parent_matrix = None
-            for j in xrange(0, mdl.num_bones):
-                if mdl.QuArK_bones[j].name == parent:
-                    bone.parent = j
-                    parent_bone = mdl.QuArK_bones[j]
-                    parent_pos = parent_bone.position
-                    parent_matrix = parent_bone.rotmatrix
-                    break
+            if QuArK_bone_name2bone_index.has_key(parent):
+                bone.parent = QuArK_bone_name2bone_index[parent]
+                parent_bone = mdl.QuArK_bones[bone.parent]
+                parent_pos = parent_bone.position
+                parent_matrix = parent_bone.rotmatrix
             if QuArK_bone.dictspec.has_key('control_type'):
                 bone_conttrol = mdl_bone_control()
                 bone_conttrol.bone = i
@@ -1894,29 +1906,10 @@ def fill_mdl(dlg):
                 m = m.tuple
             else:
                 pos = QuArK_bone.position.tuple
-                m = ~QuArK_bone.rotmatrix
+                m = QuArK_bone.rotmatrix
                 m = m.tuple
-            if parent != "None":
-                m = [[m[0][0],m[0][1],m[0][2],0], [m[1][0],m[1][1],m[1][2],0], [m[2][0],m[2][1],m[2][2],0], [0,0,0,1]]
-              ## One way, using parent.
-              #  quat = matrix2quaternion(m)
-              #  ang = Quaternion2EulerAngle(quat, parent)
-        #        print "quat2", quat
-              ## Another way, also using parent. Most efficient but DO NOT use for bones with parentname = "None".
-                ang = matrix2euler(m, parent)
-              ## NOTE 2 of HL1 EXPORTER NOTES at top of this file.
-  #              for i in xrange(0, 3):
-  #                  if str(ang[i]).find("e") != -1:
-  #                      ang[i] = 0.0
-        #        print "raw bone_pos", pos
-            else:
-                m = [[m[0][0],m[0][1],m[0][2],0], [m[1][0],m[1][1],m[1][2],0], [m[2][0],m[2][1],m[2][2],0], [0,0,0,1]]
-                quat = matrix2quaternion(m)
-                quat = (quat[0], -quat[1], -quat[2], -quat[3])
-                ang = Quaternion2EulerAngle(quat)
-                ang = [-ang[0], ang[2], -ang[1]]
-        #        print "quat1", quat
-        #        print "bone_pos", pos
+            m = [[m[0][0],m[0][1],m[0][2],0], [m[1][0],m[1][1],m[1][2],0], [m[2][0],m[2][1],m[2][2],0], [0,0,0,1]]
+            ang = matrix2euler(m)
             bone.value = [pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]]
             scale = 0.0039063692092895508
             ## NOTE 4 of HL1 EXPORTER NOTES at top of this file.
@@ -1966,76 +1959,158 @@ def fill_mdl(dlg):
         mdl.num_hitboxes = len(mdl.hitboxes)
 
         ### OFFSET FOR ANIMATION SEQUENCE_DESC SECTION. (SetUpBones Section in the IMPORTER)
-        anim_seq_bytes = mdl.hitboxes_offset + (mdl.num_hitboxes * 32) # 32 = class mdl_hitbox binary_format.
-        # NEED TODO mdl_bone_anim BELOW
+        mdl.anim_seq_offset = mdl.hitboxes_offset + (mdl.num_hitboxes * 32) # 32 = class mdl_hitbox binary_format.
 
         comp = dlg.comp_list[0]
         comp_framesgroup = comp.dictitems['Frames:fg'].subitems
-        QuArK_seq_frames = []
-        cur_name = None
+
+        #Sort the frames per sequence
+        mdl.num_anim_seq = 0
         for i in xrange(0, len(comp_framesgroup)):
             frame_name = comp_framesgroup[i].name
             if frame_name.find("baseframe") != -1:
                 continue
             name = frame_name.split(" ")[0]
-            if cur_name is None:
-                sequence_desc = mdl_sequence_desc()
-                sequence_desc.label = name
-                if comp_framesgroup[i].dictspec.has_key('frame_flags') and comp_framesgroup[i].dictspec['frame_flags'] != "None":
-                    sequence_desc.flags = int(comp_framesgroup[i].dictspec['frame_flags'])
-                sequence_desc.anim_offset = anim_seq_bytes
-                cur_name = name
-                sequence = []
-            if name == cur_name:
-                sequence.append(comp_framesgroup[i])
-            else:
-                sequence_desc.numframes = len(sequence)
-                anim_bones = sequence_desc.anim_bones
-                anim_seq_bytes += mdl.num_bones * 12 # 12 = class mdl_bone_anim binary_format.
-                for j in xrange(0, mdl.num_bones):
-                    bone_name = mdl.QuArK_bones[j].name
-                    anim_bone = mdl_bone_anim()
-        #            for m_frame in xrange(sequence_desc.numframes):
-        #                pos = [[]] * len(mdl.bones)
-        #                quat = [[]] * len(mdl.bones)
-                        # if any ONE pos or quat values change THEN anim_value = mdl_bone_anim_value()
-                    anim_bones.append(anim_bone)
-                mdl.sequence_descs.append(sequence_desc)
-                QuArK_seq_frames.append(sequence)
-                sequence_desc = mdl_sequence_desc()
-                sequence_desc.label = name
-                sequence_desc.anim_offset = anim_seq_bytes
-                cur_name = name
-                sequence = []
-                sequence.append(comp_framesgroup[i])
-            if i == len(comp_framesgroup)-1: # Processes LAST sequence data.
-                sequence_desc.numframes = len(sequence)
-                anim_bones = sequence_desc.anim_bones
-                anim_seq_bytes += mdl.num_bones * 12 # 12 = class mdl_bone_anim binary_format.
-                for j in xrange(0, mdl.num_bones):
-                    bone_name = mdl.QuArK_bones[j].name
-                    anim_bone = mdl_bone_anim()
-        #            for m_frame in xrange(sequence_desc.numframes):
-        #                pos = [[]] * len(mdl.bones)
-        #                quat = [[]] * len(mdl.bones)
-                        # if any ONE pos or quat values change THEN anim_value = mdl_bone_anim_value()
-                    anim_bones.append(anim_bone)
-                mdl.sequence_descs.append(sequence_desc)
-                QuArK_seq_frames.append(sequence)
-        mdl.QuArK_anim_seq_frames.append(QuArK_seq_frames)
-        mdl.num_anim_seq = len(mdl.sequence_descs)
+            if not mdl.QuArK_anim_seq_frames.has_key(name):
+                mdl.num_anim_seq += 1
+                mdl.QuArK_anim_seq_frames[name] = []
+            mdl.QuArK_anim_seq_frames[name].append(comp_framesgroup[i])
 
-        ### OFFSET FOR ANIM_SEQ SECTION.
-        mdl.anim_seq_offset = anim_seq_bytes # STILL NEED TO ADD THEIR CRAP FOR "MDL Bone Anim" BOUNCING AROUND GARBAGE! (Valve SUCKS!)
+        ### OFFSET FOR BONE_ANIM SECTION.
+        mdl_bone_anim_offset = mdl.anim_seq_offset + (mdl.num_anim_seq * 176) # 176 = class mdl_sequence_desc binary_format.
+
+        #Now loop over the sequences, and store the animation data
+        for name in mdl.QuArK_anim_seq_frames.keys():
+            sequence_desc = mdl_sequence_desc()
+            sequence_desc.label = name
+            if comp_framesgroup[i].dictspec.has_key('frame_flags') and comp_framesgroup[i].dictspec['frame_flags'] != "None":
+                sequence_desc.flags = int(comp_framesgroup[i].dictspec['frame_flags'])
+            sequence_desc.anim_offset = mdl_bone_anim_offset
+            sequence_desc.numframes = len(mdl.QuArK_anim_seq_frames[name])
+            for j in xrange(0, mdl.num_bones):
+                anim_bone = mdl_bone_anim()
+                sequence_desc.anim_bones.append(anim_bone)
+            mdl.sequence_descs.append(sequence_desc)
+            mdl_bone_anim_offset += 12 * mdl.num_bones # 12 = class mdl_bone_anim binary_format.
+
+        ### OFFSET FOR BONE_ANIM_VALUE SECTION.
+        mdl_bone_anim_value_offset = mdl_bone_anim_offset
+
+        #Reset the offset for the mdl_bone_anim
+        mdl_bone_anim_offset = mdl.anim_seq_offset + (mdl.num_anim_seq * 176) # 176 = class mdl_sequence_desc binary_format.
+
+        #Now export all the animation data
+        all_data = []
+        bone_min_max = [[]] * mdl.num_bones
+        for anim_seq in mdl.sequence_descs:
+            frames = mdl.QuArK_anim_seq_frames[anim_seq.label]
+            all_bone_data = []
+            for j in xrange(0, mdl.num_bones):
+                QuArK_bone = mdl.QuArK_bones[j]
+                parent = QuArK_bone.dictspec['parent_name']
+                if QuArK_bone_name2bone_index.has_key(parent):
+                    parent_bone = mdl.QuArK_bones[QuArK_bone_name2bone_index[parent]]
+                else:
+                    parent_bone = None
+
+                data = [[], [], [], [], [], []]   # X, Y, Z, quatX, quatY, quatZ
+                for m_frame in xrange(anim_seq.numframes):
+                    bone_data = editor.ModelComponentList['bonelist'][QuArK_bone.name]['frames'][frames[m_frame].name]
+                    bone_pos = bone_data['position']
+                    bone_rot = bone_data['rotmatrix']
+                    if parent_bone:
+                        parent_bone_data = editor.ModelComponentList['bonelist'][parent_bone.name]['frames'][frames[m_frame].name]
+                        parent_pos = parent_bone_data['position']
+                        parent_rot = parent_bone_data['rotmatrix']
+
+                        bone_pos = quarkx.vect(bone_pos)
+                        bone_rot = quarkx.matrix(bone_rot)
+                        parent_pos = quarkx.vect(parent_pos)
+                        parent_rot = quarkx.matrix(parent_rot)
+                        bone_pos = ~parent_rot * (bone_pos - parent_pos)
+                        bone_rot = ~parent_rot * bone_rot
+                        bone_pos = bone_pos.tuple
+                        bone_rot = bone_rot.tuple
+                    m = matrix2euler(bone_rot)
+
+                    data[0] += [bone_pos[0]]
+                    data[1] += [bone_pos[1]]
+                    data[2] += [bone_pos[2]]
+                    data[3] += [m[0]]
+                    data[4] += [m[1]]
+                    data[5] += [m[2]]
+
+                #Update the min,max, if needed
+                for k in xrange(6):
+                    if len(bone_min_max[j]) <= k:
+                        #Not yet stored
+                        min = data[k][0]
+                        max = data[k][0]
+                    else:
+                        min, max = bone_min_max[j][k]
+                    for l in xrange(len(data[k])):
+                        if data[k][l] < min:
+                            min = data[k][l]
+                        if data[k][l] > max:
+                            max = data[k][l]
+                    if len(bone_min_max[j]) <= k:
+                        bone_min_max[j] += [(min, max)]
+                    else:
+                        bone_min_max[j][k] = (min, max)
+
+                all_bone_data += [data]
+            all_data += [all_bone_data]
+
+        for i in xrange(len(mdl.sequence_descs)):
+            anim_seq = mdl.sequence_descs[i]
+            frames = mdl.QuArK_anim_seq_frames[anim_seq.label]
+            all_bone_data = all_data[i]
+            for j in xrange(0, mdl.num_bones):
+                data = all_bone_data[j]
+
+                ## NOTE 4 of HL1 EXPORTER NOTES at top of this file.
+                # Calculate the final bone.scale, apply them and then save the data
+                for k in xrange(6):
+                    # Get the largest deviation from value, and set that as the scale
+                    min, max = bone_min_max[j][k]
+                    max = abs((max - mdl.bones[j].value[k]) / 32767)
+                    min = abs((mdl.bones[j].value[k] - min) / -32768)
+                    if min > max:
+                        mdl.bones[j].scale[k] = min
+                    else:
+                        mdl.bones[j].scale[k] = max
+                    if mdl.bones[j].scale[k] == 0.0:
+                        #To prevent division by zero error
+                        mdl.bones[j].scale[k] = 1.0
+
+                    raw_data = []
+                    for l in xrange(len(data[k])):
+                        number = int((data[k][l] - mdl.bones[j].value[k]) / mdl.bones[j].scale[k])
+                        if number < -32768:
+                            number = -32768
+                        if number > 32767:
+                            number = 32767
+                        raw_data += [number]
+
+                    raw_data = ConvertToHL1AnimData(raw_data)
+                    mdl.QuArK_anim_data += raw_data
+                    anim_seq.anim_bones[j].offset[k] = mdl_bone_anim_value_offset - mdl_bone_anim_offset
+                    mdl_bone_anim_value_offset += len(raw_data)
+
+                mdl_bone_anim_offset += 12 # 12 = class mdl_bone_anim binary_format.
+
+        #Try to be nice; delete big memory hog
+        del all_data
+        del bone_min_max
 
         ### OFFSET FOR DEMAND_HDR SECTION.
-        mdl.demand_hdr_offset = mdl.anim_seq_offset + (mdl.num_anim_seq * 176) # 176 = class mdl_sequence_desc binary_format.
+        mdl.demand_hdr_offset = mdl_bone_anim_value_offset
         mdl.num_demand_hdr_groups = 1
         for i in xrange(mdl.num_demand_hdr_groups):
             mdl.demand_seq_groups.append(mdl_demand_group())
 
         ### OFFSET FOR BODYPARTS SECTION.
-        mdl.transitions_offset = mdl.demand_hdr_offset + (mdl.num_demand_hdr_groups * 104) # 104 = class mdl_sequence_desc binary_format.
+        mdl.transitions_offset = mdl.demand_hdr_offset + (mdl.num_demand_hdr_groups * 104) # 104 = class mdl_demand_group binary_format.
         mdl.bodyparts_offset = mdl.transitions_offset
 
         mdl.num_bodyparts = 1
@@ -2220,7 +2295,7 @@ def fill_mdl(dlg):
             skin_info.width = int(size[0])
             skin_info.height = int(size[1])
             skin_info.skin_offset = mdl.texture_data_offset + next_skin_offset
-            skin_info.dump()
+          #  skin_info.dump()
             if dlg.skins[i].dictspec.has_key('Pal'): # in 8 bit format
                 next_skin_offset += skin_info.width * skin_info.height # Each pixel = 1 type "B" = 1 byte.
                 next_skin_offset += 256 * 3 # The skin's Palette data = 256 pixels * 3 type "B" at 1 byte\ea. for a RGB value.
@@ -2280,7 +2355,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     skins_group = []
     demand_seq_groups = []
     bone_controls = []
-    QuArK_anim_seq_frames = []
+    QuArK_anim_seq_frames = {}
+    QuArK_anim_data = ""
     sequence_descs = []
     hitboxes = []
     attachments = []
@@ -2297,7 +2373,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.skins_group = []       # A list of the skins.
         self.demand_seq_groups = [] # A list of the demand sequence groups.
         self.bone_controls = []     # A list of the bone controllers.
-        self.QuArK_anim_seq_frames = [] # A list of the QuArK frames, for our use only.
+        self.QuArK_anim_seq_frames = {} # A dictionary of the QuArK frames, for our use only. Key = sequence name, value = list of frames
+        self.QuArK_anim_data = ""   # All the raw bone_anim_value data.
         self.sequence_descs = []    # A list of the sequence descriptions (leads into grouped frames).
         self.hitboxes = []          # A list of the hitboxes.
         self.attachments = []       # A list of the attachments, our QuArK tags and their tag frames.
@@ -2378,18 +2455,19 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             self.hitboxes[i].save(file)
           #  self.hitboxes[i].dump()
 
-        # NEED TO WRITE THE ANIMATION FRAMES DATA HERE, COMES FROM SETUP BONES class mdl_bone_anim
-        #   class mdl_bone_anim_value is used for calculating the bones pos and quat values per frame.
-        # load the animation sequence data.
+        # write the animation sequence descriptions data.
+        for i in xrange(self.num_anim_seq):
+            self.sequence_descs[i].save(file)
+          #  self.sequence_descs[i].dump()
+
+        # write the animation sequence data.
         for i in xrange(self.num_anim_seq):
             for anim_bone in self.sequence_descs[i].anim_bones:
                 anim_bone.save(file)
                 #  anim_bone.dump()
 
-        # load the animation sequence descriptions data.
-        for i in xrange(self.num_anim_seq):
-            self.sequence_descs[i].save(file)
-          #  self.sequence_descs[i].dump()
+        # write the animation data.
+        file.write(self.QuArK_anim_data)
 
         # write the header for demand sequence group data
         for i in xrange(self.num_demand_hdr_groups):
@@ -2943,6 +3021,9 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2012/01/30 03:15:06  cdunde
+# Fix by DanielPharos to correctly position vertexes of the meshes with their 'baseframe' bones.
+#
 # Revision 1.2  2012/01/11 19:25:45  cdunde
 # To remove underscore lines from folder and model names then combine them with one
 # underscore line at the end for proper editor functions separation capabilities later.
