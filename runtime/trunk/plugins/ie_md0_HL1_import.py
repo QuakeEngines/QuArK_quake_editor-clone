@@ -142,6 +142,24 @@ def QuaternionSlerp(q1, q2, m_frame=0.0):
             q[i] = sclp * q1[i] + sclq * q[i]
     return q
 
+def SlerpBones(pos1, quat1, pos2, quat2, s):
+    pos = [[]] * len(pos1)
+    quat = [[]] * len(pos1)
+
+    if (s < 0):
+        s = 0
+    elif (s > 1.0):
+        s = 1.0
+
+    s1 = 1.0 - s
+
+    for i in xrange(len(pos1)):
+        quat[i] = QuaternionSlerp(quat1[i], quat2[i], s)
+        pos[i] = [pos1[i][0] * s1 + pos2[i][0] * s,
+                  pos1[i][1] * s1 + pos2[i][1] * s,
+                  pos1[i][2] * s1 + pos2[i][2] * s]
+    return pos, quat
+
 def AngleQuaternion(angles):
     # FIXME: rescale the inputs to 1/2 angle
     # r = roll, p = pitch, y = yaw
@@ -972,13 +990,12 @@ def CalcBoneAdj(self, m_controller, m_mouth):
             if (pbonecontroller.type & STUDIO_RLOOP):
                 value = m_controller[i] * (360.0/256.0) + pbonecontroller.start
             else:
-              #  value = m_controller[i] / 255.0
-                value = m_controller[i]
+                value = m_controller[i] / 255.0
                 if (value < 0):
                     value = 0.0
                 elif (value > 1.0):
                     value = 1.0
-              #  value = (1.0 - value) * pbonecontroller.start + value * pbonecontroller.end
+                value = (1.0 - value) * pbonecontroller.start + value * pbonecontroller.end
         else:
             value = m_mouth / 64.0
             if (value > 1.0):
@@ -988,10 +1005,7 @@ def CalcBoneAdj(self, m_controller, m_mouth):
         if ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_XR) \
         or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_YR) \
         or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_ZR):
-            if i == 0:
-                m_adj += [value * (math.pi / 180.0)]
-            else:
-                m_adj += [value]
+            m_adj += [value * (math.pi / 180.0)]
         elif ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_X) \
           or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_Y) \
           or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_Z):
@@ -1024,29 +1038,29 @@ def CalcBoneQuaternion(self, m_frame, s, pbone, panim, m_adj):
             # Bah, missing blend!
             if (animvalue.valid > k):
                 panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                angle1[i] = animvalue.value
+                animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                angle1[i] = animvalueX.value
                 if (animvalue.valid > k + 1):
                     panimvalueX = panimvalue + (k+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    angle2[i] = animvalue.value
+                    animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    angle2[i] = animvalueX.value
                 else:
                     if (animvalue.total > k + 1):
                         angle2[i] = angle1[i]
                     else:
                         panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                        animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                        angle2[i] = animvalue.value
+                        animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                        angle2[i] = animvalueX.value
             else:
                 panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                angle1[i] = animvalue.value
+                animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                angle1[i] = animvalueX.value
                 if (animvalue.total > k + 1):
                     angle2[i] = angle1[i]
                 else:
                     panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    angle2[i] = animvalue.value
+                    animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    angle2[i] = animvalueX.value
             angle1[i] = bone.value[i+3] + angle1[i] * bone.scale[i+3]
             angle2[i] = bone.value[i+3] + angle2[i] * bone.scale[i+3]
 
@@ -1085,26 +1099,26 @@ def CalcBonePosition(self, m_frame, s, pbone, panim, m_adj):
                 # and there's more data in the span
                 if (animvalue.valid > k + 1):
                     panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    animvalue1 = Read_mdl_bone_anim_value(self, file, panimvalueX)
                     panimvalueX = panimvalue + (k+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
                     animvalue2 = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += (animvalue.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
+                    pos[i] += (animvalue1.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
                 else:
                     panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += animvalue.value * bone.scale[i]
+                    animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    pos[i] += animvalueX.value * bone.scale[i]
             else:
                 # are we at the end of the repeating values section and there's another section with data?
                 if (animvalue.total <= k + 1):
                     panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    animvalue1 = Read_mdl_bone_anim_value(self, file, panimvalueX)
                     panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
                     animvalue2 = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += (animvalue.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
+                    pos[i] += (animvalue1.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
                 else:
                     panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += animvalue.value * bone.scale[i]
+                    animvalueX = Read_mdl_bone_anim_value(self, file, panimvalueX)
+                    pos[i] += animvalueX.value * bone.scale[i]
         if (bone.bonecontroller[i] != -1):
             pos[i] += m_adj[bone.bonecontroller[i]]
 
@@ -1189,39 +1203,143 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
             tobj.logcon ("      seq.numframes: " + str(seq.numframes))
             tobj.logcon ("----------------")
         for m_frame in xrange(seq.numframes):
-            pos = [[]] * len(self.bones)
-            quat = [[]] * len(self.bones)
+            def set_bone_controller(controller_index, value):
+                our_controller = -1
+                for j in range(self.num_bone_controls):
+                    pbonecontroller = self.bone_controls[j]
+                    if pbonecontroller.index == controller_index:
+                        our_controller = j
+                        break
+                if our_controller == -1:
+                    #Couldn't find it; nothing to do
+                    return 0
 
-            #@FIXME:
-            m_controller = [0.0, 0.0, 0.0, 0.0]
-            m_mouth = 0.0
+                pbonecontroller = self.bone_controls[our_controller]
+                # wrap 0..360 if it's a rotational controller
+                if (pbonecontroller.type & (STUDIO_XR | STUDIO_YR | STUDIO_ZR)):
+                    # ugly hack, invert value if end < start
+                    if (pbonecontroller.end < pbonecontroller.start):
+                        value = -value
 
-            # add in programatic controllers
-            m_adj = CalcBoneAdj(self, m_controller, m_mouth)
+                    # does the controller not wrap?
+                    if (pbonecontroller.start + 359.0 >= pbonecontroller.end):
+                        if (value > ((pbonecontroller.start + pbonecontroller.end) / 2.0) + 180):
+                            value = value - 360
+                        if (value < ((pbonecontroller.start + pbonecontroller.end) / 2.0) - 180):
+                            value = value + 360
+                    else:
+                        if (value > 360):
+                            value = value - int(value / 360.0) * 360.0
+                        elif (value < 0):
+                            value = value + int((value / -360.0) + 1) * 360.0
 
-            for pbone in range(len(self.bones)):
-                panim = seq_panims[0][pbone]
-                quat[pbone] = CalcBoneQuaternion(self, m_frame, 0.0, pbone, panim, m_adj)
-                pos[pbone] = CalcBonePosition(self, m_frame, 0.0, pbone, panim, m_adj)
+                result = int(255 * (value - pbonecontroller.start) / (pbonecontroller.end - pbonecontroller.start))
+                if (result < 0):
+                    result = 0
+                if (result > 255):
+                    result = 255
+                return result
 
-            if (seq.motiontype & STUDIO_X):
-                pos[seq.motionbone][0] = 0.0
-            if (seq.motiontype & STUDIO_Y):
-                pos[seq.motionbone][1] = 0.0
-            if (seq.motiontype & STUDIO_Z):
-                pos[seq.motionbone][2] = 0.0
+            def set_mouth(value):
+                our_controller = -1
+                for j in range(self.num_bone_controls):
+                    pbonecontroller = self.bone_controls[j]
+                    if pbonecontroller.index == 4:
+                        our_controller = j
+                        break
+                if our_controller == -1:
+                    #Couldn't find it; nothing to do
+                    return 0
+
+                pbonecontroller = self.bone_controls[our_controller]
+                # wrap 0..360 if it's a rotational controller
+                if (pbonecontroller.type & (STUDIO_XR | STUDIO_YR | STUDIO_ZR)):
+                    # ugly hack, invert value if end < start
+                    if (pbonecontroller.end < pbonecontroller.start):
+                        value = -value
+
+                    # does the controller not wrap?
+                    if (pbonecontroller.start + 359.0 >= pbonecontroller.end):
+                        if (value > ((pbonecontroller.start + pbonecontroller.end) / 2.0) + 180):
+                            value = value - 360
+                        if (value < ((pbonecontroller.start + pbonecontroller.end) / 2.0) - 180):
+                            value = value + 360
+                    else:
+                        if (value > 360):
+                            value = value - int(value / 360.0) * 360.0
+                        elif (value < 0):
+                            value = value + int((value / -360.0) + 1) * 360.0
+
+                result = int(64 * (value - pbonecontroller.start) / (pbonecontroller.end - pbonecontroller.start))
+                if (result < 0):
+                    result = 0
+                if (result > 64):
+                    result = 64
+                return result
+
+            #FIXME: User may want to set these? We're currently setting them to value '0' (zero).
+            m_controller = []
+            for i in xrange(4):
+                m_controller += [set_bone_controller(i, 0.0)]
+            m_mouth = set_mouth(0.0)
+
+            def CalcRotations(seq_panim):
+                pos = [[]] * len(self.bones)
+                quat = [[]] * len(self.bones)
+
+                # add in programatic controllers
+                m_adj = CalcBoneAdj(self, m_controller, m_mouth)
+
+                for pbone in range(len(self.bones)):
+                    panim = seq_panim[pbone]
+                    quat[pbone] = CalcBoneQuaternion(self, m_frame, 0.0, pbone, panim, m_adj)
+                    pos[pbone] = CalcBonePosition(self, m_frame, 0.0, pbone, panim, m_adj)
+
+                if (seq.motiontype & STUDIO_X):
+                    pos[seq.motionbone][0] = 0.0
+                if (seq.motiontype & STUDIO_Y):
+                    pos[seq.motionbone][1] = 0.0
+                if (seq.motiontype & STUDIO_Z):
+                    pos[seq.motionbone][2] = 0.0
+
+                return pos, quat
+
+            pos, quat = CalcRotations(seq_panims[0])
 
             if (seq.numblends > 1):
-                panim = seq_panims[1][pbone]
+                def set_blending(blending_index, value):
+                    if (seq.blendtype[blending_index] == 0):
+                        return value
 
-                #FIXME: NEED TO DO!
-  #              Dump = float	        	s;
+                    if (seq.blendtype[blending_index] & (STUDIO_XR | STUDIO_YR | STUDIO_ZR)):
+                        # ugly hack, invert value if end < start
+                        if (seq.blendend[blending_index] < seq.blendstart[blending_index]):
+                            value = -value
 
-  #  	CalcRotations( pos2, q2, pseqdesc, panim, m_frame );
-  #  	s = m_blending[0] / 255.0;
+                        # does the controller not wrap?
+                        if (seq.blendstart[blending_index] + 359.0 >= seq.blendend[blending_index]):
+                            if (value > ((seq.blendstart[blending_index] + seq.blendend[blending_index]) / 2.0) + 180):
+                                value = value - 360
+                            if (value < ((seq.blendstart[blending_index] + seq.blendend[blending_index]) / 2.0) - 180):
+                                value = value + 360
 
-  #  	SlerpBones( quat, pos, q2, pos2, s );
+                    result = int(255 * (value - seq.blendstart[blending_index]) / (seq.blendend[blending_index] - seq.blendstart[blending_index]))
+                    if (result < 0):
+                        result = 0
+                    if (result > 255):
+                        result = 255
+                    return result
 
+                #FIXME: User may want to set these? We're currently setting them to value '0.5'.
+                m_blending = [set_blending(0, 0.5), set_blending(1, 0.5)]
+
+                pos2, quat2 = CalcRotations(seq_panims[1])
+
+                s = m_blending[0] / 255.0;
+
+                pos, quat = SlerpBones(pos, quat, pos2, quat2, s)
+
+  # FIXME:
   #  	if (pseqdesc->numblends == 4)
   #      {
   #      	panim += m_pstudiohdr->numbones;
@@ -1424,7 +1542,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.bone_controls_offset = data[89]
         self.num_hitboxes = data[90]
         self.hitboxes_offset = data[91]
-        self.num_anim_seq = data[92]
+        self.num_anim_seq = data[92] #FIXME: Evil override to make things load faster for testing!
         self.anim_seq_offset = data[93]
         self.num_demand_hdr_groups = data[94]
         self.demand_hdr_offset = data[95]
@@ -2365,6 +2483,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2012/02/11 21:46:24  cdunde
+# To remove unused list and
+# reposition data load call for posibale future max frames dialog feature.
+#
 # Revision 1.11  2012/01/11 19:25:45  cdunde
 # To remove underscore lines from folder and model names then combine them with one
 # underscore line at the end for proper editor functions separation capabilities later.
