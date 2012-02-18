@@ -351,6 +351,15 @@ def make_bmp_header(header):
 # MDL Exporter Functions, QuArK's own
 ######################################################
 def ConvertToHL1AnimData(data):
+    #Special case: if all zeroes, there's no data to store!
+    AllZeroes = 1
+    for number in data:
+        if number != 0:
+            AllZeroes = 0
+            break
+    if AllZeroes:
+        return ""
+
     result = []
     valid = 0
     total = 0
@@ -1973,31 +1982,23 @@ def fill_mdl(dlg):
             name = frame_name.split(" ")[0]
             if not mdl.QuArK_anim_seq_frames.has_key(name):
                 mdl.num_anim_seq += 1
+                mdl.QuArK_anim_seq += [name]
                 mdl.QuArK_anim_seq_frames[name] = []
             mdl.QuArK_anim_seq_frames[name].append(comp_framesgroup[i])
 
-        ### OFFSET FOR BONE_ANIM SECTION.
-        mdl_bone_anim_offset = mdl.anim_seq_offset + (mdl.num_anim_seq * 176) # 176 = class mdl_sequence_desc binary_format.
-
         #Now loop over the sequences, and store the animation data
-        for name in mdl.QuArK_anim_seq_frames.keys():
+        for name in mdl.QuArK_anim_seq:
             sequence_desc = mdl_sequence_desc()
             sequence_desc.label = name
-            if comp_framesgroup[i].dictspec.has_key('frame_flags') and comp_framesgroup[i].dictspec['frame_flags'] != "None":
-                sequence_desc.flags = int(comp_framesgroup[i].dictspec['frame_flags'])
-            sequence_desc.anim_offset = mdl_bone_anim_offset
+            #The frame_flags are supposed to be the same for all frames of a single animation sequence; so just take the first frame and use its frame_flags
+            frame = mdl.QuArK_anim_seq_frames[name][0]
+            if frame.dictspec.has_key('frame_flags') and frame.dictspec['frame_flags'] != "None":
+                sequence_desc.flags = int(frame.dictspec['frame_flags'])
             sequence_desc.numframes = len(mdl.QuArK_anim_seq_frames[name])
             for j in xrange(0, mdl.num_bones):
                 anim_bone = mdl_bone_anim()
                 sequence_desc.anim_bones.append(anim_bone)
             mdl.sequence_descs.append(sequence_desc)
-            mdl_bone_anim_offset += 12 * mdl.num_bones # 12 = class mdl_bone_anim binary_format.
-
-        ### OFFSET FOR BONE_ANIM_VALUE SECTION.
-        mdl_bone_anim_value_offset = mdl_bone_anim_offset
-
-        #Reset the offset for the mdl_bone_anim
-        mdl_bone_anim_offset = mdl.anim_seq_offset + (mdl.num_anim_seq * 176) # 176 = class mdl_sequence_desc binary_format.
 
         #Now export all the animation data
         all_data = []
@@ -2061,12 +2062,14 @@ def fill_mdl(dlg):
                 all_bone_data += [data]
             all_data += [all_bone_data]
 
+        mdl.QuArK_anim_data = []
         for i in xrange(len(mdl.sequence_descs)):
             anim_seq = mdl.sequence_descs[i]
-            frames = mdl.QuArK_anim_seq_frames[anim_seq.label]
             all_bone_data = all_data[i]
+            mdl.QuArK_anim_data += [[]]
             for j in xrange(0, mdl.num_bones):
                 data = all_bone_data[j]
+                mdl.QuArK_anim_data[i] += [[]]
 
                 ## NOTE 4 of HL1 EXPORTER NOTES at top of this file.
                 # Calculate the final bone.scale, apply them and then save the data
@@ -2092,19 +2095,35 @@ def fill_mdl(dlg):
                             number = 32767
                         raw_data += [number]
 
-                    raw_data = ConvertToHL1AnimData(raw_data)
-                    mdl.QuArK_anim_data += raw_data
-                    anim_seq.anim_bones[j].offset[k] = mdl_bone_anim_value_offset - mdl_bone_anim_offset
-                    mdl_bone_anim_value_offset += len(raw_data)
-
-                mdl_bone_anim_offset += 12 # 12 = class mdl_bone_anim binary_format.
+                    mdl.QuArK_anim_data[i][j] += [ConvertToHL1AnimData(raw_data)]
 
         #Try to be nice; delete big memory hog
         del all_data
         del bone_min_max
 
+        ### OFFSET FOR BONE_ANIM SECTION.
+        mdl_bone_anim_offset = mdl.anim_seq_offset + (mdl.num_anim_seq * 176) # 176 = class mdl_sequence_desc binary_format.
+
+        for i in xrange(len(mdl.sequence_descs)):
+            anim_seq = mdl.sequence_descs[i]
+            anim_seq.anim_offset = mdl_bone_anim_offset
+
+            mdl_bone_anim_offset += 12 * mdl.num_bones # 12 = class mdl_bone_anim binary_format.
+
+            mdl_bone_anim_value_offset = 0 #This is the total number of bytes of animation data stores for this mdl_bone_anim so far.
+            for j in xrange(0, mdl.num_bones):
+                for k in xrange(6):
+                    raw_data = mdl.QuArK_anim_data[i][j][k]
+                    if len(raw_data) == 0:
+                        #No data to store
+                        anim_seq.anim_bones[j].offset[k] = 0
+                    else:
+                        anim_seq.anim_bones[j].offset[k] = mdl_bone_anim_value_offset + (12 * (mdl.num_bones - j)) # 12 = class mdl_bone_anim binary_format.
+                        mdl_bone_anim_value_offset += len(raw_data)
+            mdl_bone_anim_offset += mdl_bone_anim_value_offset
+
         ### OFFSET FOR DEMAND_HDR SECTION.
-        mdl.demand_hdr_offset = mdl_bone_anim_value_offset
+        mdl.demand_hdr_offset = mdl_bone_anim_offset
         mdl.num_demand_hdr_groups = 1
         for i in xrange(mdl.num_demand_hdr_groups):
             mdl.demand_seq_groups.append(mdl_demand_group())
@@ -2355,8 +2374,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     skins_group = []
     demand_seq_groups = []
     bone_controls = []
+    QuArK_anim_seq = []
     QuArK_anim_seq_frames = {}
-    QuArK_anim_data = ""
+    QuArK_anim_data = []
     sequence_descs = []
     hitboxes = []
     attachments = []
@@ -2373,8 +2393,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.skins_group = []       # A list of the skins.
         self.demand_seq_groups = [] # A list of the demand sequence groups.
         self.bone_controls = []     # A list of the bone controllers.
+        self.QuArK_anim_seq = []    # A list of the QuArK frame groups in their proper tree-view order.
         self.QuArK_anim_seq_frames = {} # A dictionary of the QuArK frames, for our use only. Key = sequence name, value = list of frames
-        self.QuArK_anim_data = ""   # All the raw bone_anim_value data.
+        self.QuArK_anim_data = []   # A list of the raw bone_anim_value data.
         self.sequence_descs = []    # A list of the sequence descriptions (leads into grouped frames).
         self.hitboxes = []          # A list of the hitboxes.
         self.attachments = []       # A list of the attachments, our QuArK tags and their tag frames.
@@ -2462,12 +2483,14 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
 
         # write the animation sequence data.
         for i in xrange(self.num_anim_seq):
-            for anim_bone in self.sequence_descs[i].anim_bones:
-                anim_bone.save(file)
-                #  anim_bone.dump()
-
-        # write the animation data.
-        file.write(self.QuArK_anim_data)
+            # write the bone anim data.
+            for j in xrange(len(self.sequence_descs[i].anim_bones)):
+                self.sequence_descs[i].anim_bones[j].save(file)
+                #  self.sequence_descs[i].anim_bones[j].dump()
+            # write the bone anim value data.
+            for j in xrange(len(self.sequence_descs[i].anim_bones)):
+                for k in xrange(6):
+                    file.write(self.QuArK_anim_data[i][j][k])
 
         # write the header for demand sequence group data
         for i in xrange(self.num_demand_hdr_groups):
@@ -3021,6 +3044,9 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2012/02/12 03:40:56  cdunde
+# Code by DanielPharos to export animations.
+#
 # Revision 1.3  2012/01/30 03:15:06  cdunde
 # Fix by DanielPharos to correctly position vertexes of the meshes with their 'baseframe' bones.
 #
