@@ -1537,9 +1537,9 @@ class mdl_obj:
     num_textures = 0             #item   96     int, The number of raw textures.
     texture_index_offset = 0     #item   97     int, The textures data index starting point in the file, in bytes.
     texture_data_offset = 0      #item   98     int, The textures data starting point in the file, in bytes.
-    num_skins = 0                #item   99     int, The number of replaceable textures for the model.
+    num_skin_refs = 0            #item   99     int, The number of replaceable textures for the model.
     num_skin_groups = 0          #item   100    int, The number of texture groups for the model.
-    skins_offset = 0             #item   101    int, The skin textures data starting point in the file, in bytes.
+    skin_refs_offset = 0         #item   101    int, The skin ref data starting point in the file, in bytes.
     num_bodyparts = 0            #item   102    int, The number of body parts for the model.
     bodyparts_offset = 0         #item   103    int, The body parts data starting point in the file, in bytes.
     num_attachments = 0          #item   104    int, The number of queryable attachable points for the model.
@@ -1556,6 +1556,7 @@ class mdl_obj:
     #mdl data objects
     bones = []
     skins_group = []
+    skinrefs = []
     demand_seq_groups = []
     bone_controls = []
     sequence_descs = []
@@ -1568,9 +1569,12 @@ class mdl_obj:
     vertices = []
     tagsgroup = []
 
+    curskinfamily = 0
+
     def __init__ (self):
         self.bones = []             # A list of the bones.
         self.skins_group = []       # A list of the skins.
+        self.skinrefs = []          # A list of the skinref data.
         self.demand_seq_groups = [] # A list of the demand sequence groups.
         self.bone_controls = []     # A list of the bone controllers.
 
@@ -1584,6 +1588,8 @@ class mdl_obj:
         self.faces = []             # A list of the triangles.
         self.vertices = []          # A list of the vertexes.
         self.tagsgroup = []         # A list of tag (attachment) groups to store tag frames into for each tag.
+
+        self.curskinfamily = 0 #Select a skin family to use. Default = 0.
 
 
     def load(self, file, folder_name, mdl_name, message):
@@ -1661,9 +1667,9 @@ class mdl_obj:
         self.num_textures = data[96]
         self.texture_index_offset = data[97]
         self.texture_data_offset = data[98]
-        self.num_skins = data[99]
+        self.num_skin_refs = data[99]
         self.num_skin_groups = data[100]
-        self.skins_offset = data[101]
+        self.skin_refs_offset = data[101]
         self.num_bodyparts = data[102]
         self.bodyparts_offset = data[103]
         self.num_attachments = data[104]
@@ -1714,7 +1720,7 @@ class mdl_obj:
 
         # load the skins group data
         file.seek(ofsBegin + self.texture_index_offset, 0)
-        for i in xrange(self.num_skins):
+        for i in xrange(self.num_textures):
             self.skins_group.append(mdl_skin_info())
             self.skins_group[i].load(file)
           #  self.skins_group[i].dump()
@@ -1739,6 +1745,17 @@ class mdl_obj:
                 #No need to unpack; we would repack it immediately anyway: "BBB" --> "BBB"
                 Palette += temp_data
             skin.Palette = Palette
+
+        # load the skinref/skinfamilies data
+        binary_format = "<h"
+        file.seek(ofsBegin + mdl.skin_refs_offset, 0)
+        for i in xrange(self.num_skin_groups):
+            x_skinrefs = []
+            for j in xrange(self.num_skin_refs):
+                temp_data = file.read(struct.calcsize(binary_format))
+                data = struct.unpack(binary_format, temp_data)
+                x_skinrefs += [data[0]]
+            self.skinrefs += [x_skinrefs]
 
 
         ## Setup items needed for QuArK.
@@ -1833,11 +1850,13 @@ class mdl_obj:
                     Component = quarkx.newobj(UseName + '_' + name + ' ' + str(k) + ':mc')
                     sdogroup = quarkx.newobj('SDO:sdo')
                     # Create the "Skins:sg" group.
+                    skinref = self.bodyparts[i].models[j].meshes[k].skinref
                     try:
-                        skinref = self.bodyparts[i].models[j].meshes[k].skinref
-                        skinsize = (self.skins_group[skinref].width, self.skins_group[skinref].height)
+                        skin_index = self.skinrefs[self.curskinfamily][skinref]
                     except:
                         skinsize = (256, 256)
+                    else:
+                        skinsize = (self.skins_group[skin_index].width, self.skins_group[skinref].height)
                     skingroup = quarkx.newobj('Skins:sg')
                     skingroup['type'] = chr(2)
                     # Create the "Frames:fg" group.
@@ -2042,14 +2061,16 @@ class mdl_obj:
                         temp_data = file.read(size)
                         data = struct.unpack(binary_format, temp_data)
                         tris_group = int(data[0])
-                        skinwidth = skinheight = 256
                         skinref = self.bodyparts[i].models[j].meshes[k].skinref
                         try:
-                            skinflags = self.skins_group[skinref].flags
+                            skin_index = self.skinrefs[self.curskinfamily][skinref]
+                        except:
+                            skinwidth = skinheight = 256
+                            skinflags = 0
+                        else:
                             skinwidth = float(self.skins_group[skinref].width)
                             skinheight = float(self.skins_group[skinref].height)
-                        except:
-                            skinflags = 0
+                            skinflags = self.skins_group[skin_index].flags
                         if tris_group < 0:
                             # If the designating "signed short int" (or "h") is a negative value then the group is a Triangle Fan.
                             # The negative designating "h" is then turned into a positive value so it can be used as the count size of the group.
@@ -2183,11 +2204,15 @@ class mdl_obj:
 
                     # Get this Component's skin(s).
                     skinref = self.bodyparts[i].models[j].meshes[k].skinref
-                    if len(self.skins_group) != 0:
-                        skin_name = self.skins_group[skinref].name # Gives the skin name and type, ex: head.bmp
+                    try:
+                        skin_index = self.skinrefs[self.curskinfamily][skinref]
+                    except:
+                        skin_index = -1
+                    if len(self.skins_group) != 0 and skin_index != -1:
+                        skin_name = self.skins_group[skin_index].name # Gives the skin name and type, ex: head.bmp
                         try:
                             #Create the QuArK skin objects
-                            skin = self.skins_group[skinref]
+                            skin = self.skins_group[skin_index]
                             new_skin_name = check_skin_name(skin_name)
                             newskin = quarkx.newobj(new_skin_name)
                             skinsize = newskin['Size'] = (float(skin.width), float(skin.height))
@@ -2308,9 +2333,9 @@ class mdl_obj:
             tobj.logcon ("num_textures: " + str(self.num_textures))
             tobj.logcon ("texture_index_offset: " + str(self.texture_index_offset))
             tobj.logcon ("texture_data_offset: " + str(self.texture_data_offset))
-            tobj.logcon ("num_skins: " + str(self.num_skins))
+            tobj.logcon ("num_skin_refs: " + str(self.num_skin_refs))
             tobj.logcon ("num_skin_groups: " + str(self.num_skin_groups))
-            tobj.logcon ("skins_offset: " + str(self.skins_offset))
+            tobj.logcon ("skin_refs_offset: " + str(self.skin_refs_offset))
             tobj.logcon ("num_bodyparts: " + str(self.num_bodyparts))
             tobj.logcon ("bodyparts_offset: " + str(self.bodyparts_offset))
             tobj.logcon ("num_attachments: " + str(self.num_attachments))
@@ -2538,6 +2563,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2012/02/25 18:55:59  cdunde
+# Rearranged files and names to coincide better.
+#
 # Revision 1.13  2012/02/18 23:27:13  cdunde
 # Code by DanielPharos, final fix for correct imported animations.
 #

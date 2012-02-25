@@ -2269,7 +2269,7 @@ def fill_mdl(dlg):
                         mesh.tri_offset = bodypart.model_offset + bodyparts_section_in_bytes
                         mesh.skinref = mesh_index # NOTE 6 (use, case sensitive, to find location in this file )
                         mesh.numnorms = len(model.normals[mesh_index])
-                        mesh.dump()
+                      #  mesh.dump()
                         for l in xrange(0, mesh.numtris):
                             tri = QuArK_tris[l]
                             face = mdl_face()
@@ -2298,16 +2298,16 @@ def fill_mdl(dlg):
         mdl.length = bodypart.model_offset + bodyparts_section_in_bytes
 
     if dlg.src['SkinsOnly'] is not None or dlg.src['EmbedSkins'] is not None:
-        mdl.num_textures = mdl.num_skins = len(dlg.skins)
+        mdl.num_textures = len(dlg.skins)
         mdl.num_skin_groups = 1
+        mdl.num_skin_refs = mdl.num_textures
 
         ### OFFSETS FOR TEXTURE AND SKIN SECTIONS.
         # NOTE 6 (use, case sensitive, to find location in this file )
-        mdl.texture_index_offset = mdl.length # THIS OFFSET IS MESSED UP
-        mdl.skins_offset = mdl.texture_index_offset + (mdl.num_skins * 80) # 80 = class mdl_skin_info binary_format.
-        mdl.texture_data_offset = mdl.skins_offset + (mdl.num_skins * 4) # 4 = 1 int, NO mdl_skin class.
+        mdl.texture_index_offset = mdl.length
+        mdl.texture_data_offset = mdl.texture_index_offset + (mdl.num_textures * 80) # 80 = class mdl_skin_info binary_format.
         next_skin_offset = 0
-        for i in xrange(mdl.num_skins):
+        for i in xrange(mdl.num_textures):
             skin_info = mdl_skin_info()
             skin_info.name = dlg.skins[i].name
             size = dlg.skins[i].dictspec['Size']
@@ -2322,7 +2322,8 @@ def fill_mdl(dlg):
                 next_skin_offset += ((skin_info.width * skin_info.height) * 3) + 54 # Each pixel = 3 type "B" = 1 bytes\ea + bmp_header size.
                 
             mdl.skins_group.append(skin_info)
-        mdl.length = mdl.texture_data_offset + next_skin_offset
+        mdl.skin_refs_offset = mdl.texture_data_offset + next_skin_offset
+        mdl.length = mdl.texture_data_offset + (mdl.num_skin_groups * mdl.num_skin_refs * 2) # 2 = 1 short, NO mdl_skin class.
     mdl.dump()
 
 
@@ -2352,9 +2353,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     num_textures = 0           #item  96    int, The number of raw textures.
     texture_index_offset = 0   #item  97    int, The textures data index starting point in the file, in bytes.
     texture_data_offset = 0    #item  98    int, The textures data starting point in the file, in bytes.
-    num_skins = 0              #item  99    int, The number of replaceable textures for the model.
+    num_skin_refs = 0          #item  99    int, The number of replaceable textures for the model.
     num_skin_groups = 0        #item  100   int, The number of texture groups for the model.
-    skins_offset = 0           #item  101   int, The skin textures data starting point in the file, in bytes.
+    skin_refs_offset = 0       #item  101   int, The skin ref data starting point in the file, in bytes.
     num_bodyparts = 0          #item  102   int, The number of body parts for the model.
     bodyparts_offset = 0       #item  103   int, The body parts data starting point in the file, in bytes.
     num_attachments = 0        #item  104   int, The number of queryable attachable points for the model.
@@ -2372,6 +2373,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
     bones = []
     QuArK_bones = []
     skins_group = []
+    skinrefs = []
     demand_seq_groups = []
     bone_controls = []
     QuArK_anim_seq = []
@@ -2391,6 +2393,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.bones = []             # A list of the bones.
         self.QuArK_bones = []       # A list of the QuArK bones, for our use only.
         self.skins_group = []       # A list of the skins.
+        self.skinrefs = []          # A list of the skinref data.
         self.demand_seq_groups = [] # A list of the demand sequence groups.
         self.bone_controls = []     # A list of the bone controllers.
         self.QuArK_anim_seq = []    # A list of the QuArK frame groups in their proper tree-view order.
@@ -2436,9 +2439,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.num_textures,
         self.texture_index_offset,
         self.texture_data_offset,
-        self.num_skins,
+        self.num_skin_refs,
         self.num_skin_groups,
-        self.skins_offset,
+        self.skin_refs_offset,
         self.num_bodyparts,
         self.bodyparts_offset,
         self.num_attachments,
@@ -2529,24 +2532,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         tri.save(file)
                         #  tri.dump()
 
-        # write the number of num_skin_groups, always 1 (no class was given)
-      #  binary_format = "<i"
-      #  data = struct.pack(binary_format, 1)
-      #  file.write(data)
-
         # write the skins group data, texture_index_offset
-        for i in xrange(self.num_skins):
+        for i in xrange(self.num_textures):
             self.skins_group[i].save(file)
           #  self.skins_group[i].dump()
 
-        # write the skins index data (no class was given), skins_offset
-        for i in xrange(self.num_skins):
-            binary_format = "<i"
-            data = struct.pack(binary_format, i)
-            file.write(data)
-
         # write the skin image data for each skin, texture_data_offset
-        for i in xrange(self.num_skins):
+        for i in xrange(self.num_textures):
             skin = self.skins_group[i]
             skin_width = skin.width
             skin_height = skin.height
@@ -2578,6 +2570,14 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                         break
                 file.write(MdlSkinData)
 
+        # Loop over the number of num_skin_groups, always 1 (no class was given)
+        for i in xrange(self.num_skin_groups):
+            # Write the skin ref data (no class was given), skin_refs_offset
+            binary_format = "<h"
+            for j in xrange(self.num_skin_refs):
+                data = struct.pack(binary_format, j)
+                file.write(data)
+
     def dump(self):
         if logging == 1:
             tobj.logcon ("")
@@ -2607,9 +2607,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             tobj.logcon ("num_textures: " + str(self.num_textures))
             tobj.logcon ("texture_index_offset: " + str(self.texture_index_offset))
             tobj.logcon ("texture_data_offset: " + str(self.texture_data_offset))
-            tobj.logcon ("num_skins: " + str(self.num_skins))
+            tobj.logcon ("num_skin_refs: " + str(self.num_skin_refs))
             tobj.logcon ("num_skin_groups: " + str(self.num_skin_groups))
-            tobj.logcon ("skins_offset: " + str(self.skins_offset))
+            tobj.logcon ("skin_refs_offset: " + str(self.skin_refs_offset))
             tobj.logcon ("num_bodyparts: " + str(self.num_bodyparts))
             tobj.logcon ("bodyparts_offset: " + str(self.bodyparts_offset))
             tobj.logcon ("num_attachments: " + str(self.num_attachments))
@@ -3044,6 +3044,9 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2012/02/18 23:11:19  cdunde
+# Code by DanielPharos, final fix for correct exported animations.
+#
 # Revision 1.4  2012/02/12 03:40:56  cdunde
 # Code by DanielPharos to export animations.
 #
