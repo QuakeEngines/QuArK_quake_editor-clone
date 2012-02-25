@@ -33,10 +33,10 @@ from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor 
 # Globals
 SS_MODEL = 3
 logging = 0
-starttime = None
 importername = "ie_md0_HL2_import.py"
 textlog = "HL2mdl_ie_log.txt"
 progressbar = None
+starttime = None
 editor = None
 SpecsList = """ """
 framename = None
@@ -45,20 +45,20 @@ framename = None
 # MDL Flag Settings from -> studio.h
 ######################################################
 # motion flags from -> motion flags
-STUDIO_X     =    1
-STUDIO_Y     =    2    
-STUDIO_Z     =    4
-STUDIO_XR    =    8
-STUDIO_YR    =   16
-STUDIO_ZR    =   32
-STUDIO_LX    =   64
-STUDIO_LY    =  128
-STUDIO_LZ    =  256
-STUDIO_LXR    =  512
-STUDIO_LYR    = 1024
-STUDIO_LZR    = 2048
+STUDIO_X     =     1
+STUDIO_Y     =     2
+STUDIO_Z     =     4
+STUDIO_XR    =     8
+STUDIO_YR    =    16
+STUDIO_ZR    =    32
+STUDIO_LX    =    64
+STUDIO_LY    =   128
+STUDIO_LZ    =   256
+STUDIO_LXR   =   512
+STUDIO_LYR   =  1024
+STUDIO_LZR   =  2048
+STUDIO_LINEAR=  4096
 
-STUDIO_LINEAR   =  4096
 
 STUDIO_TYPES = 262143
 STUDIO_RLOOP = 262144 # controller that wraps shortest distance
@@ -176,6 +176,7 @@ def VectorCompare(v1, v2):
     return 1
 
 
+
 ######################################################
 # MDL Importer Functions, QuArK's own
 ######################################################
@@ -185,49 +186,12 @@ def quaternion2matrix(quaternion):
             [2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1], 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1], 0.0],
             [0.0                  , 0.0                  , 0.0                  , 1.0]]
 
-def Read_mdl_bone_anim_value(self, file, file_offset):
-    file.seek(file_offset, 0)
-    anim_value = mdl_bone_anim_value()
-    anim_value.load(file)
-   # anim_value.dump()
-    return anim_value
-
-# Matrix for QuArK.
-### Taken from source\prog\qmatrices.pas lines 139-141
-def vector_by_matrix(p, m):
-    x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
-    y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
-    z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
-    return [x, y, z]
-
-# Global file limits and values.
-MAX_QPATH = 64
-MD3_XYZ_SCALE = (1.0 / 64.0)
-
-def asciiz(s):
-    n = 0
-    while( n < MAX_QPATH and ord(s[n]) != 0):
-        n = n + 1
-    return s[0:n]
-
-# copied from PhaethonH <phaethon@linux.ucla.edu> md3.py
-def Decode(latlng):
-    lat = (latlng >> 8) & 0xFF;
-    lng = (latlng) & 0xFF;
-    lat *= math.pi / 128;
-    lng *= math.pi / 128;
-    x = math.cos(lat) * math.sin(lng)
-    y = math.sin(lat) * math.sin(lng)
-    z =                 math.cos(lng)
-    retval = [ x, y, z ]
-    return retval
-
 # Creates a bbox (hit box) if any.
-def MakePoly(bboxname, bname, bpos, brot, bbox):
+def MakePoly(bname, bpos, brot, bbox, bboxname):
     m = bbox[0]
     M = bbox[1]
     name = bname.replace(":bone", ":p") # Use the bone name for better identification.
-    p = quarkx.newobj(name);
+    p = quarkx.newobj(name)
     p["assigned2"] = bname
     p['show'] = (1.0,)
     face = quarkx.newobj("north:f") # BACK FACE
@@ -292,6 +256,36 @@ def MakePoly(bboxname, bname, bpos, brot, bbox):
     p.appenditem(face)
 
     return p
+
+# Matrix for QuArK.
+### Taken from source\prog\qmatrices.pas lines 139-141
+def vector_by_matrix(p, m):
+    x = p[0] * m[0][0] + p[1] * m[0][1] + p[2] * m[0][2]
+    y = p[0] * m[1][0] + p[1] * m[1][1] + p[2] * m[1][2]
+    z = p[0] * m[2][0] + p[1] * m[2][1] + p[2] * m[2][2]
+    return [x, y, z]
+
+# Global file limits and values.
+MAX_QPATH = 64
+MD3_XYZ_SCALE = (1.0 / 64.0)
+
+def asciiz(s):
+    n = 0
+    while( n < MAX_QPATH and ord(s[n]) != 0):
+        n = n + 1
+    return s[0:n]
+
+# copied from PhaethonH <phaethon@linux.ucla.edu> md3.py
+def Decode(latlng):
+    lat = (latlng >> 8) & 0xFF;
+    lng = (latlng) & 0xFF;
+    lat *= math.pi / 128;
+    lng *= math.pi / 128;
+    x = math.cos(lat) * math.sin(lng)
+    y = math.sin(lat) * math.sin(lng)
+    z =                 math.cos(lng)
+    retval = [ x, y, z ]
+    return retval
 
 # Tries to find and load skin material and texture files.
 def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name, message):
@@ -471,80 +465,11 @@ def ReadMaterialFile(material_path):
 
 
 ######################################################
-# HL2 data structures (vectors and quaternions)
+# MDL data structures
 ######################################################
-
-class Quaternion48:
-    x = 0    #item   0    unsigned short
-    y = 0    #item   1    unsigned short
-    z = 0    #item   2    unsigned short (also contains 1 bit for w-neg (highest bit))
-    wneg = 0 #item   2    (see above)
-    binary_format="<3H"  #little-endian (<), see #item descriptions above.
-    qx = 0.0
-    qy = 0.0
-    qz = 0.0
-    qw = 0.0
-
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.z = 0
-        self.wneg = 0
-        self.binary_format="<3H"
-        self.qx = 0.0
-        self.qy = 0.0
-        self.qz = 0.0
-        self.qw = 0.0
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-
-        self.x = data[0]
-        self.y = data[1]
-        self.z = data[2]
-        self.wneg = (self.z >> 15)
-        self.z = self.z & 0x8000 #Cut off the wneg bit
-    
-        self.qx = (self.x - 32768) * (1 / 32768.0)
-        self.qy = (self.y - 32768) * (1 / 32768.0)
-        self.qz = (self.z - 16384) * (1 / 16384.0)
-        self.qw = 1.0 - self.qx * self.qx - self.qy * self.qy - self.qz * self.qz
-        if self.qw < 0:
-            self.qw = 0.0
-        else:
-            self.qw = math.sqrt(self.qw)
-        if (self.wneg):
-            self.qw = -self.qw
-
-class Vector48:
-    #Header Structure   #item of file, type, description.
-    x = 0.0    #item   0    float
-    y = 0.0    #item   1    float
-    z = 0.0    #item   2    float
-    binary_format="<3f"  #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
-        self.binary_format="<3f"
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-
-        self.x = data[0]
-        self.y = data[1]
-        self.z = data[2]
-
-
-######################################################
-# HL2 data structures
-######################################################
-class HL2_Bone:
+class mdl_bone:
     #Header Structure      #item of file, type, description.
-    bone_index = 0          # For our own use later.
+    bone_index = 0         # For our own use later.
     sznameindex = 0        #item   0      int, the bone's name index.
     pszName = ""
     parent = 0             #item   1      int, bone's parent index.
@@ -605,7 +530,6 @@ class HL2_Bone:
         self.unused6 = 0
         self.unused7 = 0
         self.unused8 = 0
-        self.binary_format="<ii6i3f4f3f3f3f12f4f6i8i"  #little-endian (<), see #item descriptions above.
         self.data_read_in = 216 # Total binary_format byte value above, used below to set the file offset pointer back.
 
         self.value = (0.0)*6    # For QuArK's own use.
@@ -662,7 +586,7 @@ class HL2_Bone:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
-class HL2_BoneController:
+class mdl_bone_control:
     #Header Structure      #item of file, type, description.
     bone = 0               #item   0      int, -1 = 0.
                            #                   types = X, Y, Z, XR, YR, ZR or M.
@@ -679,6 +603,7 @@ class HL2_BoneController:
     unused6 = 0            #item   11     int.
     unused7 = 0            #item   12     int.
     unused8 = 0            #item   13     int.
+
     binary_format="<2i2f10i"  #little-endian (<), see #item descriptions above.
 
     def __init__(self):
@@ -696,14 +621,13 @@ class HL2_BoneController:
         self.unused6 = 0
         self.unused7 = 0
         self.unused8 = 0
-        self.binary_format="<2i2f10i"  #little-endian (<), see #item descriptions above.
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
         if logging == 1:
             tobj.logcon ("=========================")
-            tobj.logcon ("HL2_BoneController data")
+            tobj.logcon ("mdl_bone_control data")
             tobj.logcon ("bone: " + str(self.bone))
             tobj.logcon ("type: " + str(self.type))
             tobj.logcon ("start: " + str(self.start))
@@ -726,7 +650,7 @@ class HL2_BoneController:
         self.unused8 = data[13]
 
 
-class HL2_HitBox:
+class mdl_hitbox:
     #Header Structure      #item of file, type, description.
     bone = 0               #item   0      int, the bone's index.
     group = 0              #item   1      int, intersection group.
@@ -742,8 +666,9 @@ class HL2_HitBox:
     unused7 = 0            #item   15     int.
     unused8 = 0            #item   16     int.
     HitBoxName = ""        # returned string of the bbox name, if any.
+    poly = None            # QuArK's use only.
+
     binary_format="<2i3f3fi8i"  #little-endian (<), see #item descriptions above.
-    poly = None
 
     def __init__(self):
         self.bone = 0
@@ -760,7 +685,6 @@ class HL2_HitBox:
         self.unused7 = 0
         self.unused8 = 0
         self.HitBoxName = ""
-        self.binary_format="<2i3f3fi8i"  #little-endian (<), see #item descriptions above.
         self.poly = None
 
     def load(self, file, bboxgroup, count, QuArK_bones, bboxlist):
@@ -804,12 +728,8 @@ class HL2_HitBox:
             bname = bone.name
             bpos = bone.position
             brot = bone.rotmatrix
-          #  self.bbmin = (m[2], m[0], m[1])
-          #  self.bbmax = (M[2], M[0], M[1])
             bbox = [self.bbmin, self.bbmax]
-          #  self.poly = MakePoly(self.HitBoxName, bbox)
-          #  self.poly["assigned2"] = QuArK_bones[self.bone].name
-            self.poly = MakePoly(self.HitBoxName, bname, bpos, brot, bbox)
+            self.poly = MakePoly(bname, bpos, brot, bbox, self.HitBoxName)
             count = 0
             for name in bboxlist.keys():
                 if name.startswith(self.poly.shortname):
@@ -822,7 +742,7 @@ class HL2_HitBox:
             file.seek(CurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
         if logging == 1:
-            tobj.logcon ("--------------HL2_HITBOX----------------")
+            tobj.logcon ("--------------mdl_hitbox----------------")
             tobj.logcon ("HitBoxName: " + self.HitBoxName)
             tobj.logcon ("bone: " + str(self.bone))
             tobj.logcon ("group: " + str(self.group))
@@ -831,42 +751,59 @@ class HL2_HitBox:
             tobj.logcon ("szhitboxnameindex: " + str(self.szhitboxnameindex))
 
 
-class HL2_HitBoxSet:
+class mdl_attachment:
     #Header Structure      #item of file, type, description.
-    sznameindex = 0        #item   0      int, the bone's index.
-    pszName = ""           #item   1      32 char, the bone's name.
-    numhitboxes = 0        #item   2      int, number of hit boxes in the set.
-    hitboxindex = 0        #item   3      int, hit boxes data index offset.
-    bboxgroup = None
+    sznameindex = 0        #item   0      int, the attachment's name index.
+    pszName = ""
+    flags = 0              #item   1      int, attachment's flags setting.
+    localbone = 0          #item   2      int, offset to the name of the hitbox.
+    local = (0.0)*12       #item   3-14   12 floats, 3x4 matrix attachment point.
+    unused1 = 0            #item   15     int.
+    unused2 = 0            #item   16     int.
+    unused3 = 0            #item   17     int.
+    unused4 = 0            #item   18     int.
+    unused5 = 0            #item   19     int.
+    unused6 = 0            #item   20     int.
+    unused7 = 0            #item   21     int.
+    unused8 = 0            #item   22     int.
+    binary_format="<3i12f8i"  #little-endian (<), see #item descriptions above.
+    data_read_in = 92 # Total binary_format byte value above, used below to set the file offset pointer back.
 
     def __init__(self):
         self.sznameindex = 0
         self.pszName = ""
-        self.numhitboxes = 0
-        self.hitboxindex = 0
-        self.bboxgroup = None
+        self.flags = 0
+        self.localbone = 0
+        self.local = (0.0)*12
+        self.unused1 = 0
+        self.unused2 = 0
+        self.unused3 = 0
+        self.unused4 = 0
+        self.unused5 = 0
+        self.unused6 = 0
+        self.unused7 = 0
+        self.unused8 = 0
+        self.data_read_in = 92 # Total binary_format byte value above, used below to set the file offset pointer back.
 
-    def load(self, file, QuArK_bones, bboxlist):
-        if logging == 1:
-            tobj.logcon ("==============HL2_HITBOXSET==============")
-            tobj.logcon ("Offset at start: " + str(file.tell()))
-
-        binary_format="<3i" # data_read_in = 3i = 3*4 = 12
-        data_read_in = 12   # Total binary_format byte value above, used below to set the file offset pointer back.
-        temp_data = file.read(struct.calcsize(binary_format))
-        data = struct.unpack(binary_format, temp_data)
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
         self.sznameindex = data[0]
-        self.numhitboxes = data[1]
-        self.hitboxindex = data[2]
+        self.pszName = ""
+        self.flags = data[1]
+        self.localbone = data[2]
+        self.local = ((data[3],  data[4], data[5], data[6]), (data[7],  data[8], data[9], data[10]), (data[11],  data[12], data[13], data[14]))
+        self.unused1 = data[15]
+        self.unused2 = data[16]
+        self.unused3 = data[17]
+        self.unused4 = data[18]
+        self.unused5 = data[19]
+        self.unused6 = data[20]
+        self.unused7 = data[21]
+        self.unused8 = data[22]
+
         SaveCurOffset = file.tell() # Save the file current offset pointer.
-
-        if logging == 1:
-            tobj.logcon ("sznameindex: " + str(self.sznameindex))
-            tobj.logcon ("numhitboxes: " + str(self.numhitboxes))
-            tobj.logcon ("hitboxindex: " + str(self.hitboxindex))
-            tobj.logcon ("SaveCurOffset: " + str(SaveCurOffset))
-
-        file.seek(SaveCurOffset + self.sznameindex - data_read_in, 0) # change the file offset pointer position.
+        file.seek(SaveCurOffset - self.data_read_in + self.sznameindex, 0) # change the file offset pointer position.
         binary_format="<c"
         while 1:
             temp_data = file.read(struct.calcsize(binary_format))
@@ -874,135 +811,269 @@ class HL2_HitBoxSet:
             if data[0] == '\x00':
                 break
             self.pszName = self.pszName + data[0]
+        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
+
         if logging == 1:
+            tobj.logcon ("--------------mdl_attachment----------------")
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
             tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("localbone: " + str(self.localbone))
+            tobj.logcon ("local: " + str(self.local))
 
-        # Makes QuArK bbox group folder.
-        bbg_name = file.name.split("\\")
-        folder = bbg_name[len(bbg_name)-2]
-        file_name = bbg_name[len(bbg_name)-1]
-        file_name = file_name.split(".")[0]
-        bbg_name = folder + "_" + file_name
-        self.bboxgroup = quarkx.newobj("BBoxes " + bbg_name + "_" + self.pszName + ":bbg")
-        self.bboxgroup['show'] = (1.0,)
 
-        file.seek(SaveCurOffset - data_read_in + self.hitboxindex, 0) # change the file offset pointer position to get the bboxes.
-        for count in xrange(self.numhitboxes):
-            bbox = HL2_HitBox()
-            bbox.load(file, self.bboxgroup, count, QuArK_bones, bboxlist)
+class mdl_bodypart:
+    #Header Structure      #item of file, type, description.
+    sznameindex = 0        #item   0      int.
+    pszName = ""
+    nummodels = 0          #item   1      int.
+    base = 0               #item   2      int.
+    modelindex = 0         #item   3      int, index into models array.
+    models = []                           # A list containing its models.
+                                
+    def __init__(self):
+        self.sznameindex = 0
+        self.pszName = ""
+        self.nummodels = 0
+        self.base = 0
+        self.modelindex = 0
+        self.models = []
+
+    def load(self, file):
+        binary_format="<4i" # data_read_in = 4i = 4*4 = 16
+        data_read_in = 16   # Total binary_format byte value above, used below to set the file offset pointer back.
+        temp_data = file.read(struct.calcsize(binary_format))
+        data = struct.unpack(binary_format, temp_data)
+        self.sznameindex = data[0]
+        self.nummodels = data[1]
+        self.base = data[2]
+        self.modelindex = data[3]
+
+        SaveCurOffset = file.tell() # Save the file current offset pointer.
+
+        file.seek(SaveCurOffset - data_read_in + self.sznameindex, 0) # change the file offset pointer position.
+        binary_format="<c"
+        while 1:
+            temp_data = file.read(struct.calcsize(binary_format))
+            data = struct.unpack(binary_format, temp_data)
+            if data[0] == '\x00':
+                break
+            self.pszName = self.pszName + data[0]
+
+        if logging == 1:
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("nummodels: " + str(self.nummodels))
+            tobj.logcon ("base: " + str(self.base))
+            tobj.logcon ("modelindex: " + str(self.modelindex))
+
+        file.seek(SaveCurOffset - data_read_in + self.modelindex, 0) # change the file offset pointer position to get the model.
+        for m in xrange(self.nummodels):
+            model = mdl_model()
+            model.load(file)
+            self.models.append(model)
 
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-        if logging == 1:
-            tobj.logcon ("------------------------")
-            tobj.logcon ("Offset at end: " + str(file.tell()))
-            tobj.logcon ("========================")
-            tobj.logcon ("")
 
 
-class HL2_StudioMovement:
+class mdl_model:
     #Header Structure      #item of file, type, description.
-    endframe = 0           #item   0      int.
-    motionflags = 0        #item   1      int.
-    v0 = 0.0               #item   2      float, velocity at start of block.
-    v1 = 0.0               #item   3      float, velocity at end of block.
-    angle = 0.0            #item   4      float, YAW rotation at end of this blocks movement.
-    vector = (0.0)*3       #item   5-7    3 floats, movement vector relative to this blocks initial angle.
-    position = (0.0)*3     #item   8-10   3 floats, relative to start of animation???
-    binary_format="<2i3f3f3f"  #little-endian (<), see #item descriptions above.
+    pszName = ""           #item   0      64 s.
+    type = 0               #item   1      int.
+    boundingradius = 0.0   #item   2      float.
+    nummeshes = 0          #item   3      int.
+    meshindex = 0          #item   4      int.
+    numvertices = 0        #item   5      int, number of unique vertices/normals/texcoords.
+    vertexindex = 0        #item   6      int, vertex Vector.
+    tangentsindex = 0      #item   7      int, tangents Vector.
+    numattachments = 0     #item   8      int.
+    attachmentindex = 0    #item   9      int.
+    numeyeballs = 0        #item   10     int.
+    eyeballindex = 0       #item   11     int.
+    vertexdata = (0.0)*2   #item   12-13  2 floats.
+    unused1 = 0            #item   14     int.
+    unused2 = 0            #item   15     int.
+    unused3 = 0            #item   16     int.
+    unused4 = 0            #item   17     int.
+    unused5 = 0            #item   18     int.
+    unused6 = 0            #item   19     int.
+    unused7 = 0            #item   20     int.
+    unused8 = 0            #item   21     int.
+
+    binary_format = "<%dsif9i2f8i" % MAX_QPATH  #little-endian (<), see #item descriptions above.
+
+    meshes = []            # List of meshes.
+    verts = []             # List of vertex vector poistions.
+    eyeballs = []          # List of meshe eyeballs.
 
     def __init__(self):
-        self.endframe = 0
-        self.motionflags = 0
-        self.v0 = 0.0
-        self.v1 = 0.0
-        self.angle = 0.0
-        self.vector = (0.0)*3
-        self.position = (0.0)*3
-        self.binary_format="<2i3f3f3f"  #little-endian (<), see #item descriptions above.
+        self.pszName = ""
+        self.type = 0
+        self.boundingradius = 0.0
+        self.nummeshes = 0
+        self.meshindex = 0
+        self.numvertices = 0
+        self.vertexindex = 0
+        self.tangentsindex = 0
+        self.numattachments = 0
+        self.attachmentindex = 0
+        self.numeyeballs = 0
+        self.eyeballindex = 0
+        self.vertexdata = (0.0)*2
+        self.unused1 = 0
+        self.unused2 = 0
+        self.unused3 = 0
+        self.unused4 = 0
+        self.unused5 = 0
+        self.unused6 = 0
+        self.unused7 = 0
+        self.unused8 = 0
+        self.binary_format = "<%dsif9i2f8i" % MAX_QPATH  #little-endian (<), see #item descriptions above.
+
+        self.meshes = []
+        self.verts = []
+        self.eyeballs = []
 
     def load(self, file):
+        data_read_in = 148   # Total binary_format byte value above, used below to set the file offset pointer back.
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
+        self.pszName = asciiz(data[0])
+        self.type = data[1]
+        self.boundingradius = data[2]
+        self.nummeshes = data[3]
+        self.meshindex = data[4]
+        self.numvertices = data[5]
+        self.vertexindex = data[6]
+        self.tangentsindex = data[7]
+        self.numattachments = data[8]
+        self.attachmentindex = data[9]
+        self.numeyeballs = data[10]
+        self.eyeballindex = data[11]
+        self.vertexdata = (data[12], data[13])
+        self.unused1 = data[14]
+        self.unused2 = data[15]
+        self.unused3 = data[16]
+        self.unused4 = data[17]
+        self.unused5 = data[18]
+        self.unused6 = data[19]
+        self.unused7 = data[20]
+        self.unused8 = data[21]
+        SaveCurOffset = file.tell() # Save the file current offset pointer.
         if logging == 1:
-            tobj.logcon ("========================")
-            tobj.logcon ("HL2_StudioMovement data")
-            tobj.logcon ("endframe: " + str(self.endframe))
-            tobj.logcon ("motionflags: " + str(self.motionflags))
-            tobj.logcon ("v0: " + str(self.v0))
-            tobj.logcon ("v1: " + str(self.v1))
-            tobj.logcon ("angle: " + str(self.angle))
-            tobj.logcon ("vector: " + str(self.vector))
-            tobj.logcon ("position: " + str(self.position))
-        self.endframe = data[0]
-        self.motionflags = data[1]
-        self.v0 = data[2]
-        self.v1 = data[3]
-        self.angle = data[4]
-        self.vector = (data[5], data[6], data[7])
-        self.position = (data[8], data[9], data[10])
+            tobj.logcon ("======================================")
+            tobj.logcon ("HL2_Model data")
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("type: " + str(self.type))
+            tobj.logcon ("boundingradius: " + str(self.boundingradius))
+            tobj.logcon ("nummeshes: " + str(self.nummeshes))
+            tobj.logcon ("meshindex: " + str(self.meshindex))
+            tobj.logcon ("numvertices: " + str(self.numvertices))
+            tobj.logcon ("vertexindex: " + str(self.vertexindex))
+            tobj.logcon ("tangentsindex: " + str(self.tangentsindex))
+            tobj.logcon ("numattachments: " + str(self.numattachments))
+            tobj.logcon ("attachmentindex: " + str(self.attachmentindex))
+            tobj.logcon ("numeyeballs: " + str(self.numeyeballs))
+            tobj.logcon ("eyeballindex: " + str(self.eyeballindex))
+            tobj.logcon ("vertexdata: " + str(self.vertexdata))
+
+        file.seek(SaveCurOffset - data_read_in + self.meshindex, 0) # change the file offset pointer position to get the model.
+        for m in xrange(self.nummeshes):
+            mesh = mdl_mesh()
+            mesh.load(file)
+            self.meshes.append(mesh)
+
+        file.seek(SaveCurOffset - data_read_in + self.eyeballindex, 0) # change the file offset pointer position to get the model.
+        for m in xrange(self.numeyeballs):
+            eyeball = HL2_EyeBall()
+            eyeball.load(file)
+            self.eyeballs.append(eyeball)
+
+        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
-class HL2_AnimValue:
-    #Header Structure   #item of file, type, description.
-    valid = 0       #item   0    byte.
-    total = 0       #item   1    byte.
-    value = 0       #item 0+1    short
-    binary_format="<h" #little-endian (<), see #item descriptions above.
-    binary_format2="<2B" #little-endian (<), see #item descriptions above.
+class mdl_mesh:
+    #Header Structure      #item of file, type, description.
+    material = 0           #item   0      int.
+    modelindex = 0         #item   1      int.
+    numvertices = 0        #item   2      int, number of unique vertices/normals/texcoords.
+    vertexoffset = 0       #item   3      int, vertex mstudiovertex_t.
+    numflexes = 0          #item   4      int, vertex animation.
+    flexindex = 0          #item   5      int.
+    materialtype = 0       #item   6      int, special codes for material operations.
+    materialparam = 0      #item   7      int, special codes for material operations.
+    meshid = 0             #item   8      int, a unique ordinal for this mesh.
+    center = (0.0)*3       #item   9-11   3 floats.
+    vertexdata = (0.0)*9   #item   12-20  9 floats, DAN WHAT IS THIS????
+    unused1 = 0            #item   21     int.
+    unused2 = 0            #item   22     int.
+    unused3 = 0            #item   23     int.
+    unused4 = 0            #item   24     int.
+    unused5 = 0            #item   25     int.
+    unused6 = 0            #item   26     int.
+    unused7 = 0            #item   27     int.
+    unused8 = 0            #item   28     int.
+    binary_format = "<9i3f9f8i"  #little-endian (<), see #item descriptions above.
+
+    vertex_weights = []    # list of each vertex's weight values, weight bones, nbr of w-bones, pos, normal, UV values.
 
     def __init__(self):
-        self.valid = 0
-        self.total = 0
-        self.value = 0
-        self.binary_format="<h"
-        self.binary_format2="<2B"
+        self.material = 0
+        self.modelindex = 0
+        self.numvertices = 0
+        self.vertexoffset = 0
+        self.numflexes = 0
+        self.flexindex = 0
+        self.materialtype = 0
+        self.materialparam = 0
+        self.meshid = 0
+        self.center = (0.0)*3
+        self.vertexdata = (0.0)*9
+        self.unused1 = 0
+        self.unused2 = 0
+        self.unused3 = 0
+        self.unused4 = 0
+        self.unused5 = 0
+        self.unused6 = 0
+        self.unused7 = 0
+        self.unused8 = 0
+
+        self.vertex_weights = []
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        data2 = struct.unpack(self.binary_format2, temp_data)
-
-        self.valid = data2[0]
-        self.total = data2[1]
-        self.value = data[0]
-
-
-class HL2_AnimValuePtr:
-    #Header Structure   #item of file, type, description.
-    offset = (0)*3     #item   0     3 short, offset.
-    binary_format="<3h" #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.offset = (0)*3
-        self.binary_format="<3h"
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-
-        self.offset = (data[0], data[1], data[2])
-
-
-class HL2_AnimBlock:
-    #Header Structure   #item of file, type, description.
-    datastart = 0       #item   0      int.
-    dataend = 0         #item   0      int.
-    binary_format="<2i" #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.datastart = 0
-        self.dataend = 0
-        self.binary_format="<2i"
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-
-        self.datastart = data[0]
-        self.dataend = data[1]
+        self.material = data[0]
+        self.modelindex = data[1]
+        self.numvertices = data[2]
+        self.vertexoffset = data[3]
+        self.numflexes = data[4]
+        self.flexindex = data[5]
+        # inline mstudioflex_t *pFlex( int i ) const { return (mstudioflex_t *)(((byte *)this) + flexindex) + i; };
+        self.materialtype = data[6]
+        self.materialparam = data[7]
+        self.meshid = data[8]
+        self.center = (data[9], data[10], data[11])
+        # DAN WHAT IS THIS????
+        self.vertexdata = (data[12], data[13], data[14], data[15], data[16], data[17], data[18], data[19], data[20])
+        self.unused1 = data[21]
+        self.unused2 = data[22]
+        self.unused3 = data[23]
+        self.unused4 = data[24]
+        self.unused5 = data[25]
+        self.unused6 = data[26]
+        self.unused7 = data[27]
+        self.unused8 = data[28]
+        if logging == 1:
+            tobj.logcon ("======================================")
+            tobj.logcon ("mdl_mesh data")
+            tobj.logcon ("meshid: " + str(self.meshid))
+            tobj.logcon ("modelindex: " + str(self.modelindex))
+            tobj.logcon ("numvertices: " + str(self.numvertices))
+            tobj.logcon ("vertexoffset: " + str(self.vertexoffset))
 
 
-class HL2_LocalAnimDesc:
+class mdl_sequence_desc:
     #Header Structure        #item of file, type, description.
     baseptr = 0              #item   0      int.
     sznameindex = 0          #item   1      int.
@@ -1118,6 +1189,185 @@ class HL2_LocalAnimDesc:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
+class mdl_bone_anim_value:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanimvalue_t
+    #Header Structure   #item of file, type, description.
+    valid = 0               #item  0     unsigned char int, 1 byte.
+    total = 0               #item  1     unsigned char int, 1 byte.
+    value = 0               #item  0+1   signed short int, 2 bytes.
+
+    #This is a C++ union (two different ways to read the same bitstream); we'll do both at the same time
+    binary_format1 = "<2B" #little-endian (<), see #item descriptions above.
+    binary_format2 = "<h" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.valid = 0
+        self.total = 0
+        self.value = 0
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format1))
+        data = struct.unpack(self.binary_format1, temp_data)
+        self.valid = data[0]
+        self.total = data[1]
+        data = struct.unpack(self.binary_format2, temp_data)
+        self.value = data[0]
+        return self
+
+    def dump(self):
+        print "MDL Anim Frames"
+        print "valid: ", self.valid
+        print "total: ", self.total
+        print "value: ", self.value
+        print "===================="
+
+
+class HL2_TexturesInfo:
+    #Header Structure      #item of file, type, description.
+    sznameindex = 0        #item   0      int.
+    pszName = ""
+    flags = 0              #item   1      int.
+    used = 0               #item   2      int.
+    unknown = 0            #item   3      int.
+    material = 0           #item   4      int.
+    clientmaterial = 0     #item   5      int.
+    unused1 = 0            #item   6      int.
+    unused2 = 0            #item   7      int.
+    unused3 = 0            #item   8      int.
+    unused4 = 0            #item   9      int.
+    unused5 = 0            #item   10     int.
+    unused6 = 0            #item   11     int.
+    unused7 = 0            #item   12     int.
+    unused8 = 0            #item   13     int.
+    unused9 = 0            #item   14     int.
+    unused10 = 0           #item   15     int.
+    binary_format="<16i"  #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.sznameindex = 0
+        self.pszName = ""
+        self.flags = 0
+        self.used = 0
+        self.unknown = 0
+        self.material = 0
+        self.clientmaterial = 0
+        self.unused1 = 0
+        self.unused2 = 0
+        self.unused3 = 0
+        self.unused4 = 0
+        self.unused5 = 0
+        self.unused6 = 0
+        self.unused7 = 0
+        self.unused8 = 0
+        self.unused9 = 0
+        self.unused10 = 0
+        self.binary_format="<16i"  #little-endian (<), see #item descriptions above.
+        self.data_read_in = 64 # Total binary_format byte value above, used below to set the file offset pointer back.
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        if logging == 1:
+            tobj.logcon ("======================================")
+            tobj.logcon ("HL2_TexturesInfo data")
+            tobj.logcon ("pszName: " + self.pszName)
+            tobj.logcon ("flags: " + str(self.flags))
+            tobj.logcon ("used: " + str(self.used))
+            tobj.logcon ("unknown: " + str(self.unknown))
+            tobj.logcon ("material: " + str(self.material))
+            tobj.logcon ("clientmaterial: " + str(self.clientmaterial))
+        self.sznameindex = data[0]
+        self.flags = data[1]
+        self.used = data[2]
+        self.unknown = data[3]
+        self.material = data[4]
+        self.clientmaterial = data[5]
+        self.unused1 = data[6]
+        self.unused2 = data[7]
+        self.unused3 = data[8]
+        self.unused4 = data[9]
+        self.unused5 = data[10]
+        self.unused6 = data[11]
+        self.unused7 = data[12]
+        self.unused8 = data[13]
+        self.unused9 = data[14]
+        self.unused10 = data[15]
+
+        SaveCurOffset = file.tell() # Save the file current offset pointer.
+        file.seek(SaveCurOffset - self.data_read_in + self.sznameindex, 0) # change the file offset pointer position.
+        binary_format="<c"
+        while 1:
+            temp_data = file.read(struct.calcsize(binary_format))
+            data = struct.unpack(binary_format, temp_data)
+            if data[0] == '\x00':
+                break
+            self.pszName = self.pszName + data[0]
+        if logging == 1:
+            tobj.logcon ("pszName: " + self.pszName)
+        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
+
+
+
+
+class HL2_StudioMovement:
+    #Header Structure      #item of file, type, description.
+    endframe = 0           #item   0      int.
+    motionflags = 0        #item   1      int.
+    v0 = 0.0               #item   2      float, velocity at start of block.
+    v1 = 0.0               #item   3      float, velocity at end of block.
+    angle = 0.0            #item   4      float, YAW rotation at end of this blocks movement.
+    vector = (0.0)*3       #item   5-7    3 floats, movement vector relative to this blocks initial angle.
+    position = (0.0)*3     #item   8-10   3 floats, relative to start of animation???
+    binary_format="<2i3f3f3f"  #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.endframe = 0
+        self.motionflags = 0
+        self.v0 = 0.0
+        self.v1 = 0.0
+        self.angle = 0.0
+        self.vector = (0.0)*3
+        self.position = (0.0)*3
+        self.binary_format="<2i3f3f3f"  #little-endian (<), see #item descriptions above.
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        if logging == 1:
+            tobj.logcon ("========================")
+            tobj.logcon ("HL2_StudioMovement data")
+            tobj.logcon ("endframe: " + str(self.endframe))
+            tobj.logcon ("motionflags: " + str(self.motionflags))
+            tobj.logcon ("v0: " + str(self.v0))
+            tobj.logcon ("v1: " + str(self.v1))
+            tobj.logcon ("angle: " + str(self.angle))
+            tobj.logcon ("vector: " + str(self.vector))
+            tobj.logcon ("position: " + str(self.position))
+        self.endframe = data[0]
+        self.motionflags = data[1]
+        self.v0 = data[2]
+        self.v1 = data[3]
+        self.angle = data[4]
+        self.vector = (data[5], data[6], data[7])
+        self.position = (data[8], data[9], data[10])
+
+
+class HL2_AnimValuePtr:
+    #Header Structure   #item of file, type, description.
+    offset = (0)*3     #item   0     3 short, offset.
+    binary_format="<3h" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.offset = (0)*3
+        self.binary_format="<3h"
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+
+        self.offset = (data[0], data[1], data[2])
+
+
 class HL2_LocalSeqDesc:
     #Header Structure        #item of file, type, description.
     baseptr = 0              #item   0      int.
@@ -1167,8 +1417,9 @@ class HL2_LocalSeqDesc:
     unused6 = 0              #item   50     int.
     unused7 = 0              #item   51     int.
     unused8 = 0              #item   52     int.
-    binary_format="<8i3f3f3i2i2i2f2fi2f3i3f19i"  #little-endian (<), see #item descriptions above.
     data_read_in = 212 # Total binary_format byte value above, used below to set the file offset pointer back.
+
+    binary_format="<8i3f3f3i2i2i2f2fi2f3i3f19i"  #little-endian (<), see #item descriptions above.
 
     def __init__(self):
         self.baseptr = 0
@@ -1218,7 +1469,6 @@ class HL2_LocalSeqDesc:
         self.unused6 = 0
         self.unused7 = 0
         self.unused8 = 0
-        self.binary_format="<8i3f3f3i2i2i2f2fi2f3i3f19i"  #little-endian (<), see #item descriptions above.
         self.data_read_in = 212 # Total binary_format byte value above, used below to set the file offset pointer back.
 
     def load(self, file):
@@ -1365,171 +1615,23 @@ class HL2_LocalSeqDesc:
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
 
 
-class HL2_TexturesInfo:
-    #Header Structure      #item of file, type, description.
-    sznameindex = 0        #item   0      int.
-    pszName = ""
-    flags = 0              #item   1      int.
-    used = 0               #item   2      int.
-    unknown = 0            #item   3      int.
-    material = 0           #item   4      int.
-    clientmaterial = 0     #item   5      int.
-    unused1 = 0            #item   6      int.
-    unused2 = 0            #item   7      int.
-    unused3 = 0            #item   8      int.
-    unused4 = 0            #item   9      int.
-    unused5 = 0            #item   10     int.
-    unused6 = 0            #item   11     int.
-    unused7 = 0            #item   12     int.
-    unused8 = 0            #item   13     int.
-    unused9 = 0            #item   14     int.
-    unused10 = 0           #item   15     int.
-    binary_format="<16i"  #little-endian (<), see #item descriptions above.
+class HL2_AnimBlock:
+    #Header Structure   #item of file, type, description.
+    datastart = 0       #item   0      int.
+    dataend = 0         #item   0      int.
+    binary_format="<2i" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.sznameindex = 0
-        self.pszName = ""
-        self.flags = 0
-        self.used = 0
-        self.unknown = 0
-        self.material = 0
-        self.clientmaterial = 0
-        self.unused1 = 0
-        self.unused2 = 0
-        self.unused3 = 0
-        self.unused4 = 0
-        self.unused5 = 0
-        self.unused6 = 0
-        self.unused7 = 0
-        self.unused8 = 0
-        self.unused9 = 0
-        self.unused10 = 0
-        self.binary_format="<16i"  #little-endian (<), see #item descriptions above.
-        self.data_read_in = 64 # Total binary_format byte value above, used below to set the file offset pointer back.
+        self.datastart = 0
+        self.dataend = 0
+        self.binary_format="<2i"
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        if logging == 1:
-            tobj.logcon ("======================================")
-            tobj.logcon ("HL2_TexturesInfo data")
-            tobj.logcon ("pszName: " + self.pszName)
-            tobj.logcon ("flags: " + str(self.flags))
-            tobj.logcon ("used: " + str(self.used))
-            tobj.logcon ("unknown: " + str(self.unknown))
-            tobj.logcon ("material: " + str(self.material))
-            tobj.logcon ("clientmaterial: " + str(self.clientmaterial))
-        self.sznameindex = data[0]
-        self.flags = data[1]
-        self.used = data[2]
-        self.unknown = data[3]
-        self.material = data[4]
-        self.clientmaterial = data[5]
-        self.unused1 = data[6]
-        self.unused2 = data[7]
-        self.unused3 = data[8]
-        self.unused4 = data[9]
-        self.unused5 = data[10]
-        self.unused6 = data[11]
-        self.unused7 = data[12]
-        self.unused8 = data[13]
-        self.unused9 = data[14]
-        self.unused10 = data[15]
 
-        SaveCurOffset = file.tell() # Save the file current offset pointer.
-        file.seek(SaveCurOffset - self.data_read_in + self.sznameindex, 0) # change the file offset pointer position.
-        binary_format="<c"
-        while 1:
-            temp_data = file.read(struct.calcsize(binary_format))
-            data = struct.unpack(binary_format, temp_data)
-            if data[0] == '\x00':
-                break
-            self.pszName = self.pszName + data[0]
-        if logging == 1:
-            tobj.logcon ("pszName: " + self.pszName)
-        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-
-
-class HL2_Mesh:
-    #Header Structure      #item of file, type, description.
-    material = 0           #item   0      int.
-    modelindex = 0         #item   1      int.
-    numvertices = 0        #item   2      int, number of unique vertices/normals/texcoords.
-    vertexoffset = 0       #item   3      int, vertex mstudiovertex_t.
-    numflexes = 0          #item   4      int, vertex animation.
-    flexindex = 0          #item   5      int.
-    materialtype = 0       #item   6      int, special codes for material operations.
-    materialparam = 0      #item   7      int, special codes for material operations.
-    meshid = 0             #item   8      int, a unique ordinal for this mesh.
-    center = (0.0)*3       #item   9-11   3 floats.
-    vertexdata = (0.0)*9   #item   12-20  9 floats, DAN WHAT IS THIS????
-    unused1 = 0            #item   21     int.
-    unused2 = 0            #item   22     int.
-    unused3 = 0            #item   23     int.
-    unused4 = 0            #item   24     int.
-    unused5 = 0            #item   25     int.
-    unused6 = 0            #item   26     int.
-    unused7 = 0            #item   27     int.
-    unused8 = 0            #item   28     int.
-    binary_format = "<9i3f9f8i"  #little-endian (<), see #item descriptions above.
-
-    vertex_weights = []    # list of each vertex's weight values, weight bones, nbr of w-bones, pos, normal, UV values.
-
-    def __init__(self):
-        self.material = 0
-        self.modelindex = 0
-        self.numvertices = 0
-        self.vertexoffset = 0
-        self.numflexes = 0
-        self.flexindex = 0
-        self.materialtype = 0
-        self.materialparam = 0
-        self.meshid = 0
-        self.center = (0.0)*3
-        self.vertexdata = (0.0)*9
-        self.unused1 = 0
-        self.unused2 = 0
-        self.unused3 = 0
-        self.unused4 = 0
-        self.unused5 = 0
-        self.unused6 = 0
-        self.unused7 = 0
-        self.unused8 = 0
-        self.binary_format = "<9i3f9f8i"  #little-endian (<), see #item descriptions above.
-
-        self.vertex_weights = []
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.material = data[0]
-        self.modelindex = data[1]
-        self.numvertices = data[2]
-        self.vertexoffset = data[3]
-        self.numflexes = data[4]
-        self.flexindex = data[5]
-        # inline mstudioflex_t *pFlex( int i ) const { return (mstudioflex_t *)(((byte *)this) + flexindex) + i; };
-        self.materialtype = data[6]
-        self.materialparam = data[7]
-        self.meshid = data[8]
-        self.center = (data[9], data[10], data[11])
-        # DAN WHAT IS THIS????
-        self.vertexdata = (data[12], data[13], data[14], data[15], data[16], data[17], data[18], data[19], data[20])
-        self.unused1 = data[21]
-        self.unused2 = data[22]
-        self.unused3 = data[23]
-        self.unused4 = data[24]
-        self.unused5 = data[25]
-        self.unused6 = data[26]
-        self.unused7 = data[27]
-        self.unused8 = data[28]
-        if logging == 1:
-            tobj.logcon ("======================================")
-            tobj.logcon ("HL2_Mesh data")
-            tobj.logcon ("meshid: " + str(self.meshid))
-            tobj.logcon ("modelindex: " + str(self.modelindex))
-            tobj.logcon ("numvertices: " + str(self.numvertices))
-            tobj.logcon ("vertexoffset: " + str(self.vertexoffset))
+        self.datastart = data[0]
+        self.dataend = data[1]
 
 
 class HL2_EyeBall:
@@ -1668,247 +1770,6 @@ class HL2_EyeBall:
             tobj.logcon ("pszName: " + self.pszName)
 
         file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-
-
-class HL2_Model:
-    #Header Structure      #item of file, type, description.
-    pszName = ""           #item   0      64 s.
-    type = 0               #item   1      int.
-    boundingradius = 0.0   #item   2      float.
-    nummeshes = 0          #item   3      int.
-    meshindex = 0          #item   4      int.
-    numvertices = 0        #item   5      int, number of unique vertices/normals/texcoords.
-    vertexindex = 0        #item   6      int, vertex Vector.
-    tangentsindex = 0      #item   7      int, tangents Vector.
-    numattachments = 0     #item   8      int.
-    attachmentindex = 0    #item   9      int.
-    numeyeballs = 0        #item   10     int.
-    eyeballindex = 0       #item   11     int.
-    vertexdata = (0.0)*2   #item   12-13  2 floats.
-    unused1 = 0            #item   14     int.
-    unused2 = 0            #item   15     int.
-    unused3 = 0            #item   16     int.
-    unused4 = 0            #item   17     int.
-    unused5 = 0            #item   18     int.
-    unused6 = 0            #item   19     int.
-    unused7 = 0            #item   20     int.
-    unused8 = 0            #item   21     int.
-    binary_format = "<%dsif9i2f8i" % MAX_QPATH  #little-endian (<), see #item descriptions above.
-
-    meshes = []            # List of meshes.
-    verts = []             # List of vertex vector poistions.
-    eyeballs = []          # List of meshe eyeballs.
-
-    def __init__(self):
-        self.pszName = ""
-        self.type = 0
-        self.boundingradius = 0.0
-        self.nummeshes = 0
-        self.meshindex = 0
-        self.numvertices = 0
-        self.vertexindex = 0
-        self.tangentsindex = 0
-        self.numattachments = 0
-        self.attachmentindex = 0
-        self.numeyeballs = 0
-        self.eyeballindex = 0
-        self.vertexdata = (0.0)*2
-        self.unused1 = 0
-        self.unused2 = 0
-        self.unused3 = 0
-        self.unused4 = 0
-        self.unused5 = 0
-        self.unused6 = 0
-        self.unused7 = 0
-        self.unused8 = 0
-        self.binary_format = "<%dsif9i2f8i" % MAX_QPATH  #little-endian (<), see #item descriptions above.
-
-        self.meshes = []
-        self.verts = []
-        self.eyeballs = []
-
-    def load(self, file):
-        data_read_in = 148   # Total binary_format byte value above, used below to set the file offset pointer back.
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.pszName = asciiz(data[0])
-        self.type = data[1]
-        self.boundingradius = data[2]
-        self.nummeshes = data[3]
-        self.meshindex = data[4]
-        self.numvertices = data[5]
-        self.vertexindex = data[6]
-        self.tangentsindex = data[7]
-        self.numattachments = data[8]
-        self.attachmentindex = data[9]
-        self.numeyeballs = data[10]
-        self.eyeballindex = data[11]
-        self.vertexdata = (data[12], data[13])
-        self.unused1 = data[14]
-        self.unused2 = data[15]
-        self.unused3 = data[16]
-        self.unused4 = data[17]
-        self.unused5 = data[18]
-        self.unused6 = data[19]
-        self.unused7 = data[20]
-        self.unused8 = data[21]
-        SaveCurOffset = file.tell() # Save the file current offset pointer.
-        if logging == 1:
-            tobj.logcon ("======================================")
-            tobj.logcon ("HL2_Model data")
-            tobj.logcon ("pszName: " + self.pszName)
-            tobj.logcon ("type: " + str(self.type))
-            tobj.logcon ("boundingradius: " + str(self.boundingradius))
-            tobj.logcon ("nummeshes: " + str(self.nummeshes))
-            tobj.logcon ("meshindex: " + str(self.meshindex))
-            tobj.logcon ("numvertices: " + str(self.numvertices))
-            tobj.logcon ("vertexindex: " + str(self.vertexindex))
-            tobj.logcon ("tangentsindex: " + str(self.tangentsindex))
-            tobj.logcon ("numattachments: " + str(self.numattachments))
-            tobj.logcon ("attachmentindex: " + str(self.attachmentindex))
-            tobj.logcon ("numeyeballs: " + str(self.numeyeballs))
-            tobj.logcon ("eyeballindex: " + str(self.eyeballindex))
-            tobj.logcon ("vertexdata: " + str(self.vertexdata))
-
-        file.seek(SaveCurOffset - data_read_in + self.meshindex, 0) # change the file offset pointer position to get the model.
-        for m in xrange(self.nummeshes):
-            mesh = HL2_Mesh()
-            mesh.load(file)
-            self.meshes.append(mesh)
-
-        file.seek(SaveCurOffset - data_read_in + self.eyeballindex, 0) # change the file offset pointer position to get the model.
-        for m in xrange(self.numeyeballs):
-            eyeball = HL2_EyeBall()
-            eyeball.load(file)
-            self.eyeballs.append(eyeball)
-
-        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-
-
-class HL2_BodyPartIndex:
-    #Header Structure      #item of file, type, description.
-    sznameindex = 0        #item   0      int.
-    pszName = ""
-    nummodels = 0          #item   1      int.
-    base = 0               #item   2      int.
-    modelindex = 0         #item   3      int, index into models array.
-    models = []                           # A list containing its models.
-                                
-    def __init__(self):
-        self.sznameindex = 0
-        self.pszName = ""
-        self.nummodels = 0
-        self.base = 0
-        self.modelindex = 0
-        self.models = []
-
-    def load(self, file):
-        binary_format="<4i" # data_read_in = 4i = 4*4 = 16
-        data_read_in = 16   # Total binary_format byte value above, used below to set the file offset pointer back.
-        temp_data = file.read(struct.calcsize(binary_format))
-        data = struct.unpack(binary_format, temp_data)
-        self.sznameindex = data[0]
-        self.nummodels = data[1]
-        self.base = data[2]
-        self.modelindex = data[3]
-
-        SaveCurOffset = file.tell() # Save the file current offset pointer.
-
-        file.seek(SaveCurOffset - data_read_in + self.sznameindex, 0) # change the file offset pointer position.
-        binary_format="<c"
-        while 1:
-            temp_data = file.read(struct.calcsize(binary_format))
-            data = struct.unpack(binary_format, temp_data)
-            if data[0] == '\x00':
-                break
-            self.pszName = self.pszName + data[0]
-
-        if logging == 1:
-            tobj.logcon ("sznameindex: " + str(self.sznameindex))
-            tobj.logcon ("pszName: " + self.pszName)
-            tobj.logcon ("nummodels: " + str(self.nummodels))
-            tobj.logcon ("base: " + str(self.base))
-            tobj.logcon ("modelindex: " + str(self.modelindex))
-
-        file.seek(SaveCurOffset - data_read_in + self.modelindex, 0) # change the file offset pointer position to get the model.
-        for m in xrange(self.nummodels):
-            model = HL2_Model()
-            model.load(file)
-            self.models.append(model)
-
-        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-
-
-class HL2_LocalAttachment:
-    #Header Structure      #item of file, type, description.
-    sznameindex = 0        #item   0      int, the attachment's name index.
-    pszName = ""
-    flags = 0              #item   1      int, attachment's flags setting.
-    localbone = 0          #item   2      int, offset to the name of the hitbox.
-    local = (0.0)*12       #item   3-14   12 floats, 3x4 matrix attachment point.
-    unused1 = 0            #item   15     int.
-    unused2 = 0            #item   16     int.
-    unused3 = 0            #item   17     int.
-    unused4 = 0            #item   18     int.
-    unused5 = 0            #item   19     int.
-    unused6 = 0            #item   20     int.
-    unused7 = 0            #item   21     int.
-    unused8 = 0            #item   22     int.
-    binary_format="<3i12f8i"  #little-endian (<), see #item descriptions above.
-    data_read_in = 92 # Total binary_format byte value above, used below to set the file offset pointer back.
-
-    def __init__(self):
-        self.sznameindex = 0
-        self.pszName = ""
-        self.flags = 0
-        self.localbone = 0
-        self.local = (0.0)*12
-        self.unused1 = 0
-        self.unused2 = 0
-        self.unused3 = 0
-        self.unused4 = 0
-        self.unused5 = 0
-        self.unused6 = 0
-        self.unused7 = 0
-        self.unused8 = 0
-        self.binary_format="<3i12f8i"  #little-endian (<), see #item descriptions above.
-        self.data_read_in = 92 # Total binary_format byte value above, used below to set the file offset pointer back.
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.sznameindex = data[0]
-        self.pszName = ""
-        self.flags = data[1]
-        self.localbone = data[2]
-        self.local = ((data[3],  data[4], data[5], data[6]), (data[7],  data[8], data[9], data[10]), (data[11],  data[12], data[13], data[14]))
-        self.unused1 = data[15]
-        self.unused2 = data[16]
-        self.unused3 = data[17]
-        self.unused4 = data[18]
-        self.unused5 = data[19]
-        self.unused6 = data[20]
-        self.unused7 = data[21]
-        self.unused8 = data[22]
-
-        SaveCurOffset = file.tell() # Save the file current offset pointer.
-        file.seek(SaveCurOffset - self.data_read_in + self.sznameindex, 0) # change the file offset pointer position.
-        binary_format="<c"
-        while 1:
-            temp_data = file.read(struct.calcsize(binary_format))
-            data = struct.unpack(binary_format, temp_data)
-            if data[0] == '\x00':
-                break
-            self.pszName = self.pszName + data[0]
-        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
-
-        if logging == 1:
-            tobj.logcon ("--------------HL2_LocalAttachment----------------")
-            tobj.logcon ("sznameindex: " + str(self.sznameindex))
-            tobj.logcon ("pszName: " + self.pszName)
-            tobj.logcon ("flags: " + str(self.flags))
-            tobj.logcon ("localbone: " + str(self.localbone))
-            tobj.logcon ("local: " + str(self.local))
 
 
 class HL2_Node:
@@ -2694,7 +2555,7 @@ class HL2_VTXFileReader:
                         vtx_file.seek(self.body_part_offset + (i * 8) + model_offset + (j * 8) + lod_offset + (k * 12) + mesh_offset, 0)
 
                         for l in xrange(num_meshes):
-                            mesh = meshes[l] # Original set of HL2_Mesh es.
+                            mesh = meshes[l] # Original set of mdl_mesh es.
                             # Original set of mesh vertex data.
                             # dict. list [vtx_index] = [[ 3 weight values ], [ 3 weight bone indexes ], # of bones, ( vertex position ), ( vertex normal ), [ vertex U,V values ]]
                             mesh_pointer = vtx_file.tell()
@@ -2984,213 +2845,148 @@ class Tags(object):
         return self
 
 
-class mdl_bone_anim: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanim_t
-                            #item of data file, size & type,   description
-    offset = [0]*6          #item  0-5   6 unsigned short ints, file offsets to read animation data for bone(s) for EACH SET of ANIMATION FRAMES sequences.
-    file_position = 0       #QuArK hack: file offset of this structure
-
-    binary_format = "<6H" #little-endian (<), see #item descriptions above.
+######################################################
+# HL2 data structures (vectors and quaternions)
+######################################################
+class HL2_HitBoxSet:
+    #Header Structure      #item of file, type, description.
+    sznameindex = 0        #item   0      int, the bone's index.
+    pszName = ""           #item   1      32 char, the bone's name.
+    numhitboxes = 0        #item   2      int, number of hit boxes in the set.
+    hitboxindex = 0        #item   3      int, hit boxes data index offset.
+    bboxgroup = None
 
     def __init__(self):
-        self.offset = [0]*6
-        self.file_position = 0
+        self.sznameindex = 0
+        self.pszName = ""
+        self.numhitboxes = 0
+        self.hitboxindex = 0
+        self.bboxgroup = None
+
+    def load(self, file, QuArK_bones, bboxlist):
+        if logging == 1:
+            tobj.logcon ("==============HL2_HITBOXSET==============")
+            tobj.logcon ("Offset at start: " + str(file.tell()))
+
+        binary_format="<3i" # data_read_in = 3i = 3*4 = 12
+        data_read_in = 12   # Total binary_format byte value above, used below to set the file offset pointer back.
+        temp_data = file.read(struct.calcsize(binary_format))
+        data = struct.unpack(binary_format, temp_data)
+        self.sznameindex = data[0]
+        self.numhitboxes = data[1]
+        self.hitboxindex = data[2]
+        SaveCurOffset = file.tell() # Save the file current offset pointer.
+
+        if logging == 1:
+            tobj.logcon ("sznameindex: " + str(self.sznameindex))
+            tobj.logcon ("numhitboxes: " + str(self.numhitboxes))
+            tobj.logcon ("hitboxindex: " + str(self.hitboxindex))
+            tobj.logcon ("SaveCurOffset: " + str(SaveCurOffset))
+
+        file.seek(SaveCurOffset + self.sznameindex - data_read_in, 0) # change the file offset pointer position.
+        binary_format="<c"
+        while 1:
+            temp_data = file.read(struct.calcsize(binary_format))
+            data = struct.unpack(binary_format, temp_data)
+            if data[0] == '\x00':
+                break
+            self.pszName = self.pszName + data[0]
+        if logging == 1:
+            tobj.logcon ("pszName: " + self.pszName)
+
+        # Makes QuArK bbox group folder.
+        bbg_name = file.name.split("\\")
+        folder = bbg_name[len(bbg_name)-2]
+        file_name = bbg_name[len(bbg_name)-1]
+        file_name = file_name.split(".")[0]
+        bbg_name = folder + "_" + file_name
+        self.bboxgroup = quarkx.newobj("BBoxes " + bbg_name + "_" + self.pszName + ":bbg")
+        self.bboxgroup['show'] = (1.0,)
+
+        file.seek(SaveCurOffset - data_read_in + self.hitboxindex, 0) # change the file offset pointer position to get the bboxes.
+        for count in xrange(self.numhitboxes):
+            bbox = mdl_hitbox()
+            bbox.load(file, self.bboxgroup, count, QuArK_bones, bboxlist)
+
+        file.seek(SaveCurOffset, 0) # Reset the file offset pointer back to where it should be now.
+        if logging == 1:
+            tobj.logcon ("------------------------")
+            tobj.logcon ("Offset at end: " + str(file.tell()))
+            tobj.logcon ("========================")
+            tobj.logcon ("")
+
+
+class Quaternion48:
+    x = 0    #item   0    unsigned short
+    y = 0    #item   1    unsigned short
+    z = 0    #item   2    unsigned short (also contains 1 bit for w-neg (highest bit))
+    wneg = 0 #item   2    (see above)
+    binary_format="<3H"  #little-endian (<), see #item descriptions above.
+    qx = 0.0
+    qy = 0.0
+    qz = 0.0
+    qw = 0.0
+
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.wneg = 0
+        self.binary_format="<3H"
+        self.qx = 0.0
+        self.qy = 0.0
+        self.qz = 0.0
+        self.qw = 0.0
 
     def load(self, file):
-        self.file_position = file.tell()
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        self.offset = [data[0], data[1], data[2], data[3], data[4], data[5]]
 
-    def dump(self):
-        print "MDL Bone Anim"
-        print "offset: ", self.offset
-        print "-------------------"
+        self.x = data[0]
+        self.y = data[1]
+        self.z = data[2]
+        self.wneg = (self.z >> 15)
+        self.z = self.z & 0x8000 #Cut off the wneg bit
+    
+        self.qx = (self.x - 32768) * (1 / 32768.0)
+        self.qy = (self.y - 32768) * (1 / 32768.0)
+        self.qz = (self.z - 16384) * (1 / 16384.0)
+        self.qw = 1.0 - self.qx * self.qx - self.qy * self.qy - self.qz * self.qz
+        if self.qw < 0:
+            self.qw = 0.0
+        else:
+            self.qw = math.sqrt(self.qw)
+        if (self.wneg):
+            self.qw = -self.qw
 
-class mdl_bone_anim_value: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanimvalue_t
-                            #item of data file, size & type,   description
-    valid = 0               #item  0     unsigned char int, 1 byte.
-    total = 0               #item  1     unsigned char int, 1 byte.
-    value = 0               #item  0-1   signed short int, 2 bytes.
-
-    #This is a C++ union (two different ways to read the same bitstream); we'll do both at the same time
-    binary_format1 = "<2B" #little-endian (<), see #item descriptions above.
-    binary_format2 = "<h" #little-endian (<), see #item descriptions above.
+class Vector48:
+    #Header Structure   #item of file, type, description.
+    x = 0.0    #item   0    float
+    y = 0.0    #item   1    float
+    z = 0.0    #item   2    float
+    binary_format="<3f"  #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.valid = 0
-        self.total = 0
-        self.value = 0
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+        self.binary_format="<3f"
 
     def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format1))
-        data = struct.unpack(self.binary_format1, temp_data)
-        self.valid = data[0]
-        self.total = data[1]
-        data = struct.unpack(self.binary_format2, temp_data)
-        self.value = data[0]
-        return self
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
 
-    def dump(self):
-        print "MDL Anim Frames"
-        print "valid: ", self.valid
-        print "total: ", self.total
-        print "value: ", self.value
-        print "===================="
+        self.x = data[0]
+        self.y = data[1]
+        self.z = data[2]
 
 
-def CalcBoneAdj(self, m_controller, m_mouth):
-    m_adj = []
-
-    for j in range(self.numbonecontrollers):
-        pbonecontroller = self.bone_controls[j]
-      #  i = pbonecontroller.index; # HL1 call used
-        i = pbonecontroller.inputfield; # HL2 call uses
-        if (i <= 3):
-            # check for 360% wrapping
-            if (pbonecontroller.type & STUDIO_RLOOP):
-                value = m_controller[i] * (360.0/256.0) + pbonecontroller.start
-            else:
-              #  value = m_controller[i] / 255.0
-                value = m_controller[i]
-                if (value < 0):
-                    value = 0.0
-                elif (value > 1.0):
-                    value = 1.0
-              #  value = (1.0 - value) * pbonecontroller.start + value * pbonecontroller.end
-        else:
-            value = m_mouth / 64.0
-            if (value > 1.0):
-                value = 1.0
-            value = (1.0 - value) * pbonecontroller.start + value * pbonecontroller.end
-
-        if ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_XR) \
-        or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_YR) \
-        or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_ZR):
-            if i == 0:
-                m_adj += [value * (math.pi / 180.0)]
-            else:
-                m_adj += [value]
-        elif ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_X) \
-          or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_Y) \
-          or ((pbonecontroller.type & STUDIO_TYPES) == STUDIO_Z):
-            m_adj += [value]
-
-    return m_adj
-
-def CalcBoneQuaternion(self, file, m_frame, s, pbone, panim, m_adj):
-    angle1 = [0.0, 0.0, 0.0]
-    angle2 = [0.0, 0.0, 0.0]
-
-    quat = [0.0, 0.0, 0.0, 0.0]
-
-    bone = self.bones[pbone]
-
-    for i in range(3):
-        if panim.offset[i+3] == 0:
-            angle1[i] = bone.value[i+3] #default
-            angle2[i] = bone.value[i+3] #default
-        else:
-            panimvalue = panim.file_position + panim.offset[i+3]
-            animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
-            k = m_frame
-            # find span of values that includes the frame we want
-            while (animvalue.total <= k):
-                k -= animvalue.total
-                panimvalue += (animvalue.valid + 1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
-            # Bah, missing blend!
-            if (animvalue.valid > k):
-                panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                angle1[i] = animvalue.value
-                if (animvalue.valid > k + 1):
-                    panimvalueX = panimvalue + (k+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    angle2[i] = animvalue.value
-                else:
-                    if (animvalue.total > k + 1):
-                        angle2[i] = angle1[i]
-                    else:
-                        panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                        animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                        angle2[i] = animvalue.value
-            else:
-                panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                angle1[i] = animvalue.value
-                if (animvalue.total > k + 1):
-                    angle2[i] = angle1[i]
-                else:
-                    panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    angle2[i] = animvalue.value
-            angle1[i] = bone.value[i+3] + angle1[i] * bone.scale[i+3]
-            angle2[i] = bone.value[i+3] + angle2[i] * bone.scale[i+3]
-
-        if (bone.bonecontroller[i+3] != -1):
-            angle1[i] += m_adj[bone.bonecontroller[i+3]]
-            angle2[i] += m_adj[bone.bonecontroller[i+3]]
-
-    if not VectorCompare(angle1, angle2):
-        q1 = AngleQuaternion(angle1)
-        q2 = AngleQuaternion(angle2)
-        quat = QuaternionSlerp(q1, q2, s)
-    else:
-        quat = AngleQuaternion(angle1)
-
-    return quat
-
-
-def CalcBonePosition(self, file, m_frame, s, pbone, panim, m_adj):
-    pos = [0.0, 0.0, 0.0]
-
-    bone = self.bones[pbone]
-
-    for i in range(3):
-        pos[i] = bone.value[i] # default
-        if panim.offset[i] != 0:
-            panimvalue = panim.file_position + panim.offset[i]
-            animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
-            k = m_frame
-            # find span of values that includes the frame we want
-            while (animvalue.total <= k):
-                k -= animvalue.total
-                panimvalue += (animvalue.valid + 1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                animvalue = Read_mdl_bone_anim_value(self, file, panimvalue)
-            # if we're inside the span
-            if (animvalue.valid > k):
-                # and there's more data in the span
-                if (animvalue.valid > k + 1):
-                    panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    panimvalueX = panimvalue + (k+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue2 = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += (animvalue.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
-                else:
-                    panimvalueX = panimvalue + (k+1) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += animvalue.value * bone.scale[i]
-            else:
-                # are we at the end of the repeating values section and there's another section with data?
-                if (animvalue.total <= k + 1):
-                    panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    panimvalueX = panimvalue + (animvalue.valid+2) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue2 = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += (animvalue.value * (1.0 - s) + s * animvalue2.value) * bone.scale[i]
-                else:
-                    panimvalueX = panimvalue + (animvalue.valid) * struct.calcsize(mdl_bone_anim_value.binary_format1)
-                    animvalue = Read_mdl_bone_anim_value(self, file, panimvalueX)
-                    pos[i] += animvalue.value * bone.scale[i]
-        if (bone.bonecontroller[i] != -1):
-            pos[i] += m_adj[bone.bonecontroller[i]]
-
-    return pos
-
-
-class Object(object):
+####################################
+# Starts By Loading the Model Object
+####################################
+class mdl_obj(object):
     #Header Structure            #item of file, type, description.
-    id = ""                      #item   0      4s.
+    ident = ""                   #item   0      4s.
     version = 0                  #item   1      int.
     checksum = 0                 #item   2      int.this has to be the same in the phy and vtx files to load!
     name = ""                    #item   3      64s.
@@ -3221,7 +3017,7 @@ class Object(object):
     numskinref = 0               #item   40     int.
     numskinfamilies = 0          #item   41     int.
     skinindex = 0                #item   42     int.
-    numbodyparts = 0             #item   43     int.
+    num_bodyparts = 0            #item   43     int.
     bodypartindex = 0            #item   44     int.
     numlocalattachments = 0      #item   45     int.
     localattachmentindex = 0     #item   46     int.
@@ -3267,6 +3063,7 @@ class Object(object):
     array4 = 0                   #item   86     int.
     array5 = 0                   #item   87     int.
     array6 = 0                   #item   88     int.
+
     binaryFormat = ("<4sii%dsi3f3f3f3f3f3f44if11i3B7i" % (MAX_QPATH))  # little-endian (<).
 
     frames = []
@@ -3301,7 +3098,7 @@ class Object(object):
     new_mdl_comps = []
 
     def __init__(self):
-        self.id = 0
+        self.ident = 0
         self.version = 0
         self.checksum = 0 # this has to be the same in the phy and vtx files to load!
         self.name = ""
@@ -3336,7 +3133,7 @@ class Object(object):
         self.numskinref = 0
         self.numskinfamilies = 0
         self.skinindex = 0
-        self.numbodyparts = 0
+        self.num_bodyparts = 0
         self.bodypartindex = 0
         # queryable attachable points
         self.numlocalattachments = 0
@@ -3407,7 +3204,9 @@ class Object(object):
         self.anim_blocks = []       # A list of the animation blocks.
         self.bone_controls = []     # A list of the bone controllers.
         self.animation_descs = []   # A list of the animation descriptions (leads into grouped frames).
-        self.sequence_descs = []    # A list of the sequence descriptions.
+
+    #### SEE OTHER HL IMPORTER USE THIS AS WORD SEARCH
+        self.sequence_descs = []    # A list of the sequence descriptions (in the file but never gets used??? uses animation_descs above instead!!!).
         self.attachments = {}       # A dictionary list of  attachments, the key being the bone number it is attached to.
         self.bodyparts = []         # A list of the bodyparts.
         self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_panims, seq_frames from SetUpBones function.
@@ -3422,116 +3221,8 @@ class Object(object):
         self.bones_names = []       # A conversion list of self.main_mdl_bones name converted to importer self.bone names.
         self.new_mdl_comps = []     # A list of main model components updated copies in the main_mdl_comps list above.
 
-    def dump(self):
-        tobj.logcon ("")
-        tobj.logcon ("========================")
-        tobj.logcon ("Object file: " + str(file))
-        tobj.logcon ("")
-        tobj.logcon ("id: " + str(self.id))
-        tobj.logcon ("version: " + str(self.version))
-        tobj.logcon ("-----has to be the same in the phy and vtx files to load----")
-        tobj.logcon ("checksum: " + str(self.checksum))
-        tobj.logcon ("version: " + self.name)
-        tobj.logcon ("length: " + str(self.length))
-        tobj.logcon ("-----ideal eye position----")
-        tobj.logcon ("eyeposition: " + str(self.eyeposition))
-        tobj.logcon ("-----illumination center----")
-        tobj.logcon ("illumposition: " + str(self.illumposition))
-        tobj.logcon ("-----ideal movement hull size----")
-        tobj.logcon ("hull_min: " + str(self.hull_min))
-        tobj.logcon ("hull_max: " + str(self.hull_max))
-        tobj.logcon ("-----clipping bounding box----")
-        tobj.logcon ("view_bbmin: " + str(self.view_bbmin))
-        tobj.logcon ("view_bbmax: " + str(self.view_bbmax))
-        tobj.logcon ("-----flags----")
-        tobj.logcon ("flags: " + str(self.flags))
-        tobj.logcon ("-----bones----")
-        tobj.logcon ("numbones: " + str(self.numbones))
-        tobj.logcon ("boneindex: " + str(self.boneindex))
-        tobj.logcon ("-----bone controllers----")
-        tobj.logcon ("numbonecontrollers: " + str(self.numbonecontrollers))
-        tobj.logcon ("bonecontrollerindex: " + str(self.bonecontrollerindex))
-        tobj.logcon ("-----hitboxes----")
-        tobj.logcon ("numhitboxsets: " + str(self.numhitboxsets))
-        tobj.logcon ("hitboxsetindex: " + str(self.hitboxsetindex))
-        tobj.logcon ("-----animations----")
-        tobj.logcon ("numlocalanim: " + str(self.numlocalanim))
-        tobj.logcon ("localanimindex: " + str(self.localanimindex))
-        tobj.logcon ("-----sequences----")
-        tobj.logcon ("numlocalseq: " + str(self.numlocalseq))
-        tobj.logcon ("localseqindex: " + str(self.localseqindex))
-        tobj.logcon ("---initialization flags---")
-        tobj.logcon ("activitylistversion: " + str(self.activitylistversion))
-        tobj.logcon ("eventsindexed: " + str(self.eventsindexed))
-        tobj.logcon ("-----raw textures----")
-        tobj.logcon ("numtextures: " + str(self.numtextures))
-        tobj.logcon ("textureindex: " + str(self.textureindex))
-        tobj.logcon ("-----cd textures----")
-        tobj.logcon ("numcdtextures: " + str(self.numcdtextures))
-        tobj.logcon ("cdtextureindex: " + str(self.cdtextureindex))
-        tobj.logcon ("-----replaceable textures tables----")
-        tobj.logcon ("numskinref: " + str(self.numskinref))
-        tobj.logcon ("numskinfamilies: " + str(self.numskinfamilies))
-        tobj.logcon ("skinindex: " + str(self.skinindex))
-        tobj.logcon ("numbodyparts: " + str(self.numbodyparts))
-        tobj.logcon ("bodypartindex: " + str(self.bodypartindex))
-        tobj.logcon ("-----queryable attachable points----")
-        tobj.logcon ("numlocalattachments: " + str(self.numlocalattachments))
-        tobj.logcon ("localattachmentindex: " + str(self.localattachmentindex))
-        tobj.logcon ("-----animation node to animation node transition graph----")
-        tobj.logcon ("numlocalnodes: " + str(self.numlocalnodes))
-        tobj.logcon ("localnodeindex: " + str(self.localnodeindex))
-        tobj.logcon ("localnodenameindex: " + str(self.localnodenameindex))
-        tobj.logcon ("numflexdesc: " + str(self.numflexdesc))
-        tobj.logcon ("flexdescindex: " + str(self.flexdescindex))
-        tobj.logcon ("numflexcontrollers: " + str(self.numflexcontrollers))
-        tobj.logcon ("flexcontrollerindex: " + str(self.flexcontrollerindex))
-        tobj.logcon ("numflexrules: " + str(self.numflexrules))
-        tobj.logcon ("flexruleindex: " + str(self.flexruleindex))
-        tobj.logcon ("numikchains: " + str(self.numikchains))
-        tobj.logcon ("ikchainindex: " + str(self.ikchainindex))
-        tobj.logcon ("nummouths: " + str(self.nummouths))
-        tobj.logcon ("mouthindex: " + str(self.mouthindex))
-        tobj.logcon ("numlocalposeparameters: " + str(self.numlocalposeparameters))
-        tobj.logcon ("localposeparamindex: " + str(self.localposeparamindex))
-        tobj.logcon ("surfacepropindex: " + str(self.surfacepropindex))
-        tobj.logcon ("-----Key values----")
-        tobj.logcon ("keyvalueindex: " + str(self.keyvalueindex))
-        tobj.logcon ("keyvaluesize: " + str(self.keyvaluesize))
-        tobj.logcon ("numlocalikautoplaylocks: " + str(self.numlocalikautoplaylocks))
-        tobj.logcon ("localikautoplaylockindex: " + str(self.localikautoplaylockindex))
-        tobj.logcon ("-----collision model mass----")
-        tobj.logcon ("mass: " + str(self.mass))
-        tobj.logcon ("contents: " + str(self.contents))
-        tobj.logcon ("-----external animations, models, etc.----")
-        tobj.logcon ("numincludemodels: " + str(self.numincludemodels))
-        tobj.logcon ("includemodelindex: " + str(self.includemodelindex))
-        tobj.logcon ("-----implementation specific back pointer to virtual data----")
-        tobj.logcon ("virtualModel: " + str(self.virtualModel))
-        tobj.logcon ("-----for demand loaded animation blocks----")
-        tobj.logcon ("szanimblocknameindex: " + str(self.szanimblocknameindex))
-        tobj.logcon ("numanimblocks: " + str(self.numanimblocks))
-        tobj.logcon ("animblockindex: " + str(self.animblockindex))
-        tobj.logcon ("animblockModel: " + str(self.animblockModel))
-        tobj.logcon ("bonetablebynameindex: " + str(self.bonetablebynameindex))
-        tobj.logcon ("-----used by tools only that don't cache, but persist mdl's peer data----")
-        tobj.logcon ("-----engine uses virtualModel to back link to cache pointers----")
-        tobj.logcon ("pVertexBase: " + str(self.pVertexBase))
-        tobj.logcon ("pIndexBase: " + str(self.pIndexBase))
-        tobj.logcon ("rootLOD: " + str(self.rootLOD))
-        tobj.logcon ("unused1: " + str(self.unused1))
-        tobj.logcon ("unused2: " + str(self.unused2))
-        tobj.logcon ("zeroframecacheindex: " + str(self.zeroframecacheindex))
-        tobj.logcon ("array1: " + str(self.array1))
-        tobj.logcon ("array2: " + str(self.array2))
-        tobj.logcon ("array3: " + str(self.array3))
-        tobj.logcon ("array4: " + str(self.array4))
-        tobj.logcon ("array5: " + str(self.array5))
-        tobj.logcon ("array6: " + str(self.array6))
-        tobj.logcon ("")
-        tobj.logcon ("========================")
 
-    def load_Object(self, file, editor, folder_name, mdl_name, message):
+    def load(self, file, editor, folder_name, mdl_name, message):
         global progressbar, SpecsList
         SpecsList = """ """
         # file = the actual .mdl model file being read in, imported.
@@ -3543,7 +3234,7 @@ class Object(object):
         data = struct.unpack(self.binaryFormat, tmpData)
         possible_files = ["_animations.mdl", "_animations.ani", "_gestures.mdl", "_gestures.ani", "_postures.mdl", "_postures.ani"]
 
-        self.id = data[0]
+        self.ident = data[0]
         self.version = data[1]
         self.checksum = data[2] # this has to be the same in the phy and vtx files to load!
         self.name = asciiz(data[3])
@@ -3617,7 +3308,7 @@ class Object(object):
         self.numskinref = data[40]
         self.numskinfamilies = data[41]
         self.skinindex = data[42]
-        self.numbodyparts = data[43]
+        self.num_bodyparts = data[43]
         self.bodypartindex = data[44]
         # queryable attachable points
         self.numlocalattachments = data[45]
@@ -3680,7 +3371,10 @@ class Object(object):
         # where are we in the file (for calculating real offsets)
         ofsBegin = file.tell()
         if logging == 1:
-            tobj.logcon ("ofsBegin: " + str(ofsBegin))
+            tobj.logcon ("")
+            tobj.logcon ("#####################################################################")
+            tobj.logcon ("Header Data Size in bytes: " + str(ofsBegin))
+            tobj.logcon ("#####################################################################")
 
         ## To get bonetablebynameindex BYTE?
         SaveCurOffset = file.tell() # Save the file current offset pointer.
@@ -3706,12 +3400,12 @@ class Object(object):
             tobj.logcon ("========================")
             tobj.logcon ("numbones: " + str(self.numbones))
         for i in xrange(self.numbones):
-            bone = HL2_Bone()
+            bone = mdl_bone()
             bone.bone_index = i
             bone.load(file)
             if logging == 1:
                 tobj.logcon ("----------------------------")
-                tobj.logcon ("HL2_Bone data index: " + str(i))
+                tobj.logcon ("mdl_bone data index: " + str(i))
             self.bones.append(bone)
             self.QuArKBonesData = self.QuArKBonesData + [[folder_name + '_' + mdl_name + '_' + bone.pszName + ':bone', {}]]
 
@@ -3722,9 +3416,10 @@ class Object(object):
             tobj.logcon ("numbonecontrollers: " + str(self.numbonecontrollers))
         file.seek(self.bonecontrollerindex, 0)
         for i in xrange(self.numbonecontrollers):
-            bone_controller = HL2_BoneController()
+            bone_controller = mdl_bone_control()
             bone_controller.load(file)
             self.bone_controls.append(bone_controller)
+
 
         ## Load the animblocks.
         if logging == 1:
@@ -3755,11 +3450,11 @@ class Object(object):
             self.SRCsList = []
             temp = """ """
         for i in xrange(self.numlocalanim):
-            local_animation_desc = HL2_LocalAnimDesc()
+            local_animation_desc = mdl_sequence_desc()
             local_animation_desc.load(file, self.ani_file, self)
             if logging == 1:
                 tobj.logcon ("========================")
-                tobj.logcon ("HL2_LocalAnimDesc data index: " + str(i))
+                tobj.logcon ("mdl_sequence_desc data index: " + str(i))
                 tobj.logcon ("pszName: " + local_animation_desc.pszName)
                 tobj.logcon ("numframes: " + str(local_animation_desc.numframes))
                 tobj.logcon ("----------------------------")
@@ -3797,9 +3492,11 @@ class Object(object):
                 tobj.logcon ("========================")
                 tobj.logcon ("HL2_LocalSeqDesc data index: " + str(i))
 
-        # Setup items needed for QuArK.
+
+        ## Setup items needed for QuArK.
         ComponentList = []
         message = ""
+
 
         ## Load the file textures info data.
         if logging == 1:
@@ -3817,14 +3514,15 @@ class Object(object):
                 tobj.logcon ("HL2_TexturesInfo data index: " + str(i))
         self.skins_group, self.materials_group = LookForSkins(skin_names, self.skins_group, self.materials_group, folder_name, mdl_name, message)
 
-        ## Load the body parts index data.
+
+        ## Load the bodyparts data.
         if logging == 1:
             tobj.logcon ("")
             tobj.logcon ("========================")
-            tobj.logcon ("numbodyparts: " + str(self.numbodyparts))
+            tobj.logcon ("num_bodyparts: " + str(self.num_bodyparts))
         file.seek(self.bodypartindex, 0)
-        for i in xrange(self.numbodyparts):
-            body_part_index = HL2_BodyPartIndex()
+        for i in xrange(self.num_bodyparts):
+            body_part_index = mdl_bodypart()
             body_part_index.load(file)
             self.bodyparts.append(body_part_index)
             if logging == 1:
@@ -3841,9 +3539,10 @@ class Object(object):
                 Fixup.load(vvd_file)
                 VVDFixups += [Fixup]
 
-            # load the bodyparts models meshes data
+
+        ## Load the bodyparts models meshes data
             mesh_vertex_count = 0
-            for i in xrange(self.numbodyparts):
+            for i in xrange(self.num_bodyparts):
                 for j in xrange(self.bodyparts[i].nummodels):
                     name = self.bodyparts[i].models[j].pszName
                     name = name.split(".")[0]
@@ -3877,9 +3576,12 @@ class Object(object):
                         #No fixup required
                         pass
 
+
+                ## Load the meshes data
                     for k in xrange(nummesh):
 
-                        # Now we start creating our Import Component and name it.
+
+                    ## Now we start creating our Import Component and name it.
                         Component = quarkx.newobj(folder_name + '_' + mdl_name + '_' + name + ' ' + str(k) + ':mc')
                         sdogroup = quarkx.newobj('SDO:sdo')
                         # Create the "Skins:sg" group.
@@ -3906,7 +3608,8 @@ class Object(object):
                         Component.appenditem(sdogroup)
                         Component.appenditem(skingroup)
                         Component.appenditem(framesgroup)
-                        # Add bone controls if any.
+
+                    ## Add bone controls if any.
                         for control in self.bone_controls:
                             bone = self.bones[control.bone]
                             Component['bone_control_'+ str(control.inputfield)] = self.QuArKBonesData[control.bone][0]
@@ -3918,7 +3621,7 @@ class Object(object):
                             binary_format="<3f3bB3f3f2f"
                             if logging == 1:
                                 tobj.logcon ("======================================")
-                                tobj.logcon ("HL2import line 3307 HL2_Mesh")
+                                tobj.logcon ("HL2import mdl_mesh")
                                 tobj.logcon ("mesh-> meshid, numvertices, vertexoffset, VVDFileReader-> vertexDataStart")
                                 tobj.logcon ("         " + str(mesh.meshid) + "        " + str(mesh.numvertices) + "         " + str(mesh.vertexoffset) + "             " + str(VVDFileReader.vertexDataStart))
                                 tobj.logcon ("======================================")
@@ -3967,7 +3670,7 @@ class Object(object):
                 file.seek(self.localattachmentindex, 0)
                 tag_comp = ComponentList[0] # Reset this if needed later.
                 for i in xrange(self.numlocalattachments):
-                    attachment = HL2_LocalAttachment()
+                    attachment = mdl_attachment()
                     attachment.load(file)
                     if not self.attachments.has_key(attachment.localbone):
                         self.attachments[attachment.localbone] = {}
@@ -3976,7 +3679,9 @@ class Object(object):
                     local = attachment.local
                     org = [local[0][3], local[1][3], local[2][3]]
                     self.attachments[attachment.localbone]['tag_pos'][i] = org
-                    # Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
+
+
+                ## Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
                     tag_name = 'tag_' + attachment.pszName
                     newtag = quarkx.newobj(folder_name + '_' + mdl_name + '_' + tag_name + ':tag')
                     newtag['Component'] = tag_comp.name
@@ -3991,7 +3696,7 @@ class Object(object):
                         tobj.logcon ("tag_comp: " + str(tag_comp))
                         tobj.logcon ("Tags: " + str(tag_comp.dictspec['Tags']))
 
-            # Create the bones, if any.
+        ## Create the bones, if any.
             if len(self.bones) != 0 and len(ComponentList) != 0:
                 for mdlbone in xrange(len(self.bones)):
                     bone = self.bones[mdlbone]
@@ -4081,7 +3786,7 @@ class Object(object):
             # int     RemapSeqBone( int iSequence, int iLocalBone ) const;    // maps local sequence bone to global bone
             # int     RemapAnimBone( int iAnim, int iLocalBone ) const;       // maps local animations bone to global bone
 
-            ## Load the hitboxes data.
+            ## Load the hitboxes data, can only have one per bone and visa versa.
             if logging == 1:
                 tobj.logcon ("")
                 tobj.logcon ("========================")
@@ -4502,13 +4207,13 @@ class Object(object):
                                 ani_file.seek(SaveCurAniValuePtrRotOffset+AnimValuePtrRot.offset[i],0)
                                 j = 0
                                 while j < anim.numframes:
-                                    AnimValue = HL2_AnimValue()
+                                    AnimValue = mdl_bone_anim_value()
                                     AnimValue.load(ani_file)
                                     #print "AnimValue.valid", AnimValue.valid
                                     #print "AnimValue.total", AnimValue.total
                                     #print "AnimValue.value", AnimValue.value
                                     for k in xrange(AnimValue.valid):
-                                        AnimValue2 = HL2_AnimValue()
+                                        AnimValue2 = mdl_bone_anim_value()
                                         AnimValue2.load(ani_file)
                                         rot_anim_data[i] += [AnimValue2.value]
                                         j += 1
@@ -4527,13 +4232,13 @@ class Object(object):
                                 ani_file.seek(SaveCurAniValuePtrPosOffset+AnimValuePtrPos.offset[i],0)
                                 j = 0
                                 while j < anim.numframes:
-                                    AnimValue = HL2_AnimValue()
+                                    AnimValue = mdl_bone_anim_value()
                                     AnimValue.load(ani_file)
                                     #print "AnimValue.valid", AnimValue.valid
                                     #print "AnimValue.total", AnimValue.total
                                     #print "AnimValue.value", AnimValue.value
                                     for k in xrange(AnimValue.valid):
-                                        AnimValue2 = HL2_AnimValue()
+                                        AnimValue2 = mdl_bone_anim_value()
                                         AnimValue2.load(ani_file)
                                         pos_anim_data[i] += [AnimValue2.value]
                                         j += 1
@@ -4740,9 +4445,121 @@ class Object(object):
             
         return self, ComponentList, QuArK_bones, message, self.tagsgroup, self.version, self.main_mdl_comps, self.new_mdl_comps
 
+    def dump(self):
+        tobj.logcon ("")
+        tobj.logcon ("========================")
+        tobj.logcon ("Object file: " + str(file))
+        tobj.logcon ("")
+        tobj.logcon ("ident: " + str(self.ident))
+        tobj.logcon ("version: " + str(self.version))
+        tobj.logcon ("-----has to be the same in the phy and vtx files to load----")
+        tobj.logcon ("checksum: " + str(self.checksum))
+        tobj.logcon ("version: " + self.name)
+        tobj.logcon ("length: " + str(self.length))
+        tobj.logcon ("-----ideal eye position----")
+        tobj.logcon ("eyeposition: " + str(self.eyeposition))
+        tobj.logcon ("-----illumination center----")
+        tobj.logcon ("illumposition: " + str(self.illumposition))
+        tobj.logcon ("-----ideal movement hull size----")
+        tobj.logcon ("hull_min: " + str(self.hull_min))
+        tobj.logcon ("hull_max: " + str(self.hull_max))
+        tobj.logcon ("-----clipping bounding box----")
+        tobj.logcon ("view_bbmin: " + str(self.view_bbmin))
+        tobj.logcon ("view_bbmax: " + str(self.view_bbmax))
+        tobj.logcon ("-----flags----")
+        tobj.logcon ("flags: " + str(self.flags))
+        tobj.logcon ("-----bones----")
+        tobj.logcon ("numbones: " + str(self.numbones))
+        tobj.logcon ("boneindex: " + str(self.boneindex))
+        tobj.logcon ("-----bone controllers----")
+        tobj.logcon ("numbonecontrollers: " + str(self.numbonecontrollers))
+        tobj.logcon ("bonecontrollerindex: " + str(self.bonecontrollerindex))
+        tobj.logcon ("-----hitboxes----")
+        tobj.logcon ("numhitboxsets: " + str(self.numhitboxsets))
+        tobj.logcon ("hitboxsetindex: " + str(self.hitboxsetindex))
+        tobj.logcon ("-----animations----")
+        tobj.logcon ("numlocalanim: " + str(self.numlocalanim))
+        tobj.logcon ("localanimindex: " + str(self.localanimindex))
+        tobj.logcon ("-----sequences----")
+        tobj.logcon ("numlocalseq: " + str(self.numlocalseq))
+        tobj.logcon ("localseqindex: " + str(self.localseqindex))
+        tobj.logcon ("---initialization flags---")
+        tobj.logcon ("activitylistversion: " + str(self.activitylistversion))
+        tobj.logcon ("eventsindexed: " + str(self.eventsindexed))
+        tobj.logcon ("-----raw textures----")
+        tobj.logcon ("numtextures: " + str(self.numtextures))
+        tobj.logcon ("textureindex: " + str(self.textureindex))
+        tobj.logcon ("-----cd textures----")
+        tobj.logcon ("numcdtextures: " + str(self.numcdtextures))
+        tobj.logcon ("cdtextureindex: " + str(self.cdtextureindex))
+        tobj.logcon ("-----replaceable textures tables----")
+        tobj.logcon ("numskinref: " + str(self.numskinref))
+        tobj.logcon ("numskinfamilies: " + str(self.numskinfamilies))
+        tobj.logcon ("skinindex: " + str(self.skinindex))
+        tobj.logcon ("num_bodyparts: " + str(self.num_bodyparts))
+        tobj.logcon ("bodypartindex: " + str(self.bodypartindex))
+        tobj.logcon ("-----queryable attachable points----")
+        tobj.logcon ("numlocalattachments: " + str(self.numlocalattachments))
+        tobj.logcon ("localattachmentindex: " + str(self.localattachmentindex))
+        tobj.logcon ("-----animation node to animation node transition graph----")
+        tobj.logcon ("numlocalnodes: " + str(self.numlocalnodes))
+        tobj.logcon ("localnodeindex: " + str(self.localnodeindex))
+        tobj.logcon ("localnodenameindex: " + str(self.localnodenameindex))
+        tobj.logcon ("numflexdesc: " + str(self.numflexdesc))
+        tobj.logcon ("flexdescindex: " + str(self.flexdescindex))
+        tobj.logcon ("numflexcontrollers: " + str(self.numflexcontrollers))
+        tobj.logcon ("flexcontrollerindex: " + str(self.flexcontrollerindex))
+        tobj.logcon ("numflexrules: " + str(self.numflexrules))
+        tobj.logcon ("flexruleindex: " + str(self.flexruleindex))
+        tobj.logcon ("numikchains: " + str(self.numikchains))
+        tobj.logcon ("ikchainindex: " + str(self.ikchainindex))
+        tobj.logcon ("nummouths: " + str(self.nummouths))
+        tobj.logcon ("mouthindex: " + str(self.mouthindex))
+        tobj.logcon ("numlocalposeparameters: " + str(self.numlocalposeparameters))
+        tobj.logcon ("localposeparamindex: " + str(self.localposeparamindex))
+        tobj.logcon ("surfacepropindex: " + str(self.surfacepropindex))
+        tobj.logcon ("-----Key values----")
+        tobj.logcon ("keyvalueindex: " + str(self.keyvalueindex))
+        tobj.logcon ("keyvaluesize: " + str(self.keyvaluesize))
+        tobj.logcon ("numlocalikautoplaylocks: " + str(self.numlocalikautoplaylocks))
+        tobj.logcon ("localikautoplaylockindex: " + str(self.localikautoplaylockindex))
+        tobj.logcon ("-----collision model mass----")
+        tobj.logcon ("mass: " + str(self.mass))
+        tobj.logcon ("contents: " + str(self.contents))
+        tobj.logcon ("-----external animations, models, etc.----")
+        tobj.logcon ("numincludemodels: " + str(self.numincludemodels))
+        tobj.logcon ("includemodelindex: " + str(self.includemodelindex))
+        tobj.logcon ("-----implementation specific back pointer to virtual data----")
+        tobj.logcon ("virtualModel: " + str(self.virtualModel))
+        tobj.logcon ("-----for demand loaded animation blocks----")
+        tobj.logcon ("szanimblocknameindex: " + str(self.szanimblocknameindex))
+        tobj.logcon ("numanimblocks: " + str(self.numanimblocks))
+        tobj.logcon ("animblockindex: " + str(self.animblockindex))
+        tobj.logcon ("animblockModel: " + str(self.animblockModel))
+        tobj.logcon ("bonetablebynameindex: " + str(self.bonetablebynameindex))
+        tobj.logcon ("-----used by tools only that don't cache, but persist mdl's peer data----")
+        tobj.logcon ("-----engine uses virtualModel to back link to cache pointers----")
+        tobj.logcon ("pVertexBase: " + str(self.pVertexBase))
+        tobj.logcon ("pIndexBase: " + str(self.pIndexBase))
+        tobj.logcon ("rootLOD: " + str(self.rootLOD))
+        tobj.logcon ("unused1: " + str(self.unused1))
+        tobj.logcon ("unused2: " + str(self.unused2))
+        tobj.logcon ("zeroframecacheindex: " + str(self.zeroframecacheindex))
+        tobj.logcon ("array1: " + str(self.array1))
+        tobj.logcon ("array2: " + str(self.array2))
+        tobj.logcon ("array3: " + str(self.array3))
+        tobj.logcon ("array4: " + str(self.array4))
+        tobj.logcon ("array5: " + str(self.array5))
+        tobj.logcon ("array6: " + str(self.array6))
+        tobj.logcon ("")
+        tobj.logcon ("========================")
 
 
-def ImportMDL(basepath, filename):
+
+########################
+# To run this file
+########################
+def load_mdl(basepath, filename):
     global tobj, logging, importername, textlog
 
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
@@ -4789,17 +4606,17 @@ def ImportMDL(basepath, filename):
 
     # read the file in
     file = open(filename,"rb")
-    HL2 = Object()
+    mdl = mdl_obj()
     message = ""
-    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = HL2.load_Object(file, editor, ModelFolder, ModelName, message)
+    MODEL, ComponentList, QuArK_bones, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = mdl.load(file, editor, ModelFolder, ModelName, message)
 
     if logging == 1:
-        HL2.dump() # Writes the file Header last to the log for comparison reasons.
+        mdl.dump() # Writes the file Header last to the log for comparison reasons.
 
     if MODEL is None:
         return MODEL, file, None, None, None, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
 
-    return MODEL, file, ComponentList, QuArK_bones, HL2.hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
+    return MODEL, file, ComponentList, QuArK_bones, mdl.hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
 
 
 def loadmodel(root, filename, gamename, nomessage=0):
@@ -4840,7 +4657,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     ### Lines below here loads the model into the opened editor's current model.
-    self, file, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = ImportMDL(basepath, filename)
+    self, file, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList = load_mdl(basepath, filename)
 
     if version is None or (version != 44 and version != 49):
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid. Add more info to message.
@@ -4921,7 +4738,6 @@ def FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets,
     else: # Imports a model properly from within the editor.
         for bone in newbones:
             undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
-            
 
         # Now we process the Components.
         for Component in ComponentList:
@@ -5336,6 +5152,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2011/12/28 08:28:22  cdunde
+# Setup importer bone['type'] not done yet.
+#
 # Revision 1.12  2011/12/23 03:15:17  cdunde
 # To remove all importers bone ['type'] from ModelComponentList['bonelist'].
 # Those should be kept with the individual bones if we decide it is needed.

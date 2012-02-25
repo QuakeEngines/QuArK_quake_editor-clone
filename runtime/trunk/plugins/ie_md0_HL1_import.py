@@ -41,24 +41,6 @@ mdl = None
 UseName = ""
 
 ######################################################
-# MDL Model Constants from -> hlmviewer source file -> studio.h -> STUDIO MODELS
-######################################################
-MDL_MAX_TRIANGLES   = 20000
-MDL_MAX_VERTICES    = 2048
-MDL_MAX_SEQUENCES   = 256  # total animation sequences
-MDL_MAX_SKINS       = 100         # total textures
-MDL_MAX_SRCBONES    = 512   # bones allowed at source movement
-MDL_MAX_BONES       = 128      # total bones actually used
-MDL_MAX_MODELS      = 32      # sub-models per model
-MDL_MAX_BODYPARTS   = 32
-MDL_MAX_GROUPS      = 4
-MDL_MAX_ANIMATIONS  = 512 # per sequence
-MDL_MAX_MESHES      = 256
-MDL_MAX_EVENTS      = 1024
-MDL_MAX_PIVOTS      = 256
-MDL_MAX_CONTROLLERS = 8
-
-######################################################
 # MDL Flag Settings from -> hlmviewer source file -> studio.h
 ######################################################
 # lighting options from -> lighting options
@@ -97,6 +79,24 @@ STUDIO_HAS_CHROME   = 8 # if any of the textures have chrome on them
 RAD_TO_STUDIO       = (32768.0/math.pi)
 STUDIO_TO_RAD       = (math.pi/32768.0)
 
+
+######################################################
+# MDL Model Constants from -> hlmviewer source file -> studio.h -> STUDIO MODELS
+######################################################
+MDL_MAX_TRIANGLES   = 20000
+MDL_MAX_VERTICES    = 2048
+MDL_MAX_SEQUENCES   = 256  # total animation sequences
+MDL_MAX_SKINS       = 100         # total textures
+MDL_MAX_SRCBONES    = 512   # bones allowed at source movement
+MDL_MAX_BONES       = 128      # total bones actually used
+MDL_MAX_MODELS      = 32      # sub-models per model
+MDL_MAX_BODYPARTS   = 32
+MDL_MAX_GROUPS      = 4
+MDL_MAX_ANIMATIONS  = 512 # per sequence
+MDL_MAX_MESHES      = 256
+MDL_MAX_EVENTS      = 1024
+MDL_MAX_PIVOTS      = 256
+MDL_MAX_CONTROLLERS = 8
 
 ######################################################
 # MDL Importer Functions, from -> hlmviewer source file -> mathlib.c
@@ -210,80 +210,92 @@ def Read_mdl_bone_anim_value(self, file, file_offset):
    # anim_value.dump()
     return anim_value
 
+# Creates a bbox (hit box) if any.
+def MakePoly(bname, bpos, brot, bbox):
+    m = bbox[0]
+    M = bbox[1]
+    name = bname.replace(":bone", ":p") # Use the bone name for better identification.
+    p = quarkx.newobj(name)
+    p["assigned2"] = bname
+    p['show'] = (1.0,)
+    face = quarkx.newobj("north:f") # BACK FACE
+    vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+    vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+    vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+    vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+    vtx2 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
+    vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("east:f") # RIGHT FACE
+    vtx0 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+    vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+    vtx1 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
+    vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+    vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
+    vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("south:f") # FRONT FACE
+    vtx0 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
+    vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+    vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+    vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+    vtx2 = (bpos + (brot * quarkx.vect(M[0],m[1],m[2]))).tuple
+    vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("west:f") # LEFT FACE
+    vtx0 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+    vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+    vtx1 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+    vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+    vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
+    vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("up:f") # TOP FACE
+    vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
+    vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+    vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
+    vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+    vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
+    vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+    face = quarkx.newobj("down:f") # BOTTOM FACE
+    vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
+    vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
+    vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
+    vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
+    vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
+    vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
+    face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
+    face["tex"] = None
+    p.appenditem(face)
+
+    return p
+
 
 
 ######################################################
 # MDL data structures
 ######################################################
-class mdl_skin_info: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
-    name = ""               #item  0-63   64 char, skin name.
-    flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
-    width = 0               #item  65     int, skinwidth in pixels.
-    height = 0              #item  66     int, skinheight in pixels.
-    skin_offset = 0         #item  67     int, index (Offset) to skin data.
-    binary_format = "<64c4i" #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.name = ""
-        self.flags = 0
-        self.width = 0
-        self.height = 0
-        self.skin_offset = 0
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        char = 64
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
-        self.flags = data[64]
-        self.width = data[65]
-        self.height = data[66]
-        self.skin_offset = data[67]
-        return self
-
-    def dump(self):
-        print "MDL Skin"
-        print "name: ", self.name
-        print "flags: ", self.flags
-        print "width: ", self.width
-        print "height: ", self.height
-        print "skin_offset: ", self.skin_offset
-        print "--------------------"
-
-class mdl_bone_anim: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanim_t
-                            #item of data file, size & type,   description
-    offset = [0]*6          #item  0-5   6 unsigned short ints, file offsets to read animation data for bone(s) for EACH SET of ANIMATION FRAMES sequences.
-    file_position = 0       #QuArK hack: file offset of this structure
-
-    binary_format = "<6H" #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.offset = [0]*6
-        self.file_position = 0
-
-    def load(self, file):
-        self.file_position = file.tell()
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.offset = [data[0], data[1], data[2], data[3], data[4], data[5]]
-
-    def dump(self):
-        print "MDL Bone Anim"
-        print "offset: ", self.offset
-        print "-------------------"
-
-class mdl_bone: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobone_t
-                            #item of data file, size & type,   description
-    bone_index = 0          # For our own use later.
-    name = ""               #item  0-31   32 char, bone name for symbolic links.
-    parent = 0              #item  32     int, parent bone.
-    flags = 0               #item  33     int, unknown item.
-    bonecontroller = [0]*6  #item  34-39  6 int, bone controller index, -1 == none
-    value = [0.0]*6         #item  40-45  6 floats, default DoF values
-    scale = [0.0]*6         #item  46-51  6 floats, scale for delta DoF values
+class mdl_bone:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobone_t
+    #Header Structure      #item of file, type, description.
+    bone_index = 0         # For our own use later.
+    name = ""              #item  0-31   32 char, bone name for symbolic links.
+    parent = 0             #item  32     int, parent bone.
+    flags = 0              #item  33     int, unknown item.
+    bonecontroller = [0]*6 #item  34-39  6 int, bone controller index, -1 == none
+    value = [0.0]*6        #item  40-45  6 floats, default DoF values
+    scale = [0.0]*6        #item  46-51  6 floats, scale for delta DoF values
 
     binary_format = "<32cii6i6f6f" #little-endian (<), see #item descriptions above.
 
@@ -322,15 +334,17 @@ class mdl_bone: # Done cdunde from -> hlmviewer source file -> studio.h -> mstud
         print "scale: ", self.scale
         print "===================="
 
-class mdl_bone_control: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobonecontroller_t
-                    #item of data file, size & type,   description
-    bone = 0        #item  0      int, -1 = 0
-                    #                  types = X, Y, Z, XR, YR, ZR or M.
-    type = 0        #item  1      int, types = 1, 2, 4,  8, 16, 32 or 64
-    start = 0.0     #item  2      float.
-    end = 0.0       #item  3      float.
-    rest = 0        #item  4      int, byte index value at rest.
-    index = 0       #item  5      int, 0-3 user set controller, 4 mouth.
+
+class mdl_bone_control:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobonecontroller_t
+    #Header Structure      #item of file, type, description.
+    bone = 0               #item   0      int, -1 = 0.
+                           #                   types = X, Y, Z, XR, YR, ZR or M.
+    type = 0               #item   1      int, types = 1, 2, 4,  8, 16, 32 or 64
+    start = 0.0            #item   2      float.
+    end = 0.0              #item   3      float.
+    rest = 0               #item   4      int, byte index value at rest.
+    index = 0              #item   5      int, 0-3 user set controller, 4 mouth.
 
     binary_format = "<2i2f2i" #little-endian (<), see #item descriptions above.
 
@@ -363,13 +377,49 @@ class mdl_bone_control: # Done cdunde from -> hlmviewer source file -> studio.h 
         print "index: ", self.index
         print "===================="
 
-class mdl_attachment: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioattachment_t
-                            #item of data file, size & type,   description
-    name = ""               #item  0-31   32 char, attachment name.
-    type = 0                #item  32     int, type of attachment.
-    bone = 0                #item  33     int, bone index.
-    org = [0.0]*3           #item  34-36  3 floats, attachment point.
-    vectors = [[0.0]*3]*3   #item  37-45  3 floats each for 3 vectors.
+
+class mdl_hitbox:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobbox_t
+    #Header Structure      #item of file, type, description.
+    bone = 0               #item   0      int, the bone's index.
+    group = 0              #item   1      int, intersection group.
+    bbmin = (0.0)*3        #item   2-4    3 floats, bounding box min x,y,z Vector.
+    bbmax = (0.0)*3        #item   5-7    3 floats, bounding box max x,y,z Vector.
+
+    binary_format = "<2i3f3f" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.bone = 0
+        self.group = 0
+        self.bbmin = (0.0)*3
+        self.bbmax = (0.0)*3
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.bone = data[0]
+        self.group = data[1]
+        self.bbmin = (data[2], data[3], data[4])
+        self.bbmax = (data[5], data[6], data[7])
+        return self
+
+    def dump(self):
+        print "MDL Hitbox"
+        print "bone: ", self.bone
+        print "group: ", self.group
+        print "bbmin: ", self.bbmin
+        print "bbmax: ", self.bbmax
+        print "===================="
+
+
+class mdl_attachment:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioattachment_t
+    #Header Structure      #item of file, type, description.
+    name = ""              #item   0-31   32 char, attachment name.
+    type = 0               #item   32     int, type of attachment.
+    bone = 0               #item   33     int, bone index.
+    org = [0.0]*3          #item   34-36  3 floats, attachment point.
+    vectors = [[0.0]*3]*3  #item   37-45  3 floats each for 3 vectors.
 
     binary_format = "<32c2i3f9f" #little-endian (<), see #item descriptions above.
 
@@ -403,141 +453,72 @@ class mdl_attachment: # Done cdunde from -> hlmviewer source file -> studio.h ->
         print "vectors: ", self.vectors
         print "===================="
 
-class mdl_triangle: # Done cdunde
-                            #item of data file, size & type,   description
-    index0vert = 0          #item  0   short, index into vertex array.
-    index1uv = 0            #item  1   short, index into normal array.
-    index2u = 0             #item  2   short, u or s position on skin.
-    index3v = 0             #item  3   short, v or t position on skin.
 
-    binary_format = "<4h" #little-endian (<), see #item descriptions above.
+class mdl_bodypart:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobodyparts_t
+                            #item of data file, size & type,   description
+    name = ""               #item  0-63   64 char, bodypart name.
+    nummodels = 0           #item  64     int, number of bodypart models.
+    base = 0                #item  65     int, unknown item.
+    model_offset = 0        #item  66     int, index (Offset) into models array (data).
+    models = []                           # A list containing its models.
+
+    binary_format = "<64c3i" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.index0vert = 0
-        self.index1uv = 0
-        self.index2u = 0
-        self.index3v = 0
-
-    def load(self, file, byte_count):
-        size = struct.calcsize(self.binary_format)
-        byte_count = byte_count + size
-        temp_data = file.read(size)
-        data = struct.unpack(self.binary_format, temp_data)
-        self.index0vert = data[0]
-        self.index1uv = data[1]
-        self.index2u = data[2]
-        self.index3v = data[3]
-        return self, byte_count
-
-    def dump(self):
-        print "MDL Triangle"
-        print "index0vert: ", self.index0vert
-        print "index1uv: ", self.index1uv
-        print "index2u: ", self.index2u
-        print "index3v: ", self.index3v
-        print "===================="
-
-class mdl_mesh: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomesh_t
-                            #item of data file, size & type,   description
-    numtris = 0             #item  0   int, attachment name.
-    tri_offset = 0          #item  1   int, offset of triangle data.
-    skinref = 0             #item  2   int, unknown item.
-    numnorms = 0            #item  3   int, per mesh normals.
-    normindex = 0           #item  4   int, normal vec3_t.
-
-    triangles = []                     # List of mdl_triangle.
-    normals = []                       # List of normals. Use these for the UV's, tile when needed.
-
-    binary_format = "<5i" #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.numtris = 0
-        self.tri_offset = 0
-        self.skinref = 0
-        self.numnorms = 0
-        self.normindex = 0
-
-        self.triangles = []
-        self.normals = []
+        self.name = ""
+        self.nummodels = 0
+        self.base = 0
+        self.model_offset = 0
+        self.models = []
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        self.numtris = data[0]
-        self.tri_offset = data[1]
-        self.skinref = data[2]
-        self.numnorms = data[3]
-        self.normindex = data[4]
+        char = 64
+        for i in xrange(0, char):
+            if data[i] == "\x00":
+                continue
+            self.name = self.name + data[i]
+        self.nummodels = data[64]
+        self.base = data[65]
+        self.model_offset = data[66]
         return self
 
     def dump(self):
-        print "MDL Mesh"
-        print "numtris: ", self.numtris
-        print "tri_offset: ", self.tri_offset
-        print "skinref: ", self.skinref
-        print "numnorms: ", self.numnorms
-        print "normindex: ", self.normindex
+        print "MDL Bodyparts"
+        print "name: ", self.name
+        print "nummodels: ", self.nummodels
+        print "base: ", self.base
+        print "model_offset: ", self.model_offset
         print "===================="
 
-class mdl_vert_info: # Gives a bone_index for each Component's vertex that is assigned to that bone.
-    bone_index = 0
-    binary_format = "<B" #little-endian (<), 1 single byte (unsigned int).
 
-    def __init__(self):
-        self.bone_index = 0
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.bone_index = data[0]
-        return self
-
-    def dump(self, bodypart, model, vtx):
-        print "MDL Vertex Info for, bodypart, model, vtx:", bodypart, model, vtx
-        print "bone_index: ",self.bone_index
-        print "===================="
-
-class mdl_vertex: # Done cdunde
-    v = [0.0]*3
-    binary_format = "<3f" #little-endian (<), 3 floats.
-
-    def __init__(self):
-        self.v = [0.0]*3
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format))
-        data = struct.unpack(self.binary_format, temp_data)
-        self.v = [data[0], data[1], data[2]]
-        return self
-
-    def dump(self):
-        print "MDL Vertex"
-        print "v: ",self.v[0], self.v[1], self.v[2]
-        print "===================="
-
-class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomodel_t
-                            #item of data file, size & type,   description
-    name = ""               #item  0-63   64 char, model name.
-    type = 0                #item  64     int, type of model.
-    boundingradius = 0      #item  65     float, boundingradius of this model's 1st frame's bbox.
-    nummesh = 0             #item  66     int, number of a mesh (its real index).
-    mesh_offset = 0         #item  67     int, index (Offset) into models data.
-    numverts = 0            #item  68     int, number of unique vertices.
-    vert_info_offset = 0    #item  69     int, vertex bone info Offset.
-    vert_offset = 0         #item  70     int, vertex index (Offset) to its vector.
-    numnorms = 0            #item  71     int, number of unique surface normals.
-    norm_info_offset = 0    #item  72     int, normal bone info Offset.
-    norm_offset = 0         #item  73     int, normal index (Offset) to its vector.
-    numgroups = 0           #item  74     int, deformation groups.
-    group_offset = 0        #item  75     int, deformation groups Offset.
-
-    meshes = []                           # List of meshes.
-    verts_info = []                       # List of vertex info data.
-    verts = []                            # List of vertex vector poistions.
-    normals = []                          # List of normal vectors.
-    groups = []                           # List of groups, unknown items.
+class mdl_model:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomodel_t
+    #Header Structure      #item of file, type, description.
+                           #item of data file, size & type,   description
+    name = ""              #item   0-63   64 char, model name.
+    type = 0               #item   64     int, type of model.
+    boundingradius = 0     #item   65     float, boundingradius of this model's 1st frame's bbox.
+    nummesh = 0            #item   66     int, number of a mesh (its real index).
+    mesh_offset = 0        #item   67     int, index (Offset) into models data.
+    numverts = 0           #item   68     int, number of unique vertices.
+    vert_info_offset = 0   #item   69     int, vertex bone info Offset.
+    vert_offset = 0        #item   70     int, vertex index (Offset) to its vector.
+    numnorms = 0           #item   71     int, number of unique surface normals.
+    norm_info_offset = 0   #item   72     int, normal bone info Offset.
+    norm_offset = 0        #item   73     int, normal index (Offset) to its vector.
+    numgroups = 0          #item   74     int, deformation groups.
+    group_offset = 0       #item   75     int, deformation groups Offset.
 
     binary_format = "<64cif10i" #little-endian (<), see #item descriptions above.
+
+    meshes = []                           # List of meshes.
+    verts = []                            # List of vertex vector poistions.
+    verts_info = []                       # List of vertex info data.
+    normals = []                          # List of normal vectors.
+    groups = []                           # List of groups, unknown items.
 
     def __init__(self):
         self.name = ""
@@ -555,8 +536,8 @@ class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstu
         self.group_offset = 0
 
         self.meshes = []
-        self.verts_info = []
         self.verts = []
+        self.verts_info = []
         self.normals = []
         self.groups = []
 
@@ -599,74 +580,83 @@ class mdl_model: # Done cdunde from -> hlmviewer source file -> studio.h -> mstu
         print "group_offset: ", self.group_offset
         print "===================="
 
-class mdl_bodypart: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobodyparts_t
-                            #item of data file, size & type,   description
-    name = ""               #item  0-63   64 char, bodypart name.
-    nummodels = 0           #item  64     int, number of bodypart models.
-    base = 0                #item  65     int, unknown item.
-    model_offset = 0        #item  66     int, index (Offset) into models array (data).
-    models = []                           # A list containing its models.
 
-    binary_format = "<64c3i" #little-endian (<), see #item descriptions above.
+class mdl_mesh:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomesh_t
+    #Header Structure      #item of file, type, description.
+    numtris = 0            #item  0   int, attachment name.
+    tri_offset = 0         #item  1   int, offset of triangle data.
+    skinref = 0            #item  2   int, unknown item.
+    numnorms = 0           #item  3   int, per mesh normals.
+    normindex = 0          #item  4   int, normal vec3_t.
+
+    triangles = []                     # List of mdl_triangle.
+    normals = []                       # List of normals. Use these for the UV's, tile when needed.
+
+    binary_format = "<5i" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.name = ""
-        self.nummodels = 0
-        self.base = 0
-        self.model_offset = 0
-        self.models = []
+        self.numtris = 0
+        self.tri_offset = 0
+        self.skinref = 0
+        self.numnorms = 0
+        self.normindex = 0
+
+        self.triangles = []
+        self.normals = []
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        char = 64
-        for i in xrange(0, char):
-            if data[i] == "\x00":
-                continue
-            self.name = self.name + data[i]
-        self.nummodels = data[64]
-        self.base = data[65]
-        self.model_offset = data[66]
+        self.numtris = data[0]
+        self.tri_offset = data[1]
+        self.skinref = data[2]
+        self.numnorms = data[3]
+        self.normindex = data[4]
         return self
 
     def dump(self):
-        print "MDL Bodyparts"
-        print "name: ", self.name
-        print "nummodels: ", self.nummodels
-        print "base: ", self.base
-        print "model_offset: ", self.model_offset
+        print "MDL Mesh"
+        print "numtris: ", self.numtris
+        print "tri_offset: ", self.tri_offset
+        print "skinref: ", self.skinref
+        print "numnorms: ", self.numnorms
+        print "normindex: ", self.normindex
         print "===================="
 
-class mdl_sequence_desc: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqdesc_t
-                              #item of data file, size & type,   description
-    label = ""                #item  0-31   32 char, sequence label.
-    fps = 0                   #item  32     float, frames per second.
-    flags = 0                 #item  33     int, looping/non-looping flags.
-    activity = 0              #item  34     int, unknown item.
-    actweight = 0             #item  35     int, unknown item.
-    numevents = 0             #item  36     int, number of events.
-    event_offset = 0          #item  37     int, index (Offset) to THIS events data.
-    numframes = 0             #item  38     int, number of frames per sequence.
-    numpivots = 0             #item  39     int, number of foot pivots.
-    pivot_offset = 0          #item  40     int, index (Offset) to the pivot data.
-    motiontype = 0            #item  41     int, unknown item.
-    motionbone = 0            #item  42     int, unknown item.
-    linearmovement = [0.0]*3  #item  43-45  3 floats, bounding box min.
-    automoveposindex = 0      #item  46     int, unknown item.
-    automoveangleindex = 0    #item  47     int, unknown item.
-    bbmin = [0.0]*3           #item  48-50  3 floats, per sequence bounding box min.
-    bbmax = [0.0]*3           #item  51-53  3 floats, per sequence bounding box max.
-    numblends = 0             #item  54     int, unknown item.
-    anim_offset = 0           #item  55     int, start (Offset) to the sequence group data ex: [blend][bone][X, Y, Z, XR, YR, ZR].
-    blendtype = [0]*2         #item  56-57  2 ints, X, Y or Z and XR, YR or ZR.
-    blendstart = [0.0]*2      #item  58-59  2 floats, starting values.
-    blendend = [0.0]*2        #item  60-61  2 floats, ending values.
-    blendparent = 0           #item  62     int, unknown item.
-    seqgroup = 0              #item  63     int, sequence group for demand loading.
-    entrynode = 0             #item  64     int, transition node at entry.
-    exitnode = 0              #item  65     int, transition node at exit.
-    nodeflags = 0             #item  66     int, transition rules.
-    nextseq = 0               #item  67     int, auto advancing sequences.
+
+class mdl_sequence_desc:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqdesc_t
+    #Header Structure        #item of file, type, description.
+                             #item of data file, size & type,   description
+    label = ""               #item   0-31   32 char, sequence label.
+    fps = 0                  #item   32     float, frames per second.
+    flags = 0                #item   33     int, looping/non-looping flags.
+    activity = 0             #item   34     int, unknown item.
+    actweight = 0            #item   35     int, unknown item.
+    numevents = 0            #item   36     int, number of events.
+    event_offset = 0         #item   37     int, index (Offset) to THIS events data.
+    numframes = 0            #item   38     int, number of frames per sequence.
+    numpivots = 0            #item   39     int, number of foot pivots.
+    pivot_offset = 0         #item   40     int, index (Offset) to the pivot data.
+    motiontype = 0           #item   41     int, unknown item.
+    motionbone = 0           #item   42     int, unknown item.
+    linearmovement = [0.0]*3 #item   43-45  3 floats, bounding box min.
+    automoveposindex = 0     #item   46     int, unknown item.
+    automoveangleindex = 0   #item   47     int, unknown item.
+    bbmin = [0.0]*3          #item   48-50  3 floats, per sequence bounding box min.
+    bbmax = [0.0]*3          #item   51-53  3 floats, per sequence bounding box max.
+    numblends = 0            #item   54     int, unknown item.
+    anim_offset = 0          #item   55     int, start (Offset) to the sequence group data ex: [blend][bone][X, Y, Z, XR, YR, ZR].
+    blendtype = [0]*2        #item   56-57  2 ints, X, Y or Z and XR, YR or ZR.
+    blendstart = [0.0]*2     #item   58-59  2 floats, starting values.
+    blendend = [0.0]*2       #item   60-61  2 floats, ending values.
+    blendparent = 0          #item   62     int, unknown item.
+    seqgroup = 0             #item   63     int, sequence group for demand loading.
+    entrynode = 0            #item   64     int, transition node at entry.
+    exitnode = 0             #item   65     int, transition node at exit.
+    nodeflags = 0            #item   66     int, transition rules.
+    nextseq = 0              #item   67     int, auto advancing sequences.
 
     binary_format = "<32cf10i3f2i6f4i4f6i" #little-endian (<), see #item descriptions above.
 
@@ -775,40 +765,181 @@ class mdl_sequence_desc: # Done cdunde from -> hlmviewer source file -> studio.h
         print "nextseq: ", self.nextseq
         print "===================="
 
-class mdl_hitbox: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiobbox_t
-                            #item of data file, size & type,   description
-    bone = 0                #item  0      int, bone index.
-    group = 0               #item  1      int, intersection group.
-    bbmin = (0.0)*3         #item  2-4   3 floats, bounding box min.
-    bbmax = (0.0)*3         #item  5-7   3 floats, bounding box max.
 
-    binary_format = "<2i3f3f" #little-endian (<), see #item descriptions above.
+class mdl_bone_anim_value:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanimvalue_t
+    #Header Structure   #item of file, type, description.
+    valid = 0               #item  0     unsigned char int, 1 byte.
+    total = 0               #item  1     unsigned char int, 1 byte.
+    value = 0               #item  0+1   signed short int, 2 bytes.
+
+    #This is a C++ union (two different ways to read the same bitstream); we'll do both at the same time
+    binary_format1 = "<2B" #little-endian (<), see #item descriptions above.
+    binary_format2 = "<h" #little-endian (<), see #item descriptions above.
 
     def __init__(self):
-        self.bone = 0
-        self.group = 0
-        self.bbmin = (0.0)*3
-        self.bbmax = (0.0)*3
+        self.valid = 0
+        self.total = 0
+        self.value = 0
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format1))
+        data = struct.unpack(self.binary_format1, temp_data)
+        self.valid = data[0]
+        self.total = data[1]
+        data = struct.unpack(self.binary_format2, temp_data)
+        self.value = data[0]
+        return self
+
+    def dump(self):
+        print "MDL Anim Frames"
+        print "valid: ", self.valid
+        print "total: ", self.total
+        print "value: ", self.value
+        print "===================="
+
+
+class mdl_skin_info:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
+    name = ""               #item  0-63   64 char, skin name.
+    flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
+    width = 0               #item  65     int, skinwidth in pixels.
+    height = 0              #item  66     int, skinheight in pixels.
+    skin_offset = 0         #item  67     int, index (Offset) to skin data.
+    binary_format = "<64c4i" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.name = ""
+        self.flags = 0
+        self.width = 0
+        self.height = 0
+        self.skin_offset = 0
 
     def load(self, file):
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
-        self.bone = data[0]
-        self.group = data[1]
-        self.bbmin = (data[2], data[3], data[4])
-        self.bbmax = (data[5], data[6], data[7])
+        char = 64
+        for i in xrange(0, char):
+            if data[i] == "\x00":
+                continue
+            self.name = self.name + data[i]
+        self.flags = data[64]
+        self.width = data[65]
+        self.height = data[66]
+        self.skin_offset = data[67]
         return self
 
     def dump(self):
-        print "MDL Hitbox"
-        print "bone: ", self.bone
-        print "group: ", self.group
-        print "bbmin: ", self.bbmin
-        print "bbmax: ", self.bbmax
+        print "MDL Skin"
+        print "name: ", self.name
+        print "flags: ", self.flags
+        print "width: ", self.width
+        print "height: ", self.height
+        print "skin_offset: ", self.skin_offset
+        print "--------------------"
+
+
+class mdl_bone_anim:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanim_t
+                            #item of data file, size & type,   description
+    offset = [0]*6          #item  0-5   6 unsigned short ints, file offsets to read animation data for bone(s) for EACH SET of ANIMATION FRAMES sequences.
+    file_position = 0       #QuArK hack: file offset of this structure
+
+    binary_format = "<6H" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.offset = [0]*6
+        self.file_position = 0
+
+    def load(self, file):
+        self.file_position = file.tell()
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.offset = [data[0], data[1], data[2], data[3], data[4], data[5]]
+
+    def dump(self):
+        print "MDL Bone Anim"
+        print "offset: ", self.offset
+        print "-------------------"
+
+
+class mdl_triangle:
+# Done cdunde
+                            #item of data file, size & type,   description
+    index0vert = 0          #item  0   short, index into vertex array.
+    index1uv = 0            #item  1   short, index into normal array.
+    index2u = 0             #item  2   short, u or s position on skin.
+    index3v = 0             #item  3   short, v or t position on skin.
+
+    binary_format = "<4h" #little-endian (<), see #item descriptions above.
+
+    def __init__(self):
+        self.index0vert = 0
+        self.index1uv = 0
+        self.index2u = 0
+        self.index3v = 0
+
+    def load(self, file, byte_count):
+        size = struct.calcsize(self.binary_format)
+        byte_count = byte_count + size
+        temp_data = file.read(size)
+        data = struct.unpack(self.binary_format, temp_data)
+        self.index0vert = data[0]
+        self.index1uv = data[1]
+        self.index2u = data[2]
+        self.index3v = data[3]
+        return self, byte_count
+
+    def dump(self):
+        print "MDL Triangle"
+        print "index0vert: ", self.index0vert
+        print "index1uv: ", self.index1uv
+        print "index2u: ", self.index2u
+        print "index3v: ", self.index3v
+        print "===================="
+
+
+class mdl_vert_info:
+# Gives a bone_index for each Component's vertex that is assigned to that bone.
+    bone_index = 0
+    binary_format = "<B" #little-endian (<), 1 single byte (unsigned int).
+
+    def __init__(self):
+        self.bone_index = 0
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.bone_index = data[0]
+        return self
+
+    def dump(self, bodypart, model, vtx):
+        print "MDL Vertex Info for, bodypart, model, vtx:", bodypart, model, vtx
+        print "bone_index: ",self.bone_index
+        print "===================="
+
+class mdl_vertex:
+# Done cdunde
+    v = [0.0]*3
+    binary_format = "<3f" #little-endian (<), 3 floats.
+
+    def __init__(self):
+        self.v = [0.0]*3
+
+    def load(self, file):
+        temp_data = file.read(struct.calcsize(self.binary_format))
+        data = struct.unpack(self.binary_format, temp_data)
+        self.v = [data[0], data[1], data[2]]
+        return self
+
+    def dump(self):
+        print "MDL Vertex"
+        print "v: ",self.v[0], self.v[1], self.v[2]
         print "===================="
 
 ### NOT USED
-class mdl_demand_hdr_group: # Done cdunde from -> hlmviewer source file -> studio.h -> studioseqhdr_t
+class mdl_demand_hdr_group:
+# Done cdunde from -> hlmviewer source file -> studio.h -> studioseqhdr_t
                             #item of data file, size & type,   description
     id = 0                  #item  0      int, group id.
     version = 0             #item  1      int, group version.
@@ -844,7 +975,8 @@ class mdl_demand_hdr_group: # Done cdunde from -> hlmviewer source file -> studi
         print "length: ", self.length
         print "===================="
 
-class mdl_demand_group: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqgroup_t
+class mdl_demand_group:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqgroup_t
                             #item of data file, size & type,   description
     label = ""              #item  0-31   32 char, group label
     name = ""               #item  32-95  64 char, group name
@@ -885,7 +1017,8 @@ class mdl_demand_group: # Done cdunde from -> hlmviewer source file -> studio.h 
         print "data: ", self.data
         print "===================="
 
-class mdl_events: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioevent_t
+class mdl_events:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudioevent_t
                             #item of data file, size & type,   description
     frame = 0               #item  0     int, frame number.
     event = 0               #item  1     int, event number.
@@ -921,7 +1054,8 @@ class mdl_events: # Done cdunde from -> hlmviewer source file -> studio.h -> mst
         print "options: ", self.options
         print "===================="
 
-class mdl_pivots: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiopivot_t
+class mdl_pivots:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiopivot_t
                             #item of data file, size & type,   description
     org = [0.0]*3           #item  0-2   3 floats, pivot point.
     start = 0               #item  3     int.
@@ -948,36 +1082,6 @@ class mdl_pivots: # Done cdunde from -> hlmviewer source file -> studio.h -> mst
         tobj.logcon ("  start: " + str(self.start))
         tobj.logcon ("    end: " + str(self.end))
 
-class mdl_bone_anim_value: # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioanimvalue_t
-                            #item of data file, size & type,   description
-    valid = 0               #item  0     unsigned char int, 1 byte.
-    total = 0               #item  1     unsigned char int, 1 byte.
-    value = 0               #item  0-1   signed short int, 2 bytes.
-
-    #This is a C++ union (two different ways to read the same bitstream); we'll do both at the same time
-    binary_format1 = "<2B" #little-endian (<), see #item descriptions above.
-    binary_format2 = "<h" #little-endian (<), see #item descriptions above.
-
-    def __init__(self):
-        self.valid = 0
-        self.total = 0
-        self.value = 0
-
-    def load(self, file):
-        temp_data = file.read(struct.calcsize(self.binary_format1))
-        data = struct.unpack(self.binary_format1, temp_data)
-        self.valid = data[0]
-        self.total = data[1]
-        data = struct.unpack(self.binary_format2, temp_data)
-        self.value = data[0]
-        return self
-
-    def dump(self):
-        print "MDL Anim Frames"
-        print "valid: ", self.valid
-        print "total: ", self.total
-        print "value: ", self.value
-        print "===================="
 
 def CalcBoneAdj(self, m_controller, m_mouth):
     m_adj = []
@@ -1402,45 +1506,50 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
                 bone_data['rotmatrix'] = bone_matrix
                 bonelist[bone_name]['frames'][frame_name + ":mf"] = bone_data
 
-class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studiohdr_t
+
+####################################
+# Starts By Loading the Model Object
+####################################
+class mdl_obj:
+# Done cdunde from -> hlmviewer source file -> studio.h -> studiohdr_t
     origin = quarkx.vect(0.0, 0.0, 0.0) ### For QuArK's model placement in the editor.
-    #Header Structure          #item of data file, size & type,   description
-    ident = ""                 #item  0-3   4 char, The version of the file (Must be IDST)
-    version = 0                #item  4     int, This is used to identify the file
-    name = ""                  #item  5-68  64 char, the models path and full name.
-    length = 0                 #item  69    int, length of the file in bytes to EOF.
-    eyeposition = [0.0]*3      #item  70-72 3 floats, ideal eye position.
-    min = [0.0]*3              #item  73-75 3 floats, ideal movement hull size, min.
-    max = [0.0]*3              #item  76-78 3 floats, ideal movement hull size, max.
-    bbmin = [0.0]*3            #item  79-81 3 floats, clipping bounding box size, min.
-    bbmax = [0.0]*3            #item  82-84 3 floats, clipping bounding box size, max.
-    flags = 0                  #item  85    int, unknown item.
-    num_bones = 0              #item  86    int, The number of bone for the model.
-    bones_offset = 0           #item  87    int, The bones data starting point in the file, in bytes.
-    num_bone_controls = 0      #item  88    int, The number of bone controllers.
-    bone_controls_offset = 0   #item  89    int, The bones controllers data starting point in the file, in bytes.
-    num_hitboxes = 0           #item  90    int, The number of complex bounding boxes.
-    hitboxes_offset = 0        #item  91    int, The hitboxes data starting point in the file, in bytes.
-    num_anim_seq = 0           #item  92    int, The number of animation sequences for the model.
-    anim_seq_offset = 0        #item  93    int, The animation sequences data starting point in the file, in bytes.
-    num_demand_hdr_groups = 0  #item  94    int, The number of demand seq groups for the model, demand loaded sequences.
-    demand_hdr_offset = 0      #item  95    int, The demand seq groups data starting point in the file, in bytes.
-    num_textures = 0           #item  96    int, The number of raw textures.
-    texture_index_offset = 0   #item  97    int, The textures data index starting point in the file, in bytes.
-    texture_data_offset = 0    #item  98    int, The textures data starting point in the file, in bytes.
-    num_skins = 0              #item  99    int, The number of replaceable textures for the model.
-    num_skin_groups = 0        #item  100   int, The number of texture groups for the model.
-    skins_offset = 0           #item  101   int, The skin textures data starting point in the file, in bytes.
-    num_bodyparts = 0          #item  102   int, The number of body parts for the model.
-    bodyparts_offset = 0       #item  103   int, The body parts data starting point in the file, in bytes.
-    num_attachments = 0        #item  104   int, The number of queryable attachable points for the model.
-    attachments_offset = 0     #item  105   int, The queryable attachable points data starting point in the file, in bytes.
-    sound_table = 0            #item  106   int, unknown item.
-    sound_table_offset = 0     #item  107   int, The sound table data starting point in the file, in bytes.
-    sound_groups = 0           #item  108   int, unknown item.
-    sound_groups_offset = 0    #item  109   int, The sound groups data starting point in the file, in bytes.
-    num_transitions = 0        #item  110   int, The number of animation node to animation node transition graph.
-    transitions_offset = 0     #item  111   int, The transitions data starting point in the file, in bytes.
+    #Header Structure            #item of file, type, description.
+    ident = ""                   #item   0-3    4 char, The version of the file (Must be IDST)
+    version = 0                  #item   4      int, This is used to identify the file
+    name = ""                    #item   5-68   64 char, the models path and full name.
+    length = 0                   #item   69     int, length of the file in bytes to EOF.
+    eyeposition = [0.0]*3        #item   70-72  3 floats, ideal eye position.
+    min = [0.0]*3                #item   73-75  3 floats, ideal movement hull size, min.
+    max = [0.0]*3                #item   76-78  3 floats, ideal movement hull size, max.
+    bbmin = [0.0]*3              #item   79-81  3 floats, clipping bounding box size, min.
+    bbmax = [0.0]*3              #item   82-84  3 floats, clipping bounding box size, max.
+    flags = 0                    #item   85     int, unknown item.
+    num_bones = 0                #item   86     int, The number of bone for the model.
+    bones_offset = 0             #item   87     int, The bones data starting point in the file, in bytes.
+    num_bone_controls = 0        #item   88     int, The number of bone controllers.
+    bone_controls_offset = 0     #item   89     int, The bones controllers data starting point in the file, in bytes.
+    num_hitboxes = 0             #item   90     int, The number of complex bounding boxes.
+    hitboxes_offset = 0          #item   91     int, The hitboxes data starting point in the file, in bytes.
+    num_anim_seq = 0             #item   92     int, The number of animation sequences for the model.
+    anim_seq_offset = 0          #item   93     int, The animation sequences data starting point in the file, in bytes.
+    num_demand_hdr_groups = 0    #item   94     int, The number of demand seq groups for the model, demand loaded sequences.
+    demand_hdr_offset = 0        #item   95     int, The demand seq groups data starting point in the file, in bytes.
+    num_textures = 0             #item   96     int, The number of raw textures.
+    texture_index_offset = 0     #item   97     int, The textures data index starting point in the file, in bytes.
+    texture_data_offset = 0      #item   98     int, The textures data starting point in the file, in bytes.
+    num_skins = 0                #item   99     int, The number of replaceable textures for the model.
+    num_skin_groups = 0          #item   100    int, The number of texture groups for the model.
+    skins_offset = 0             #item   101    int, The skin textures data starting point in the file, in bytes.
+    num_bodyparts = 0            #item   102    int, The number of body parts for the model.
+    bodyparts_offset = 0         #item   103    int, The body parts data starting point in the file, in bytes.
+    num_attachments = 0          #item   104    int, The number of queryable attachable points for the model.
+    attachments_offset = 0       #item   105    int, The queryable attachable points data starting point in the file, in bytes.
+    sound_table = 0              #item   106    int, unknown item.
+    sound_table_offset = 0       #item   107    int, The sound table data starting point in the file, in bytes.
+    sound_groups = 0             #item   108    int, unknown item.
+    sound_groups_offset = 0      #item   109    int, The sound groups data starting point in the file, in bytes.
+    num_transitions = 0          #item   110    int, The number of animation node to animation node transition graph.
+    transitions_offset = 0       #item   111    int, The transitions data starting point in the file, in bytes.
 
     binary_format = "<4ci64ci3f3f3f3f3f27i" #little-endian (<), see #item descriptions above.
 
@@ -1464,6 +1573,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.skins_group = []       # A list of the skins.
         self.demand_seq_groups = [] # A list of the demand sequence groups.
         self.bone_controls = []     # A list of the bone controllers.
+
+    #### SEE OTHER HL IMPORTER USE THIS AS WORD SEARCH
         self.sequence_descs = []    # A list of the sequence descriptions (leads into grouped frames).
         self.hitboxes = {}          # A dictionary list of the hitboxes, the key being the bone number it is attached to.
         self.attachments = {}       # A dictionary list of the attachments, the key being the bone number it is attached to.
@@ -1473,6 +1584,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
         self.faces = []             # A list of the triangles.
         self.vertices = []          # A list of the vertexes.
         self.tagsgroup = []         # A list of tag (attachment) groups to store tag frames into for each tag.
+
 
     def load(self, file, folder_name, mdl_name, message):
         global progressbar, UseName
@@ -1568,7 +1680,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             tobj.logcon ("Header Data Size in bytes: " + str(file.tell()))
             tobj.logcon ("#####################################################################")
 
-        # load the bones data
+        ## Load the bones data.
         file.seek(ofsBegin + self.bones_offset, 0)
         for i in xrange(self.num_bones):
             bone = mdl_bone()
@@ -1577,20 +1689,22 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
           #  bone.dump()
             self.bones.append(bone) # Correct way! Why put in list, then dig into list to get it back! 8-| Change others where needed.
 
-        # load the bone controllers data
+        ## Load the bone controllers data.
         file.seek(ofsBegin + self.bone_controls_offset, 0)
         for i in xrange(self.num_bone_controls):
             control = mdl_bone_control().load(file)
             self.bone_controls.append(control)
           #  control.dump()
                   
-        # load the hitboxes data, can only have one per bone and visa versa.
+        ## Load the hitboxes data, can only have one per bone and visa versa.
         file.seek(ofsBegin + self.hitboxes_offset, 0)
         for i in xrange(self.num_hitboxes):
             hitbox = mdl_hitbox().load(file)
             self.hitboxes[hitbox.bone] = [hitbox.bbmin, hitbox.bbmax]
           #  hitbox.dump()
 
+
+        ## Load the animblocks.
         # load the header for demand sequence group data
         file.seek(ofsBegin + self.demand_hdr_offset, 0)
         for i in xrange(self.num_demand_hdr_groups):
@@ -1626,10 +1740,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 Palette += temp_data
             skin.Palette = Palette
 
-        # Setup items needed for QuArK.
+
+        ## Setup items needed for QuArK.
         ComponentList = []
         message = ""
 
+
+        ## Load the file textures info data.
         # Check if this model only has textures for another model.
         if self.num_bodyparts == 0 and len(self.skins_group) != 0:
             message = message + "This model only has textures.\r\n\r\nYou need to import the models that use them\r\nmove them to their proper skin folder\r\nand delete this component.\r\n================================\r\n\r\n"
@@ -1677,11 +1794,13 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
             self.sequence_descs[i].load(file)
           #  self.sequence_descs[i].dump()
 
-        # load the bodyparts data and their models
+
+        ## Load the bodyparts data.
         file.seek(ofsBegin + self.bodyparts_offset, 0)
         for i in xrange(self.num_bodyparts):
-            self.bodyparts.append(mdl_bodypart())
-            self.bodyparts[i].load(file)
+            body_part_index = mdl_bodypart()
+            body_part_index.load(file)
+            self.bodyparts.append(body_part_index)
           #  self.bodyparts[i].dump()
             file.seek(ofsBegin + self.bodyparts[i].model_offset, 0)
             # load its models data
@@ -1690,7 +1809,8 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 self.bodyparts[i].models[j].load(file)
               #  self.bodyparts[i].models[j].dump()
 
-        # load the bodyparts models meshes data
+
+        ## Load the bodyparts models meshes data
         for i in xrange(self.num_bodyparts):
             for j in xrange(self.bodyparts[i].nummodels):
                 file.seek(ofsBegin + self.bodyparts[i].models[j].mesh_offset, 0)
@@ -1700,13 +1820,16 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     name = name.rsplit("/", 1)[1]
                 name = name.replace(".", "")
                 nummesh = self.bodyparts[i].models[j].nummesh
+
+
+                ## Load the meshes data
                 for k in xrange(nummesh):
-                    # load the mesh data
                     self.bodyparts[i].models[j].meshes.append(mdl_mesh())
                     self.bodyparts[i].models[j].meshes[k].load(file)
                   #  self.bodyparts[i].models[j].meshes[k].dump()
 
-                    # Now we start creating our Import Component and name it.
+
+                    ## Now we start creating our Import Component and name it.
                     Component = quarkx.newobj(UseName + '_' + name + ' ' + str(k) + ':mc')
                     sdogroup = quarkx.newobj('SDO:sdo')
                     # Create the "Skins:sg" group.
@@ -1725,13 +1848,15 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     Component.appenditem(sdogroup)
                     Component.appenditem(skingroup)
                     Component.appenditem(framesgroup)
-                    # Add bone controls if any.
+
+                    ## Add bone controls if any.
                     for control in self.bone_controls:
                         bone = self.bones[control.bone]
                         Component['bone_control_'+ str(control.index)] = UseName + '_' + bone.name + ':bone'
                     ComponentList = ComponentList + [Component]
 
-        # load the attachment data, for position processing with bones they belong to.
+
+            ## Load the attachments data, for position processing with bones they belong to.
         if len(self.bones) != 0 and len(ComponentList) != 0 and self.num_attachments != 0:
             file.seek(ofsBegin + self.attachments_offset, 0)
             tag_comp = ComponentList[0] # Reset this if needed later.
@@ -1743,7 +1868,9 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                     self.attachments[attachment.bone]['tag_pos'] = {}
                 self.attachments[attachment.bone]['tag_pos'][i] = attachment.org
               #  attachment.dump()
-                # Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
+
+
+                ## Create tags (attachments) groups if any. We need to keep these separate for each complete model loaded.
                 tag_name = 'tag_weapon' + str(i+1)
                 newtag = quarkx.newobj(UseName + '_' + tag_name + ':tag')
                 newtag['Component'] = tag_comp.name
@@ -1754,7 +1881,7 @@ class mdl_obj: # Done cdunde from -> hlmviewer source file -> studio.h -> studio
                 else:
                     tag_comp['Tags'] = tag_comp.dictspec['Tags'] + ", " + tag_name
 
-        # Create the bones, if any.
+        ## Create the bones, if any.
         QuArK_bones = [] # A list to store all QuArK bones created.
         tagsgroup_count = 0
         if len(self.bones) != 0 and len(ComponentList) != 0:
@@ -2285,77 +2412,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             editor_dictitems['Misc:mg'].appenditem(tagsgroup[tag])
 
-    # Import the bboxes (hit boxes) if any.
-    def MakePoly(bname, bpos, brot, bbox):
-        m = bbox[0]
-        M = bbox[1]
-        shortname = bname.split(":")[0]
-        p = quarkx.newobj(shortname + ":p");
-        p["assigned2"] = bname
-        p['show'] = (1.0,)
-        face = quarkx.newobj("north:f") # BACK FACE
-        vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
-        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
-        vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
-        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
-        vtx2 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
-        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
-        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-        face["tex"] = None
-        p.appenditem(face)
-        face = quarkx.newobj("east:f") # RIGHT FACE
-        vtx0 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
-        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
-        vtx1 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
-        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
-        vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
-        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
-        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-        face["tex"] = None
-        p.appenditem(face)
-        face = quarkx.newobj("south:f") # FRONT FACE
-        vtx0 = (bpos + (brot * quarkx.vect(M[0],m[1],M[2]))).tuple
-        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
-        vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
-        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
-        vtx2 = (bpos + (brot * quarkx.vect(M[0],m[1],m[2]))).tuple
-        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
-        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-        face["tex"] = None
-        p.appenditem(face)
-        face = quarkx.newobj("west:f") # LEFT FACE
-        vtx0 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
-        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
-        vtx1 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
-        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
-        vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
-        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
-        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-        face["tex"] = None
-        p.appenditem(face)
-        face = quarkx.newobj("up:f") # TOP FACE
-        vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],M[2]))).tuple
-        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
-        vtx1 = (bpos + (brot * quarkx.vect(m[0],m[1],M[2]))).tuple
-        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
-        vtx2 = (bpos + (brot * quarkx.vect(M[0],M[1],M[2]))).tuple
-        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
-        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-        face["tex"] = None
-        p.appenditem(face)
-        face = quarkx.newobj("down:f") # BOTTOM FACE
-        vtx0 = (bpos + (brot * quarkx.vect(m[0],M[1],m[2]))).tuple
-        vtx0X, vtx0Y, vtx0Z = vtx0[0], vtx0[1], vtx0[2]
-        vtx1 = (bpos + (brot * quarkx.vect(M[0],M[1],m[2]))).tuple
-        vtx1X, vtx1Y, vtx1Z = vtx1[0], vtx1[1], vtx1[2]
-        vtx2 = (bpos + (brot * quarkx.vect(m[0],m[1],m[2]))).tuple
-        vtx2X, vtx2Y, vtx2Z = vtx2[0], vtx2[1], vtx2[2]
-        face["v"] = (vtx0X, vtx0Y, vtx0Z, vtx1X, vtx1Y, vtx1Z, vtx2X, vtx2Y, vtx2Z)
-        face["tex"] = None
-        p.appenditem(face)
-
-        return p
-
     bonelist = editor.ModelComponentList['bonelist']
     bboxlist = editor.ModelComponentList['bboxlist']
     frame_name = ComponentList[0].dictitems['Frames:fg'].subitems[0].name
@@ -2428,7 +2484,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
         for bone in newbones:
             undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
 
-
         # Now we process the Components.
         for Component in ComponentList:
             dupeitem = 0
@@ -2448,7 +2503,7 @@ def loadmodel(root, filename, gamename, nomessage=0):
             else:
                 editor.Root.currentcomponent.currentskin = None
 
-            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
+            compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
             for compframe in compframes:
                 compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
 
@@ -2483,6 +2538,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2012/02/18 23:27:13  cdunde
+# Code by DanielPharos, final fix for correct imported animations.
+#
 # Revision 1.12  2012/02/11 21:46:24  cdunde
 # To remove unused list and
 # reposition data load call for posibale future max frames dialog feature.
