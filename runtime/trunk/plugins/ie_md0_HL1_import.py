@@ -99,7 +99,7 @@ MDL_MAX_PIVOTS      = 256
 MDL_MAX_CONTROLLERS = 8
 
 ######################################################
-# MDL Importer Functions, from -> hlmviewer source file -> mathlib.c
+# MDL Functions, from -> hlmviewer source file -> mathlib.c
 ######################################################
 # m_frame = 0.0 for an interpolation's base frame.
 # If we were using interpolation it would be a value between 0.0 and 1.0.
@@ -142,6 +142,7 @@ def QuaternionSlerp(q1, q2, m_frame=0.0):
             q[i] = sclp * q1[i] + sclq * q[i]
     return q
 
+
 def SlerpBones(pos1, quat1, pos2, quat2, s):
     pos = [[]] * len(pos1)
     quat = [[]] * len(pos1)
@@ -160,30 +161,38 @@ def SlerpBones(pos1, quat1, pos2, quat2, s):
                   pos1[i][2] * s1 + pos2[i][2] * s]
     return pos, quat
 
-def AngleQuaternion(angles):
-    # FIXME: rescale the inputs to 1/2 angle
-    # r = roll, p = pitch, y = yaw
-    angle = angles[0] * 0.5
-    sr = math.sin(angle)
-    cr = math.cos(angle)
-    angle = angles[1] * 0.5
-    sp = math.sin(angle)
-    cp = math.cos(angle)
-    angle = angles[2] * 0.5
-    sy = math.sin(angle)
-    cy = math.cos(angle)
 
-    return [sr*cp*cy-cr*sp*sy, # X
-            cr*sp*cy+sr*cp*sy, # Y
-            cr*cp*sy-sr*sp*cy, # Z
-            cr*cp*cy+sr*sp*sy] # W
+# ================================================
+# ALL FOLLOWING CODE FROM:
+# http://www.ros.org/wiki/geometry/RotationMethods#transformations.py
+# LINKING TO:
+# http://code.google.com/p/ros-geometry/source/browse/tf/src/tf/transformations.py
+# --------------------------------------------------------------------------------
+# from transformations.py, def quaternion_from_euler function, if statement (else section only).
+def EulerAngle2Quaternion(angles):
+    # x = roll, y = pitch, z = yaw
+    angleX = angles[0] * 0.5
+    cx = math.cos(angleX)
+    sx = math.sin(angleX)
+    angleY = angles[1] * 0.5
+    cy = math.cos(angleY)
+    sy = math.sin(angleY)
+    angleZ = angles[2] * 0.5
+    cz = math.cos(angleZ)
+    sz = math.sin(angleZ)
+
+    return [sx*cy*cz - cx*sy*sz, # X
+            cx*sy*cz + sx*cy*sz, # Y
+            cx*cy*sz - sx*sy*cz, # Z
+            cx*cy*cz + sx*sy*sz] # W
+
 
 #Minimum difference to consider float "different"
 EQUAL_EPSILON = 0.001
 
-    
+
 ######################################################
-# MDL Importer Functions, from -> hlmviewer source file -> studio_render.cpp
+# MDL Functions, from -> hlmviewer source file -> studio_render.cpp
 ######################################################
 def VectorCompare(v1, v2):
     for i in range(3):
@@ -192,15 +201,15 @@ def VectorCompare(v1, v2):
     return 1
 
 
-
 ######################################################
-# MDL Importer Functions, QuArK's own
+# MDL Functions, QuArK's own
 ######################################################
 def quaternion2matrix(quaternion):
-    return [[1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2], 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1], 0.0],
-            [2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0], 0.0],
-            [2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1], 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1], 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
+    q = quaternion
+    return [[1.0-2.0*q[1]*q[1] - 2.0*q[2]*q[2], 2.0*q[0]*q[1] - 2.0*q[3]*q[2], 2.0*q[0]*q[2] + 2.0*q[3]*q[1], 0.0],
+            [2.0*q[0]*q[1] + 2.0*q[3]*q[2], 1.0-2.0*q[0]*q[0] - 2.0*q[2]*q[2], 2.0*q[1]*q[2] - 2.0*q[3]*q[0], 0.0],
+            [2.0*q[0]*q[2] - 2.0*q[3]*q[1], 2.0*q[1]*q[2] + 2.0*q[3]*q[0], 1.0-2.0*q[0]*q[0] - 2.0*q[1]*q[1], 0.0],
+            [0.0                          , 0.0                          , 0.0                              , 1.0]]
 
 
 def Read_mdl_bone_anim_value(self, file, file_offset):
@@ -497,10 +506,9 @@ class mdl_bodypart:
 class mdl_model:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiomodel_t
     #Header Structure      #item of file, type, description.
-                           #item of data file, size & type,   description
     name = ""              #item   0-63   64 char, model name.
     type = 0               #item   64     int, type of model.
-    boundingradius = 0     #item   65     float, boundingradius of this model's 1st frame's bbox.
+    boundingradius = 0.0   #item   65     float, boundingradius of this model's 1st frame's bbox.
     nummesh = 0            #item   66     int, number of a mesh (its real index).
     mesh_offset = 0        #item   67     int, index (Offset) into models data.
     numverts = 0           #item   68     int, number of unique vertices.
@@ -516,14 +524,14 @@ class mdl_model:
 
     meshes = []                           # List of meshes.
     verts = []                            # List of vertex vector poistions.
-    verts_info = []                       # List of vertex info data.
-    normals = []                          # List of normal vectors.
+    verts_info = []                       # List of vertex bone indexes.
+    normals = []                          # List of normal vector poistions.
     groups = []                           # List of groups, unknown items.
 
     def __init__(self):
         self.name = ""
         self.type = 0
-        self.boundingradius = 0
+        self.boundingradius = 0.0
         self.nummesh = 0
         self.mesh_offset = 0
         self.numverts = 0
@@ -590,7 +598,8 @@ class mdl_mesh:
     numnorms = 0           #item  3   int, per mesh normals.
     normindex = 0          #item  4   int, normal vec3_t.
 
-    triangles = []                     # List of mdl_triangle.
+    triangles = []                     # List of mdl_triangle. These are NOT really full triangles,
+                                       #    just ONE vertex to make up a "fan" or "strip" of triangles.
     normals = []                       # List of normals. Use these for the UV's, tile when needed.
 
     binary_format = "<5i" #little-endian (<), see #item descriptions above.
@@ -628,10 +637,9 @@ class mdl_mesh:
 class mdl_sequence_desc:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioseqdesc_t
     #Header Structure        #item of file, type, description.
-                             #item of data file, size & type,   description
     label = ""               #item   0-31   32 char, sequence label.
-    fps = 0                  #item   32     float, frames per second.
-    flags = 0                #item   33     int, looping/non-looping flags.
+    fps = 25                 #item   32     float, frames per second.
+    flags = 0                #item   33     int, non-looping/looping flags...0/1
     activity = 0             #item   34     int, unknown item.
     actweight = 0            #item   35     int, unknown item.
     numevents = 0            #item   36     int, number of events.
@@ -662,7 +670,7 @@ class mdl_sequence_desc:
 
     def __init__(self):
         self.label = ""
-        self.fps = 0
+        self.fps = 25
         self.flags = 0
         self.activity = 0
         self.actweight = 0
@@ -801,6 +809,7 @@ class mdl_bone_anim_value:
 
 class mdl_skin_info:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
+    #Header Structure       #item of file, type, description.
     name = ""               #item  0-63   64 char, skin name.
     flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
     width = 0               #item  65     int, skinwidth in pixels.
@@ -918,8 +927,9 @@ class mdl_vert_info:
         print "bone_index: ",self.bone_index
         print "===================="
 
+
 class mdl_vertex:
-# Done cdunde
+# Gives each vertex's x,y,z position.
     v = [0.0]*3
     binary_format = "<3f" #little-endian (<), 3 floats.
 
@@ -936,6 +946,7 @@ class mdl_vertex:
         print "MDL Vertex"
         print "v: ",self.v[0], self.v[1], self.v[2]
         print "===================="
+
 
 ### NOT USED
 class mdl_demand_hdr_group:
@@ -1016,6 +1027,7 @@ class mdl_demand_group:
         print "cache: ", self.cache
         print "data: ", self.data
         print "===================="
+
 
 class mdl_events:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudioevent_t
@@ -1173,11 +1185,11 @@ def CalcBoneQuaternion(self, m_frame, s, pbone, panim, m_adj):
             angle2[i] += m_adj[bone.bonecontroller[i+3]]
 
     if not VectorCompare(angle1, angle2):
-        q1 = AngleQuaternion(angle1)
-        q2 = AngleQuaternion(angle2)
+        q1 = EulerAngle2Quaternion(angle1)
+        q2 = EulerAngle2Quaternion(angle2)
         quat = QuaternionSlerp(q1, q2, s)
     else:
-        quat = AngleQuaternion(angle1)
+        quat = EulerAngle2Quaternion(angle1)
 
     return quat
 
@@ -1227,6 +1239,7 @@ def CalcBonePosition(self, m_frame, s, pbone, panim, m_adj):
             pos[i] += m_adj[bone.bonecontroller[i]]
 
     return pos
+
 
 def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlmviewer source file -> studio_render.cpp -> StudioModel::SetUpBones
     if logging == 1:
@@ -1508,7 +1521,7 @@ def SetUpBones(self, QuArK_bones): # self = the mdl_obj. Done cdunde from -> hlm
 
 
 ####################################
-# Starts By Loading the Model Object
+# Starts By Using the Model Object
 ####################################
 class mdl_obj:
 # Done cdunde from -> hlmviewer source file -> studio.h -> studiohdr_t
@@ -1911,7 +1924,7 @@ class mdl_obj:
                 new_bone['flags'] = (0,0,0,0,0,0)
                 new_bone['show'] = (1.0,)
                 bone_pos = quarkx.vect(bone.value[0], bone.value[1], bone.value[2])
-                quat = AngleQuaternion([bone.value[3], bone.value[4], bone.value[5]])
+                quat = EulerAngle2Quaternion([bone.value[3], bone.value[4], bone.value[5]])
                 tempmatrix = quaternion2matrix(quat)
                 #new_bone['quaternion'] = (qx,qy,qz,qw)
                 bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
@@ -2382,6 +2395,14 @@ def import_mdl_model(editor, mdl_filename, mdl_name):
     return ComponentList, QuArK_bones, message, tagsgroup, version
 
 
+######################################################
+# CALL TO PROCESS .mdl FILE (where it all starts off from)
+######################################################
+# The model file: root is the actual file,
+# filename and gamename is the full path to
+# and name of the .mdl file selected.
+# For example:  C:\Half-Life\valve\models\player\barney\barney.mdl
+# gamename is None.
 def loadmodel(root, filename, gamename, nomessage=0):
     "Loads the model file: root is the actual file,"
     "filename and gamename is the full path to"
@@ -2563,6 +2584,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2012/02/25 23:52:08  cdunde
+# Fixes by DanielPharos for correct skin texture matching to components.
+#
 # Revision 1.14  2012/02/25 18:55:59  cdunde
 # Rearranged files and names to coincide better.
 #

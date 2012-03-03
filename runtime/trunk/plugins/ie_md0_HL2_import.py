@@ -101,7 +101,7 @@ BONE_HAS_SAVEFRAME_POS = 0x00200000 # Vector48
 BONE_HAS_SAVEFRAME_ROT = 0x00400000 # Quaternion64
 
 ######################################################
-# MDL Importer Functions, from -> hlmviewer source file -> mathlib.c
+# MDL Functions, from -> hlmviewer source file -> mathlib.c
 ######################################################
 # m_frame = 0.0 for an interpolation's base frame.
 # If we were using interpolation it would be a value between 0.0 and 1.0.
@@ -144,30 +144,38 @@ def QuaternionSlerp(q1, q2, m_frame=0.0):
             q[i] = sclp * q1[i] + sclq * q[i]
     return q
 
-def AngleQuaternion(angles):
-    # FIXME: rescale the inputs to 1/2 angle
-    # r = roll, p = pitch, y = yaw
-    angle = angles[0] * 0.5
-    sr = math.sin(angle)
-    cr = math.cos(angle)
-    angle = angles[1] * 0.5
-    sp = math.sin(angle)
-    cp = math.cos(angle)
-    angle = angles[2] * 0.5
-    sy = math.sin(angle)
-    cy = math.cos(angle)
 
-    return [sr*cp*cy-cr*sp*sy, # X
-            cr*sp*cy+sr*cp*sy, # Y
-            cr*cp*sy-sr*sp*cy, # Z
-            cr*cp*cy+sr*sp*sy] # W
+# ================================================
+# ALL FOLLOWING CODE FROM:
+# http://www.ros.org/wiki/geometry/RotationMethods#transformations.py
+# LINKING TO:
+# http://code.google.com/p/ros-geometry/source/browse/tf/src/tf/transformations.py
+# --------------------------------------------------------------------------------
+# from transformations.py, def quaternion_from_euler function, if statement (else section only).
+def EulerAngle2Quaternion(angles):
+    # x = roll, y = pitch, z = yaw
+    angleX = angles[0] * 0.5
+    cx = math.cos(angleX)
+    sx = math.sin(angleX)
+    angleY = angles[1] * 0.5
+    cy = math.cos(angleY)
+    sy = math.sin(angleY)
+    angleZ = angles[2] * 0.5
+    cz = math.cos(angleZ)
+    sz = math.sin(angleZ)
+
+    return [sx*cy*cz - cx*sy*sz, # X
+            cx*sy*cz + sx*cy*sz, # Y
+            cx*cy*sz - sx*sy*cz, # Z
+            cx*cy*cz + sx*sy*sz] # W
+
 
 #Minimum difference to consider float "different"
 EQUAL_EPSILON = 0.001
 
-    
+
 ######################################################
-# MDL Importer Functions, from -> hlmviewer source file -> studio_render.cpp
+# MDL Functions, from -> hlmviewer source file -> studio_render.cpp
 ######################################################
 def VectorCompare(v1, v2):
     for i in range(3):
@@ -176,15 +184,16 @@ def VectorCompare(v1, v2):
     return 1
 
 
-
 ######################################################
-# MDL Importer Functions, QuArK's own
+# MDL Functions, QuArK's own
 ######################################################
 def quaternion2matrix(quaternion):
-    return [[1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2], 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1], 0.0],
-            [2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2], 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0], 0.0],
-            [2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1], 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0], 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1], 0.0],
-            [0.0                  , 0.0                  , 0.0                  , 1.0]]
+    q = quaternion
+    return [[1.0-2.0*q[1]*q[1] - 2.0*q[2]*q[2], 2.0*q[0]*q[1] - 2.0*q[3]*q[2], 2.0*q[0]*q[2] + 2.0*q[3]*q[1], 0.0],
+            [2.0*q[0]*q[1] + 2.0*q[3]*q[2], 1.0-2.0*q[0]*q[0] - 2.0*q[2]*q[2], 2.0*q[1]*q[2] - 2.0*q[3]*q[0], 0.0],
+            [2.0*q[0]*q[2] - 2.0*q[3]*q[1], 2.0*q[1]*q[2] + 2.0*q[3]*q[0], 1.0-2.0*q[0]*q[0] - 2.0*q[1]*q[1], 0.0],
+            [0.0                          , 0.0                          , 0.0                              , 1.0]]
+
 
 # Creates a bbox (hit box) if any.
 def MakePoly(bname, bpos, brot, bbox, bboxname):
@@ -1079,7 +1088,7 @@ class mdl_sequence_desc:
     sznameindex = 0          #item   1      int.
     pszName = ""
     fps = 0.0                #item   2      float, frames per second. ##### HL1 fps in mdl_sequence_desc #####
-    flags = 0                #item   3      int, looping/non-looping flags. ##### HL1 flags in mdl_sequence_desc #####
+    flags = 0                #item   3      int, non-looping/looping flags...0/1 ##### HL1 flags in mdl_sequence_desc #####
     numframes = 0            #item   4      int.    ##### HL1 numframes in mdl_sequence_desc #####
     nummovements = 0         #item   5      int, piecewise movement. ##### HL1 numpivots in mdl_sequence_desc I think. #####
     movementindex = 0        #item   6      int, piecewise movement. ##### HL1 pivot_offset in mdl_sequence_desc I think. #####
@@ -1223,6 +1232,7 @@ class mdl_bone_anim_value:
 
 
 class HL2_TexturesInfo:
+# Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
     #Header Structure      #item of file, type, description.
     sznameindex = 0        #item   0      int.
     pszName = ""
@@ -2982,7 +2992,7 @@ class Vector48:
 
 
 ####################################
-# Starts By Loading the Model Object
+# Starts By Using the Model Object
 ####################################
 class mdl_obj(object):
     #Header Structure            #item of file, type, description.
@@ -3085,7 +3095,6 @@ class mdl_obj(object):
     sequence_descs = []
     attachments = {}
     bodyparts = []
-    anim_seqs_data = []
 
     tex_coords = []
     faces = []
@@ -3209,7 +3218,6 @@ class mdl_obj(object):
         self.sequence_descs = []    # A list of the sequence descriptions (in the file but never gets used??? uses animation_descs above instead!!!).
         self.attachments = {}       # A dictionary list of  attachments, the key being the bone number it is attached to.
         self.bodyparts = []         # A list of the bodyparts.
-        self.anim_seqs_data = []    # A list of the animation sequences sub-list of seq_panims, seq_frames from SetUpBones function.
 
         self.tex_coords = []        # A list of integers, 1 for "onseam" and 2 for the s,t or u,v texture coordinates.
         self.faces = []             # A list of the triangles.
@@ -3705,7 +3713,7 @@ class mdl_obj(object):
                     new_bone['flags'] = (0,0,0,0,0,0)
                     new_bone['show'] = (1.0,)
                     bone_pos = quarkx.vect(bone.pos[0], bone.pos[1], bone.pos[2])
-                    quat = AngleQuaternion([bone.rot[0], bone.rot[1], bone.rot[2]])
+                    quat = EulerAngle2Quaternion([bone.rot[0], bone.rot[1], bone.rot[2]])
                 #    quat = [bone.quat[0], bone.quat[1], bone.quat[2], bone.quat[3]]
                     tempmatrix = quaternion2matrix(quat)
                     #new_bone['quaternion'] = (qx,qy,qz,qw)
@@ -4057,9 +4065,9 @@ class mdl_obj(object):
                         continue
                     
                     #bone_pos = quarkx.vect(bone.pos[0] * bone.posscale[0], bone.pos[1] * bone.posscale[1], bone.pos[2] * bone.posscale[2])
-                    #quat = AngleQuaternion([bone.rot[0] * bone.rotscale[0], bone.rot[1] * bone.rotscale[1], bone.rot[2] * bone.rotscale[2]])
+                    #quat = EulerAngle2Quaternion([bone.rot[0] * bone.rotscale[0], bone.rot[1] * bone.rotscale[1], bone.rot[2] * bone.rotscale[2]])
                     bone_pos = quarkx.vect(bone.pos[0], bone.pos[1], bone.pos[2])
-                    quat = AngleQuaternion([bone.rot[0], bone.rot[1], bone.rot[2]])
+                    quat = EulerAngle2Quaternion([bone.rot[0], bone.rot[1], bone.rot[2]])
                     tempmatrix = quaternion2matrix(quat)
                     bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                     if bone.parent != -1:
@@ -4289,7 +4297,7 @@ class mdl_obj(object):
                                             rot[k] = self.bones[j].rot[k]
                                 frame_name = anim.pszName.replace("@", "") + " frame " + str(m_frame+1)
                                 bone_pos = quarkx.vect(pos[0], pos[1], pos[2])
-                                quat = AngleQuaternion(rot)
+                                quat = EulerAngle2Quaternion(rot)
                                 tempmatrix = quaternion2matrix(quat)
                                 bone_matrix = quarkx.matrix((tempmatrix[0][0], tempmatrix[0][1], tempmatrix[0][2]), (tempmatrix[1][0], tempmatrix[1][1], tempmatrix[1][2]), (tempmatrix[2][0], tempmatrix[2][1], tempmatrix[2][2]))
                                 if bone.parent != -1:
@@ -4619,6 +4627,14 @@ def load_mdl(basepath, filename):
     return MODEL, file, ComponentList, QuArK_bones, mdl.hitboxsets, message, tagsgroup, version, main_mdl_comps, new_mdl_comps, main_mdl_name, total_frames, folder_name, mdl_name, SpecsList
 
 
+######################################################
+# CALL TO PROCESS .mdl FILE (where it all starts off from)
+######################################################
+# The model file: root is the actual file,
+# filename and gamename is the full path to
+# and name of the .mdl file selected.
+# For example:  C:\Half-Life\valve\models\player\barney\barney.mdl
+# gamename is None.
 def loadmodel(root, filename, gamename, nomessage=0):
     "Loads the model file: root is the actual file,"
     "filename is the full path and name of the .HL2 file selected."
@@ -5099,7 +5115,7 @@ def DialogClick(MDL, file, editor, filename, ComponentList, QuArK_bones, hitboxs
             """ + SpecsList + """
 
             sep: = { Typ="S" Txt="" }
-            exit:py = {Txt="Close dialog"}
+            exit:py = {Txt="Import selections / Close dialog"}
             }
             """
 
@@ -5152,6 +5168,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2012/02/25 18:55:59  cdunde
+# Rearranged files and names to coincide better.
+#
 # Revision 1.13  2011/12/28 08:28:22  cdunde
 # Setup importer bone['type'] not done yet.
 #
