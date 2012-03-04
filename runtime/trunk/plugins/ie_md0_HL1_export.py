@@ -350,7 +350,7 @@ def mesh_normals(comp_name, faces, verts, bones, num_bones):
 
     #-- Normalize vectors
     for vec in v_normals.itervalues():
-        vec.normalized
+        vec = vec.normalized
         normal = vec.tuple
         norm = mdl_norm()
         norm.v = [normal[0], normal[1], normal[2]]
@@ -1786,6 +1786,7 @@ def fill_mdl(dlg):
         ### OFFSET FOR HITBOXES SECTION.
         mdl.hitboxes_offset = mdl.attachments_offset + (mdl.num_attachments * 88) # 88 = class mdl_attachment binary_format.
 
+        bone_to_hitbox_data = {} #Store the hitbox data; we need it for bbox calc for the animation sequence later
         if dlg.src['BBoxes'] is not None:
             for key in dlg.bboxlist.keys():
                 name = key.split(":p")[0]
@@ -1797,6 +1798,7 @@ def fill_mdl(dlg):
                         hitbox.bbmin = size[0]
                         hitbox.bbmax = size[1]
                         mdl.hitboxes.append(hitbox)
+                        bone_to_hitbox_data[i] = (quarkx.vect(size[0]), quarkx.vect(size[1]))
                         break
         mdl.num_hitboxes = len(mdl.hitboxes)
 
@@ -1838,6 +1840,8 @@ def fill_mdl(dlg):
         bone_min_max = [[]] * mdl.num_bones
         for anim_seq in mdl.sequence_descs:
             frames = mdl.QuArK_anim_seq_frames[anim_seq.label]
+            bbmin = None
+            bbmax = None
             all_bone_data = []
             for j in xrange(0, mdl.num_bones):
                 QuArK_bone = mdl.QuArK_bones[j]
@@ -1850,21 +1854,54 @@ def fill_mdl(dlg):
                 data = [[], [], [], [], [], []]   # X, Y, Z, quatX, quatY, quatZ
                 for m_frame in xrange(anim_seq.numframes):
                     bone_data = editor.ModelComponentList['bonelist'][QuArK_bone.name]['frames'][frames[m_frame].name]
-                    bone_pos = bone_data['position']
-                    bone_rot = bone_data['rotmatrix']
+                    bone_pos = quarkx.vect(bone_data['position'])
+                    bone_rot = quarkx.matrix(bone_data['rotmatrix'])
+                    if bone_to_hitbox_data.has_key(j):
+                        bmin, bmax = bone_to_hitbox_data[j]
+                        bmin = (bone_rot * bmin) + bone_pos
+                        bmax = (bone_rot * bmax) + bone_pos
+                        bmin = bmin.tuple
+                        bmax = bmax.tuple
+                        if bbmin is None:
+                            bbmin = [bmin[0], bmin[1], bmin[2]]
+                        else:
+                            if bmin[0] < bbmin[0]:
+                                bbmin[0] = bmin[0]
+                            if bmin[1] < bbmin[1]:
+                                bbmin[1] = bmin[1]
+                            if bmin[2] < bbmin[2]:
+                                bbmin[2] = bmin[2]
+                            if bmin[0] > bbmax[0]:
+                                bbmax[0] = bmin[0]
+                            if bmin[1] > bbmax[1]:
+                                bbmax[1] = bmin[1]
+                            if bmin[2] > bbmax[2]:
+                                bbmax[2] = bmin[2]
+                        if bbmax is None:
+                            bbmax = [bmax[0], bmax[1], bmax[2]]
+                        else:
+                            if bmax[0] < bbmin[0]:
+                                bbmin[0] = bmax[0]
+                            if bmax[1] < bbmin[1]:
+                                bbmin[1] = bmax[1]
+                            if bmax[2] < bbmin[2]:
+                                bbmin[2] = bmax[2]
+                            if bmax[0] > bbmax[0]:
+                                bbmax[0] = bmax[0]
+                            if bmax[1] > bbmax[1]:
+                                bbmax[1] = bmax[1]
+                            if bmax[2] > bbmax[2]:
+                                bbmax[2] = bmax[2]
                     if parent_bone:
                         parent_bone_data = editor.ModelComponentList['bonelist'][parent_bone.name]['frames'][frames[m_frame].name]
-                        parent_pos = parent_bone_data['position']
-                        parent_rot = parent_bone_data['rotmatrix']
+                        parent_pos = quarkx.vect(parent_bone_data['position'])
+                        parent_rot = quarkx.matrix(parent_bone_data['rotmatrix'])
 
-                        bone_pos = quarkx.vect(bone_pos)
-                        bone_rot = quarkx.matrix(bone_rot)
-                        parent_pos = quarkx.vect(parent_pos)
-                        parent_rot = quarkx.matrix(parent_rot)
                         bone_pos = ~parent_rot * (bone_pos - parent_pos)
                         bone_rot = ~parent_rot * bone_rot
-                        bone_pos = bone_pos.tuple
-                        bone_rot = bone_rot.tuple
+
+                    bone_pos = bone_pos.tuple
+                    bone_rot = bone_rot.tuple
                     m = matrix2euler(bone_rot)
 
                     data[0] += [bone_pos[0]]
@@ -1894,6 +1931,11 @@ def fill_mdl(dlg):
 
                 all_bone_data += [data]
             all_data += [all_bone_data]
+
+            if bbmin is not None:
+                anim_seq.bbmin = bbmin
+            if bbmax is not None:
+                anim_seq.bbmax = bbmax
 
         mdl.QuArK_anim_data = []
         for i in xrange(len(mdl.sequence_descs)):
@@ -2642,18 +2684,23 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         self.editor = editor
         self.newfiles_folder = newfiles_folder
         self.comp_group = comp_group
-        self.tags = []
-        self.bboxlist = {}
-        self.skins = []
-        self.bones = []
         self.comp_list = self.editor.layout.explorer.sellist
         self.mdlfile = None
         self.exportpath = filename.replace('\\', '/')
         self.exportpath = self.exportpath.rsplit('/', 1)[0]
         src = quarkx.newobj(":")
         src['dummy'] = None
-        src['Tags'] = None
-        src['BBoxes'] = None
+        miscgroup = self.editor.Root.dictitems['Misc:mg']  # get the Misc group
+        tags = miscgroup.findallsubitems("", ':tag')    # get all tags
+        if len(tags) > 0:
+            src['Tags'] = "1"
+        else:
+            src['Tags'] = None
+        bboxlist = self.editor.ModelComponentList['bboxlist']
+        if len(bboxlist) > 0:
+            src['BBoxes'] = "1"
+        else:
+            src['BBoxes'] = None
         src['EmbedSkins'] = "1"
         src['Skins'] = None
         src['SkinsOnly'] = None
@@ -2686,6 +2733,11 @@ class ExportSettingsDlg(quarkpy.qmacro.dialogbox):
         # Accepts all entries then starts making the processing function calls.
         quarkx.globalaccept()
         root = self.root
+
+        self.tags = []
+        self.bboxlist = {}
+        self.skins = []
+        self.bones = []
 
         if self.src["makefolder"] is not None:
             if not os.path.exists(self.newfiles_folder):
@@ -2785,6 +2837,9 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2012/03/03 07:26:35  cdunde
+# Sync 2. Rearranged files and names to coincide better.
+#
 # Revision 1.6  2012/02/25 23:52:08  cdunde
 # Fixes by DanielPharos for correct skin texture matching to components.
 #
