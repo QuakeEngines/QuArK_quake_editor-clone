@@ -274,6 +274,8 @@ def MACRO_makeaddon(self):
     i = 0
     while (a[i]["GameDir"] == None):
         i = i + 1
+        if i == len(a):
+            raise "No GameDir found"
     a[i].makeentitiesfromqctx();
 
 def MACRO_makeaddon_tex(self):
@@ -283,6 +285,8 @@ def MACRO_makeaddon_tex(self):
     i = 0
     while (a[i]["GameDir"] == None):
         i = i + 1
+        if i == len(a):
+            raise "No GameDir found"
     a[i].maketexturesfromqctx();
 
 def MACRO_loadentityplugins(self):
@@ -381,6 +385,9 @@ def MACRO_mdl_pythonexporter(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.32  2009/03/04 23:32:13  cdunde
+#For proper importer exporter listing one menus, code by DanielPharos.
+#
 #Revision 1.31  2008/08/21 12:01:30  danielpharos
 #Removed a magic number
 #
