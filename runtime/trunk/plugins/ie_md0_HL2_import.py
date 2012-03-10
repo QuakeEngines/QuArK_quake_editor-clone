@@ -346,13 +346,16 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
 
     for skin_name in range(len(skin_names)):
         material = texture = None
+        mat_flags = tex_flags = "0"
         files = os.listdir(cur_dir) # Always check in the model's directory first.
         for item in range(len(files)):
             item_name = files[item].lower() # Make sure all text is lower case.
-            if item_name == skin_names[skin_name] + ".vmt" and material is None:
+            if item_name == skin_names[skin_name][0] + ".vmt" and material is None:
                 material = files[item]
-            if item_name == skin_names[skin_name] + ".vtf" and texture is None:
+                mat_flags = skin_names[skin_name][1]
+            if item_name == skin_names[skin_name][0] + ".vtf" and texture is None:
                 texture = files[item]
+                tex_flags = skin_names[skin_name][1]
             if material is not None and texture is not None:
                 material = cur_dir + '/' + material
                 texture = cur_dir + '/' + texture
@@ -380,7 +383,7 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
                     dir = trydir
                     for df in range(len(dir_files)):
                         df_name = dir_files[df].lower()
-                        if df_name.find(skin_names[skin_name]) != -1:
+                        if df_name.find(skin_names[skin_name][0]) != -1:
                             if df_name.endswith(".vmt") and material is None:
                                 material = dir_files[df]
                             if df_name.endswith(".vtf") and texture is None:
@@ -405,7 +408,7 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
                 dir_files = os.listdir(trydir2)
                 for df in range(len(dir_files)):
                     df_name = dir_files[df].lower()
-                    if df_name.find(skin_names[skin_name]) != -1:
+                    if df_name.find(skin_names[skin_name][0]) != -1:
                         if df_name.endswith(".vmt") and material is None:
                             material = dir_files[df]
                         if df_name.endswith(".vtf") and texture is None:
@@ -423,7 +426,7 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
                     dir_files = os.listdir(dir)
                     for df in range(len(dir_files)):
                         df_name = dir_files[df].lower()
-                        if df_name.find(skin_names[skin_name]) != -1:
+                        if df_name.find(skin_names[skin_name][0]) != -1:
                             if df_name.endswith(".vmt") and material is None:
                                 material = dir_files[df]
                             if df_name.endswith(".vtf") and texture is None:
@@ -438,13 +441,13 @@ def LookForSkins(skin_names, skins_group, materials_group, folder_name, mdl_name
                 pass
 
         if texture is None:
-            skins_group.append("None")
+            skins_group.append(["None", tex_flags])
         else:
-            skins_group.append(texture)
+            skins_group.append([texture, tex_flags])
         if material is None:
-            materials_group.append("None")
+            materials_group.append(["None", mat_flags])
         else:
-            materials_group.append(material)
+            materials_group.append([material, mat_flags])
 
     return skins_group, materials_group
 
@@ -1234,9 +1237,9 @@ class mdl_bone_anim_value:
 class HL2_TexturesInfo:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
     #Header Structure      #item of file, type, description.
-    sznameindex = 0        #item   0      int.
-    pszName = ""
-    flags = 0              #item   1      int.
+    sznameindex = 0        #item   0      int, file offset to this TexturesInfo data.
+    pszName = ""           #item (none)   max. 64 char, skin name.
+    flags = 0              #item   1      int, skin flags setting for special texture handling ex: None=0 (default), Chrome=2 (cstrike), Chrome=3 (valve), Additive=32, Chrome & Additive=34, Transparent=64.
     used = 0               #item   2      int.
     unknown = 0            #item   3      int.
     material = 0           #item   4      int.
@@ -2590,14 +2593,15 @@ class HL2_VTXFileReader:
                                 if m > 0:
                                     new_comp.shortname = new_comp.shortname + str(m)
                                 if mesh_flags != 2:
-                                    skin_path = skins[mesh.material]
-                                    material_path = materials[mesh.material]
+                                    skin_path = skins[mesh.material][0]
+                                    material_path = materials[mesh.material][0]
                                     if skin_path != "None":
                                         skinname = 'models' + skin_path.split('/models')[1]
                                         skin = quarkx.newobj(skinname)
                                         image = quarkx.openfileobj(skin_path)
                                         skin['Image1'] = image.dictspec['Image1']
                                         skin['Size'] = image.dictspec['Size']
+                                        skin['HL_skin_flags'] = skins[mesh.material][1]
                                         if material_path != "None":
                                             shader_keyword, shader_file, shader_name, mesh_shader = ReadMaterialFile(material_path)
                                             new_comp['shader_keyword'] = skin['shader_keyword'] = shader_keyword
@@ -2612,14 +2616,15 @@ class HL2_VTXFileReader:
                                 else:
                                     if eyeball_count < len(eyeballs):
                                         eyeball = eyeballs[eyeball_count]
-                                        skin_path = skins[eyeball.iris_material]
-                                        material_path = materials[eyeball.iris_material]
+                                        skin_path = skins[eyeball.iris_material][0]
+                                        material_path = materials[eyeball.iris_material][0]
                                     if skin_path != "None":
                                         skinname = 'models' + skin_path.split('/models')[1]
                                         skin = quarkx.newobj(skinname)
                                         image = quarkx.openfileobj(skin_path)
                                         skin['Image1'] = image.dictspec['Image1']
                                         skin['Size'] = image.dictspec['Size']
+                                        skin['HL_skin_flags'] = skins[eyeball.iris_material][1]
                                         if material_path != "None":
                                             shader_keyword, shader_file, shader_name, mesh_shader = ReadMaterialFile(material_path)
                                             new_comp['shader_keyword'] = skin['shader_keyword'] = shader_keyword
@@ -2632,14 +2637,15 @@ class HL2_VTXFileReader:
                                         new_comp.dictitems['Skins:sg'].appenditem(skin)
                                         new_comp['skinsize'] = skin['Size']
                                     if eyeball_count < len(eyeballs):
-                                        skin_path = skins[eyeball.glint_material]
-                                        material_path = materials[eyeball.glint_material]
+                                        skin_path = skins[eyeball.glint_material][0]
+                                        material_path = materials[eyeball.glint_material][0]
                                     if skin_path != "None":
                                         skinname = 'models' + skin_path.split('/models')[1]
                                         skin = quarkx.newobj(skinname)
                                         image = quarkx.openfileobj(skin_path)
                                         skin['Image1'] = image.dictspec['Image1']
                                         skin['Size'] = image.dictspec['Size']
+                                        skin['HL_skin_flags'] = skins[eyeball.glint_material][1]
                                         if material_path != "None":
                                             shader_keyword, shader_file, shader_name, mesh_shader = ReadMaterialFile(material_path)
                                             skin['shader_keyword'] = shader_keyword
@@ -3516,7 +3522,8 @@ class mdl_obj(object):
             textures_info = HL2_TexturesInfo()
             textures_info.load(file)
             skin_name = textures_info.pszName.lower() # Make sure all text is lower case.
-            skin_names.append(skin_name)
+            skin_flags = str(textures_info.flags) # Keep each skin textures flags setting with its skin.
+            skin_names.append([skin_name, skin_flags])
             if logging == 1:
                 tobj.logcon ("========================")
                 tobj.logcon ("HL2_TexturesInfo data index: " + str(i))
@@ -4832,6 +4839,33 @@ def dataformname(o):
     # Next line calls for the External Skin Editor Module in mdlentities.py to be used.
     external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
 
+    # Next lines create the spacific items for a skin's flags if the o object is a selected skin.
+    if o.dictspec.has_key('Image1'):
+        flag_items = []
+        flag__values = []
+        flag_items = flag_items + ['"None"$0D']
+        flag_items = flag_items + ['"Chrome (cstrike)"$0D']
+        flag_items = flag_items + ['"Chrome (valve)"$0D']
+        flag_items = flag_items + ['"Additive"$0D']
+        flag_items = flag_items + ['"Chrome & Additive"$0D']
+        flag_items = flag_items + ['"Transparent"']
+        flag__values = flag__values + ['"0"$0D']
+        flag__values = flag__values + ['"2"$0D']
+        flag__values = flag__values + ['"3"$0D']
+        flag__values = flag__values + ['"32"$0D']
+        flag__values = flag__values + ['"34"$0D']
+        flag__values = flag__values + ['"64"']
+
+        skin_items = """sep: = { Typ="S" Txt="" } HL_skin_flags: = {Typ = "CL" Txt = "skin flags" items = """
+        for item in flag_items:
+            skin_items = skin_items + item
+
+        skin_items = skin_items + """ values = """
+        for item in flag__values:
+            skin_items = skin_items + item
+
+        skin_items = skin_items + """ Hint="List of available skin flags."$0D"Will be applied to current skin only."$0D"None = 0 (default), Chrome = 2, Additive = 32"$0D"Chrome & Additive = 34, Transparent = 64"}"""
+
     # Next lines create the spacific items for a frame if the o object is a selected frame.
     if o.type == ":mf":
         flag_items = []
@@ -4867,6 +4901,10 @@ def dataformname(o):
              "These textures have a 'material' (or shader) .vmf file that they use for special effects."$0D0D22
              "skin name"$22" - The currently selected skin texture name."$0D22
              "edit skin"$22" - Opens this skin texture in an external editor (can not open .vtf files)."$0D22
+             "HL_skin_flags"$22" - (Appears when a skin is selected) List of available skin flags."$0D
+             "        Will be applied to the current skin only."$0D
+             "        None = 0 (default), Chrome (cstrike) = 2, Chrome (valve) = 3,"$0D
+             "        Additive = 32, Chrome & Additive = 34, Transparent = 64"$0D22
              "frame_flags"$22" - (Appears when frame is selected) List of available frame flags."$0D
              "        Will be applied to all 'group' frames (starting with the same name)."$0D
              "        non-looping = 0 (default), looping = 1"$0D22
@@ -4883,6 +4921,8 @@ def dataformname(o):
       skin_name:      = {t_ModelEditor_texturebrowser = ! Txt="skin name"    Hint="The currently selected skin texture name."}
       """ + external_skin_editor_dialog_plugin + """
     """
+    if o.dictspec.has_key('Image1'):
+        dlgdef = dlgdef + """""" + skin_items + """"""
     if o.type == ":mf":
         dlgdef = dlgdef + """""" + frame_items + """"""
     dlgdef = dlgdef + """""" + vertex_weights_specifics_plugin + """
@@ -4931,6 +4971,28 @@ def dataformname(o):
     while (DummyItem.type != ":mc"): # Gets the object's model component.
         DummyItem = DummyItem.parent
     comp = DummyItem
+
+    # This sections handles the data for this model type skin page form.
+    if o.dictspec.has_key('Image1'):
+        if not o.dictspec.has_key('HL_skin_flags'):
+            o['HL_skin_flags'] = "0"
+            comp['HL_skin_flags'] = "0"
+            comp.currentskin = o
+        elif comp.name == editor.Root.currentcomponent.name and o.name != comp.currentskin.name:
+            comp['HL_skin_flags'] = o.dictspec['HL_skin_flags']
+        elif comp.name == editor.Root.currentcomponent.name and comp.dictspec.has_key('HL_skin_flags') and comp.dictspec['HL_skin_flags'] != o.dictspec['HL_skin_flags']: # When setting is changed
+            o['HL_skin_flags'] = comp.dictspec['HL_skin_flags']
+            for item in editor.Root.subitems:
+                if item.type == ":mc":
+                    for skin in item.dictitems['Skins:sg'].subitems:
+                        if skin.name == o.name:
+                            skin['HL_skin_flags'] = o.dictspec['HL_skin_flags']
+                            break
+        elif comp.name == editor.Root.currentcomponent.name:
+            comp['HL_skin_flags'] = o.dictspec['HL_skin_flags']
+        elif comp.name != editor.Root.currentcomponent.name:
+            if o.name != comp.currentskin.name:
+                comp['HL_skin_flags'] = o.dictspec['HL_skin_flags']
 
     # This sections handles the data for this model type frame page form.
     if o.type == ":mf":
@@ -5168,6 +5230,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2012/03/03 07:26:35  cdunde
+# Sync 2. Rearranged files and names to coincide better.
+#
 # Revision 1.14  2012/02/25 18:55:59  cdunde
 # Rearranged files and names to coincide better.
 #

@@ -811,7 +811,7 @@ class mdl_skin_info:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
     #Header Structure       #item of file, type, description.
     name = ""               #item  0-63   64 char, skin name.
-    flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
+    flags = 0               #item  64     int, skin flags setting for special texture handling ex: None=0 (default), Chrome=2 (cstrike), Chrome=3 (valve), Additive=32, Chrome & Additive=34, Transparent=64.
     width = 0               #item  65     int, skinwidth in pixels.
     height = 0              #item  66     int, skinheight in pixels.
     skin_offset = 0         #item  67     int, index (Offset) to skin data.
@@ -1802,6 +1802,7 @@ class mdl_obj:
                 newskin['Size'] = (float(skin.width), float(skin.height))
                 newskin['Image1'] = skin.ImageData
                 newskin['Pal'] = skin.Palette
+                newskin['HL_skin_flags'] = str(skin.flags)
                 skingroup.appenditem(newskin)
             # Create the "Frames:fg" group with dummy frame.
             framesgroup = quarkx.newobj('Frames:fg')
@@ -2223,6 +2224,7 @@ class mdl_obj:
                         skin_index = -1
                     if len(self.skins_group) != 0 and skin_index != -1:
                         skin_name = self.skins_group[skin_index].name # Gives the skin name and type, ex: head.bmp
+                        skin_flags = str(self.skins_group[skin_index].flags)
                         try:
                             #Create the QuArK skin objects
                             skin = self.skins_group[skin_index]
@@ -2231,6 +2233,7 @@ class mdl_obj:
                             skinsize = newskin['Size'] = (float(skin.width), float(skin.height))
                             newskin['Image1'] = skin.ImageData
                             newskin['Pal'] = skin.Palette
+                            newskin['HL_skin_flags'] = skin_flags
                             Component.dictitems['Skins:sg'].appenditem(newskin)
                             Component['skinsize'] = skinsize
                         except:
@@ -2244,6 +2247,7 @@ class mdl_obj:
                                     skin['Image1'] = image.dictspec['Image1']
                                     if image.dictspec.has_key('Pal'):
                                         skin['Pal'] = image.dictspec['Pal']
+                                    skin['HL_skin_flags'] = skin_flags
                                     skinsize = skin['Size'] = image.dictspec['Size']
                                     Component.dictitems['Skins:sg'].appenditem(skin)
                                     Component['skinsize'] = skinsize
@@ -2584,6 +2588,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2012/03/03 07:26:35  cdunde
+# Sync 2. Rearranged files and names to coincide better.
+#
 # Revision 1.15  2012/02/25 23:52:08  cdunde
 # Fixes by DanielPharos for correct skin texture matching to components.
 #
