@@ -1228,7 +1228,7 @@ class mdl_skin_info:
 # Done cdunde from -> hlmviewer source file -> studio.h -> mstudiotexture_t
     #Header Structure       #item of file, type, description.
     name = ""               #item  0-63   64 char, skin name.
-    flags = 0               #item  64     int, skin flags setting for special texture handling ex: CHROME, LIGHTING.
+    flags = 0               #item  64     int, skin flags setting for special texture handling ex: None=0 (default), Chrome=2 (cstrike), Chrome=3 (valve), Additive=32, Chrome & Additive=34, Transparent=64.
     width = 0               #item  65     int, skinwidth in pixels.
     height = 0              #item  66     int, skinheight in pixels.
     skin_offset = 0         #item  67     int, index (Offset) to skin data.
@@ -2185,6 +2185,9 @@ def fill_mdl(dlg):
         for i in xrange(mdl.num_textures):
             skin_info = mdl_skin_info()
             skin_info.name = dlg.skins[i].name
+            if dlg.skins[i].dictspec.has_key('HL_skin_flags'):
+                skin_info.flags = int(dlg.skins[i].dictspec['HL_skin_flags'])
+            skin_info.name = dlg.skins[i].name
             size = dlg.skins[i].dictspec['Size']
             skin_info.width = int(size[0])
             skin_info.height = int(size[1])
@@ -2837,6 +2840,9 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2012/03/04 00:02:32  cdunde
+# DanielPharos code for normals and dialog settings.
+#
 # Revision 1.7  2012/03/03 07:26:35  cdunde
 # Sync 2. Rearranged files and names to coincide better.
 #
