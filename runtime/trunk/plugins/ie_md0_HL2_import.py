@@ -4987,6 +4987,7 @@ def dataformname(o):
                     for skin in item.dictitems['Skins:sg'].subitems:
                         if skin.name == o.name:
                             skin['HL_skin_flags'] = o.dictspec['HL_skin_flags']
+                            item['HL_skin_flags'] = o.dictspec['HL_skin_flags']
                             break
         elif comp.name == editor.Root.currentcomponent.name:
             comp['HL_skin_flags'] = o.dictspec['HL_skin_flags']
@@ -5071,6 +5072,13 @@ def dataforminput(o):
         DummyItem = DummyItem.parent
     if DummyItem.type == ":mc":
         comp = DummyItem
+
+        # This sections handles the data for this model type skin page form.
+        if o.dictspec.has_key('Image1'):
+            if o.dictspec.has_key('HL_skin_flags'):
+                comp['HL_skin_flags'] = o.dictspec['HL_skin_flags']
+            else:
+                comp['HL_skin_flags'] = "0"
 
         # This sections handles the data for this model type frame page form.
         if o.type == ":mf":
@@ -5230,6 +5238,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2012/03/10 08:10:12  cdunde
+# Added texture skin flag support.
+#
 # Revision 1.15  2012/03/03 07:26:35  cdunde
 # Sync 2. Rearranged files and names to coincide better.
 #
