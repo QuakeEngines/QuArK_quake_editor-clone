@@ -32,7 +32,9 @@ import quarkpy.dlgclasses
 import quarkpy.mdleditor
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
+from quarkpy import qmacro
 from quarkpy.maputils import *
+from quarkpy.qdictionnary import Strings
 
 
 #
@@ -93,6 +95,106 @@ def checkUVs(mdl_editor, pixU, pixV, skin):
         return 0
     else:
         return 1
+
+
+def ClampUV(U, V, texWidth, texHeight):
+    U = U - texWidth * int(math.floor(U / texWidth))
+    V = V - texHeight * int(math.floor(V / texHeight))
+    return U, V
+
+
+def GetPixel(U_V, texshortname, texparent, skinuvlist=None):
+    U, V = U_V
+    UV = str(U) + "," + str(V)
+    if skinuvlist is not None and skinuvlist.has_key(UV):
+        return quarkpy.qutils.ColorToRGB(skinuvlist[UV][0])
+    return quarkpy.qutils.ColorToRGB(quarkx.getpixel(texshortname, texparent, U, V))
+
+
+def GetHeight(RGB):
+    return ((RGB[0] * 0.3) + (RGB[1] * 0.59) + (RGB[2] * 0.11)) / 255.0
+
+
+NormalPalette = (
+[69,57,220], [65,74,230], [58,82,228], [82,82,239], [93,49,227], [92,61,237], [90,75,242], [99,74,243], [52,94,229], [66,94,239], [76,93,243], [82,99,247], [90,86,247], [99,82,247], [90,99,247], [90,99,255],
+[107,47,228], [117,46,231], [112,63,239], [123,61,239], [107,66,247], [111,70,247], [115,74,247], [123,70,247], [107,82,247], [99,93,249], [99,99,255], [107,90,247], [111,86,251], [115,82,255], [115,90,255], [123,84,252],
+[41,107,226], [42,116,227], [54,109,233], [49,120,236], [57,115,239], [66,107,243], [61,119,239], [66,115,247], [66,123,239], [66,123,247], [74,107,247], [74,115,247], [82,107,247], [74,123,247], [82,115,247], [82,119,251],
+[90,107,247], [90,107,255], [82,123,255], [90,119,255], [99,107,255], [99,115,255], [99,123,255], [107,99,255], [107,107,255], [107,115,255], [107,123,255], [115,99,255], [115,107,255], [115,115,255], [115,123,255], [123,99,255],
+[132,45,230], [132,57,239], [140,49,235], [146,55,235], [132,66,239], [132,66,247], [140,66,239], [144,66,243], [148,66,247], [132,74,247], [140,74,247], [148,74,247], [132,82,251], [140,82,247], [140,90,247], [148,82,247],
+[123,107,255], [132,90,255], [132,99,255], [132,107,255], [140,90,255], [140,99,255], [148,90,251], [148,99,255], [140,107,255], [148,107,255], [123,115,255], [132,115,255], [140,115,255], [123,123,255], [132,123,255], [140,123,255],
+[160,63,236], [162,79,244], [165,82,247], [156,90,247], [156,99,247], [160,94,251], [165,99,247], [165,99,255], [173,65,235], [186,70,228], [175,86,243], [194,91,234], [165,107,247], [173,99,247], [185,101,241], [204,105,232],
+[148,115,255], [148,123,255], [156,107,255], [156,115,255], [165,107,255], [165,115,247], [169,111,251], [173,115,247], [173,115,255], [173,123,247], [181,107,247], [181,115,247], [189,112,244], [186,123,244], [198,117,236], [210,119,227],
+[43,137,228], [57,142,237], [66,136,243], [74,132,247], [74,140,247], [82,132,247], [82,132,255], [82,140,247], [57,154,235], [66,152,243], [74,152,243], [78,152,247], [57,165,230], [78,162,243], [67,181,230], [82,185,235],
+[90,132,255], [90,140,251], [90,148,247], [90,148,255], [99,136,255], [107,132,255], [107,140,255], [99,148,255], [90,160,247], [99,156,247], [99,156,255], [99,165,247], [94,171,247], [94,181,239], [94,185,243], [95,202,229],
+[115,132,255], [123,132,255], [132,132,255], [115,140,255], [123,140,255], [132,140,255], [107,148,255], [115,148,255], [107,160,251], [107,165,255], [115,156,255], [115,165,247], [115,165,255], [123,148,255], [123,156,255], [123,165,255],
+[107,173,247], [107,181,247], [107,189,239], [115,173,251], [115,181,247], [123,173,247], [123,173,255], [123,181,247], [111,198,231], [112,189,244], [123,189,239], [123,189,247], [107,198,239], [115,198,239], [123,198,239], [115,211,228],
+[132,148,255], [140,132,255], [140,140,255], [140,148,255], [148,132,255], [148,140,255], [148,148,255], [156,123,255], [165,123,255], [173,123,255], [156,132,255], [156,140,255], [165,136,251], [165,140,255], [160,148,251], [165,148,255],
+[173,132,247], [173,132,255], [177,136,247], [189,132,243], [181,140,247], [173,148,247], [181,148,247], [181,156,239], [189,144,239], [198,140,231], [211,137,227], [206,153,226], [189,140,247], [198,136,239], [189,148,247], [193,152,239],
+[132,156,255], [132,165,255], [132,173,247], [140,160,251], [140,165,255], [148,156,255], [148,165,247], [148,165,255], [132,173,255], [132,181,247], [140,177,247], [148,177,243], [140,186,241], [148,189,239], [140,192,242], [140,208,229],
+[156,156,247], [165,156,247], [156,160,251], [165,169,243], [156,177,243], [165,173,247], [162,181,244], [156,202,228], [173,162,244], [173,173,239], [182,164,239], [201,167,227], [173,178,239], [166,200,228], [174,192,230], [188,188,225],
+)
+
+### NORMALMAP test code
+scale = 0.1
+
+def NORMALIZE(v):
+    len = math.sqrt((v[0]*v[0]) + (v[1]*v[1]) + (v[2]*v[2]))
+   
+    if len > 0:
+       len = 1.0 / len
+       v[0] *= len
+       v[1] *= len
+       v[2] *= len
+    else:
+       v[0] = v[1] = v[2] = 0
+    return v
+
+num_elements = 20
+kernel_du = []
+kernel_dv = []
+# case FILTER_SOBEL_5x5:
+kernel_du.append([-2, 2, -1.0])
+kernel_du.append([-2, 1, -4.0])
+kernel_du.append([-2, 0, -6.0])
+kernel_du.append([-2, -1, -4.0])
+kernel_du.append([-2, -2, -1.0])
+kernel_du.append([-1, 2, -2.0])
+kernel_du.append([-1, 1, -8.0])
+kernel_du.append([-1, 0, -12.0])
+kernel_du.append([-1, -1, -8.0])
+kernel_du.append([-1, -2, -2.0])
+kernel_du.append([1, 2, 2.0])
+kernel_du.append([1, 1, 8.0])
+kernel_du.append([1, 0, 12.0])
+kernel_du.append([1, -1, 8.0])
+kernel_du.append([1, -2, 2.0])
+kernel_du.append([2, 2, 1.0])
+kernel_du.append([2, 1, 4.0])
+kernel_du.append([2, 0, 6.0])
+kernel_du.append([2, -1, 4.0])
+kernel_du.append([2, -2, 1.0])
+        
+kernel_dv.append([-2, 2, 1.0])
+kernel_dv.append([-1, 2, 4.0])
+kernel_dv.append([ 0, 2, 6.0])
+kernel_dv.append([ 1, 2, 4.0])
+kernel_dv.append([ 2, 2, 1.0])
+kernel_dv.append([-2, 1, 2.0])
+kernel_dv.append([-1, 1, 8.0])
+kernel_dv.append([ 0, 1, 12.0])
+kernel_dv.append([ 1, 1, 8.0])
+kernel_dv.append([ 2, 1, 2.0])
+kernel_dv.append([-2, -1, -2.0])
+kernel_dv.append([-1, -1, -8.0])
+kernel_dv.append([ 0, -1, -12.0])
+kernel_dv.append([ 1, -1, -8.0])
+kernel_dv.append([ 2, -1, -2.0])
+kernel_dv.append([-2, -2, -1.0])
+kernel_dv.append([-1, -2, -4.0])
+kernel_dv.append([ 0, -2, -6.0])
+kernel_dv.append([ 1, -2, -4.0])
+kernel_dv.append([ 2, -2, -1.0])
+
 
 
 #====================================================
@@ -2440,12 +2542,14 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                 OldPalColor = EndPalette
             NewPaintColor = OldPalColor
         else:
-            OldPixelColor = quarkx.getpixel(texshortname, texparent, pixU, pixV)
-            NewColor = [0, 0, 0]
-            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-            for i in range(0, 3):
-                NewColor[2-i] = abs(int((OldPixelColor[i] - Opacity)))
-            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+            if skinuvlist.has_key(UV):
+                OrgPixelColor = skinuvlist[UV][0]
+                RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                NewColor = [0, 0, 0]
+                OldPixelColor = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                for i in range(0, 3):
+                    NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
         quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
 
     elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
@@ -2458,7 +2562,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
             if skinuvlist.has_key(UV):
                 OrgPixelColor = skinuvlist[UV][0]
                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                 quarkx.setpixel(texshortname, texparent, pixU, pixV, NewPaintColor) # Draws the center pixel, where clicked.
 
@@ -2593,12 +2697,77 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if NewPaintColor < 0:
                                 NewPaintColor = NewPaintColor + 255
                         else:
-                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        ### CURRENT CODE
+                         #  if skinuvlist.has_key(UV):
+                         #      OrgPixelColor = skinuvlist[UV][0]
+                         #      RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                         #      NewColor = [0, 0, 0]
+                         #      OldPixelColor = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                         #      for i in range(0, 3):
+                         #          NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
+                         #      NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        ### New test code
+                            if skinuvlist.has_key(UV):
+                                du = 0.0
+                                dv = 0.0
+                                for i in range(num_elements):
+                                    du += GetHeight(GetPixel(ClampUV(U + kernel_du[i][0], V + kernel_du[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_du[i][2]
+                                for i in range(num_elements):
+                                    dv += GetHeight(GetPixel(ClampUV(U + kernel_dv[i][0], V + kernel_dv[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_dv[i][2]
+                                vec = quarkx.vect((-du * Opacity, -dv * Opacity, 1.0)).normalized
+                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((-vec.x, -vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1":
+                                    vec = quarkx.vect((-vec.x, vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((vec.x, -vec.y, vec.z))
+                                RGB = [int((vec.x + 1.0) * 127.5), int((vec.y + 1.0) * 127.5), int((vec.z + 1.0) * 127.5)]
+                                NewPaintColor = quarkpy.qutils.RGBToColor(RGB)
+                        ### NormalPalette test code
+                         #   if skinuvlist.has_key(UV):
+                         #       OrgPixelColor = skinuvlist[UV][0]
+                         #       RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                         #       NewColor = 0
+                         #       OldPixelColor = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                         #       for i in range(0, 3):
+                         #           NewColor += OldPixelColor[i]
+                         #       NewColor = int((RGB[0]+RGB[1]) * .5)
+                         #       NewColor = NormalPalette[NewColor]
+                         #       NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                        ### NORMALMAP test code
+                         #   if skinuvlist.has_key(UV):
+                         #       print "----------------------"
+                         #       du = 0
+                         #       dv = 0
+                         #       for i in range(num_elements):
+                         #           du += (kernel_du[i][0] * kernel_du[i][2]) + (kernel_du[i][1] * kernel_du[i][2])
+                         #       for i in range(num_elements):
+                         #           dv += (kernel_dv[i][0] * kernel_dv[i][2]) + (kernel_dv[i][1] * kernel_dv[i][2])
+
+                         #       RGB = [-du * scale, -dv * scale, 1.0]
+
+                         #       RGB = NORMALIZE(RGB)
+                         
+                         #       if RGB[2] < 0.0:
+                         #          RGB[2] = 0.0
+                         #          RGB = NORMALIZE(RGB)
+                         #       print "RGB NORMALIZE", RGB
+                         #       OrgPixelColor = skinuvlist[UV][0]
+                         #       NC = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+                         #       print "ORGrgb", NC
+                         #       print "du, dv", du, dv
+                         #       NewColor = [(NC[0]*0.3)*RGB[0], (NC[1]*0.59)*RGB[1], (NC[2]*0.11)*RGB[2]] # ERRORS OUT
+                         #       NewColor = [(NC[0]*0.3), (NC[1]*0.59), (NC[2]*0.11)]
+                         #       print "NewColor", NewColor
+                         #       print "CONVERT1", abs(int(NewColor[0])), abs(int(NewColor[1])), abs(int(NewColor[2]))
+                              #  NewColor = [NC[0]*RGB[0], NC[1]*RGB[1], NC[2]*RGB[2]]
+                              #  print "RGB2", NewColor
+                              #  print "CONVERT2", abs(int(NewColor[0])), abs(int(NewColor[1])), abs(int(NewColor[2]))
+                         #       NewColor = abs(int(NewColor[0])) + abs(int(NewColor[1]))
+                         #       print "NewColor CONV", NewColor
+                         #       NewColor = NormalPalette[NewColor]
+                         #       print "NewColor", NewColor
+                         #       NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
                         color = int(NewPaintColor)
 
                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
@@ -2614,7 +2783,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -2734,12 +2903,22 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if NewPaintColor < 0:
                                 NewPaintColor = NewPaintColor + 255
                         else:
-                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            if skinuvlist.has_key(UV):
+                                du = 0
+                                dv = 0
+                                for i in range(num_elements):
+                                    du += GetHeight(GetPixel(ClampUV(U + kernel_du[i][0], V + kernel_du[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_du[i][2]
+                                for i in range(num_elements):
+                                    dv += GetHeight(GetPixel(ClampUV(U + kernel_dv[i][0], V + kernel_dv[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_dv[i][2]
+                                vec = quarkx.vect((-du * Opacity, -dv * Opacity, 1.0)).normalized
+                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((-vec.x, -vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1":
+                                    vec = quarkx.vect((-vec.x, vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((vec.x, -vec.y, vec.z))
+                                RGB = [int((vec.x + 1.0) * 127.5), int((vec.y + 1.0) * 127.5), int((vec.z + 1.0) * 127.5)]
+                                NewPaintColor = quarkpy.qutils.RGBToColor(RGB)
                         color = int(NewPaintColor)
 
                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
@@ -2755,7 +2934,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -2874,12 +3053,22 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if NewPaintColor < 0:
                                 NewPaintColor = NewPaintColor + 255
                         else:
-                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            if skinuvlist.has_key(UV):
+                                du = 0
+                                dv = 0
+                                for i in range(num_elements):
+                                    du += GetHeight(GetPixel(ClampUV(U + kernel_du[i][0], V + kernel_du[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_du[i][2]
+                                for i in range(num_elements):
+                                    dv += GetHeight(GetPixel(ClampUV(U + kernel_dv[i][0], V + kernel_dv[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_dv[i][2]
+                                vec = quarkx.vect((-du * Opacity, -dv * Opacity, 1.0)).normalized
+                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((-vec.x, -vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1":
+                                    vec = quarkx.vect((-vec.x, vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((vec.x, -vec.y, vec.z))
+                                RGB = [int((vec.x + 1.0) * 127.5), int((vec.y + 1.0) * 127.5), int((vec.z + 1.0) * 127.5)]
+                                NewPaintColor = quarkpy.qutils.RGBToColor(RGB)
                         color = int(NewPaintColor)
 
                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
@@ -2895,7 +3084,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3014,12 +3203,22 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if NewPaintColor < 0:
                                 NewPaintColor = NewPaintColor + 255
                         else:
-                            OldPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
-                            NewColor = [0, 0, 0]
-                            OldPixelColor = quarkpy.qutils.ColorToRGB(OldPixelColor)
-                            for i in range(0, 3):
-                                NewColor[2-i] = abs(int((OldPixelColor[i] - (Opacity*200))))
-                            NewPaintColor = quarkpy.qutils.RGBToColor(NewColor)
+                            if skinuvlist.has_key(UV):
+                                du = 0
+                                dv = 0
+                                for i in range(num_elements):
+                                    du += GetHeight(GetPixel(ClampUV(U + kernel_du[i][0], V + kernel_du[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_du[i][2]
+                                for i in range(num_elements):
+                                    dv += GetHeight(GetPixel(ClampUV(U + kernel_dv[i][0], V + kernel_dv[i][1], texWidth, texHeight), texshortname, texparent, skinuvlist)) * kernel_dv[i][2]
+                                vec = quarkx.vect((-du * Opacity, -dv * Opacity, 1.0)).normalized
+                                if quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1" and quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((-vec.x, -vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] == "1":
+                                    vec = quarkx.vect((-vec.x, vec.y, vec.z))
+                                elif quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] == "1":
+                                    vec = quarkx.vect((vec.x, -vec.y, vec.z))
+                                RGB = [int((vec.x + 1.0) * 127.5), int((vec.y + 1.0) * 127.5), int((vec.z + 1.0) * 127.5)]
+                                NewPaintColor = quarkpy.qutils.RGBToColor(RGB)
                         color = int(NewPaintColor)
 
                     if quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] == "4":
@@ -3035,7 +3234,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3144,7 +3343,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3235,7 +3434,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3325,7 +3524,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3415,7 +3614,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3530,7 +3729,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3620,7 +3819,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3711,7 +3910,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3802,7 +4001,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -3914,7 +4113,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -4004,7 +4203,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -4095,7 +4294,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -4186,7 +4385,7 @@ def SkinViewAirbrush(mdl_editor, skin, Pal, skinuvlist, Opacity, texshortname, t
                             if skinuvlist.has_key(UV):
                                 OrgPixelColor = skinuvlist[UV][0]
                                 RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
-                                NEW = int(0.2989 * RGB[0] + 0.5870 * RGB[1] + 0.1140 * RGB[2])
+                                NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
                                 NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
                                 color = int(NewPaintColor)
 
@@ -4392,7 +4591,7 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
     "To open the Color Selection Dialog."
 
     dlgflags = FWF_KEEPFOCUS | FWF_NORESIZE # Keeps dialog box open & a fixed size.
-    size = (230,420)
+    size = (250,470)
     dfsep = 0.35    # sets 35% for labels and the rest for edit boxes
     dlgdef = """
     {
@@ -4509,8 +4708,8 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
             "RING PATTERN" $0D
             "RANDOM PATTERN" $0D
             "TWO COLOR BLEND" $0D
-            "MULTI COLOR BLEND" $0D
-            "RGB TO GRAYSCALE" $0D
+            "NORMAL MAP-blue scale" $0D
+            "HEIGHT MAP-gray scale" $0D
             "AIRBRUSH BLENDING" $0D
             "ERASER TOOL"
         values =
@@ -4523,11 +4722,37 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
             "6"
         }
 
+        InvertX: =
+        {
+        Txt = "Invert X"
+        Typ = "X1"
+        Hint = "blue scale default = unchecked"
+        }
+
+        InvertY: =
+        {
+        Txt = "Invert Y"
+        Typ = "X1"
+        Hint = "blue scale default = checked"
+        }
+
+        buttons: = {
+        Txt = "One-click:"
+        Typ = "PM"
+        Hint = "Click a button to effect the entire image."
+        Num = "3"
+        Macro = "oneclick"
+        Caps = "BGR"
+        Hint1 = "Make NORMAL MAP-blue scale"
+        Hint2 = "Make HEIGHT MAP-gray scale"
+        Hint3 = "Restore original image"
+        }
+
         Opacity: =
         {
         Txt = "Opacity %"
         Typ = "EU"
-        Hint = "Percentage of Opacity 0-100"
+        Hint = "Percentage of Opacity 0-100"$0D"blue scale default = 10"$0D"gray scale default = 50"
         }
 
         sep: = { Typ="S" Txt=""}
@@ -4540,7 +4765,7 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
           Delete: =
           {            // the button resets to these amounts
             ReachThrough = "0"
-            EraserSize = "500"
+            EraserSize = "16000"
             PalettePenColor = "254"
             RGBPenColor = $9C8370
             PenWidth = "2"
@@ -4550,6 +4775,8 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
             BrushWidth = "6"
             SprayShape = "ellipse"
             BrushStyle = "0"
+            InvertX = "0"
+            InvertY = "1"
             Opacity = "0"
           }
         }
@@ -4557,6 +4784,153 @@ class SelectColors(quarkpy.dlgclasses.LiveEditDlg):
         exit:py = {Txt="Close" }
     }
     """
+
+# Define the oneclick macro here, put the definition into
+#  quarkpy.qmacro, which is where macros called from delphi live.
+def macro_oneclick(self, index=0):
+    editor = mapeditor()
+    if editor is None: return
+    image = editor.Root.currentcomponent.currentskin
+    if image['Pal']:
+        quarkx.msgbox("Invalid Action !\n\nSelected texture is 8 bit\nand has its own pallet.\n\nThese functions can not be used.", MT_ERROR, MB_OK)
+        return
+    if index == 1:
+        BlueScale(editor, image)
+    elif index == 2:
+        GrayScale(editor, image)
+    elif index == 3:
+        Restore(editor, image)
+
+qmacro.MACRO_oneclick = macro_oneclick
+
+#
+# We're going to trigger these actions both by menu
+#  items and buttons in a dialog, so we define them
+#  independently of the UI elements that call them.
+#
+save_image = None
+def BlueScale(editor, image):
+    global save_image
+    if save_image is None:
+        save_image = image.copy()
+        save_image['Image1'] = image.dictspec['Image1']
+    InvertX = quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"]
+    InvertY = quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"]
+    Opacity = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_Opacity"]) * .01
+    texWidth, texHeight = image["Size"]
+    texWidth, texHeight = int(texWidth), int(texHeight)
+    texshortname = image.shortname
+    texparent = image.parent
+
+    time = texWidth * texHeight * .0006294
+    mins = time/60
+    secs = int(round(60 * (mins - int(mins))))
+    save_string = Strings[2462]
+    Strings[2462] = "Total process time: " + str(int(mins)) + " mins. " + str(secs) + " secs."
+    count = (texWidth * texHeight) * 3
+    progressbar = quarkx.progressbar(2462, count)
+
+    # Store the 'old' data; faster than retrieving it all the time
+    old_data = [[]] * texWidth
+    for U in xrange(texWidth):
+        progressbar.progress()
+        old_data[U] = [[]] * texHeight
+        for V in xrange(texHeight):
+            old_data[U][V] = quarkpy.qutils.ColorToRGB(quarkx.getpixel(texshortname, texparent, U, V))
+            progressbar.progress()
+
+    # new_data will contain the new image pixels data.
+    new_data = [[]] * texWidth
+    for U in xrange(texWidth):
+        progressbar.progress()
+        new_data[U] = [[]] * texHeight
+        for V in xrange(texHeight):
+            du = 0.0
+            dv = 0.0
+            for i in range(num_elements):
+                U2, V2 = ClampUV(U + kernel_du[i][0], V + kernel_du[i][1], texWidth, texHeight)
+                du += GetHeight(old_data[U2][V2]) * kernel_du[i][2]
+            for i in range(num_elements):
+                U2, V2 = ClampUV(U + kernel_dv[i][0], V + kernel_dv[i][1], texWidth, texHeight)
+                dv += GetHeight(old_data[U2][V2]) * kernel_dv[i][2]
+            vec = NORMALIZE([-du * Opacity, -dv * Opacity, 1.0])
+            if InvertX == "1" and InvertY == "1":
+                vec = (-vec[0], -vec[1], vec[2])
+            elif InvertX == "1":
+                vec = (-vec[0], vec[1], vec[2])
+            elif InvertY == "1":
+                vec = (vec[0], -vec[1], vec[2])
+            RGB = [int((vec[0] + 1.0) * 127.5), int((vec[1] + 1.0) * 127.5), int((vec[2] + 1.0) * 127.5)]
+            new_data[U][V] = int(quarkpy.qutils.RGBToColor(RGB))
+            progressbar.progress()
+
+    # Finally set the new image pixels.
+    for U in xrange(texWidth):
+        progressbar.progress()
+        for V in xrange(texHeight):
+            quarkx.setpixel(texshortname, texparent, U, V, new_data[U][V])
+            progressbar.progress()
+
+    Strings[2462] = save_string
+    progressbar.close()
+    editor.Root.currentcomponent.currentskin = image
+    editor.layout.skinview.repaint()
+    for v in editor.layout.views:
+        if v.viewmode == "tex":
+            v.invalidate(1)
+
+
+def GrayScale(editor, image):
+    global save_image
+    if save_image is None:
+        save_image = image.copy()
+        save_image['Image1'] = image.dictspec['Image1']
+    Opacity = int(quarkx.setupsubset(SS_MODEL, "Options")["Paint_Opacity"]) * .01
+    texWidth, texHeight = image["Size"]
+    texWidth, texHeight = int(texWidth), int(texHeight)
+    texshortname = image.shortname
+    texparent = image.parent
+
+    secs = int(round((texWidth * texHeight) / 17500))
+    save_string = Strings[2462]
+    Strings[2462] = "Total process time: " + str(secs) + " secs."
+    count = texWidth * texHeight
+    progressbar = quarkx.progressbar(2462, count)
+
+    for V in xrange(texHeight):
+        for U in xrange(texWidth):
+            OrgPixelColor = quarkx.getpixel(texshortname, texparent, U, V)
+            RGB = quarkpy.qutils.ColorToRGB(OrgPixelColor)
+            NEW = int(0.2989 * RGB[0] * Opacity*2 + 0.5870 * RGB[1] * Opacity*2 + 0.1140 * RGB[2])
+            if NEW < 0:
+                NEW = 0
+            if NEW > 255:
+                NEW = 255
+            NewPaintColor = quarkpy.qutils.RGBToColor((NEW, NEW, NEW))
+            quarkx.setpixel(texshortname, texparent, U, V, NewPaintColor)
+            progressbar.progress()
+
+    Strings[2462] = save_string
+    progressbar.close()
+    editor.Root.currentcomponent.currentskin = image
+    editor.layout.skinview.repaint()
+    for v in editor.layout.views:
+        if v.viewmode == "tex":
+            v.invalidate(1)
+
+
+def Restore(editor, image):
+    global save_image
+    if save_image is not None:
+        image['Image1'] = save_image.dictspec['Image1']
+        editor.Root.currentcomponent.currentskin = image
+        editor.layout.skinview.background = quarkx.vect(-int(image["Size"][0]*.5),-int(image["Size"][1]*.5),0), 1.0, 0, 1
+        editor.layout.skinview.backgroundimage = image,
+        save_image = None
+        editor.layout.skinview.repaint()
+        for v in editor.layout.views:
+            if v.viewmode == "tex":
+                v.invalidate(1)
 
 
 #====================================================
@@ -4580,7 +4954,7 @@ def ColorSelectorClick(m):
             src["ReachThrough"] = quarkx.setupsubset(SS_MODEL, "Options")["Paint_ReachThrough"]
 
         if (quarkx.setupsubset(SS_MODEL, "Options")["Paint_EraserSize"] is None):
-            src["EraserSize"] = "500"
+            src["EraserSize"] = "16000"
             quarkx.setupsubset(SS_MODEL, "Options")["Paint_EraserSize"] = src["EraserSize"]
         else:
             src["EraserSize"] = quarkx.setupsubset(SS_MODEL, "Options")["Paint_EraserSize"]
@@ -4639,6 +5013,18 @@ def ColorSelectorClick(m):
         else:
             src["BrushStyle"] = quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"]
 
+        if (quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] is None):
+            src["InvertX"] = "0"
+            quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] = src["InvertX"]
+        else:
+            src["InvertX"] = quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"]
+
+        if (quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] is None):
+            src["InvertY"] = "1"
+            quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] = src["InvertY"]
+        else:
+            src["InvertY"] = quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"]
+
         if (quarkx.setupsubset(SS_MODEL, "Options")["Paint_Opacity"] is None):
             src["Opacity"] = "0"
             quarkx.setupsubset(SS_MODEL, "Options")["Paint_Opacity"] = src["Opacity"]
@@ -4673,7 +5059,7 @@ def ColorSelectorClick(m):
                     pass
             except:
                 quarkx.msgbox("Invalid Entry !\n\nMust be value\nof 500 or higher.\n\nReset to Default.", MT_ERROR, MB_OK)
-                src["EraserSize"] = "500"
+                src["EraserSize"] = "16000"
                 return
             if int(float(src["EraserSize"])) < 500:
                 src["EraserSize"] = "500"
@@ -4749,6 +5135,16 @@ def ColorSelectorClick(m):
             Brushstyle = src["BrushStyle"]
         else:
             Brushstyle = "0"
+
+        if src["InvertX"]:
+            invertX = src["InvertX"]
+        else:
+            invertX = "0"
+
+        if src["InvertY"]:
+            invertY = src["InvertY"]
+        else:
+            invertY = "0"
 
         if src["Opacity"]:
             try:
@@ -4858,6 +5254,22 @@ def ColorSelectorClick(m):
             (self.src["BrushStyle"]) = "0"
             Brushstyle = (self.src["BrushWidth"])
             quarkx.setupsubset(SS_MODEL, "Options")["Paint_BrushStyle"] = Brushstyle
+
+        if (self.src["InvertX"]) != None and quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] != None:
+            invertX = (self.src["InvertX"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] = invertX
+        else:
+            (self.src["InvertX"]) = "None"
+            invertX = (self.src["InvertX"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertX"] = invertX
+
+        if (self.src["InvertY"]) != None and quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] != None:
+            invertY = (self.src["InvertY"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] = invertY
+        else:
+            (self.src["InvertY"]) = "None"
+            invertY = (self.src["InvertY"])
+            quarkx.setupsubset(SS_MODEL, "Options")["Paint_InvertY"] = invertY
 
         if (self.src["Opacity"]) != None and quarkx.setupsubset(SS_MODEL, "Options")["Paint_Opacity"] != None:
             opacity = (self.src["Opacity"])
@@ -5215,6 +5627,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.12  2012/01/29 00:53:47  cdunde
+# Missed passing one variable in previous update to this one.
+#
 # Revision 1.11  2012/01/28 08:12:56  cdunde
 # Broke down functions to avoid crash of Python for too many if statements in one function.
 # Also did some function drawing fixes and added more functions to other areas.
