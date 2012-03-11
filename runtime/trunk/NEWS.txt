@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [cdunde/DanielPharos]: Updated Model Editor texture paint functions to do gray-scale and blue-scale
+          - for texture mapping and greatly improved airbrush function quality for fade in effect.
+
 * [cdunde]: Setting up system for bone.dictspec['type'] to store what kind of IMPORTER or
           - default QuArK new bones ('type' = qrk) a bone is.
           - Each importer sets its own 'type' as it creates its bones and these do not change.
