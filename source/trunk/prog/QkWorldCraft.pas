@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2011/08/13 22:13:02  danielpharos
+Added texture name importing (no texture coordinates (yet?))
+
 Revision 1.2  2010/10/16 22:50:16  danielpharos
 Added experimental RMF file loading support; poly's only, no UV's or textures.
 
@@ -51,7 +54,7 @@ type
 implementation
 
 uses QuarkX, QkObjectClassList, QkExceptions, Logging, Setup,
-  QkMapObjects, QkMapPoly, qmath {//FIXME};
+  QkMapObjects, QkMapPoly, MapError, qmath {//FIXME};
 
 type
   RMFVisGroup = packed record //@ UNTESTED
@@ -419,7 +422,8 @@ begin
       Racine:=TTreeMapBrush.Create('', Self);
       Racine.AddRef(+1);
       try
-      ModeJeu:=mjHalfLife; //@
+      ModeJeu:=mjHalfLife;
+      g_MapError.Clear;
 
       Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
       Racine.SubElements.Add(Entities);
