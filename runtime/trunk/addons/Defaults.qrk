@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.535  2012/01/27 21:35:23  cdunde
+//Fix to stop NewModel skin errors.
+//
 //Revision 1.534  2011/07/31 16:30:31  danielpharos
 //Massive moving around of QuArK SAS stuff and SteamFS things.
 //
@@ -2585,6 +2588,7 @@ QQRKSRC1
         Form = "GameGenesis3D"
         PlayerClass = "X"
         DecimalPlaces = '5'
+        UsesMipTex = "1"
       }
 
       Half-Life:config =
@@ -2648,6 +2652,7 @@ QQRKSRC1
         Form = "GameHalfLife"
         PlayerClass = "X"
         DecimalPlaces = '5'
+        UsesMipTex = "1"
       }
 
       Half-Life2:config =
@@ -2828,6 +2833,7 @@ QQRKSRC1
         HxStrings = "strings.txt"
         PlayerClass = "1"
         DecimalPlaces = '5'
+        UsesMipTex = "1"
       }
 
       JA:config =
@@ -3332,6 +3338,7 @@ QQRKSRC1
         Form = "GameQuake1"
         PlayerClass = "X"
         DecimalPlaces = '5'
+        UsesMipTex = "1"
       }
 
       Quake 2:config =

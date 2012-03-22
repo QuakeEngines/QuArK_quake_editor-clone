@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2011/07/31 11:00:11  danielpharos
+Moved a 'use' down.
+
 Revision 1.87  2010/08/28 18:01:05  danielpharos
 Update
 
@@ -336,8 +339,8 @@ const
  the games config: entry }
 {DanielPharos: These should be changed into 'real' constants,
 without any explicit value. That would allow easier addition
-of new games, and will make invalid any 'spooky' weird
-comparison between gamemodes.}
+of new games, and will prevent any 'spooky' weird comparison
+between gamemodes.}
  mjQuake        = '1';
  mjHexen        = '2';
  mjHalfLife     = '3';
@@ -446,8 +449,6 @@ procedure MakeAssociations(Config: QObject);
 procedure RefreshAssociations(Forced: Boolean);
 procedure RemoveAssociations;
 function AssociationWithQuArK(const FileExt: String) : Boolean;
-function UsesMiptex : boolean; overload;
-function UsesMiptex(mj : Char) : boolean; overload;
 procedure StoreTexExtensions; {--CONVEX--}
 procedure StorePakExtensions; {--CONVEX--}
 
@@ -1168,22 +1169,6 @@ end;
 { this should probably be done by direct lookup of codes
   in the game config files }
 
-{ probably should also be done by direct lookup
-  from setup files }
-function UsesMipTex : boolean; overload;
-begin
-  Result:=UsesMipTex(CharModeJeu);
-end;
-
-function UsesMipTex(mj : Char) : boolean; overload;
-begin
-  mj:=CharModeJeu;
-  if (mj>='1') and (mj<='9') then
-    Result:=true
-  else
-    Result:=false;
-end;
-
 function CharModeJeu: Char;
 var
  S: String;
@@ -1203,11 +1188,6 @@ end;
 function ModeJeuQuake4: Boolean;
 begin
  Result := CharModeJeu >= mjQuake4;
-end;                                 
-
-function ModeJeuModelEditor: Boolean;
-begin
- Result := CharModeJeu >= mjModelEditor;
 end;
 
 function CurrentQuake1Mode: Char;
