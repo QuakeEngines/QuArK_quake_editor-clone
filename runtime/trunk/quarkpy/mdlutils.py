@@ -586,7 +586,7 @@ def fixUpVertexNos(tris, index):
 def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2):
     undo = quarkx.action()
     msg = str(int(round(1/IPF)-1)) + " key frames added"
-    check4bones = allbones = bones2move = None
+    includebones = check4bones = allbones = bones2move = None
     for comp in sellistPerComp:
         if comp[0].type == ":tag":
             parent = comp[0]
@@ -4789,6 +4789,26 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.168  2011/12/28 07:28:51  cdunde
+#Setting up system for bone.dictspec['type'] to store what kind of IMPORTER or
+#default QuArK new bones ('type' = qrk) a bone is.
+#Each importer sets its own 'type' as it creates its bones and these do not change.
+#The type is used by EXPORTERS as an indicator as to how they need to be processed
+#for EXPORTING them to another model format.
+#
+#Trying to keep this system simple and centralized, a universal function can be
+#setup and called from the quarkpy/mdlutils.py file by any exporter as needed,
+#passing two arguments, the exporters name and the bone type, as it loops through them.
+#The code that exporter needs to convert that bone type for proper exporting
+#would be identified, by the two arguments, used and return the needed values.
+#
+#The quarkpy/mdlutils.py universal function could then be updated
+#as new importers and exporters are created with their own conversion code.
+#Then all other exporters, new or existing, would call that function when
+#a SINGLE bone was NOT one of its own ['type'].
+#
+#This keeps all that code centralized in ONE PLACE.
+#
 #Revision 1.167  2011/11/14 07:26:38  cdunde
 #Correction to last changes,
 #some imported models have bones without any vertices assigned to them
