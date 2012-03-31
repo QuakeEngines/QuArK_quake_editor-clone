@@ -5036,7 +5036,13 @@ class LinCornerHandle(LinearHandle):
             ### Drag Hint section.
             if self.m is None:
                 self.m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
-            rotate = math.acos(self.m[0,0])*180.0/math.pi
+            if view.info['type'] == 'YZ':
+                if self.m[1,1] < 0:
+                    rotate = 180 - math.acos(abs(self.m[1,1]))*180.0/math.pi
+                else:
+                    rotate = math.acos(self.m[1,1])*180.0/math.pi
+            else:
+                rotate = math.acos(self.m[0,0])*180.0/math.pi
             scaling = 100.0 * self.diff
             self.draghint = "rotate %d deg.   scale %d %%" % (rotate, scaling)
 
@@ -6286,6 +6292,10 @@ class BoneCornerHandle(BoneHandle):
                     newverticespos[compname][vtx] = newverticespos[compname][vtx] + oldpartpos
         self.newverticespos = newverticespos
 
+        if view.info['type'] == 'YZ':
+            if m[1,1] < 0:
+                return (180 - math.acos(abs(m[1,1]))*180.0/math.pi)
+            return (math.acos(m[1,1])*180.0/math.pi)
         return (math.acos(m[0,0])*180.0/math.pi)
 
     def drawred(self, redimages, view, redcolor): # for BoneCornerHandle
@@ -6596,6 +6606,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.234  2011/11/12 06:01:12  cdunde
+#Changed needed functions to affect bonelist.
+#
 #Revision 1.233  2011/05/28 15:58:20  cdunde
 #Menu updates.
 #
