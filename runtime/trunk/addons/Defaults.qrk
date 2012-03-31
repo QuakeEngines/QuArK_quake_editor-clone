@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.536  2012/03/22 13:12:18  danielpharos
+//Removed unnecessary functions, and moved MipTex flag into Defaults.qrk.
+//
 //Revision 1.535  2012/01/27 21:35:23  cdunde
 //Fix to stop NewModel skin errors.
 //
@@ -3366,7 +3369,7 @@ QQRKSRC1
         BuildPgm2  = "TIMVIS3.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "ARGHRAD.EXE"
-        BuildArgs3 = "-gamedir .. -moddir ."
+        BuildArgs3 = "-gamedir "$22"%basepath%\%gamedir%"$22" -moddir ."
 
         TexturesPath = "textures"
         Q2TexFlags = "1"
