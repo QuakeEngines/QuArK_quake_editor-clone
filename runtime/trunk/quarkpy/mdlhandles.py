@@ -5009,7 +5009,10 @@ class LinCornerHandle(LinearHandle):
                     self.m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))  # Forces pure scaling.
                 self.diff = abs(npos) / abs(texp4)
             ### Drag Hint section.
-            rotate = math.acos(self.m[0,0])*180.0/math.pi
+            if view.info['type'] == 'YZ':
+                rotate = math.acos(self.m[1,1])*180.0/math.pi
+            else:
+                rotate = math.acos(self.m[0,0])*180.0/math.pi
             scaling = 100.0 * self.diff
             self.draghint = "rotate %d deg.   scale %d %%" % (rotate, scaling)
             return self.m * self.diff
@@ -5037,10 +5040,7 @@ class LinCornerHandle(LinearHandle):
             if self.m is None:
                 self.m = quarkx.matrix(quarkx.vect(1, 0, 0), quarkx.vect(0, 1, 0), quarkx.vect(0, 0, 1))
             if view.info['type'] == 'YZ':
-                if self.m[1,1] < 0:
-                    rotate = 180 - math.acos(abs(self.m[1,1]))*180.0/math.pi
-                else:
-                    rotate = math.acos(self.m[1,1])*180.0/math.pi
+                rotate = math.acos(self.m[1,1])*180.0/math.pi
             else:
                 rotate = math.acos(self.m[0,0])*180.0/math.pi
             scaling = 100.0 * self.diff
@@ -6293,8 +6293,6 @@ class BoneCornerHandle(BoneHandle):
         self.newverticespos = newverticespos
 
         if view.info['type'] == 'YZ':
-            if m[1,1] < 0:
-                return (180 - math.acos(abs(m[1,1]))*180.0/math.pi)
             return (math.acos(m[1,1])*180.0/math.pi)
         return (math.acos(m[0,0])*180.0/math.pi)
 
@@ -6606,6 +6604,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.235  2012/03/31 22:28:34  cdunde
+#Fixed rotation values for YZ view not working in Model Editor.
+#
 #Revision 1.234  2011/11/12 06:01:12  cdunde
 #Changed needed functions to affect bonelist.
 #
