@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.26  2008/09/14 12:55:19  danielpharos
+// Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
+//
 // Revision 1.25  2008/07/02 17:17:22  cdunde
 // Changes needed, noted by X7.
 //
@@ -77,13 +80,12 @@ QQRKSRC1
 {
   QuArKProtected = "1"
   Description = "Revision 1.18a+ - By X7 05-30-08"
+  Game Directories.qctx =
+  {
+  }
 
   Lazarus directory infos.qctx =
   {
-    Game = "Quake 2"
-    SourceDir = "lazarus"
-    GameDir = "lazarus"
-
     TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
     {
       Style = "5"
