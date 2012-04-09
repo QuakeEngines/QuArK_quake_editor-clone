@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.28  2012/04/09 16:44:30  danielpharos
+// Revert previous commit to fix directories for Lazarus.
+//
 // Revision 1.27  2012/04/07 03:26:36  cdunde
 // Reversed hard coding of directories, over writes QuArK's config. settings.
 //
@@ -4933,7 +4936,7 @@ QQRKSRC1
           ;desc = "Turret Driver"
         }
       }
-      other entitie.qtxfolder =
+      other entities.qtxfolder =
       {
         viewthing:e =
         {
