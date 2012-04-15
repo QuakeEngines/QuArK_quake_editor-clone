@@ -31,3 +31,9 @@ running the same version of Python, removing a possible source of bugs
 (people using the wrong version of Python for the QuArK binary they
 have).  It also allows us to go ahead with writing code that requires
 features only available in more recent versions of Python.
+
+Even though Python 2.4 is outdated and Python 2.6 runs QuArK just fine,
+Python 2.5 and later have dropped Windows 95 support.  Dropping support
+for an entire operating system just because you're updating some
+internally used library without a real benefit is not a smart idea, so
+the current branch of QuArK will probably remain Python 2.4 forever.
