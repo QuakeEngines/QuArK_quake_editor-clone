@@ -67,9 +67,11 @@ SurDisque   - on-disk (Sur = on, over)
 
 
 
+Taille      - size
+
 Tout, Toute - all
 
-Taille      - size
+Travail     - work, labor
 
 
 
