@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.29  2012/04/09 16:45:00  danielpharos
+// Fixed a typo.
+//
 // Revision 1.28  2012/04/09 16:44:30  danielpharos
 // Revert previous commit to fix directories for Lazarus.
 //
@@ -86,13 +89,16 @@ QQRKSRC1
 {
   QuArKProtected = "1"
   Description = "Revision 1.18a+ - By X7 05-30-08"
+  Game Directories.qctx =
+  {
+    //Lazarus is not a stand-alone mod; please read the Lazarus readme!!!
+    //Game = "Quake 2"
+    //SourceDir = "lazarus"
+    //GameDir = "lazarus"
+  }
 
   Lazarus directory infos.qctx =
   {
-    Game = "Quake 2"
-    SourceDir = "lazarus"
-    GameDir = "lazarus"
-
     TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
     {
       Style = "5"
