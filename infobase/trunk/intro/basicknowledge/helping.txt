@@ -32,7 +32,7 @@ give some help! If you need help about these ways of helping, see the
   in the directory <a target="_blank" href="http://quark.cvs.sourceforge.net/viewvc/quark/runtime/addons/">runtime/addons</a>.
 
 <li><strong>A Python plug-in</strong>:<br>
-  A large part of the map editor is written in a scripting language called Python.
+  A large part of the map editor is written in a scripting language called <g>Python</g>.
   This code is distributed with QuArK -- you already have it in the <tt>.PY</tt> files
   of the directories "quarkpy" and "plugins". If you want to program an enhancement to
   the map editor, you can probably do it in Python, just by modifying these files or
