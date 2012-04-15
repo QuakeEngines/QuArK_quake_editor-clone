@@ -32,7 +32,7 @@ author: Decker
 <dt><a name=".QKL">   </a>.QKL   <dd>(binary/text)          QuArK model file.
 <dt><a name=".QKM">   </a>.QKM   <dd>(binary/text)          QuArK map file.
 <dt><a name=".QRK">   </a>.QRK   <dd>(binary/text)          QuArK data file. Can contain all kinds of data. Is saved in either binary- or text-format.
-<dt><a name=".QVM">   </a>.QVM   <dd>(binary)               Probably stands for <b>Q</b>uake <b>V</b>itrual <b>M</b>achine. It's a <a href="#quake3">Quake-3:Arena</a> "game-rules" program, as we know from <a href="#quake1">Quake-1's</a> PROGS.DAT file.
+<dt><a name=".QVM">   </a>.QVM   <dd>(binary)               Probably stands for <b>Q</b>uake <b>V</b>irtual <b>M</b>achine. It's a <a href="#quake3">Quake-3:Arena</a> "game-rules" program, as we know from <a href="#quake1">Quake-1's</a> PROGS.DAT file.
 <dt><a name=".RAR">   </a>.RAR   <dd>(binary)               A compressed archive of files. See <a target=_blank href="http://www.rarlabs.com">http://www.rarlabs.com</a>.
 <dt><a name=".RMF">   </a>.RMF   <dd>(binary)               WorldCraft <b>R</b>ich <b>M</b>ap <b>F</b>ormat file. Can <u>not</u> be read by QuArK.
 <dt><a name=".SHADER"></a>.SHADER<dd>(text)                 A <a href="#quake3">Quake-3:Arena</a> "texture"-definition file.
