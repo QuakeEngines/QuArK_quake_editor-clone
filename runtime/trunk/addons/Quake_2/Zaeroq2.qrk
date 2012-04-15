@@ -9,6 +9,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2012/04/13 20:48:42  cdunde
+//Added mission pak support for Zaero.
+//
 //
 
 {
@@ -617,6 +620,57 @@ QQRKSRC1
     Root = "Zaero Entities.qtxfolder"
     Zaero Entities.qtxfolder =
     {
+      Weapon_* entities.qtxfolder =
+      {
+        weapon_flaregun:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This is the FlareGun uses ammo_flares."
+        }
+        weapon_sniperrifle:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This is the SniperRifle uses ammo_bullets."
+        }
+        weapon_soniccannon:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This is the SonicCannon uses ammo_cells."
+        }
+      }
+      Ammo_* entities.qtxfolder =
+      {
+        ammo_a2k:e =
+        {
+          origin = "0 0 0"
+          angle = "360"
+          ;desc = "This is the a2k ammo."
+        }
+        ammo_empnuke:e =
+        {
+          origin = "0 0 0"
+          angle = "360"
+          ;desc = "This is the ammo for the EMPNuke."
+        }
+        ammo_flares:e =
+        {
+          origin = "0 0 0"
+          angle = "360"
+          ;desc = "This is the ammo_flares for the FlareGun."
+        }
+        ammo_ired:e =
+        {
+          origin = "0 0 0"
+          angle = "360"
+          ;desc = "This is the LaserTripBombs."
+        }
+        ammo_plasmashield:e =
+        {
+          origin = "0 0 0"
+          angle = "360"
+          ;desc = "This is the plasmashield ammo."
+        }
+      }
       Monster_* entities.qtxfolder =
       {
         monster_autocannon:e =
@@ -702,6 +756,47 @@ QQRKSRC1
           mangle = "0 0 0"
           message = "I see you!"
           ;desc = "This is where the visor locates too."
+        }
+      }
+      Key_* entities.qtxfolder =
+      {
+        key_clearancepass:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Clearance pass for the security level."
+        }
+        key_energy:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Energy Key."
+        }
+        key_lab:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Security pass for the laboratory."
+        }
+        key_landing_area:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Landing Area Key - blue."
+        }
+        key_lava:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Lava Key."
+        }
+        key_slime:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Slime Key."
+        }
+      }
+      Item_* entities.qtxfolder =
+      {
+        item_visor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This is the visor."
         }
       }
       Func_* entities.qtxfolder =
@@ -801,6 +896,668 @@ QQRKSRC1
   }
   Entity forms.fctx =
   {
+    weapon_flaregun:form =
+    {
+      Help = "This is the FlareGun uses ammo_flares."
+      bbox = '-8 -4 14 8 4 26'
+      mdl = "models/weapons/g_flare/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the weapon is touched by the player. (Default"
+         "=0)."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the w"
+         "eapon is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " weapon is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the weapon is to"
+         "uched by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when deat"
+         "hmatch=1."
+        Cap = "Not in Deathmatch"
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = "Minimum light (optional)."
+      }
+    }
+    weapon_sniperrifle:form =
+    {
+      Help = "This is the SniperRifle uses ammo_bullets."
+      bbox = '-24 -4 12 20 4 28'
+      mdl = "models/weapons/g_sniper/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the weapon is touched by the player. (Default"
+         "=0)."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the w"
+         "eapon is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " weapon is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the weapon is to"
+         "uched by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when deat"
+         "hmatch=1."
+        Cap = "Not in Deathmatch"
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = "Minimum light (optional)."
+      }
+    }
+    weapon_soniccannon:form =
+    {
+      Help = "This is the SonicCannon uses ammo_cells."
+      bbox = '-32 -6 10 34 10 26'
+      mdl = "models/weapons/g_sonic/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the weapon is touched by the player. (Default"
+         "=0)."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the w"
+         "eapon is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " weapon is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the weapon is to"
+         "uched by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when skil"
+         "l=2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The weapon_* entity will be inhibited and not appear when deat"
+         "hmatch=1."
+        Cap = "Not in Deathmatch"
+      }
+      _minlight: =
+      {
+        Txt = "&"
+        Hint = "Minimum light (optional)."
+      }
+    }
+    ammo_a2k:form =
+    {
+      Help = "This is the a2k ammo."
+      bbox = '-20 -18 -10 8 18 26'
+      mdl = "models/weapons/g_a2k/tris.md2"
+      angle: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction on the XY plane. (Default=0)."
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction in 3 dimensions, defined by pitch"
+         ", yaw, and roll. (Default=0 0 0)."
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the ammo is touched by the player. (Default=0"
+         ")."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the a"
+         "mmo is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " ammo is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the ammo is touc"
+         "hed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when deathm"
+         "atch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    ammo_empnuke:form =
+    {
+      Help = "This is the ammo for the EMPNuke."
+      bbox = '-4 -4 12 4 4 32'
+      mdl = "models/weapons/g_enuke/tris.md2"
+      angle: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction on the XY plane. (Default=0)."
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction in 3 dimensions, defined by pitch"
+         ", yaw, and roll. (Default=0 0 0)."
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the ammo is touched by the player. (Default=0"
+         ")."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the a"
+         "mmo is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " ammo is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the ammo is touc"
+         "hed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when deathm"
+         "atch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    ammo_flares:form =
+    {
+      Help = "This is the ammo_flares for the FlareGun."
+      bbox = '-12 -12 -16 12 12 -4'
+      mdl = "models/items/ammo/flares/tris.md2"
+      angle: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction on the XY plane. (Default=0)."
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction in 3 dimensions, defined by pitch"
+         ", yaw, and roll. (Default=0 0 0)."
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the ammo is touched by the player. (Default=0"
+         ")."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the a"
+         "mmo is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " ammo is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the ammo is touc"
+         "hed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when deathm"
+         "atch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    ammo_ired:form =
+    {
+      Help = "This is the LaserTripBombs."
+      bbox = '-6 -12 -16 8 12 6'
+      mdl = "models/items/ammo/ireds/tris.md2"
+      angle: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction on the XY plane. (Default=0)."
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction in 3 dimensions, defined by pitch"
+         ", yaw, and roll. (Default=0 0 0)."
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the ammo is touched by the player. (Default=0"
+         ")."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the a"
+         "mmo is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " ammo is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the ammo is touc"
+         "hed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when deathm"
+         "atch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    ammo_plasmashield:form =
+    {
+      Help = "This is the plasmashield ammo."
+      bbox = '-6 -8 14 6 8 36'
+      mdl = "models/items/plasma/tris.md2"
+      angle: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction on the XY plane. (Default=0)."
+      }
+      angles: =
+      {
+        Txt = "&"
+        Hint = "Specifies a facing direction in 3 dimensions, defined by pitch"
+         ", yaw, and roll. (Default=0 0 0)."
+      }
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the ammo is touched by the player. (Default=0"
+         ")."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the a"
+         "mmo is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " ammo is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the ammo is touc"
+         "hed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Use this to make it disappear by making it triggered by killta"
+         "rget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when skill="
+         "2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The ammo_* entity will be inhibited and not appear when deathm"
+         "atch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
     monster_autocannon:form =
     {
       Help = "Auto cannon ceiling type."
@@ -1746,6 +2503,488 @@ QQRKSRC1
         Txt = "&"
         Hint = "The monster will be inhibited and not appear when deathmatch=1"
          "."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    key_clearancepass:form =
+    {
+      Help = "Clearance pass for the security level."
+      bbox = '-2 -6 0 2 6 16'
+      mdl = "models/items/keys/pass/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the key is touched by the player. (Default=0)"
+         "."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the k"
+         "ey is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " key is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the key is touch"
+         "ed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific key entity."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=0"
+         "."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=1"
+         "."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=2"
+         " or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when deathma"
+         "tch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    key_energy:form =
+    {
+      Help = "Energy Key."
+      bbox = '-4 -16 -6 4 14 22'
+      mdl = "models/items/keys/energy/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the key is touched by the player. (Default=0)"
+         "."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the k"
+         "ey is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " key is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the key is touch"
+         "ed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific key entity."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=0"
+         "."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=1"
+         "."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=2"
+         " or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when deathma"
+         "tch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    key_lab:form =
+    {
+      Help = "Security pass for the laboratory."
+      bbox = '-2 -6 0 2 6 16'
+      mdl = "models/items/keys/pass/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the key is touched by the player. (Default=0)"
+         "."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the k"
+         "ey is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " key is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the key is touch"
+         "ed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific key entity."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=0"
+         "."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=1"
+         "."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=2"
+         " or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when deathma"
+         "tch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    key_landing_area:form =
+    {
+      Help = "Landing Area Key - blue."
+      bbox = '-2 -6 0 2 6 16'
+      mdl = "models/items/keys/key/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the key is touched by the player. (Default=0)"
+         "."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the k"
+         "ey is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " key is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the key is touch"
+         "ed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific key entity."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=0"
+         "."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=1"
+         "."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=2"
+         " or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when deathma"
+         "tch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    key_lava:form =
+    {
+      Help = "Lava Key."
+      bbox = '2 -8 -6 8 8 24'
+      mdl = "models/items/keys/lava/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the key is touched by the player. (Default=0)"
+         "."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the k"
+         "ey is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " key is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the key is touch"
+         "ed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific key entity."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=0"
+         "."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=1"
+         "."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=2"
+         " or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when deathma"
+         "tch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    key_slime:form =
+    {
+      Help = "Slime Key."
+      bbox = '-6 -8 -10 6 4 26'
+      mdl = "models/items/keys/slime/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the key is touched by the player. (Default=0)"
+         "."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the k"
+         "ey is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " key is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the key is touch"
+         "ed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific key entity."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=0"
+         "."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=1"
+         "."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Typ = "X1024"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when skill=2"
+         " or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Typ = "X2048"
+        Txt = "&"
+        Hint = "The key_* entity will be inhibited and not appear when deathma"
+         "tch=1."
+        Cap = "Not in Deathmatch"
+      }
+    }
+    item_visor:form =
+    {
+      Help = "This is the visor."
+      bbox = '-10 -10 10 10 10 32'
+      mdl = "models/items/visor/tris.md2"
+      delay: =
+      {
+        Txt = "&"
+        Hint = "Specifies the delay in seconds before target, killtarget and m"
+         "essage will fire after the item is touched by the player. (Default=0"
+         ")."
+      }
+      killtarget: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be removed from the map when the i"
+         "tem is touched by the player."
+      }
+      message: =
+      {
+        Txt = "&"
+        Hint = "Specifies the character string to print to the screen when the"
+         " item is touched by the player."
+      }
+      target: =
+      {
+        Txt = "&"
+        Hint = "Targetname of the entity to be triggered when the item is touc"
+         "hed by the player."
+      }
+      targetname: =
+      {
+        Txt = "&"
+        Hint = "Name of the specific item entity. Use this to make it disappea"
+         "r by making it triggered by killtarget."
+      }
+      team: =
+      {
+        Txt = "&"
+        Hint = "Use for changing Weapons Ammo & Powerups spawning."
+      }
+      spawnflags: =
+      {
+        Typ = "X256"
+        Txt = "&"
+        Hint = "The item_* entity will be inhibited and not appear when skill="
+         "0."
+        Cap = "Not in Easy"
+      }
+      spawnflags: =
+      {
+        Typ = "X512"
+        Txt = "&"
+        Hint = "The item_* entity will be inhibited and not appear when skill="
+         "1."
+        Cap = "Not in Normal"
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X1024"
+        Hint = "The item_* entity will be inhibited and not appear when skill="
+         "2 or greater."
+        Cap = "Not in Hard"
+      }
+      spawnflags: =
+      {
+        Txt = "&"
+        Typ = "X2048"
+        Hint = "The item_* entity will be inhibited and not appear when deathm"
+         "atch=1."
         Cap = "Not in Deathmatch"
       }
     }
