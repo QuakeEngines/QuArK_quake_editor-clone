@@ -106,20 +106,20 @@ to a description of that area.
   </tr>
 </table>
 <!-- hack/fix to load the non-shaded images -->
-    <img border=0 width=0 height=0>menu.png       </img>
-    <img border=0 width=0 height=0>display.png    </img>
-    <img border=0 width=0 height=0>viewselect.png </img>
-    <img border=0 width=0 height=0>movement.png   </img>
-    <img border=0 width=0 height=0>userdata.png   </img>
-    <img border=0 width=0 height=0>misctool.png   </img>
-    <img border=0 width=0 height=0>compass.png    </img>
-<img border=0 width=0 height=0>specificspage.png  </img>
-    <img border=0 width=0 height=0>layout.png     </img>
-    <img border=0 width=0 height=0>hintbox.png    </img>
-    <img border=0 width=0 height=0>animation.png  </img>
-<img border=0 width=0 height=0>objectmodes.png    </img>
-    <img border=0 width=0 height=0>edittools.png  </img>
-    <img border=0 width=0 height=0>paint.png      </img>
-    <img border=0 width=0 height=0>skinview.png   </img>
-    <img border=0 width=0 height=0>hintbox2.png   </img>
+<img class=hidden border=0 width=0 height=0>menu.png       </img>
+<img class=hidden border=0 width=0 height=0>display.png    </img>
+<img class=hidden border=0 width=0 height=0>viewselect.png </img>
+<img class=hidden border=0 width=0 height=0>movement.png   </img>
+<img class=hidden border=0 width=0 height=0>userdata.png   </img>
+<img class=hidden border=0 width=0 height=0>misctool.png   </img>
+<img class=hidden border=0 width=0 height=0>compass.png    </img>
+<img class=hidden border=0 width=0 height=0>specificspage.png</img>
+<img class=hidden border=0 width=0 height=0>layout.png     </img>
+<img class=hidden border=0 width=0 height=0>hintbox.png    </img>
+<img class=hidden border=0 width=0 height=0>animation.png  </img>
+<img class=hidden border=0 width=0 height=0>objectmodes.png</img>
+<img class=hidden border=0 width=0 height=0>edittools.png  </img>
+<img class=hidden border=0 width=0 height=0>paint.png      </img>
+<img class=hidden border=0 width=0 height=0>skinview.png   </img>
+<img class=hidden border=0 width=0 height=0>hintbox2.png   </img>
 </center>

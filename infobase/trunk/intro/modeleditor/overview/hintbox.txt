@@ -16,7 +16,7 @@ item in question. Clicking that button or pressing <b>F1</b> again will open tha
 If you are new to QuArK, these hints and InfoBase links come in handy if you
 do not know exactly what the item you are pointing at, does. So press <b>F1</b> to
 get the hint and information available, before asking about it in the
-<a href="http://quark.planetquake.gamespy.com/forums/">QuArK Forum</a>.
+<link forums>QuArK Forum</link>.
 
 Once you move your mouse outside the larger hintbox, it will automatically
 disappear.
