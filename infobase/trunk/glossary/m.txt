@@ -6,7 +6,7 @@ author: Decker
 <dt><a name="missionpack">      </a>Mission pack        <dd>(official-) An addon to a <a href="#fps">FPS-game</a> which usually contains new levels, monsters, weapons and other enhancements. Some mission packs are free to download, others you have to pay for.
 <dt><a name="mmb">              </a>MMB                 <dd>(abbreviation) <b>M</b>iddle <b>M</b>ouse <b>B</b>utton.
 <dt><a name="microsoft">        </a>Microsoft           <dd>Software company. Creator of Windows, Office, etc. QuArK runs natively on Windows. <a href="http://www.microsoft.com">http://www.microsoft.com</a>.
-<dt><a name="mod">              </a>MOD                 <dd>(abbreviation) See <a href="#modification">modification</a>
+<dt><a name="mod">              </a>MOD                 <dd>(abbreviation) See <a href="#modification">modification</a>.
 <dt><a name="model mesh">       </a>Model Mesh          <dd>(model editor item) A term used in model editing which describes a group of triangles that make up a <a href="intro.modeleditor.model.html#components">model's shape</a>, or <a href="#component">component</a>.
 <dt><a name="modification">     </a>Modification        <dd>[MOD] A modification can be a <a href="#totalconversion">total conversion</a> or <a href="#partialconversion">partial converstion</a> of the original game-flow and/or game-rules. Some modifications are commercial (Official <a href="#missionpack">mission packs</a>) others free from the internet (E.q. <a href="#capturetheflag">Capture The Flag</a>, <a href="#teamfortress">Team Fortress</a> and many many others).
 </dl>
