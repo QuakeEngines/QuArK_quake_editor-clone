@@ -1,7 +1,7 @@
 title: Built-in process objects
 author: Armin Rigo
 
-A process object lets you know the state of a program executed by quarkx.runprogram. It has the following attributes:
+A process object lets you know the state of a program executed by <tt>quarkx.runprogram</tt>. It has the following attributes:
 
 <table border=1 cellspacing=0 cellpadding=4>
 

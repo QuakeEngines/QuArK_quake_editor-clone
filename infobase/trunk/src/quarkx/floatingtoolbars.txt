@@ -76,7 +76,7 @@ Same as ondrop for screen controls. (not implemented in 5.0.c4)
 
 </table>
 
-Individual buttons are, like menu items, not built-in types, but rather instances of a standard Python class. See qtoolbar.py
+Individual buttons are, like menu items, not built-in types, but rather instances of a standard Python class. See <tt>qtoolbar.py</tt>
 for more information.
 
 Besides Floating Toolbars, buttons can also be displayed on fixed panels. Such panels are called Button Panels, and are created
@@ -105,4 +105,4 @@ See the method update() of Floating toolbars.
 </table>
 
 Button panels have additionnal formatting capabilities: by inserting special values in the list of buttons, you can create gaps
-between buttons, pad buttons to the right, or force a new button row to begin. See qtoolbar.py.
+between buttons, pad buttons to the right, or force a new button row to begin. See <tt>qtoolbar.py</tt>.

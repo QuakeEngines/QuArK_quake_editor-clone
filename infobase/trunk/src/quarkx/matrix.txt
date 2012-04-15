@@ -79,7 +79,7 @@ String representation. quarkx.matrix(string) is the inverse operation.
 <tr><td class="doccode">
 m.copy
 </td><td>
-A copy of the matrix (note: no “ () ”)
+A copy of the matrix (note: no "<tt>()</tt>")
 </td></tr>
 
 <tr><td class="doccode">

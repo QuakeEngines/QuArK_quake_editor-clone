@@ -9,7 +9,7 @@ drawings can be painted over the image by Python code.
 <tr><td class="doccode">
 image
 </td><td>
-The image to display. It is an “ icon ” (although it might be of any size) as found in Image Lists.
+The image to display. It is an "<tt>icon</tt>" (although it might be of any size) as found in Image Lists.
 </td></tr>
 
 <tr><td class="doccode">

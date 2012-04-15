@@ -1,7 +1,7 @@
 title: 3D Vector objects
 author: Armin Rigo
 
-3D Vector Objects are created with the function quarkx.vect. Vectors are immutable in the Python sense. Vector Objects usually
+3D Vector Objects are created with the function <tt>quarkx.vect</tt>. Vectors are immutable in the Python sense. Vector Objects usually
 represent 3D points or 3D vectors, but in some cases they are projections on a map view. See the second table below for the
 additionnal attributes that apply to projected vectors only. All vectors have a few attributes you can read, and you can use
 the arithmetic operations described below:
@@ -58,7 +58,7 @@ String representation. <tt>quarkx.vect(string)</tt> is the inverse operation.
 <tr><td class="doccode">
 v.copy
 </td><td>
-A copy of the vector (note: no “ () ”). Probably not useful, as vectors are immutable anyway.
+A copy of the vector (note: no "<tt>()</tt>"). Probably not useful, as vectors are immutable anyway.
 </td></tr>
 
 <tr><td class="doccode">
