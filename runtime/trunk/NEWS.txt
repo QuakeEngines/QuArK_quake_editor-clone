@@ -14,7 +14,9 @@ $Id$
 
 6.6.0 Beta 5
 ============
-* [cdunde]: Added mission pak support for Zaero.
+* [cdunde]: Added mission pak support for Quake2 Knightmare.
+
+* [cdunde]: Added mission pak support for Quake2 Zaero.
 
 * [cdunde]: Fixed rotation values for YZ view not working in Model Editor.
 
