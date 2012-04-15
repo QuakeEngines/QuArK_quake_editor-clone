@@ -19,7 +19,7 @@ A dictionnary of all subitems with the format name:item. Modifying this dictionn
 dictspec
 </td><td>
 A read-only dictionnary with all Specific/Arg pairs.<br>
-Note: known to cause memory leaks, see: <ref> src/bugs/leaks/dicts </ref>.
+Note: known to cause memory leaks in older versons of QuArK, see: <ref> src/bugs/leaks/dicts </ref>.
 </td></tr>
 
 <tr><td class="doccode">
@@ -116,7 +116,7 @@ Finds the first subitems with the given shortname, or None.
 <tr><td class="doccode">
 ...[spec]
 </td><td>
-Like dictionnaries, use this notation to read or set a Specific. The values that can take a Specific are: None if not set, a string (that may be void), or a tuple of floats. To store an integer, either convert it from/to a string, or use the methods getint and setint below. As a special case, when using the “ [ ] ” notation to write an integer value, setint is called. However, when reading the same value, “ [ ] ” will return the packed string, not the integer. (QuArK 5.0.c2: you cannot set a Specific to None to delete it. All versions: setting a Specific to an empty string will delete it, although Specifics can exist with an empty Arg.)
+Like dictionnaries, use this notation to read or set a Specific. The values that can take a Specific are: None if not set, a string (that may be void), or a tuple of floats. To store an integer, either convert it from/to a string, or use the methods getint and setint below. As a special case, when using the "<tt>[ ]</tt>" notation to write an integer value, setint is called. However, when reading the same value, "<tt>[ ]</tt>" will return the packed string, not the integer. (QuArK 5.0.c2: you cannot set a Specific to None to delete it. All versions: setting a Specific to an empty string will delete it, although Specifics can exist with an empty Arg.)
 </td></tr>
 
 <tr><td class="doccode">
@@ -159,7 +159,7 @@ Returns 1 if and only if the object ob can reasonnably be inserted into the list
 <tr><td class="doccode">
 nextingroup()
 </td><td>
-Returns the next object in the parent, or None.
+Returns the next object in the parent, or <tt>None</tt>.
 </td></tr>
 
 <tr><td class="doccode">
@@ -186,4 +186,4 @@ Returns the icon used in tree views for this object. If selected is True, return
 
 Note that Internal Objects implement none of the operations like +,*,not, etc. Trying to use them, or even using an Internal
 Object in a boolean operation, will likely raise an Access Violation error. To test if a function returned an actual object or
-None, don’t write if obj:... but write if obj is not None:...
+<tt>None</tt>, don’t write if obj:... but write if obj is not None:...
