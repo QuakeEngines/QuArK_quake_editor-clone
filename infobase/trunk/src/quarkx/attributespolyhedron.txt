@@ -1,7 +1,7 @@
 title: Attributes of Internal objects of class "Polyhedron"
 author: Armin Rigo
 
-Note: the class name "Polyhedron" in new in 5.0.c3. In version 5.0.c2, the name was in french, "Polyedre".
+Note: the class name "Polyhedron" is new in 5.0.c3. In version 5.0.c2, the name was in french, "Polyedre".
 
 <table border=1 cellspacing=0 cellpadding=4>
 
