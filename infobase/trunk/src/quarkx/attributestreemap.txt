@@ -16,7 +16,7 @@ Replaces all textures named tx1 with the texture tx2. If tx1 is empty, all textu
 <tr><td class="doccode">
 rebuildall()
 </td><td>
-Forces all polyhedrons to build themselves from their face objects. This is required in some circumstances, for example to know whether a polyhedron would be valid with a given set of planes as faces. Note that polyhedrons that are already built are not rebuilt (the name of the function is not well chosen). Returns a tuple (p,f) where p is the number of invalid polyhedrons and f is the number of unused faces (as shown by the “ broken ” versions of the polyhedron and face icons).
+Forces all polyhedrons to build themselves from their face objects. This is required in some circumstances, for example to know whether a polyhedron would be valid with a given set of planes as faces. Note that polyhedrons that are already built are not rebuilt (the name of the function is not well chosen). Returns a tuple (p,f) where p is the number of invalid polyhedrons and f is the number of unused faces (as shown by the " broken " versions of the polyhedron and face icons).
 </td></tr>
 
 </table>
