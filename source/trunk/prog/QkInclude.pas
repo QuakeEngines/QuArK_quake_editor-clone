@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.9  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -84,7 +87,7 @@ function FindIncludeData1(LookFrom: QObject; const InclName: String; FullMatch: 
    I: Integer;
    Q, N: QObject;
   begin
-   for I:=0 to Parent.SubElements.Count-1 do
+   for I:=Parent.SubElements.Count-1 downto 0 do
     begin
      Q:=Parent.SubElements[I];
      if ((FullMatch and (CompareText(Q.Name+Q.TypeInfo, InclName) = 0))
