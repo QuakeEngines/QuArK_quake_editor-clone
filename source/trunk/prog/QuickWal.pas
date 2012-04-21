@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2010/05/05 20:49:16  danielpharos
+Fixed copy-paste bug in VTF file linking.
+
 Revision 1.53  2010/05/05 19:53:35  danielpharos
 Const-ed a bunch of strings.
 
@@ -582,7 +585,7 @@ begin
 end;
 
 {Makes a folder and inserts into position specified by index }
-function InsertNewTxList(Parental: QObject; Name: String; Index: Integer) : QTextureList;
+function InsertNewTxList(Parental: QObject; const Name: String; Index: Integer) : QTextureList;
 begin
   Result:=QTextureList.Create(Name, Nil);
   Result.FParent:=Parental;
