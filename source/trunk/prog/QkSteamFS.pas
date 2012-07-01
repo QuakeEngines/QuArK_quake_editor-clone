@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2011/07/31 16:40:04  danielpharos
+Improved error message if QuArK's QSAS is missing.
+
 Revision 1.41  2011/07/31 16:30:23  danielpharos
 Massive moving around of QuArK SAS stuff and SteamFS things.
 
@@ -353,9 +356,15 @@ begin
     GameIDDir := '';
     FullFileName := FileName;
   end
-  else //Includes source2009
+  else if (SteamCompiler = 'source2009') then
   begin
     QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameSource2009'];
+    GameIDDir := '';
+    FullFileName := FileName;
+  end
+  else //Includes orangebox
+  begin
+    QuArKSASEXE := Setup.Specifics.Values['QuArKSASEXENameOrangebox'];
     GameIDDir := '';
     FullFileName := FileName;
   end;

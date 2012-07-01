@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.537  2012/03/31 20:10:52  danielpharos
+//Set a more reasonable default gamedir-argument for the Quake 2 light-compiler.
+//
 //Revision 1.536  2012/03/22 13:12:18  danielpharos
 //Removed unnecessary functions, and moved MipTex flag into Defaults.qrk.
 //
@@ -3915,7 +3918,8 @@ QQRKSRC1
         QuArKSASEXENameOld = "QuArKSAS.exe"
         QuArKSASEXENameSource2006 = "QuArKSAS.exe"
         QuArKSASEXENameSource2007 = "QuArKSAS_source2007.exe"
-        QuArKSASEXENameSource2009 = "QuArKSAS_orangebox.exe"
+        QuArKSASEXENameSource2009 = "QuArKSAS_source2009.exe"
+        QuArKSASEXENameSourceOrangebox = "QuArKSAS_orangebox.exe"
         Form = "GameSteam"
       }
 
@@ -6080,6 +6084,7 @@ QQRKSRC1
              $0D"sourcesdk\bin"
              $0D"sourcesdk\bin\ep1\bin"
              $0D"sourcesdk\bin\source2007\bin"
+             $0D"sourcesdk\bin\source2009\bin"
              $0D"sourcesdk\bin\orangebox\bin"
       }
       Compiler: =
@@ -6091,12 +6096,14 @@ QQRKSRC1
              $0D"old"
              $0D"source2006 (ep1)"
              $0D"source2007"
-             $0D"source2009 (orangebox)"
+             $0D"source2009"
+             $0D"MP (orangebox)"
         Values = "*auto*"
              $0D"old"
              $0D"source2006"
              $0D"source2007"
              $0D"source2009"
+             $0D"orangebox"
       }
       Templates: =
       {

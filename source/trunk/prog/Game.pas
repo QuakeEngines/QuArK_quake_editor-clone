@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.85  2011/08/13 22:17:19  danielpharos
+Simplified Steam file path handling. Should be much more uniform.
+
 Revision 1.84  2011/07/31 16:30:23  danielpharos
 Massive moving around of QuArK SAS stuff and SteamFS things.
 
@@ -862,7 +865,7 @@ begin
     //Steam path changes
     if SetupGameSet.Specifics.Values['Steam']='1' then
       if FileToResolve.FileType = ftTool then
-        if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') then 
+        if (GetSteamCompiler = 'source2007') or (GetSteamCompiler = 'source2009') or (GetSteamCompiler = 'orangebox') then
         begin
           //Newer compilers want to run one directory upwards
           argument_mappath:=ConcatPaths([Result.Workdir, argument_mappath]);
@@ -1945,6 +1948,8 @@ begin
     else if S = 'source2007' then
       Result := 'sourcesdk\bin\source2007\bin'
     else if S = 'source2009' then
+      Result := 'sourcesdk\bin\source2009\bin'
+    else if S = 'orangebox' then
       Result := 'sourcesdk\bin\orangebox\bin'
     else
     begin
@@ -1966,7 +1971,7 @@ begin
     if S = 'HL2' then
       Result := 'source2009'
     else if S = 'CSS' then
-      Result := 'source2009'
+      Result := 'orangebox'
     else if S = 'HL:S' then
       Result := 'source2006'
     else if S = 'HL2:DM' then
@@ -1982,7 +1987,7 @@ begin
     else if S = 'HL2:EP2' then
       Result := 'source2009'
     else if S = 'TF2' then
-      Result := 'source2009'
+      Result := 'orangebox'
     else
     begin
       //Shouldn't happen!
