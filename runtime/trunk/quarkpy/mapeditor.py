@@ -71,7 +71,7 @@ class MapEditor(BaseEditor):
             debug('Map Reading Errors: face and brush numbering starting from 0, hulls from 1:')
             for error in errors:
                 debug(' '+error)
-            quarkx.msgbox('there were errors reading the map; check the console',2,4)
+            quarkx.msgbox(Strings[5770], MT_WARNING, MB_OK)
         self.AutoSave(0)
 
         if not IsBsp(self):
@@ -406,6 +406,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.25  2011/10/06 20:13:37  danielpharos
+#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
+#
 #Revision 1.24  2011/03/13 00:41:47  cdunde
 #Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

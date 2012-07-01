@@ -1007,6 +1007,8 @@ Strings = {
     # 5767: reserved
     # 5768: reserved
     # 5769: reserved
+	
+	5770: "There were errors reading the map; please check the console.",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1088,6 +1090,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.156  2011/07/29 15:19:31  danielpharos
+#Bumped version number to 6.6 Beta 5.
+#
 #Revision 1.155  2011/05/11 20:10:13  danielpharos
 #Updated all version numbers for 6.6 Beta 4 release.
 #
