@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.102  2010/05/23 15:58:04  danielpharos
+Added some options to handle texture names better. Should fix wrong slashes on export.
+
 Revision 1.101  2010/04/16 21:19:26  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -2010,6 +2013,11 @@ expected one.
     { get 3points expressed in AxisBase coordinates
        (see infobase|Src|Topics|Scale|Brush primitives) }
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
+    if Denom=0 then
+    begin
+      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
+      Denom := 0.000001;
+    end;
     P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
     P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
     P0.Z:=0.0;
@@ -2138,6 +2146,11 @@ expected one.
       ShowMessage('LoadData failure');
 
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
+    if Denom=0 then
+    begin
+      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
+      Denom := 0.000001;
+    end;
     P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
     P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
     P0.Z:=0.0;
