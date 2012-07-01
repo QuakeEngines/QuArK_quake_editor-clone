@@ -1,0 +1,2 @@
+title: GUI Window
+desc: windows dialogs floatwin

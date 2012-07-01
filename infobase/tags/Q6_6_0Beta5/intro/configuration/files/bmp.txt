@@ -1,0 +1,28 @@
+title: BMP
+author: DanielPharos
+
+<img align=right>bmp.png</img>
+
+<i>Select library for loading BMP files</i>. Here you can select the library you
+want to use to load BMP files.
+
+<i>Select library for saving BMP files</i>. Here you can select the library you
+want to use to save BMP files.
+
+
+<u>Advanced DevIL settings</u>
+
+These settings only apply to DevIL, so they only work when DevIL has been
+selected for the operation that is performed.
+
+<i>Save with RLE compression</i>. When enabled, BMP files are saved with <g>RLE</g>
+compression. Warning: Not all games support this!
+
+
+<u>Advanced FreeImage settings</u>
+
+These settings only apply to FreeImage, so they only work when FreeImage has been
+selected for the operation that is performed.
+
+<i>Save with RLE compression</i>. When enabled, BMP files are saved with <g>RLE</g>
+compression. Warning: Not all games support this!

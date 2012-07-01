@@ -1,0 +1,30 @@
+title: Exceeded
+author: DanielPharos
+
+<code>
+ERROR: MAX_TW_VERTS (12) exceeded
+</code>
+
+Every game engine has its limits. You just exceeded one of them. Depending on the error, there may be ways to fix this error, or there may not.<br>
+There sometimes are other game-executables available that increase these limits. You'll probably need an adepted compiler too, but remember: anybody trying to play your map will need the changed game-file too!
+
+Here's a list of limits in Quake 2:
+<table border=1>
+<tr><td>MAX_MAP_AREAS<td>256
+<tr><td>MAX_MAP_BRUSHES<td>8192
+<tr><td>MAX_MAP_BRUSHSIDES<td>65536
+<tr><td>MAX_MAP_EDGES<td>128000
+<tr><td>MAX_MAP_ENTITIES<td>2048
+<tr><td>MAX_MAP_FACES<td>65536
+<tr><td>MAX_MAP_LEAFS<td>65536
+<tr><td>MAX_MAP_LEAFBRUSHES<td>65536
+<tr><td>MAX_MAP_LEAFFACES<td>65536
+<tr><td>MAX_MAP_MODELS<td>1024
+<tr><td>MAX_MAP_NODES<td>65536
+<tr><td>MAX_MAP_PLANES<td>65536
+<tr><td>MAX_MAP_SURFEDGES<td>256000
+<tr><td>MAX_MAP_TEXTURES<td>1024
+<tr><td>MAX_MAP_VERTS<td>65536
+<tr><td>MAX_SUPERVERTS<td>512
+<tr><td>MAX_SWITCHED_LIGHTS<td>32
+</table>

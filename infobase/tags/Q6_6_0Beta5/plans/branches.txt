@@ -1,0 +1,92 @@
+title: Tags & Branches
+author: tiglari, etc.
+
+The idea here is to record tags and branches entered into the
+repository, with comments on their purpose and status.  I've
+only done a few recent ones, mostly that I've been responsible for.
+
+<U>Branches</U>
+
+<UL>
+<LI> <B>arigo</B>: ?
+<LI> <B>CS</B>: ?
+<LI> <B>DanielPharos</B>: the branch where DanielPharos did his OpenGL work.
+  <br><I>obsolete</I>
+<LI> <B>Leakhunt 1, 2</B> for runtime: useless bungling.
+<LI> <B>Leakhunt 3</B> for runtime: leak hunting modifications.
+<LI> <B>Leakhunt 3</B> for source: more bungling, needed
+  stuff in main branch.
+<LI> <B>MidJuneSnap</B>: ?
+<LI> <B>ModelEditorRebuild</B>: Attempt to restructure the model editor.
+  <br><I>obsolete</I>
+<LI> <B>ModelEditorBoneRebuild</B>: Attempt to restructure the way the model
+  editor handled bones.
+  <br><I>obsolete</I>
+<LI> <B>NewGameSupport660b3</B>: Branch where some experimental new game
+  support work is done.
+<LI> <B>NuTex</B>: an experimental branch for testing schemes
+  for dissociating texture positioning from face-positioning.
+  <br><I>obsolete</I>
+<LI> <B>NuTex2</B>: an newer experimental branch for testing schemes
+  for dissociating texture positioning from face-positioning.
+  <br>only applies to QkMapPoly.pas
+<LI> <B>peter-b_tagging_api</B>: ?
+<LI> <B>Q3ABSPM</B>: only for QkBsp.pas, QkBspHull.pas: Q3A Bsp
+  reading.  Now s/b closed, its stuff is on the main branch.
+<LI> <B>qk511b-opengl-update</B>: ?
+<LI> <B>REL6_1</B>: the branch for the Quark 6.1 release.
+<LI> <B>REL_62</B>: branch for the 6.2 release.  Hopefully closed off now!
+<LI> <B>rel-63</B>: a short-lived branch for putting new stuff
+  that wasn't supposed to go into 62. relevant contents merged
+  into the main branch.
+<LI> <B>rel-63-exp</B>: ditto.
+<LI> <B>pre-635c1</B>: a tag before adding a bunch of stuff just prior
+  to the intended rc1 (frozen selection, bilinear filtering in OBL).
+<LI> <B>rel-63a</B>: the 6.3 release branch, 'a' because of the ill-fated
+  63 branch above.
+<LI> <B>RendererRebuild</B>: Attempt to have the renderers draw the
+  wireframe views as well.
+</UL>
+
+<U>Tags</UL>
+
+<UL>
+<LI> <B>snapshot_1015</B>: ?
+<LI> <B>snapshot_0910</B>: ?
+<LI> <B>snapshot_0901</B>: ?
+<LI> <B>snapshot_0215</B>: ?
+<LI> <B>snapshot20050226</B>: ?
+<LI> <B>snapshot20050129</B>: ?
+<LI> <B>snapshot20050105</B>: ?
+<LI> <B>Snap042801</B>: ?
+<LI> <B>REL6_1-test-1</B>: ?
+<LI> <B>REL6_1-pre-3</B>: ?
+<LI> <B>REL6_1-pre-2</B>: ?
+<LI> <B>rel-6-3-0</B>: the tag for the actual release on the rel-63a branch.
+<LI> <B>qk511b6</B>: ?
+<LI> <B>qk511b-opengl-update-merged</B>: ?
+<LI> <B>Q6_6_0Beta3</B>: ?
+<LI> <B>Q6_6_0Beta2</B>: ?
+<LI> <B>Q6_6_0Beta1</B>: ?
+<LI> <B>Q6_5_0Beta4</B>: ?
+<LI> <B>Q6_5_0Beta3</B>: ?
+<LI> <B>Q6_5_0Beta2_0</B>: ?
+<LI> <B>Q6_5_0Beta1</B>: ?
+<LI> <B>Q6_5_0alpha8</B>: ?
+<LI> <B>Q6_5_0alpha7</B>: ?
+<LI> <B>Q6_5_0alpha6</B>: ?
+<LI> <B>Q6_5_0alpha5</B>: ?
+<LI> <B>Q6_5_0alpha4</B>: ?
+<LI> <B>Q6_5_0alpha3</B>: ?
+<LI> <B>Q6_5_0alpha2</B>: ?
+<LI> <B>Q6_4_1alpha3</B>: ?
+<LI> <B>Q6_4_1alpha2</B>: ?
+<LI> <B>Q6_4_1alpha1</B>: ?
+<LI> <B>Q6_4_0alpha3</B>: ?
+<LI> <B>Q6_4_0alpha2</B>: ?
+<LI> <B>Q6_4_0alpha1</B>: ?
+<LI> <B>pre-63rc1</B>: ?
+<LI> <B>DP_Q6_5_0Beta1</B>: ?
+<LI> <B>Before_Delphy_5_Requirement</B>: ?
+<LI> <B>Before_Delphi_5_Requirement</B>: ?
+</UL>

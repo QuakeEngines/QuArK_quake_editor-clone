@@ -1,0 +1,85 @@
+title: Drawing
+author: tiglari
+
+There's a bit of a problem with this, because tagging.py is already
+drawing the tagged sides, tho a bit late; to see the effects
+of what we do we need to go into `plugins\tagging', and comment
+out the line that says:
+<code>
+#quarkpy.qbaseeditor.BaseEditor.finishdrawing = tagfinishdrawing
+</code>
+or else
+<code>
+#quarkpy.mapeditor.MapEditor.finishdrawing = tagfinishdrawing
+</code>
+(At time of writing, the former line is occurring; it might get
+revised to the latter).  To ham up the difference between the
+standard one and the one we're building, we'll also have the
+new one draw the tagged face in blue.
+
+The technique is again to redefine something, this time a method
+of a class, `finishdrawing', of `mapeditor', in quarkpy.mapeditor.
+Finishdrawing operates late in the map-drawing procedure and adds
+various finishing touches.
+
+While writing the tutorial, I noticed that tagging.py was actually
+redefining fininishdrawing of BaseEditor in quarkpy.qbaseeditor;
+this is actually not fully correct (tho it's been working fine in
+QuArK for a long time), since qbaseeditor is supposed to be the
+base class for both map and model editors, and face-tagging is clearly
+relevant only to the former.
+
+Anyway here's the code for the new procedure:
+<code>
+def tagfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
+    "the new finishdrawing routine"
+
+    oldfinish(editor, view)
+    tagged = gettagged(editor)
+    if tagged is None: return
+    #
+    # OK, so there is something tagged, so lets draw it.  A `view' is one
+    #  of the map-displays on the screen, such as the top-down or side on
+    #  one in the classic layout.
+    #
+    cv = view.canvas()
+    #
+    # We'll color them like Duplicators so we can see an effect
+    #
+    cv.pencolor = MapColor("Duplicator")
+    #
+    #  A face has a list of lists of vertexes.  A list of lists because
+    #   each face might be used in several polyhedrons, in each polyhedron
+    #   the vertexes are listed in a clockwise order as you move around
+    #   the edge of the face's manifestation in the polyhedron.
+    #
+    for vtx in editor.tagging.tagged.vertices: # for a face-manifestation
+        #
+        # proj turns a 3D point in the map into a point in the display,
+        # as determined by the properties of the view  (it's got three
+        # coordinates but the functions of z vary).  We start with the
+        # last vertex (index pozzie -1 in Python), and cycle through,
+        # connecting the last to the first, and so on
+        #
+        p2 = view.proj(vtx[-1])
+        for v in vtx:
+            p1 = p2
+            p2 = view.proj(v)
+            cv.line(p1,p2)  # draw the line
+</code>
+<code>
+quarkpy.mapeditor.MapEditor.finishdrawing = tagfinishdrawing
+</code>
+Now when we tag a side, at first nothing happens, but then if
+we click in the map area, it gets drawn in blue, so at we
+can see that our new finishdrawing is doing something.
+
+What we want is to get the map redrawn right after we have tagged
+the face, and the way to do it is to add:
+<code>
+        editor.invalidateviews()
+</code>
+at the very end of the tagSideClick function, right after the tagging
+info is added to the editor.  `invalidateviews' will cause the
+map views to be redrawn on the basis of the new info, and the blue
+will show up immediately.

@@ -1,0 +1,30 @@
+title: In the BSP
+author: tiglari
+
+This is of course the fundamental one.  For Q1/2 it's two 4-vectors, uaxis,uoffset;
+vaxis, voffset, with this formula for computing the texture-coordinates
+for a point in the map space (only points on the face being relevant,
+of course):
+<code>
+   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
+   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
+</code>
+(from
+<a href="http://www.flipcode.com/tutorials/tut_q2levels.shtml">
+Max McGuire's Quake2 BSP file format tutorial</a> on www.flipcode.com)
+
+With Q3 otoh, the texture-coordinates of each vertex of the face are
+given, as a five-vector, along with the spatial coordinates (5-space
+math, for L.M.Bujold fans!).  See
+<a href="http://graphics.stanford.edu/~kekoa/q3/"> 
+Kekoa Proudfoot Unofficial Quake3 Map Specs</a>.  This representation
+is rather redundant for brush-faces, but extends gracefully to patches.
+
+In QkBsphulls.pas there is code for converting both the Q1/2 and Q3 .bsp
+representations to QuArK's.  A call of <strong>SolveForThreePoints</strong>
+does the job for Q3; Q1/2 are handled by some equation-solving code
+directly above that.
+
+
+
+

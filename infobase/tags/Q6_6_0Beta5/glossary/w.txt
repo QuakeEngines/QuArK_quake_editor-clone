@@ -1,0 +1,7 @@
+title: W...
+author: Decker
+
+<dl>
+<dt><a name="wally">    </a>Wally       <dd>(program) Wally is a <a href="#texture">texture</a> editing program. It supports <a href="#quake2">Quake-2</a> and <a href="#halflife">Half-Life</a> texture formats, and possibly others. See also <a href="http://www.telefragged.com/wally">http://www.telefragged.com/wally</a>.
+<dt><a name="Windows">  </a>Windows     <dd>(program) Operating system created by <g>Microsoft</g>. QuArK runs natively on Windows.
+</dl>

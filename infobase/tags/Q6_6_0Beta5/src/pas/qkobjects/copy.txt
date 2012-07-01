@@ -1,0 +1,13 @@
+title: Copying
+author: Tiglari / Armin
+
+Sometimes an object is not loaded yet when it needs to be saved on disk,
+typically when you make only a few changes to a complex .QRK or .PAK file. Then
+instead of loading the object with all its sub-objects, which takes time and
+consumes memory, we make a binary copy of the part of the original file into
+the destination file. This is what <tt>Copying</tt> tries to do. It returns
+False if the object was already loaded, meaning that direct copying is not
+possible. If <tt>TransfertSource</tt> is <tt>True</tt>, the object's FNode is
+updated so that if it needs to be loaded later in memory, it will be read from
+the copy instead. This lets the original file be closed, which is necessary in
+case we are overriting it (which is the case each time we do a normal 'Save').

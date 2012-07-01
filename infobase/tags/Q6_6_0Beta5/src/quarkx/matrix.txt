@@ -1,0 +1,103 @@
+title: Matrix objects
+author: Armin Rigo
+
+3x3 matrices are used to represent linear mappings. Use quarkx.matrix to create matrices. They are not immutable objects,
+because you can change values in individual cases, but in general they should be considered as immutable.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+m+n<br>
+m-n<br>
+-m
+</td><td>
+Sum, difference, or negation of matrices
+</td></tr>
+
+<tr><td class="doccode">
+m*n
+</td><td>
+Matrix product
+</td></tr>
+
+<tr><td class="doccode">
+m*v
+</td><td>
+Product of a matrix and a vector
+</td></tr>
+
+<tr><td class="doccode">
+float*m<br>
+m*float<br>
+m/float
+</td><td>
+Product of a matrix and a float, or division of a matrix by a float
+</td></tr>
+
+<tr><td class="doccode">
+m/n
+</td><td>
+Product of m and the inverse of n
+</td></tr>
+
+<tr><td class="doccode">
+float/m
+</td><td>
+Product of a float and the inverse of n
+</td></tr>
+
+<tr><td class="doccode">
+~m
+</td><td>
+Inverted matrix (1/m)
+</td></tr>
+
+<tr><td class="doccode">
+abs(m)
+</td><td>
+Det of a matrix
+</td></tr>
+
+<tr><td class="doccode">
+boolean value
+</td><td>
+False if zero or almost zero
+</td></tr>
+
+<tr><td class="doccode">
+m[i,j]
+</td><td>
+The value (i,j) of the matrix, where i and j are in the range 1 to 3.
+</td></tr>
+
+<tr><td class="doccode">
+str(m)
+</td><td>
+String representation. quarkx.matrix(string) is the inverse operation.
+</td></tr>
+
+<tr><td class="doccode">
+m.copy
+</td><td>
+A copy of the matrix (note: no "<tt>()</tt>")
+</td></tr>
+
+<tr><td class="doccode">
+m.cols
+</td><td>
+A tuple of three vectors whose value are the three columns of the matrix
+</td></tr>
+
+<tr><td class="doccode">
+m.transposed
+</td><td>
+copy of m, transposed (rows<->columns))
+</td></tr>
+
+<tr><td class="doccode">
+m.tuple
+</td><td>
+A tuple of three tuples of three values each: all nine values, line-by-line
+</td></tr>
+
+</table>

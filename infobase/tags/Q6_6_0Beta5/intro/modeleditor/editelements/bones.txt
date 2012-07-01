@@ -1,0 +1,247 @@
+title: Bones System
+author: cdunde
+
+<g>Bones</g> are used primarily for the animation, movement, of models in the same way that our bodies
+<g>Skeleton</g> bones are. The editor has one <a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a>
+where these bones are kept, if there are any. They can be applied to a single model <g>Component</g>,
+multipul components of a single model or components of another model that has been imported.
+
+A complete bone is made up of two <g>joints</g>, one at each end of a bone. But each joint is given a bone name.
+So joint1 is called NewBone1 when it is created. I know that's a little confusing, but that's the way it commonly is.
+When a joint is connected to another joint, the first joint is the <g>parent</g> of the second joint.
+These can be displayed in one of two ways in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>,
+either <g>extracted</g> (all bones under each other) or <g>structured</g> each <g>parent</g> bone tiers on down
+with all of its <g>child</g> bones inside it as a <g>hierarchy</g>.
+Doing a <g>RMB</g> click over the <g>Skeleton folder</g> or any one bone will bring up a menu that has functions to
+easily switch between these two ways of displaying the bones.
+
+Even though a model may not come with its own bones, you can still create your own set of bones and store them
+in a QuArK Model <g>.qkl</g> Work File. To start adding bones simply do a <g>RMB</g> click in any view of the
+editor, which will bring up a menu, and then by going to the <g>Bone Commands</g> item which will cause the
+Bones menu to appear.
+
+The use of bones is activated by clicking on a single frame of any component and either the
+<a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a>
+in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, if there are bones, or by
+opening that folder and clicking on any of the bones inside it. Once activated, all of this systems
+controlling functions are located on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menu</a> for
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Bone Commands</a>. Reading their brief descriptions
+will give you a quick understanding of each function. For a quick reference, hold your cursor over any menu
+item and press your <b>F1</b> key for its help box that will also give you its use information.
+A <a href="intro.modeleditor.dataforms.html#treeview">Skeleton folder</a> selection causes all <g>attached</g>
+bones to move together, while a single bone selection only moves that particular bone.
+
+By selecting some vertexes in any of the editor's views and then placing your cursor over the center of a
+bone joint and doing a <g>RMB</g> click will bring up the bone menu with a function active to <g>Assign</g>
+those vertexes to that bone joint or <g>Release</g> them if they have already been assigned to that bone joint,
+this is detected and managed automatically by the editor.
+
+<img border=1 align=right>bones1.png</img>
+
+<g><i><b><u>Basic Applications</u></b></i></g>&nbsp;:<br>
+
+The first step is to <a href="intro.modeleditor.rmbmenus.html#bonecommands">Add a Bone</a>.
+To do this you must be in <a href="intro.modeleditor.toolpalettes.display.html">Vertex mode</a>
+and not <a href="intro.modeleditor.toolpalettes.display.html#linear">Linear Drag Handles mode</a>
+as the bones will not be displayed.
+Then do a <g>RMB</g> click, in one of the editor's <g>2D views</g> where you want to place the bone,
+to get the popup menu, go to <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Bone Commands</a>
+then click on <a href="intro.modeleditor.rmbmenus.html#bonecommands">Add Bone Here</a>.
+
+By selecting a <b>single component</b> in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a> the bone joint handle
+of the new bone will be assigned to that <b>component</b>. Otherwise it will be assigned to the
+first component in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+Bone joints can be spread across different components within the editor if needed by assigning their
+vertexes to the same joint handle. When this is done a dropdown list on the <a href="#specificsettings">Specifics page</a>
+named <g>comp list</g> will display all of the components and the number of their vertexes
+that are assigned to that particular bone joint handle. By clicking on any one of the components
+in that list it will automatically jump to that particular component and select those assigned vertexes.
+
+Each bone joint is a <a href="intro.modeleditor.toolpalettes.display.html#linear">linear drag handle</a>,
+where the connecting lines for attached bone joints, are the widest.
+All attached bone joint <g>drag handles</g> are where the lines meet in the middle.
+The middle of each handle is the <g>center drag</g> point, which does the lateral movements,
+and the single offset yellow oval handle is the <g>corner drag</g> handle, used to do rotation
+and scaling (Ctrl key) movements. When a bone is given a specific <g>color</g>, from the
+<a href="#specificsettings">Specifics page</a>, this oval will be filled with that color
+as well as the entire joint handle. This is used to help identify bone joints in close proximity.
+
+The next set of bones show how you can
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Continue the bones</a> by placing your cursor over the
+<g>center point</g> of a bone's <g>drag handle</g>, do a <g>RMB</g> click and select
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Continue Bones</a> from the popup menu.
+This can be done with any bone at any time. You will also notice how these different menu functions will
+become active when they can be used properly.
+
+The third set of bones show how to select and <a href="intro.modeleditor.rmbmenus.html#bonecommands">Assign</a>
+a number of vertexes to a bone handle. First a single or multipal frames need to be selected,
+in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, 
+then select a number of vertexes by doing a <g>LMB drag</g> in one of the editor's views over those vertexes.
+Now do a <g>RMB</g> click (or first hold the <g>LMB</g> button briefly for <a href="#autoselection">auto selection</a>)
+on the <b>center</b> of the bone handle you want to assign those vertexes too, and select
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Assign / Release</a> from the popup menu.
+The handle will automatically center itself on those vertexes.
+You can <a href="intro.modeleditor.rmbmenus.html#bonecommands">Set the Handle Position</a> a couple of ways
+which is covered below, along with more about the built in <a href="#autoselection">Auto Selection Capabilities</a>.
+
+The last set of bones demonstrate a variety of features, capabilities and <a href="#specificsettings">Specifics Settings</a>
+of the bone system, see below.
+
+<img border=1 align=right>bones2.png</img>
+<a name="specificsettings"></a>
+<g><i><b><u>Specifics Settings</u></b></i></g>&nbsp;:<br>
+When a single bone, or a single bone and other component items are selected, a number of settings can
+be made for that bone on its <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args</a>
+page shown to the right. If you also have a frame selected and you deselect the <g>Skeleton folder</g> 
+or the bone it will automatically switch to the
+<a href="intro.modeleditor.dataforms.html#specsargsview">frame Specifics/ Args</a> page.
+Reselecting a bone will switch it to that bone's page.
+
+<i><b><u>Icon Buttons</u></b></i>&nbsp;:<br>
+The <b>first button</b> is used to display and select a specific <g>Model Format</g> from a dropdown list by clicking on where it says <g>set model type</g>.<br>
+This selection will put the editor into that particular model format mode, using any special features and functions that it may have.
+
+The <b>second button</b> will display all help data for the currently selected model format type.
+
+The <b>third button</b> is a toggle button, on or off, that when active changes your cursor to a paint brush that
+can then be used, by pressing your <g>LMB</g>, to pass over vertexes giving them a specific color.
+You can also do a <g>LMB</g> drag in any editor's view to select a group of vertexes and they will be assigned
+that same color. Changing the color is done on the <a href="intro.modeleditor.dataforms.html#specsargsview">frame Specifics/ Args</a>
+page (see <a href="intro.modeleditor.dataforms.html#specsargsview">that page</a> for more details).
+
+The <b>forth button</b>, when clicked, will bring up the
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">Vertex Weights Dialog</a>
+that is used in conjunction with that system.
+
+<u><i>classname </i></u>&nbsp;: This shows the name of the bone which can be changed to any name you choose
+in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a> by pressing your <b>F2</b> key.
+Once <b>Enter</b> is pressed to change the name, it will update the
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args</a> page.
+
+<u><i>Bone Length </i></u>&nbsp;: A bone can be any length you desire by either dragging one
+of its handles in any of the editor's views or by giving it an exact length here.
+
+<u><i>comp list </i></u>&nbsp;: This is a <g>dropdown list</g>. The component's name currently showing
+is the component that was selected last. By clicking on the <g>down arrow</g> to the far right, it will cause
+all components that have vertexes assigned to that handle to be displayed along with the number of
+those component's vertexes that have been assigned. Clicking on one of those components in the list,
+that component will become selected along with the vertexes assigned to that handle.
+This is a read only value and can not be change by hand, only by component vertex assignment or release.
+
+<u><i>auto expand </i></u>&nbsp;: If check, when a component is clicked on in the above <g>dropdown list</g>
+the editor jumps to that component and will expand its <g>Frames folder</g> and select the first frame automatically
+along with the vertexes assigned to that bone handle.
+
+<u><i>parent </i></u>&nbsp;: This displays the name of the bone that this bone joint is attached to, if any.
+If the parent's name is changed, this will update automatically, keeping things in sync for the system to work properly.
+It is a read only specific.
+
+<u><i>color </i></u>&nbsp;: The color bar, when clicked on, will bring up a color selection window where
+you can choose any color you like for that bone handle. There is also an option on the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Bone Options</a> sub-menu called
+<a href="intro.modeleditor.rmbmenus.html#editorboneoptions">Match Bone Lines Color</a>
+that, when checked, the <a href="#bonelinescolor">bone lines color</a> displayed during a drag will match the handle color being dragged.
+Any vertexes assigned to that handle will be displayed in that same color.
+
+<u><i>position </i></u>&nbsp;: This is the exact 3D position of a bones handle that gets updated at the end
+of each drag, or an exact position can be set here.
+
+<u><i>offset </i></u>&nbsp;: Sometimes a bone's handle can be in the way of other things or not set exactly where you want it.
+Here an offset 3D value can be entered, for x, y and z, to reposition that handle in relation to any vertexes assigned to it.
+Be advised that any rotation will be based on its offset position, which is the center point of that handle.
+
+<u><i>scale </i></u>&nbsp;: Here the size of a bone's handle can be set to make it bigger, to see other
+bone's handles attached to it, or smaller, as detail work so requires. These settings have no effect on
+rotation, since that is based on the center point of a handle.
+
+<i><b><u>Vertex Weight Colors</u></b></i>&nbsp;: Some model formats use additional, more advanced, special display and movement systems.<br>
+These are <a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">Vertex Coloring</a>, using different colors,
+and\or <a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">Vertex Weights</a>, which is done by a numerical setting from 0 to 1.0.<br>
+See the section about <ref>intro/modeleditor/vertexcolorandweights</ref> for specific details of their features and use.
+
+<u><i>use weight bone sel </i></u>&nbsp;: When checked, it puts bone selection into a special mode allowing you to
+add or remove bones to the selection without having to use the <g>Ctrl</g> key.
+
+<u><i>show weight colors </i></u>&nbsp;: When checked, if component has vertex weight coloring they will show.
+If NOT checked and it has bones with vetexes, those will show.
+
+<u><i>auto apply changes </i></u>&nbsp;: When checked, applies all bone weight settings for any currently or
+additional selected vertexes using the linear handle or applied by the paint brush.
+
+<u><i>(bone name) weight (value) </i></u>&nbsp;: The arrows are used to set a bone's vertex weight value.
+The total value of a <b>single</b> vertex MUST = 1.0 to be valid. Meaning if you have a <b>particular</b> vertex assigned
+to three different bones then all three of its values must add up to 1.0 no more no less.
+A value can also be entered by hand.
+A group of selected vertexes can be set to the same basic value and then changed individually on the
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">Vertex Weights Dialog</a>
+(see <b>forth button</b> above for access to that dialog).
+
+<u><i>(bone name) weight (color) </i></u>&nbsp;: This color corresponds to the above bone's vertex weight value.
+When the value changes the color changes and visa versa. So you can change the value by changing this color also.
+These colors are used as a guide to help see the different settings in the editor's views.
+
+<g><i><b><u>Special Features</u></b></i></g>&nbsp;:<br>
+
+<a name="autoselection"><g>Auto Selection Capabilities :</g></a><br>
+There are a few criteria’s that need to be followed in order for bones to work properly, or at all,
+for a drag to take place. These are:
+<ul>
+<li> Only a singe frame and the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
+can be selected, or
+<li> Only a single frame and a single bone can be selected. If not, you will hear a <b>bing</b> sound to signify the problem.
+<li> If a bone's handle has vertexes assigned to it, or an attached bone's handle does, a single frame must also be selected.
+<li> If no vertexes have been assigned then a single frame selection is not required to move the bones around.
+</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Because of the above criteria it can be cumbersome if you constantly
+need to use your <g>Ctrl</g> key to maneuver in the selection of these items, therefore:
+<ul>
+<li> Select any single frame, you can then select the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
+or any single bone without having to use your <g>Ctrl</g> key, that frame will remain selected.
+<li> You can select another single frame and the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
+or single bone will remain selected.
+<li> With a single frame selected, you can bounce from the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
+to any single bone, or from one bone to another without having to use your <g>Ctrl</g> key
+<li> or you can bounce from frame to frame without having to use your <g>Ctrl</g> key.
+<li> You can make single or multiple bone or frame relocation movements without having to deselect the other item type.
+
+<li> To cancel this action, click on the <a href="intro.modeleditor.dataforms.html#treeview">Frames Group folder</a>
+<li> or any blank unused area in one of the editor's views or the model itself
+<li> or select some other folder besides the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>.
+</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sometimes the bone handles will appear to be active but no drag
+can take place.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;That is because your selection in the tree-view does not meet
+the above criteria and you simply need to make the correct selection.
+
+<a href="intro.modeleditor.rmbmenus.html#bonecommands">Key frames Movement :</a> (not dependable at this time)<br>
+To activate this menu item you <b>must</b> have <b>two single frames</b> and the
+<a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a>
+selected. This is because those two frames will be used to <g>spread</g> the movement from the first frame to the second
+evenly over the frames that are between them. For example, you want to do a walking motion, the first frame has the arms and legs
+swung in one direction and the last, second, frame has them in the opposite positions. With a spread of about 10 frames you will
+create an animation of a fast walk, with a spread of 20 frames the motion would seem a bit slower. <b>Be advised</b>, the
+outcome may not always be what you expect and even though they can be reversed by using the
+<a href="intro.modeleditor.menu.html#editmenu">Undo system</a> that could still cause a crash of the program.
+So it is highly recommended that you always save your work before using this function.
+
+<a name="bonelinescolor"><g>Bone Lines & Vertex Colors :</g></a><br>
+When a bone's handles colors are set on its
+<a href="#specificsettings">Specifics Settings</a> page and the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Bone Options</a> sub-menu
+<a href="intro.modeleditor.rmbmenus.html#editorboneoptions">Match Bone Lines Color</a> is check these line colors
+act as a guide to help distinguish which bone's handle is being dragged. They also work differently when the
+<a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a> is selected as opposed to a single bone.
+
+When the <a href="intro.modeleditor.dataforms.html#treeview">Skeleton Group folder</a> is selected all of the lines
+share the same color as the drag handle, all the way <g>down line</g> for any connected bones that are also being moved
+or rotated. Where as for a single bone, only its lines, matching the drag handle, and any connecting bone handles will display
+their respective handle color.
+
+For any bone's that are using the default colors, those colors will be reverse when a drag is being made, also when a single
+bone or bones are selected those lines will become the default blue color, as long as there are no frames or other folders
+selected as well.
+
+Any vertexes assigned to a bone handle will be displayed using that same handle's color. Releasing or re-assigning vertexes
+to another handle will change their display color respectively.

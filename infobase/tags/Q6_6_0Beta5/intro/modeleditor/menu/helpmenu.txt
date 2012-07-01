@@ -1,0 +1,21 @@
+title: Help menu
+author: cdunde
+
+<img border=0 align=right>help.png</img>
+<i>Contextual help</i>. Opens your web-browser.
+
+<i>Help contents</i>. Opens your web-browser.
+
+<i>QurK's Layout</i>. Opens your web-browser to the basic editor layout page of these docs.
+
+<i>FAQ</i>. Opens your web-browser to the FAQ page of these docs.
+
+<i>QuArK's web site</i>. Opens your web-browser to the on-line Official QuArK web site.
+
+<i>QuArK's Forums site</i>. Opens your web-browser to the on-line QuArK Forums site.
+
+<i>Check for updates</i>. Checks on-line for QuArK program updates.
+
+<i>View console</i>. Shows a Python-console. Usefull when debugging plug-ins.
+
+<i>About</i>. Shows the about box.

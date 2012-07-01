@@ -1,0 +1,46 @@
+title: Exporting Model Formats
+author: cdunde
+desc: ase
+desc: lwo
+desc: mdl
+desc: md2
+desc: md3
+desc: md5mesh
+desc: md5anim
+desc: ska
+desc: skb
+desc: tan
+
+This is a special section that covers the Model Editor's model formats
+that can be exported, how they need to be setup, what needs to be included 
+and the steps to do so.
+
+Various ones use different methods such as
+<a href="intro.modeleditor.editelements.html#tags">tags</a> (or attachments),
+<a href="intro.modeleditor.editelements.html#bones">bones</a>,
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">Vertex Weights</a> and
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">UV Vertex Colors</a>
+for static (non-animated) and animated models. Even though QuArK supports these
+methods the actual exporter for another type of format will not include them if
+that particular format does not use them. Models that do not have them will
+need to be edited so they do if the exporter format requires them.
+
+In addition, some model formats have their own
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args</a>
+page to assist in setting these methods and if one does not exist
+then a defaults page is provided.
+
+This way QuArK not only edits models, it will actually allow the conversion
+of one model format into another making them usable in different games.
+In addition, some games use the same format as others and those have been noted
+by their abbreviated initials. A few are identified as follows:<br>
+<a href="intro.configuration.games.specificgames.html">EF2 </a>&nbsp;: Elite Force 2<br>
+<a href="intro.configuration.games.specificgames.html">FAKK2 </a>&nbsp;: Heavy Metal FAKK2 (Federation Assigned Ketogenic Killzone to the 2nd level)<br>
+<a href="intro.configuration.games.specificgames.rtcw.html">RTCW </a>&nbsp;: Return to Castle Wolfenstein<br>
+<a href="intro.configuration.games.specificgames.rtcw-et.html">RTCW-ET </a>&nbsp;: Wolfenstein - Enemy Territory<br>
+<a href="intro.configuration.games.specificgames.html">SoF2 </a>&nbsp;: Solder of Fortune 2<br>
+<a href="intro.configuration.games.specificgames.stvef.html">STVEF </a>&nbsp;: Star Trek Voyager Elite Force
+
+As new formats are added, details relating to them specifically can be added
+here to assist those that will be using them for exportation to their original
+format or to an entirely different format.

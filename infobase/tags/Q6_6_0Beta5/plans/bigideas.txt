@@ -1,0 +1,55 @@
+title: Big Ideas
+author: tiglari, etc.
+
+Ambitious, not necessarily realistic proposals, ranging
+from the relatively straightforward to crazed dreams.  More likely
+as Quarkplusplus features.
+
+<ul>
+
+<li> Auto-binary qrk:
+<br>When a text-based .qrk is loaded, write a binary format equivalent
+with extenion .brk; then next time load that unless the .qrk is newer
+(same logic as .py and .pyc).
+
+<li>Model editor: (Andy, tiglari)
+<br>export closed mesh to brushset
+
+<li> NetQuark: (???)
+Multi-user editing over the net.  Would need somebody who
+really knows what they're doing.  Probably not a
+realistic target.  Support for collaboration via CVS might be
+more plausible.  Unlikely to be build, would need a entire
+rebuild of the code.  Maybe an idea for Quarkplusplus?
+
+<li>persistent edits: (?)
+<br>undo/redo info written to files/saved with maps,
+supporting playable entity demos (Ax2grind idea),
+and 'orthogonal persistence' (http://www.tunes.org)
+of editing sessions
+
+<li>XML support: (?)
+<br>Maximum possible compatibility with GtkRadiant Xmap, which doesn't
+seem to be going anywhere at the moment.
+
+<li>Qrk editor: (?)
+<br>Edit .qrk's in the style of a decent XML editor
+<br>Andy's form-editing extension to the explorer are basically
+implementing this.
+
+<li>Integrated Dynamic bsp builder: (?)
+<br>bsp building & optimization while u're scratching
+ur head...
+
+<li>Surf Inspectors: (?)
+<br>Laid out more like in Radiant, which I like
+better than Quark's long list.
+
+<li>More Game Formats: (?)
+<br>Unreal engine, Serious Sam, Far Cry...
+<!-- Heroes of Might and Magic (Quark was
+used some internally for either the one coming out now or the one
+before it, so maybe this one has a chance). 
+DanielPharos: First of all, I think it's Might and Magic, no Heroes
+of Might and Magic. Second, I can't find anything proving this...-->
+</ul>

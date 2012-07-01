@@ -1,0 +1,24 @@
+title: Using the bot waypointer add-on
+author: Fredrick
+
+After you have activated the add-on, as shown above, you have a new function in the QuArK tool menu. First open the map or .BSP-file you want to edit, you can also open a source map file. Push the new button that have arrived at the left side (default layout) then open the waypoint that have the same name as the map and that ends with <tt>*.wpt</tt>
+
+<img align=left>icon.jpg</img><br>
+
+If you want to make a completely new waypoint, you have to import another waypoint file, and then delete all of them, except one last waypoint (this will change in later versions.) 
+
+You can now use the copy/paste functions to add new waypoints. If you see
+the <tt>target1</tt> flag at the top of a waypoint, this is where you can target the waypoint to another waypoint, making more ways for
+a bot to go. Use the usual + and - icons to add and delete spec/arg-pairs.
+
+Here you can se an overview of the waypoints in the map. Actcity3 for Action Quake 2 was used as a example with the ltk bot.
+
+<center><img>overview.jpg</img></center>
+
+Here you can see the node in the middle with 3 links, which means that a bot can go 3 different ways from that waypoint. If you select one waypoint, you can also see different flag settings, whether this is a camping-, sniper-waypoint etc.
+
+<table align=center><tr><td align=right>
+<img>info.jpg</img></td><td align=left><img>links.jpg</img></td></tr></table>
+
+On the left you can see the detailed information. Type can be move, jump, ladder etc. Depends on waypoints, then it has 3 targets, start with 0 , 1, 2. target_cost is the value of distance it costs the bots to travel to the specific target and the colors are to separate the lines, if say you have 12 links for a waypoint. You can also change, move and change the cost of each waypoint if required. If the bots needs to jump near a specific area to get trough etc.
+

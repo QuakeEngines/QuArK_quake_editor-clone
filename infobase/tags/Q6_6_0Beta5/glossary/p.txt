@@ -1,0 +1,12 @@
+title: P...
+author: Decker
+
+<dl>
+<dt><a name="partialconversion">        </a>Partial conversion  <dd>[PC] A partial conversion is a <a href="#modification">modification</a> of the <a href="#fps">FPS-game's</a> normal rules <u>or</u> levels <u>or</u> sounds <u>or</u> graphics. So it is only parts of the normal game, that is changed, as opposed to an <a href="#totalconversion">total conversion</a>.
+<dt><a name="plugin">                   </a>Plug-in             <dd>(program part) A plug-in for QuArK, is one or more <a href="#python">Python</a> source-files which, when installed, will give new and/or enhanced functionality to QuArK, mainly the map-editor.
+<dt><a name="poly">                     </a>Poly                <dd>Short for <a href="#polyhedron">polyhedron</a>.
+<dt><a name="polyhedron">               </a>Polyhedron          <dd>Most basicly its a solid cube which is <a href="#convex">convex</a>. A polyhedron consists of at least 4 <a href="#faces">faces</a> so they create a 3-sided pyramid, and up to several hundred faces which probably will be something like a sphere. Synonyms that are commonly used for polyhedrons are; <a href="#brush">brush</a>, <a href="#cube">cube</a>.
+<dt><a name="project">                  </a>Project             <dd>A QuArK project can consist of several maps, models, sound-files, graphics-files, etc.
+<dt><a name="pull">                     </a>Pull                <dd>To move, adjust or resize a side of an object using its adjustment handle.
+<dt><a name="python">                   </a>Python              <dd>The language which much of the map-editor is written, and the major components of the Python portion of the editor. See <a target=_blank href="http://www.python.org">http://www.python.org</a>.
+</dl>

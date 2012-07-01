@@ -1,0 +1,26 @@
+title: Commands menu
+author: cdunde
+
+<img border=0 align=right>commands.png</img>
+
+<i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and
+adds that copy to that model component's animation frames list.
+For multiple frame copies use the 'Duplicate' function on the 'Edit' menu.
+
+<i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components
+with the one that has the most frames in it. It will not copy the frames, only how many there are.
+
+<i>Check Components </i>&nbsp;: This checks components for any errors in them that might exist.
+
+<i>Auto Assemble </i>&nbsp;: Some models are made up of seperate model files for example .md3 files.
+This function attempts to auto-load those related models model files and attach them using what is known
+as tags to match them up correctly.
+
+<i>X Y Z Axis locks </i>&nbsp;: All three of these items work in the same manor but are independent from one another.
+They restrict any <g>vertex</g> movement in their related direction for all views and are interactive with their
+corrisponding buttons on the
+<a href="intro.modeleditor.toolpalettes.viewselection.html">View Selection tool-palette</a>.
+
+All of these commands are dupelicated as a sub-menu of the
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Views RMB menus</a>.
+

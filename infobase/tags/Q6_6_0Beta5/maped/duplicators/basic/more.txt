@@ -1,0 +1,38 @@
+title: More Duplicators
+author: tiglari
+
+There are seven more Standard Duplicators beyond the Basic
+Duplicator.  One of them, the Linear Duplicator, is
+an enhanced version of the Basic Duplicator; we'll talk
+about it last.  Then there is Copy One and 5 mirror
+duplicators.
+
+Copy One makes a single copy, which you can put where you
+want.  If you want to make a small number of copies, and
+put them in assorted places (perhaps a few crates scattered
+around in a room), you can put several Copy One duplicators
+into the same group; each will make its own copies of the
+things in the group, which you can locate with the blue
+handles (notice however that if several duplicators are
+located in the same group, they don't copy each other).
+
+Copy One is fine for making small numbers of copies, but for
+larger numbers, the more complex Instance Duplicator would
+be better.
+
+The mirror duplicators make copies located symmetrically
+around an axis that passes through the duplicator
+(equivalently, reflected in the plane perpendicular to
+the axis).  There are Mirror X, Mirror Y and Mirror Z,
+each making one copy, and Mirror XY, making three (so there
+are either two or four shapes in all).  What if what you
+want is say 4 structures in XZ, or 8 in all in XYZ?
+There's a way to do that which we'll see in
+<ref> ./combinations </ref>
+below.
+
+The last of the standard duplicators is the Linear Duplicator,
+whose special features are somewhat advanced, so we
+talk about them in
+<ref> ./linear </ref>
+below.

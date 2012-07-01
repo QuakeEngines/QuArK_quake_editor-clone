@@ -1,0 +1,108 @@
+title: Multiple monitors
+author: Raybot
+
+<strong>INTRODUCTION:</strong><br>
+Windows 98SE, ME, 2k, XP (and presumably above) have the ability to utilize 
+more than 1 display adapter (video card or inbuilt video chip) and, in some 
+cases, more than 1 monitor on 1 display adapter (often called a dualhead 
+display adapter), at any one time. This means that with appropriate 
+hardware, you can your desktop spread over 2 or more monitors. This is 
+particularly useful for CAD-style applications such as QuArK as you can 
+have your main display filled with the drawing area whilst you can push 
+toolbars, texture windows, guide images, compile messages, chat windows, 
+tutorial documents, other graphics programs and the like on your secondary 
+monitors. Note that having multiple monitors will increase the strain on 
+your computer so you should have a reasonably fast computer to begin with 
+(you probably shouldn't try doing this on anything slower than 300MHz if 
+you're running things that are straining the CPU already for instance). 
+Also note that not all programs like running on secondary monitors. 
+Anything that docks (such as ICQ) may refuse to move into the secondary 
+monitors and many overlay-based programs such as TV tuner programs may 
+behave unusually or run with very high CPU usage on secondary monitors. And 
+of course, anything that uses the video card's special ability such as 3D 
+acceleration, inbuilt TV capture overlay or 3DVR will only work on the 
+display adapter that has that capability.
+
+
+<strong>LAPTOPS (98SE/ME/2k/XP):</strong></br>
+If your computer is a laptop, it must have a video chip that is itself 
+capable of running 2 monitors (a chip with dualhead capabilities). Examples 
+include the Trident Cyberblade, ATI Rage Mobility M1 (P series only for 
+Win98SE/ME) and the nVidia GeForce2Go and GeForce 4 440Go/420Go. In the 
+case of a laptop, one screen will be the internal flat panel display and 
+one screen will be a monitor plugged into the video out port. You can tell 
+if your laptop supports multimonitor setups by right clicking on the 
+desktop, selecting properties then clicking the settings tab. If you get 2 
+screens (1 will be grayed out) then your video chip supports multimonitors. 
+If this is not the case, try it with the newest drivers you can find, 
+either from the maker of the laptop or from the maker of the video chip 
+that the laptop uses. Note that for some reason, this multi monitor ability 
+is rarely advertised in the laptop manual or promotional material. If your 
+laptop's inbuilt display adapter doesn't support multiple monitors or you 
+want to run 3 screens and you have a PCI docking station, you can often 
+still run multiple monitors by using a PCI video card in the docking 
+station, in similar way to a desktop as outlined below. Examples of laptops 
+where this has been reported to work include the Dell Latitude series with 
+PCI docking stations.
+
+
+<strong>DESKTOPS:</strong><br>
+If your computer is a standard desktop, you can put in additional PCI video 
+cards and attach additional monitors to them (note that not all PCI video 
+cards support multiple monitors and a lot of the ones that do have problems 
+with Windows 2000/XP - see below). In fact, you can get dual head PCI video 
+cards such as some with the GeForce2MX chipset and some earlier Matrox 
+video cards. Note that the drivers that ship with Windows will almost never 
+work in multimonitor setups, you'll need to download new drivers from the 
+maker (which can get tricky if the maker no longer exists, in which case 
+try places like <a href="http://www.driverguide.com">www.driverguide.com</a>
+which carry archives). Also note that these discussions apply for dualhead 
+cards where you wish to run 3 or more monitors (ie. you'll need another 
+card anyway). If you have a dualhead card and only want to run 2 monitors, 
+follow the instructions that came with the card ;-)
+
+
+DESKTOPS - WINDOWS 98SE/ME:
+Under Windows 98 and ME, the display adapter that will drive your primary 
+display (the one that 3D games will drop into for instance) is the display 
+adapter that your BIOS screen boots on. You can select this normally in the 
+PnP section of your BIOS (yes its a weird place to put it but that's where 
+its put usually). Look for an option that you can toggle from PCI to AGP. 
+In most cases, you will want to leave this as AGP. When you get into 
+Windows, simply install the drivers for your other cards as you would 
+normally, reboot and the next time you go into Windows you should see in 
+the settings tab of the display properties aplet one or more grayed out 
+screens which you can enable using the 'extend desktop' check box. Once 
+enabled, you can drag the screens around in the aplet to match your 
+physical configuration.
+
+
+DESKTOPS - WINDOWS 2K/XP:
+Under Windows 2000 (and presumably XP), you can switch your primary display 
+adapter on the fly so you don't need to boot off the display adapter that 
+you wish to run your 3D games and single monitor applications on. However, 
+there is a different problem, being that there are very few older PCI video 
+cards that Windows 2000 and XP can initialize after bootup (Microsoft's 
+knowledge base unhelpfully states that the video card needs to have a 
+'disable VGA' switch and you need to turn this off - I've only seen 1 video 
+card with this, a Matrox MGA-2064W, and it only works with this switch 
+ON!). As a result, generally you will need to set a PCI video card to boot 
+in the BIOS then get Windows 2000 to initialize your AGP video card once 
+the desktop appears.
+
+If you want a 3rd monitor or if you must boot off your AGP card (for 
+instance your BIOS doesn't allow you to change it, as is common on 
+motherboards with onboard display adapters), you will need to find a video 
+card that supports Windows 2000 dual monitors. Examples include Matrox 
+video cards and newer nVidia-based video cards. Once you've found a 
+combination of video cards that works, you can install them then use the 
+'extend desktop' check box in the settings tab of the display properties 
+aplet to enable them. Again, once enabled you can drag the screens around 
+in the aplet to match your physical configuration. Also note that there is 
+a 'primary monitor' check box which you use to select which monitor will 
+show single-monitor mode programs such as 3D games.
+
+
+For more information on other issues, as well as listings of combinations 
+of video cards that users have had success with, see 
+<a href="http://www.realtimesoft.com/multimon">www.realtimesoft.com/multimon</a> .

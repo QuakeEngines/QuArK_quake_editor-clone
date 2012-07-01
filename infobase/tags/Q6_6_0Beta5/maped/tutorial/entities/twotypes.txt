@@ -1,0 +1,16 @@
+title: Two types of entities
+author: Decker
+
+<img width=105 height=150 align=right>image19.png</img>
+An <g>entity</g> is usually an object in the game, that the player can interact
+with. There are two types of entities:
+
+<ul>
+<li><img width=16 height=16 align=absmiddle>image19b.png</img>&nbsp;
+    Point-entities: Monsters, Respawn points, Light-sources, Controller-entities...
+<li><img width=16 height=16 align=absmiddle>image19c.png</img>&nbsp;
+    Brush-entities: Doors, Buttons, Trigger-areas, Non-solid walls...
+</ul>
+
+Brush-entities requires that at least one brush is attached to the entity, as
+shown in the image.

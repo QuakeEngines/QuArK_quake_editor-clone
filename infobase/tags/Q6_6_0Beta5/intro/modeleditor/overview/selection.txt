@@ -1,0 +1,74 @@
+title: Selection & Navigation Methods
+author: cdunde
+
+<i><b><u>Selection Methods </u></b></i>: Different selection methods have been designed into the
+QuArK Model Editor for the editor itself. Also see the
+<a href="intro.modeleditor.skinview.html">Skin-view page</a> for its particular
+<a href="intro.modeleditor.skinview.html#selection">Selection & Navigation Methods</a>.
+
+<i><g>LMB</g> Click on Component</i> : A model can be made up of a single
+<a href="intro.modeleditor.model.html#components">Component</a> (part) or a whole lot of components,
+sometimes becoming very complicated. Such as a separate component for the head, upper torso, upper arm,
+elbow, lower arm.....and so on. So to make these different components easy to select and find in the
+<a href="intro.mapeditor.dataforms.html">editor's tree-view</a> all you need to do is make a quick
+<g>LMB Click</g> on any component in one of the editors views and that component will become selected
+as well as its main folder in the tree-view.
+
+<i><g>LMB</g> Vertex Handle Drag</i> : This method is available when your cursor is directly over a model
+components mesh <g>vertex</g> (point) <g>drag handle</g> and the cursor will change in appearance when it is.
+Holding down your <g>LMB</g> will allow you to <g>drag</g> that particular vertex to a new location in the view,
+changing the shape of the model mesh for that particular <g>animation frame</g>. A specific <g>frame</g>
+must be selected for this function to work. If not, a warning message will appear instructing you do to so.
+In which case you will need to click your <g>LMB</g> one time anywhere in the same view to release,
+or free up, the mouse's action and continue on with your work or make that frame selection in the editor's <g>tree-view</g>.
+
+<i><g>LMB</g> Rectangle Selector</i> : This method is available when the cursor is <b>not</b> over a <g>vertex</g>.
+Holding down your <g>LMB</g> and moving your mouse will produce a <g>Red Rectangle</g> selector that you can
+drag across the view. This selector will allow you to make a multiple selection of a model components mesh
+vertex points at one time. These vertexes can then be passed on to the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> or will be done so
+automatically if you have activated one of the options on that editor's view
+<a href="intro.modeleditor.skinview.html">RMB menu</a> (which you can obtain by clicking your <g>RMB</g> in that view)
+for <a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Vertex Options</a>. These options are also available on
+the main <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>. As the Model Editor is developed,
+this selection method will be used to move whole sections of the model's mesh by use of its selected triangle <g>faces</g>.
+To <g>de-select</g> any and all vertexes, simply do another small <g>Rectangle drag</g> in any unused area of any view.
+
+<i><g>LMB</g> & <g>RMB</g> Face Selector</i> : The third method is a unique one in that by holding down
+your <g>LMB</g> and <g>RMB</g> together you can do a number of things:
+
+1) If your cursor is over a model's mesh <g>face</g> it will select that particular <g>face</g>, outlining it in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Editor views selected faces outline color</a>
+that you can change by using the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Color Options button</a>.
+
+2) Continuing to hold your mouse buttons and dragging your cursor over the model's mesh will select additional
+faces.
+
+3) Dragging over a face that has already be selected will <g>de-select</g> that face.
+
+4) And doing a <g>LMB</g> & <g>RMB</g> drag in any unused area of any view will <g>de-select</g> any and all faces.
+
+Besides outlining the selected faces, as described above, it will also <g>fill in</g> those faces, for easier
+identification, if you have activated, checked, the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">View Options 'Mesh in Frames'</a> item
+for any particular view. This selection method also works in conjunction with a view's
+<a href="intro.modeleditor.rmbmenus.html">RMB menu</a>
+<a href="intro.modeleditor.rmbmenus.html#viewsrmbmenus">Editor Face Options</a>
+and main <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>.
+
+<i><b><u>Navigation Methods </u></b></i>: The QuArK Model Editor navigates much like it does in the Map Editor,
+except for one big difference for any of its <g>3D views</g> as covered in detail below.
+
+<i>2D Views</i> : Using your <g>MMB</g> you can <g>Zoom</g> in and out for any of the 2D and 3D views.
+Press and holding your <g>RMB</g> will allow you to <g>Scroll</g> or <g>Pan</g> in those same views.
+All other combinations are used as described above in the
+<a href="intro.modeleditor.overview.html#selection">Selection Methods</a> section.
+
+<i>3D Views</i> : Besides what we just covered above, the 3D views have one more navigation item, the <g>RMB</g>.
+When your cursor is <b>not</b> over a <g>vertex</g> <g>drag handle</g> you can use this to <g>Rotate</g>
+the model with. This is also used in conjunction with the main
+<a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a> item
+<a href="intro.modeleditor.menu.html#optionsmenu">3D Rotation Options</a> which
+give you four selections to choose from, each one being distinct from the others as to how rotation will take
+place and its particular point of rotation. Experimenting with each one will soon get you acquainted to their use.

@@ -1,0 +1,14 @@
+title: 3D windows
+author: Decker
+
+<img border=0 align=right>3dwindows.png</img>
+Icons from left to right:
+
+<i>New 3D-window</i> will create a new floating 3D-window, which you can place
+anywhere on your desktop. It only exist as long as you are in the map editor.
+
+<i>Full 3D-view</i> will take you to a full-screen 3D-display. You must press
+Escape to return to the map editor.
+
+<i>OpenGL 3D-view</i> will create a new floating OpenGL 3D-window, where you
+will be able to preview your light effects.

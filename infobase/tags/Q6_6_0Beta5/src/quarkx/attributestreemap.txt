@@ -1,0 +1,22 @@
+title: Attributes common to Internal objects of class "TreeMap"
+author: Armin Rigo
+
+Here are the additionnal attributes of Internal objects with "TreeMap" in their class tuple. All objects present in the map
+editor’s tree view are TreeMap objects, and no other one.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+replacetex(tx1, tx2)<br>
+replacetex(tx1, tx2, undomode)
+</td><td>
+Replaces all textures named tx1 with the texture tx2. If tx1 is empty, all textures are replaced. If undomode is specified and is True, this function does not change the textures in the polyhedron faces themselves, but creates a copy of each modified face and put it into the active undo operation list (see below). Returns the number of modified textures.
+</td></tr>
+
+<tr><td class="doccode">
+rebuildall()
+</td><td>
+Forces all polyhedrons to build themselves from their face objects. This is required in some circumstances, for example to know whether a polyhedron would be valid with a given set of planes as faces. Note that polyhedrons that are already built are not rebuilt (the name of the function is not well chosen). Returns a tuple (p,f) where p is the number of invalid polyhedrons and f is the number of unused faces (as shown by the " broken " versions of the polyhedron and face icons).
+</td></tr>
+
+</table>

@@ -1,0 +1,37 @@
+title: QuArK setup for Crystal Space Walktest
+author: cdunde/Rowdy
+
+<b>Question:</b><br>
+Hopefully this will be helpful to anyone wanting to use QuArK with
+Crystal Space.
+
+<b>Answer:</b><br>
+The text below comes from a post by Greg Jones back on 20-Mar-2003.
+
+1. Create a batch file with the following commands (change the path
+as necessary for your configuration).
+
+set CRYSTAL=C:\Crystal\CS
+<code>
+c:\CRYSTAL\CS\map2cs.exe c:\CRYSTAL\CS\maps\%~n1.map
+c:\CRYSTAL\CS\data\%~n1.zip
+c:\CRYSTAL\CS\levtool.exe c:\CRYSTAL\CS\data\%~n1.zip
+c:\CRYSTAL\CS\walktest.exe %~n1 -relight
+</code>
+
+2. In QuArK,
+<code>
+a. under Menu Options, Select Configuration....
+b. Select Games / Crystal Space
+c. For the First Program enter the path of the batch file you just created
+d. for the command-line argument place %mapfile%
+</code>
+
+3. Click Okay to Save
+
+4. Select Menu Item Crystal Space, Select Customize menu...
+<code>
+a. for each of the options on the left hand, select them and
+then make sure that the YES checkbox is checked so that the batch
+file will be run.
+</code>

@@ -1,0 +1,35 @@
+title: Troubleshooting
+author: tiglari
+
+When things start getting a bit complicated, bugs get likely.
+Plugins starting with map- get loaded when you start the
+map editor, and if they are syntactically ill-formed, the
+loading process will stop, leaving you with an error message
+on the `console' (dark screen, red letters).  After fixing
+the mistake, it is often possible to procede just by closing
+the grey window you also get (failed mapeditor window),
+and opening the map editor again.  Sometimes this doesn't
+work, and you have to restart QuArK.
+
+QuArK is also supposed to show the console when a runtime error
+is encountered, but for some reason, this isn't always working
+now, and command execution just stops.  You can add `debug'
+statements to code, which print things out to the console,
+and you can also put QuArK into `developer mode' in the
+options menu.  Then `squawk' statements will print out
+messageboxes with whatever message you want. e.g.
+<code>
+    squawk('newface: '+newface.shortname)
+</code>
+
+Finally, in developer mode, a `Reload' command will appear on
+the command menu; this allows you to reload a module.  This
+usually works for plugins (tho not always for quarkpy files),
+with some glitches, such as duplication, etc., of menu items.
+But it's often quicker than restarting QuArK from scarch.
+It can't be made perfect, because Python doesn't have any
+`unload' command that could reverse the effects of loading
+a module.
+
+A tested version of what you ought to have now is
+<tt>maptagside1.py</tt> in <a href="zips">plugin_examples.zip</a>

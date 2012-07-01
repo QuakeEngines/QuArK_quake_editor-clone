@@ -1,0 +1,8 @@
+title: Selecting polyhedrons
+author: Decker
+
+<img border=0 align=right>selectpoly.png</img>
+When this item is selected, every polyhedron that is inside or partly
+inside the red selection rectangle, will be selected. Notice that only
+polyhedrons will be selected, however polyhedrons which belongs to entities,
+like a door, will also be selected, but not the entity itself.

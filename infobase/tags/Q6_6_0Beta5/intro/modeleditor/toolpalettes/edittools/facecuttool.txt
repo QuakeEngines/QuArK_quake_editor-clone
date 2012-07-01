@@ -1,0 +1,28 @@
+title: Face Cut tool
+author: cdunde
+
+<img border=1 align=right>facecuttool.png</img>
+<i><u>Face Cut tool:</u></i> (first button of the two)<br>
+When this button is active, at least one frame and faces of a model component have been selected,
+a <g>LMB</g> drag can be made to produce a red cut line, like in the map editor, across them.
+Where the line crosses it will divide each face into 3 individual triangles.
+
+To cancel the cutting, press the <g>RMB</g> <b>&</b> <g>LMB</g> together then let go.
+This can be done at any time.
+
+Different cut patterns can be achieved sometimes, depending on the selected faces mesh structure.
+To test it out click on the <b>Reverse face direction</b> button two times, once to reverse them and
+once again to reverse them back to the direction they were facing before.
+This can rearrange their individual vertex order thus causing the change in the cut pattern.
+If you do not like the results just use the
+<a href="intro.modeleditor.menu.html#editmenu">Undo / Redo</a>
+function to the point before the faces where flipped.
+
+<i><u>Keep Dupe Vertexes:</u></i> (second button of the two)<br>
+This option ONLY works with and applies to the 'Face Cut tool'.
+The default setting is inactive, causing all duplicate vertexes to be combined when a face is 'CUT'
+so that the new faces do NOT pull apart.
+When ACTIVE (on) all common vertexes of the new cut faces CAN be pulled apart for further editing
+(to extrude, leave open, add new faces to and so on).
+At any time they can be 'WELDED' together using the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Merge Vertexes</a> function.

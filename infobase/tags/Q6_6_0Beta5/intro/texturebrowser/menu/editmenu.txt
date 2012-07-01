@@ -1,0 +1,59 @@
+title: Edit menu
+author: Rowdy
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+<i>Undo</i> Allows you to quickly and simply undo the last change.
+
+<i>Undo/Redo</i> Presents the QuArK Undo/Redo window so you can select a number
+of changes to undo or redo.
+
+<i>Cut</i> Removes the selected item (folder, texture etc.) and places it into
+the clipboard.
+
+<i>Copy</i> Copies the selected item (folder, texture etc.) and places it into
+the clipboard.
+
+<i>Paste</i> Copies something from the clipboard into the texture-browser.
+
+<i>Delete</i> Deletes the selected item (folder, texture etc.).
+
+<i>Copy object as</i> Copies the selected item (folder, texture etc.) and
+places it into the clipboard, but allows you to select from a second level menu
+exactly what type of object you are copying.
+
+<i>Paste special...</i> Prompts you to select what type of object you are
+pasting, then copies it from the clipboard into the texture-browser.  The
+Paste-special window is very similar to the Object-properties window.
+
+<i>Import files</i> This will prompt you to select one or more files, and then
+display them in the current folder.  If you link to the files, then only a
+reference to the files is placed into the add-on, but if you move the actual
+files later on they will no longer be available in the texture-browser.  If you
+copy the files into the add-on, they will always be available, even if you move
+or delete the original files, but your add-on will be a lot bigger.
+
+<i><b>Open selection...</b></i> This is the default action if you double-click
+somewhere, and opens a folder, texture, or selects a texture for use in your
+map.
+
+<i>External editor</i> Opens the external editor associated with the selected
+object.  External editors are configured in
+<ref> intro/configuration/general/externaleditors </ref>.
+
+<i>Object properties...</i> Opens a window displaying the object's properties,
+such as the type and size.  Also allows you to copy the item to the clipboard.
+
+<i>Configuration...</i> Runs the <ref> intro/configuration </ref>.
+
+</td><td valign=top>
+
+<img border=0>edit.png</img>
+
+<img border=0>copyobjectas.png</img>
+
+<img border=0>importfiles.png</img>
+
+</td></tr>
+</table>

@@ -1,0 +1,515 @@
+title: Editor Views RMB menus
+author: cdunde
+
+<map name="rmbmenusMap0">
+<area href="intro.modeleditor.rmbmenus.html#bboxrmbmenu" shape="rect" coords="2, 54, 155, 70">
+<area href="#tagcommands" shape="rect" coords="2, 72, 155, 88">
+<area href="#bonecommands" shape="rect" coords="2, 90, 155, 106">
+<area href="#facecommands" shape="rect" coords="2, 108, 155, 123">
+<area href="#vertexcommands" shape="rect" coords="2, 126, 155, 141">
+<area href="#search" shape="rect" coords="2, 143, 155, 158">
+<area href="#commands" shape="rect" coords="2, 161, 155, 176">
+<area href="#keyframecommands" shape="rect" coords="2, 186, 155, 201">
+<area href="#editorboneoptions" shape="rect" coords="2, 213, 155, 227">
+<area href="#editorfaceoptions" shape="rect" coords="2, 230, 155, 246">
+<area href="#editorvertexoptions" shape="rect" coords="2, 248, 155, 264">
+<area href="#autoframerenaming" shape="rect" coords="2, 267, 155, 282">
+<area href="#reset3dview" shape="rect" coords="2, 291, 155, 307">
+<area href="#boundingboxes" shape="rect" coords="2, 310, 155, 325">
+<area href="#componentcolors" shape="rect" coords="2, 328, 155, 343">
+<area href="#viewsettings" shape="rect" coords="2, 346, 155, 395">
+<area href="#backgroundimage" shape="rect" coords="2, 404, 155, 420">
+</map>
+
+<map name="rmbmenusMap1">
+<area href="#handlescaling" shape="rect" coords="3, 328, 192, 348">
+</map>
+
+<i>Undo </i>&nbsp;: This will display the last Undo\Redo action item that has taken place if any.
+
+<img border=1 align=right usemap="#rmbmenusMap0">viewsrmbmenus1.png</img>
+
+<i>Paste here </i>&nbsp;: This is a simple paste command to drop something you have copied into
+one of the editors views if it can be.
+
+<i>BBox Commands </i>&nbsp;: This is the link to the BBox Commands sub-menu that will appear
+when your courser is over it and are covered in detail below.
+
+<i>Tag Commands </i>&nbsp;: This is the link to the Tag Commands sub-menu that will appear
+when your courser is over it and are covered in detail below.
+
+<i>Bone Commands </i>&nbsp;: This is the link to the Bone Commands sub-menu that will appear
+when your courser is over it. To activate this menu item you must have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
+de-activated (in vertex mode) and select either the <g>Skeleton</g> folder or a model component's <g>Frames</g> folder
+or at least one frame or bone within one of those folders, then this menu item will activate.
+Individual items will become active on its sub-menu depending on your selections and cursor placement over a bone handle.
+These are strictly bone related and are covered in detail below.
+
+<i>Face Commands </i>&nbsp;: This is the link to the Face Commands sub-menu that will appear
+when your courser is over it. To implement this menu you must have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
+activated (in face mode) and select at least one face in a model component, then this menu
+item will appear. These are strictly face (triangle) related and are covered in detail below.
+
+<i>Vertex Commands </i>&nbsp;: This is the link to the Vertex Commands sub-menu that will appear
+when your courser is over it. To activate this menu item you must have the
+<a href="intro.modeleditor.toolpalettes.display.html">Linear Drag Handles</a> button
+de-activated (in vertex mode) and select at least one frame in a model component's <g>Frames</g> folder,
+then this menu item will activate. These are strictly vertex related and are covered in detail below.
+
+<i>Search </i>&nbsp;: This is the link to the Search sub-menu that will appear
+when your courser is over it and are covered in detail below.
+
+<i>Commands </i>&nbsp;: This is the link to the Commands sub-menu that will appear
+when your courser is over it. These are the same commands located on the 'Commands' menu of the Main
+menu bar and are more Triangle related. These are also covered in detail below.
+
+<i>Keyframe Commands </i>&nbsp;: Keyframe functions create additional animation frames for movement
+between two selected frames.<br>
+The number of additional frames to be created is the amount set on the
+<a href="intro.modeleditor.toolpalettes.animation.html#__top__">Animation toolbar</a>
+<a href="intro.modeleditor.toolpalettes.animation.html#ipf">IPF button</a> <b>- 1</b>.<br>
+For example, if you want <b>3</b> fill frames added between the two selected keyframes,
+set the <a href="intro.modeleditor.toolpalettes.animation.html#ipf">IPF button</a> to <b>4</b>.
+To use these functions you must select two frames of the same component.
+If they are not consecutive frames (one right after the other) then all frames in between the
+two will be replaced with the newly created frames.
+You can also select other components for their same frames to be included.
+If a component has <a href="intro.modeleditor.editelements.html#tags">Tags</a>,
+such as imported <g>.md3</g> Quake3 models, all of its <b>related</b> imported components and
+their tags will also be included without having to select them. But not all of the components
+of that particular <g>.md3</g> model that were imported separately. So be sure to select
+those components also if you want them included.
+They are strictly frame and component related and are covered in detail below.
+
+<i>Bone Options </i>&nbsp;: These functions deal with the Model Bone visual tools to work with.
+They are strictly bone related and are covered in detail below.
+
+<i>Editor Face Options </i>&nbsp;: These functions deal with the Model Mesh selection methods
+available and various visual tools to work with. They are strictly face related and are covered in detail below.
+
+<i>Editor Vertex Options </i>&nbsp;: These functions deal with the Model Mesh selection methods
+available and various visual tools to work with. They are strictly vertex related and are covered in detail below.
+
+<a name="autoframerenaming"></a>
+<i>Auto Frame Renaming </i>&nbsp;:Some models consist of more then one component. If so, their frame names
+should always match. When checked, if a frame of one component is renamed, this will cause the same frame
+of all the other related components to be renamed also automatically.
+
+<a name="reset3dview"></a>
+<i>Reset 3D view </i>&nbsp;: If the model becomes 'lost', goes out of the 3D view, you can use this
+function to reset the 3D view and bring the model back to its starting position when it was first opened
+and based on the 'Rotation Method' you last chose to rotate the model by.
+
+<a name="boundingboxes"></a>
+<i>Draw Bounding Boxes </i>&nbsp;: When checked this activates the display of model bounding boxes if any.
+Also known as <g>hit boxes</g> for Half-Life and by other names for different model formats.
+
+<a name="componentcolors"></a>
+<i>Use Component Colors </i>&nbsp;: When checked this activates the display of individual component colors,
+which can be set on the <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page</a>,
+to distinguish one model component mesh area from another.
+
+<a name="viewsettings"></a>
+<u>Each view can be set to one of three rendering modes :</u>
+
+<i>Wireframe </i>&nbsp;: The model mesh will be drawn as lines.
+This is the fastest drawing-method of the model-views. 
+
+<i>Solid </i>&nbsp;: Each model is drawn in a single, solid color or shades of that color.
+This means that you won't be able to 'see-through' the model once it is in view.
+
+<i>Textured </i>&nbsp;: The model is displayed with its full texture applied for the finished "skinned" look.
+
+<a name="backgroundimage"></a>
+<i>Background image... </i>&nbsp;: When selected, this will open a dialog box where you can choose any image
+file the <g>QuArK</g> supports to place and display in the 2D view that the cursor was in when the RMB was clicked.
+Click <a href="intro.mapeditor.rmb_menus.noselectionmenu.html#background">here</a> for full detailed information
+about its functions and settings.
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+<a name="tagcommands"></a>
+<b><u><a href="#viewsrmbmenus">Tag Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<img border=1 align=right usemap="#rmbmenusMap1">tagsrmbmenu1.png</img>
+
+<i>Add Tag Here </i>&nbsp;: You must select one or more components to use this function.
+This will add a single tag to the <g>Misc</g> group.
+
+<i>Show Tags </i>&nbsp;: This allows all tags to be displayed in the editor's views.
+
+<i>Hide Tags </i>&nbsp;: This stops all tags from being displayed in the editor's views.
+
+<tr><td valign=top>
+
+<a name="bonecommands"></a>
+<b><u><a href="#viewsrmbmenus">Bone Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<img border=1 align=right usemap="#rmbmenusMap1">bonermbmenu1.png</img>
+
+<i>Add Bone Here </i>&nbsp;: This will add a single bone to the editor's <g>Skeleton</g> group.
+
+<i>Continue Bones </i>&nbsp;: This will add a single bone, connected to the last bone, in the editor's <g>Skeleton</g> group.
+
+<i>Attach Bone 1 to 2 </i>&nbsp;: This will attach the first selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the second selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+
+<i>Attach Bone 2 to 1 </i>&nbsp;: This will attach the second selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the first selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+
+<i>Detach Bones </i>&nbsp;: This will detach two selected bones attached handles from one another
+in the <g>Skeleton</g> group.
+
+<i>Align Bone 1 to 2 </i>&nbsp;: This will align the first selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the second selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, but not attach them.
+
+<i>Align Bone 2 to 1 </i>&nbsp;: This will align the second selected bone in the
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+to the first selected bone in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>, but not attach them.
+
+<i>Assign \ Release BBox </i>&nbsp;: BBox is a polyhedron box that is called by different names and are used for different
+things based on a game models format. Commonly it surrounds an area for a 'hitbox', 'collision', 'bounding box'...
+When a BBox is selected and a RMB click on the center of a bone is made, then that BBox can be assigned to that bone, or
+release from that bone if both have not already been assigned to something else that would cause a conflict.
+To properly position the BBox on the bone, use its <g>center handle</g> and drag it to the coords <g>0,0,0</g>
+in the editor's views <b>BEFORE</b> you assign it to a bone. Once assigned you can change the BBox size by
+dragging its <g>side handles</g>, the <g>corner handles</g> will <b>NOT</b> hold its shape.
+
+<i>Assign \ Release Vertices </i>&nbsp;: When vertices of a component are selected, RMB click on the center of a bone,
+then click this item to assign them to, or release them from ,that bone. Combinations of both can be done at the same time.
+
+<i>Set Handle Position </i>&nbsp;: Active when one or more vertexes are selected that are assigned to that bone handle.
+Click this item to position and set that bone handle centered within those vertexes.
+An 'offset' can also be applied to this setting.
+
+<i>Select (bone handle name) Vertexes </i>&nbsp;: When the cursor is over a bone's Center handle with vertexes assigned to it,
+click this item to select all of them from that bone's handle. Or, if another handle is attached that has the vertexes
+assigned to it instead, then those are the vertexes that will be selected. If no vertexes have been assigned to any
+handle at that location, then the menu item will show disabled.
+
+<i>Select (bone handle name) handle position Vertexes </i>&nbsp;: When the cursor is over a bone's Center handle with vertexes
+assigned to it, click this item to select the vertexes used to set that bone's handle position. Or, if another handle is
+attached that has the vertexes assigned to it instead, then those are the position vertexes for that handle that will be
+selected. If no vertexes have been assigned to any handle at that location, then the menu item will show disabled.
+
+<i>Add \ Remove Control </i>&nbsp;: This will add or remove a single bone controle, connected to the bone handle when the
+<g>RMB</g> was clicked in the editor's view.
+
+<a name="bonesselection"></a>
+<i>Individual Bones Selection </i>&nbsp;: (Unless a function specifically deals with all bones)
+When this item is checked ONLY the INDIVIDUAL bone handles that are selected will be effected
+and NOT any sub-bones that are NOT specifically selected, Which IS the case if this is un-checked.
+
+<i>Handle Scaling </i>&nbsp;: These functions deal with setting the scale size of the bone handles for better work size.
+These are covered in detail below. Click on this menu item, shown in blue above, to see the sub-menu and its items below.
+
+<i>Show Bones </i>&nbsp;: This allows all bones to be displayed in the editor's views.
+
+<i>Hide Bones </i>&nbsp;: This stops all bones from being displayed in the editor's views.
+
+<i>Structure Bones </i>&nbsp;: When clicked this function will place all bones
+inside their 'parent' bones in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+
+<i>Extract Bones </i>&nbsp;: When clicked this function will move all bones
+outside of their 'parent' bones in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>.
+
+<i>Force to grid </i>&nbsp;: This will cause a bone's center handle to <g>snap</g> to the nearest location on the
+editor's grid for the view that the RMB click was made in.
+
+<tr><td valign=top>
+
+<a name="handlescaling"></a>
+<b><u><a href="#bonecommands">Handle Scaling sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<img border=1 align=right>bonermbmenu3.png</img>
+
+<i>Scale selected bone handles </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles set to different scale sizes for easer access.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Reset selected handles to org. scale </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles reset to their original imported or saved scale sizes.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Set selected bone handles to 1.0 </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles reset to the default scale size of 1.0.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Save selected handle scales </i>&nbsp;: If this menu item is checked, all bones that are currently selected,
+and their attached bones, will have their handles scale sizes saved, becoming their original setting.
+See <a href="#bonesselection">Individual Bones Selection</a> on main Bones menu for additional option.
+
+<i>Scale all bone handles </i>&nbsp;: If this menu item is checked, all bones will have their handles set to
+different scale sizes for easer access.
+
+<i>Reset all handles to org. scale </i>&nbsp;: If this menu item is checked, all bones will have their handles reset
+to their original imported or saved scale sizes.
+
+<i>Set all handles to 1.0 </i>&nbsp;: If this menu item is checked, all bones will have their handles reset
+to the default scale size of 1.0.
+
+<i>Save all handle scales </i>&nbsp;: If this menu item is checked, all bones will have their handles scale sizes saved,
+becoming their original setting.
+
+<tr><td valign=top>
+
+<a name="facecommands"></a>
+<b><u><a href="#viewsrmbmenus">Face Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<img border=1 align=right>facermbmenu1.png</img>
+
+<i>Empty Component </i>&nbsp;: This will create a new <g>Clean</g> Model component.
+This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>New Component </i>&nbsp;: This will create a new model component of currently selected Model Mesh faces.
+This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Move Faces To </i>&nbsp;: This will move currently selected Model Mesh faces to another component.
+This item creates its own sub-menu consisting of all available components of the model that is currently
+in the Model Editor. This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Copy Faces To </i>&nbsp;: This will copy currently selected Model Mesh faces to another component.
+This item creates its own sub-menu consisting of all available components of the model that is currently
+in the Model Editor. This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Delete Faces </i>&nbsp;: This will delete currently selected Model Mesh faces.
+This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#facermbmenu">Face RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<tr><td valign=top>
+
+<a name="vertexcommands"></a>
+<b><u><a href="#viewsrmbmenus">Vertex Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<img border=1 align=right>viewsrmbmenus2.png</img>
+
+<i>Add Vertex Here </i>&nbsp;: This will add a single vertex to the currently selected model component
+(and all of its animation frames) to make a new triangle. This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Clear Pick list </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description.
+
+<i>Align mesh vertex </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Align Vertex Options </i>&nbsp;: This <g>sub-menu</g> list is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Merge Vertexes </i>&nbsp;: This funciton is also located on the
+<a href="intro.modeleditor.rmbmenus.html#vertexrmbmenu">Vertex RMB menu</a> below,
+please click on the menu link for this functions full description and use.
+
+<i>Add Triangle </i>&nbsp;:This adds a new triangle to the currently selected component.
+
+<i>Reverse Direction </i>&nbsp;:Normally, in QuArK, creating a new triangles vertexes in a 'clockwise'
+direction will produce a triangle that faces 'outwards'. But sometimes this does not work for adding new
+triangles to existing ones. Activating this function (checking it) will reverse that direction causing
+the triangle to face the opposite way.
+
+<i>Delete Triangle </i>&nbsp;: This removes a triangle from the currently selected component.
+
+<tr><td valign=top>
+
+<a name="search"></a>
+<b><u><a href="#viewsrmbmenus">Search sub-menu :</a></u></b> This is the sub-menu described above and its functions.
+
+<img border=1 align=right>searchrmbmenu.png</img>
+
+<i>Find Vertices </i>&nbsp;: This function selects the vertices entered for the component currently selected
+or selected from the drop down box. Place a comma between each vertex entered to find more then one.
+
+<i>Find Faces </i>&nbsp;: This function selects the faces entered for the component currently selected
+or selected from the drop down box. Place a comma between each face entered to find more then one.
+
+<i>Find Skin Vertices </i>&nbsp;: This function selects the Skin-view vertexes entered for the component currently selected
+or selected from the drop down box. Place a comma between each face entered to find more then one.
+
+<i>Find Skin Faces </i>&nbsp;: This function selects the Skin-view face vertexes for the faces entered of the component currently selected
+or selected from the drop down box. Place a comma between each face entered to find more then one.
+
+<i>Find Objects </i>&nbsp;: This function will search for objects by their <g>type</g>
+(the type of model object it represents, a bone, skin, frame...).
+
+<i>Find Camera Positions </i>&nbsp;: This finds all the camera positions.
+
+<i>Editor next shot </i>&nbsp;: This selects and sets the next camera shot for the Editor's 3D view in the group.
+Cycling - Depress (default) 'F3' to switch to the next view.
+
+<i>Editor prev shot </i>&nbsp;: Selects and sets the previous camera shot for the Editor's 3D view in the group.
+Cycling - Depress (default) 'F4' to switch to the previous.
+
+<i>Editor 3D shot </i>&nbsp;: This creates a camera shot of the current editor's 3D view in either standard or <g>True 3D</g> mode.
+Depressing the Hotkey (default) 'F5' will do the same thing.
+
+<i>Full 3D shot </i>&nbsp;: This creates a camera shot of the current Full 3D view in either standard or <g>True 3D</g> mode.
+Depressing the Hotkey (default) 'F6' will do the same thing.
+
+<i>Full 3D next shot </i>&nbsp;: This selects and sets the next camera shot for the floating 3D Window in the group.
+Cycling - Depress (default) 'F7' to switch to the next view.
+
+<i>Full 3D prev shot </i>&nbsp;: Selects and sets the previous camera shot for the floating 3D Window in the group.
+Cycling - Depress (default) 'F8' to switch to the previous.
+
+<tr><td valign=top>
+
+<a name="commands"></a>
+<b><u><a href="#viewsrmbmenus">Commands sub-menu :</a></u></b> This is the sub-menu described further above and its functions in detail.<br>
+
+<img border=1 align=right>viewsrmbmenus3.png</img>
+
+It is a duplication of the <a href="intro.modeleditor.menu.html#commandsmenu">Commands</a> menu on the editor's
+main menu bar for easer and quicker access.
+Please click on the menu link above for this sub-menu's functions full descriptions.
+
+<i>Duplicate Current Frame </i>&nbsp;: This copies a single frame that is currently selected and
+adds that copy to that model component's animation frames list.
+For multiple frame copies use the 'Duplicate' function on the 'Edit' menu.
+
+<i>Match Frame Count </i>&nbsp;: This will duplicate the number of frames in the selected components with the one
+that has the most frames in it. It will not copy the frames, only how many there are.
+
+<i>Check Components </i>&nbsp;: This checks components for any errors in them that might exist.
+
+<i>Auto Assemble </i>&nbsp;: Some models are made up of seperate model files for example .md3 files.
+This function attempts to auto-load those related models model files and attach them using what is known
+as tags to match them up correctly.
+
+<i>X Y Z Axis locks </i>&nbsp;: All three of these items work in the same manor but are independent from one another.
+They restrict any <g>vertex</g> movement in their related direction for all views and are interactive with their
+corrisponding buttons on the
+<a href="intro.modeleditor.toolpalettes.viewselection.html">View Selection tool-palette</a>.
+</td></tr>
+
+<tr><td valign=top><br>
+
+<a name="keyframecommands"></a>
+<img border=1 align=right valign=top>viewsrmbmenus6.png</img>
+
+<b><u><a href="#viewsrmbmenus">Keyframe Commands sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.
+More will be added as they are developed.<br>
+
+<i>Linear Interpolation </i>&nbsp;: This will create movement in a straight line from the first frame selected to the second frame selected
+for all components selected (if more then one).
+</td></tr>
+
+<tr><td valign=top><br>
+
+<a name="editorboneoptions"></a>
+
+<img border=1 align=right valign=top>bonermbmenu2.png</img>
+
+<b><u><a href="#viewsrmbmenus">Bone Options sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.<br>
+(also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Match Bone Lines Color </i>&nbsp;: When checked the bone lines color displayed during a drag will match the handle color being dragged.
+
+<i>Draw Bone Handles Only </i>&nbsp;: When checked only the bone handles are displayed to increase drawing speed during and after a drag.
+
+<i>Only Draw Drag Bones </i>&nbsp;: When checked only all the bone handles being dragged are displayed to increase drawing speed during a drag.
+
+<i>Make All Draglines </i>&nbsp;: When checked allows all bone handles draglines to be created but will decrease drawing speed & increase model importing time.<br>
+Only applies at time of model importing and will have no effect once it has. If not used sufficient draglines to see what is being moved and how will still be drawn.
+
+<tr><td valign=top><br>
+
+<a name="editorfaceoptions"></a>
+
+<img border=1 align=right valign=top>viewsrmbmenus4.png</img>
+
+<b><u><a href="#viewsrmbmenus">Editor Face Options sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.<br>
+(also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Sync Skin-view with Editor views </i>&nbsp;: When checked this will synchronize the Skin-view with the Editor views
+for either of the active selection options below, <g>Show selection in Skin-view</g> and <g>Pass selection to Skin-view</g>.
+
+<i>Show selection in Skin-view </i>&nbsp;: Because the Skin-view and the rest of the editor views work independently,
+this will pass selected editor model mesh triangle faces to the 'Skin-view' to be outlined and distinguish them. However,
+it does not actually select them in the <a href="intro.modeleditor.skinview.html">Skin-view</a>. Any selections or deselections will
+not show in the 'Skin-view' until the mouse buttons have been released. The <a href="intro.modeleditor.skinview.html">Skin-view</a>
+outline color can be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Pass selection to Skin-view </i>&nbsp;: This function will pass selected editor model mesh triangle faces  and select the
+coordinated skin triangles in the <a href="intro.modeleditor.skinview.html">Skin-view</a> where they can be used for editing purposes.
+Once the selection has been passed, if this function is turned off, the selection will remain in the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> for its use there. Any selections  or deselections will not show
+in the <a href="intro.modeleditor.skinview.html">Skin-view</a> until the mouse buttons have been released.
+The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected face outline color can be changed in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>No face drag lines </i>&nbsp;: This will stop the selection and drawing of all drag lines when model mesh faces have
+been selected which can increase the selection speed of the editor dramatically when a model with a large number of face
+triangles is being edited.
+
+<i>No face outlines </i>&nbsp;: This will stop the outlining of any models mesh faces have been selected. This will
+increase the drawing speed of the editor dramatically when a model with a large number of face triangles is being edited.
+The solid fill of selected faces will still be available.
+
+<i>No face outlines while moving in 2D views </i>&nbsp;: Face outlining can be very taxing on the editors drawing speed
+when panning (scrolling) or zooming in the <g>2D views</g> when a lot of the models mesh faces have been selected.
+This is because so many views need to be redrawn repeatedly. If you experience this problem check this option to increase
+the drawing and movement speed. The lines will be redrawn at the end of the move.
+
+<i>No selection fill </i>&nbsp;: This stops the color filling and backface pattern from being drawn for any of the models
+mesh faces that are selected. Only the outline of the selected faces will be drawn. This will not apply for any view that
+has its <g>Fill in Mesh</g> function active (checked) in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a> dialog.
+
+<i>Front faces only </i>&nbsp;: This will only allow the solid color filling of the front faces to be drawn for any of the
+models mesh faces that are selected. The back faces will be outlined allowing the models texture to be displayed if the
+view is in <g>Textured</g> mode. This will not apply for any view that has its <g>Fill in Mesh</g> function active
+(checked) in the <a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a> dialog.
+
+<i>Back faces only </i>&nbsp;: This will only allow the drawing of the backface pattern to be drawn for any of the models
+mesh faces that are selected. The front faces will be outlined allowing the models texture to be displayed if the view is
+in 'Textured' mode. This will not apply for any view that has its <g>Fill in Mesh</g> function active (checked) in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#viewoptions">Views Options</a> dialog.
+</td></tr>
+
+<tr><td valign=top><br>
+
+<a name="editorvertexoptions"></a>
+
+<img border=1 align=right valign=top>viewsrmbmenus5.png</img>
+
+<b><u><a href="#viewsrmbmenus">Editor Vertex Options sub-menu :</a></u></b> This is the sub-menu described above and its functions in detail.<br>
+(also located on the <a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)
+
+<i>Sync Skin-view with Editor views </i>&nbsp;: This function will turn off other related options and synchronize selected
+Editor views mesh vertexes, passing and selecting the coordinated <g>Skin mesh vertexes</g> in the <a href="intro.modeleditor.skinview.html">Skin-view</a>,
+where they can be used for editing purposes. Any selection changes in the Editor views will be updated to the
+<a href="intro.modeleditor.skinview.html">Skin-view</a> as well. Once the selection has been passed, if this function is
+turned off, the selection will remain in both the Editor and the <a href="intro.modeleditor.skinview.html">Skin-view</a> for further use.
+The <a href="intro.modeleditor.skinview.html">Skin-view</a> and Editor views selected vertex colors can be changed in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Pass selection to Skin-view </i>&nbsp;: This function will pass selected Editor model mesh vertexes and select the
+coordinated <g>Model Skin mesh</g> vertexes in the <a href="intro.modeleditor.skinview.html">Skin-view</a>,
+along with any others currently selected, where they can be used for editing purposes. Once the selection has been passed,
+if this function is turned off, the selection will remain in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+for its use there. The Editor's selected vertex colors can be changed in the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>No vertex drag lines </i>&nbsp;: This stops the multi selected Editor model mesh vertexes drag lines from being drawn,
+but not the vertex outlines. Single vertex drag lines will also still be drawn.
+</td></tr>
+</table>

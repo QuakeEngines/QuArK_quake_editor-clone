@@ -1,0 +1,32 @@
+title: What is the history of QuArK?
+author: Gryphon, tiglari
+
+QuArK was originally called QuakeMap, and was a map-only editor for Quake. QuakeMap broke
+with the "traditional" 3-view (xy, xz, yz) interface and opted to go for a much simpler to
+understand interface that showed just a "side" and "top" view, with a "compass" that rotated
+your level through 360 degrees, making the third "view" unnecessary. This opened up much of
+the screen real estate, and by incorporating a small uncluttered toolbar on the left hand
+side, along with extensive right-click functionality, this enabled new users to quickly and
+easily learn the interface enough to put their efforts into their creations, and not into
+learning the editor and its complicated arrays of views and tool buttons.
+
+As Armin expanded the program, it progressed to the point where Quake"map" was
+no longer representative of its scope. The name was changed to Quake Army
+Knife (QuArK for short) which better signified its "all-in-one" abilities.
+
+QuArK expanded to integrate all of its various editors and abilities into a single
+interface called the QuArK Explorer that allows you to control most game assets
+and to seamlessly integrate any and all of these items into a single QuArK file with the
+extension ".QRK". Items can be added, removed, and changed at will, and this means that your
+past projects can be included in your future projects, simply by "linking" to the .QRK file
+that contains them. All of your current items are shown in the Explorer, and managing the
+items is as simple as clicking on an entry.
+
+As Armin approached the end of his undergraduate work, he foresaw that he would no
+longer have the time to continue QuArK development, and released the source code
+under the GPL, and begin to help various enthusiasts to begin to learn to maintain and
+extend it.
+
+It is now maintained at SourceForge as the project <link project>QuArK</link>, and has
+expanded its scope from just Quake to 31 different games at time of writing (maybe more
+by the time you are reading this).

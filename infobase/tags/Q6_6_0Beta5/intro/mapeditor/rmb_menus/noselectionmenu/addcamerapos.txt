@@ -1,0 +1,18 @@
+title: Add Camera Position
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=1 align=right valign=top>addcamerapos1.png</img>
+<b>Add Camera Position</b>: This item only appears on the
+<a href="intro.mapeditor.rmb_menus.noselectionmenu.html">No Selection RMB menu</a> when the <g>RMB</g>
+is clicked in the 3D view and nothing is selected. When selected, this will open
+<a href="intro.mapeditor.rmb_menus.noselectionmenu.html#addcamerapos">its dialog box</a>
+(shown to the right here) where you can add a new 'Camera view' for a quick jump to see your work from
+a different preset angle when this camera icon is clicked in the
+<a href="intro.mapeditor.dataforms.html#treeview">Tree-view</a>.
+This is the final extended item of this menu. Detailed information on its use and capabilities
+can be found in its own section under
+<a href="intro.mapeditor.floating3dview.html#camera">Floating 3D windows</a> in the Infobase docs.
+</td></tr>
+</table>

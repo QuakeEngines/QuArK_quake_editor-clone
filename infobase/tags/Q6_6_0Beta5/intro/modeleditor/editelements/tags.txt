@@ -1,0 +1,111 @@
+title: Tags System
+author: cdunde
+
+In the editor, these are displayed as dark purple dots, or bright red if they are selected.
+One or more can be selected at the same time. <g>RMB</g> click over one to get its popup menu.
+
+To add a new tag, select one component in the tree-view, do a <g>RMB</g> click in one of the
+editor's 2D views to get a popup menu and select <g>Tag Commands > Add Tag Here</g>.
+You can then rename the tag in the tree-view.
+
+To delete a tag, do a <g>RMB</g> click over the tag in the tree-view or one of the editor's views
+to get its popup menu and select <g>Delete this tag</g>. do <b>NOT</b> use any other Delete menu item
+as they will not properly remove the tag and all its hidden data, causing problems.
+
+<g>Tags</g> are primarily used for <g>Quake 3</g> model files ( <g>.md3</g> ).
+Their purpose is to link one <g>.md3</g> model section to another <g>.md3</g> model section.
+When all these sections have been imported to the editor, in their proper order, they can
+then be put together by the use of their <g>tags</g> to create a single complete model.
+
+The process of putting these pieces together is done automatically by the <g>plugins\ie_md3_import.py</g>
+file when the final <g>.md3</g> file is imported. For the most part, <g>tags</g> are used for the
+games <g>player</g> models that each person uses to represent them selves in the game.
+They are also used in the player's <g>weapon</g> <g>.md3</g> models to attach the weapon to that model
+and any additional parts to the <g>weapon</g>.
+
+Each <g>player</g> model consist of three parts or <g>.md3</g> models. The <g>head.md3</g>,
+the <g>lower.md3</g> and the <g>upper.md3</g> in that order. All three are kept in a single folder
+with the name of that <g>player</g> model. The folder also contains other files pertaining to that
+specific model. They are:
+<ul>
+<li> Other head, lower and upper <g>lower poly</g> versions of the model.
+<li> Skin texture ( <g>.tga</g> ) image files.
+<li> Skin definition ( <g>.skin</g> ) text files.
+<li> Animation ( <g>.cfg</g> ) configuration text files.
+</ul>
+The last of these, the <g>animation.cfg</g> file, breaks down the models animation frames
+into animation sequences that are used in the game when the player does different movements
+or certain actions take place...like being killed.
+
+The <g>animation.cfg</g> files are text files that can be edited, changed, in the
+<a href="intro.modeleditor.html">QuArK Model Editor</a> and, once saved, those animation sequence
+changes can immediately be viewed in the editor. This is covered in more detail in the
+<a href="#animationCFG">Animation CFG</a> section below. But first, a few more things about <g>tags</g>
+need to be covered.
+
+Think of a <g>tag</g> as a folder. In each tag are its <g>tag frames</g> which correspond with the
+model's animation frames, one <g>tagframe</g> each.
+
+A <g>tagframe</g> contains two pieces of data, its <g>rotation matrix</g> and its <g>origin</g>
+or x,y,z position in 3D space which you will see in its
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args-view</a>. The position of the
+<g>Tag</g> can be changed by changing the three values shown there. It will also change all the other
+<g>tagframes</g> of that <g>tag</g> automatically by the same <g>movement amount</g>, because these
+must remain consistent or the model would come apart.
+
+Tags can also be changed by placing your mouse cursor over one, holding down on your <g>LMB</g> and
+dragging the tag to its new position in any of the editor's views, updating its <g>origin</g>
+that you see in its <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args-view</a>.
+
+<a name="animationCFG"></a>
+<g><i><b><u>Animation CFG :</u></b></i></g><br>
+Like the <g>.md3</g> files, tags have specific parts and specific names, they are:
+<img border=1 align=right>tags1.png</img>
+<ul>
+<li> tag_head
+<li> tag_weapon
+<li> tag_torso
+</ul>
+They should be maintained in that order as well to avoid problems in the editor.<br>
+You will notice in the editor's <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+that the model's folder name is added in front of each of its tag names, as shown at the top
+of its <a href="intro.modeleditor.dataforms.html#specsargsview">Specifics/Args-view</a> to the right
+for the <g>tag_torso</g>. This keeps the tags of one model from being overwritten by another model.
+Doing it this way allows you to import more then one <g>.md3</g> model into the editor, if so desired.
+
+<b>Tags</b><br>
+Below the tag's <g>classname</g> you will see two dropdown lists. By clicking their arrows they
+will display all the tags and components that belong to that model.
+
+By clicking on one of those names in the list, it will jump you to that tag or component and select it.
+
+<b>AnimationCFG File</b><br>
+In this section you find four items dealing with the animation cfg file directly for editing, changing, it.
+<ul>
+<li> cfg file - gives the full path to and name of that file.
+<li> cfg lines - the number of lines to display in the edit section below, click the arrows to change it.
+<li> edit cfg - opens the file in an external text editor for making changes.
+<li> cfg text - displays the current text of that file. If changed, this will also change.
+</ul>
+To <g>edit</g> the cfg file click the gray <g>edit cfg</g> button to open the file in your external
+text editor. Make your changes and <b>be sure</b> to click <b>Save</b> in that editor <b>before</b>
+closing it or the external editor message that QuArK will display. Other wise it will not update correctly.
+
+To save a hard copy of the cfg file click <b>Save As</b> in your external editor, name it <b>animation.cfg</b>
+and select a place to save it at. Later you can move that new file to the model's folder <b>BUT</b>
+be sure not to overwrite your original file with that same name.
+
+<b>Play list upper/lower</b><br>
+The next two sections deal with the <g>animation sequences</g> that the cfg file controls.<br>
+The <g>upper</g> section takes priority over the <g>lower</g> section. Meaning, if the name
+of the sequence starts with <g>BOTH_</g> it will not let the sequence in the <g>lower</g> section
+to animate. Click the arrows to the right to select other sequences, even while
+<a href="intro.modeleditor.toolpalettes.animation.html">running animation</a>.
+<ul>
+<li> first frame - of the cfg file, these are not the same numbers as shown in the editor's 
+<a href="intro.modeleditor.dataforms.html#treeview">tree-view</a>
+<li> num frame - the number of frames it will play, animate, for that sequence.
+<li> looping frames - the number of frames it will continue to play, loop over, again and again.
+<li> CFG FPS - the frames per second speed to play that sequence at in the game.
+</ul>
+

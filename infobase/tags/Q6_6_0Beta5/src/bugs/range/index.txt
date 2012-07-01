@@ -1,0 +1,11 @@
+title: Range Check Errors
+desc: map other
+
+By enabling Range checking in Delphi (Delphi 6/7: Project > Options... >
+Compiler > Range checking), the compiler will build in checks into the
+program to make sure the boundaries of arrays are not crossed, and that
+non-allocated memory is not referenced.
+
+Don't forget to (re)BUILD the project after toggling this options. If you
+forget this (and do a normal COMPILE), only the newly changed files will
+have the altered option applied.

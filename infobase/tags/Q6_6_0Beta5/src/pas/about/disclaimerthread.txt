@@ -1,0 +1,12 @@
+title: DisclaimerThread
+author: DanielPharos
+
+<code>
+function DisclaimerThread(F: TForm): THandle;
+</code>
+
+DisclaimerThread creates the flashing red disclaimer text on the splash screen and the about window. Call it with the window's handle, and it returns a handle to a thread it created that draws the flashing text.
+
+Currently, only one disclaimer thread at a time is supported. Opening multiple can result in undefined behavior.
+
+Don't forget to close the returned handle when you're done with the flashing text!

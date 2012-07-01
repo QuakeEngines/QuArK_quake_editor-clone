@@ -1,0 +1,10 @@
+title: TDisclaimerInfo
+author: DanielPharos
+
+<code>
+TDisclaimerInfo = record
+  ...
+end;
+</code>
+
+TDisclaimerInfo stores the information about the flashing disclaimer text. It is created and used by the <tt>DisclaimerThread</tt> function.

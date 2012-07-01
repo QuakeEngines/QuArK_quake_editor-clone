@@ -1,0 +1,32 @@
+title: Misc. Info.
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Changing and re-running a map</b>
+
+Normally, I run Quake 4 in a separate window, instead of its "Full Screen" mode when working on
+a map, for a couple of reasons. First it's a lot easer to see around to view something in the
+editor that you might be concentrating on with your work. The other is being able to jump back
+and forth between the editor and the game running by simply holding down the Alt key and
+pressing the Tab key to switch. It seems less confusing that way.
+
+Another nice feature is the ability to make changes in your map while the game is still running
+and then simply rebuild and reload the map. This is done by clicking the same menu item in QuArK
+to export the map, then click on the game, press the Tilde ~ key and enter the two commands to
+build and run it again. If you stayed with the default name they would look like this:
+
+<i>dmap newmap
+
+devmap newmap</i>
+
+And Walla, your changes appear in the game! This method saves a lot of time of constantly having
+to restart the game and wait for it to build and load the map again. But you can also do it that
+way as well if you like. Just click the QuArK menu item and off you go. To close the game,
+press the Esc key and select "Exit" from its menu.
+
+If, for some reason, the map does not build and run automatically, then you will need to bring down
+the game console twice and enter the above commands by hand.
+</td></tr>
+</table>
+

@@ -1,0 +1,5 @@
+title: Colors
+author: Decker
+
+<img align=right>colors.png</img>
+So you don't like the default colors? Then change them here!

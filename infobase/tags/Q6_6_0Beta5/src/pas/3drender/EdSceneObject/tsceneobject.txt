@@ -1,0 +1,59 @@
+title: The 'TSceneObject' class
+author: Decker, DanielPharos
+
+Let me see, if I can explain what this class is all about. Mind you, I have not
+understanded it completly, so parts of this look-through explanation may be
+wrong. It's also very incomplete, but when you're working with the code, most
+of it will explain itself.
+
+The idea of <tt>TSceneObject</tt> is to encapsulate the complex data structures
+and 3D-render API calls, in a general class interface for QuArK to use. This
+makes it much easier to add additional renderers later, because the generic
+interface with QuArK will be the same. It does not contain any code for a
+specific 3D-render, so one has to inherit from it and create a specialized
+class.
+
+The main function calls into this abstract class are the following:
+
+<code>procedure Init( ... ); virtual; abstract;</code>
+
+This function must initialize the window, setup default data-structures and
+options, and ready the 3D-render API calls by for instance load a DLL. It also
+applies the settings from the Configuration, and saved the camera position.
+
+It is not defined in the TSceneObject class, as can be seen on the
+<tt>abstract</tt> keyword. So all classes that inherit from TSceneObject, must
+define the contents of this function themselves.
+
+<code>procedure BuildScene( ... );</code>
+
+<i>info missing...</i>
+
+<code>procedure Render3DView; virtual; abstract;</code>
+
+This procedure has to render the image data. It's also possible it has to
+output the actual image to the screen, I'm not sure.
+
+<code>procedure AddPolyFace( ... );</code>
+
+<i>info missing...</i>
+
+<code>procedure AddModel( ... );</code>
+
+<i>info missing...</i>
+
+<code>procedure AddBezier( ... );</code>
+
+<i>info missing...</i>
+
+<code>procedure AddLight( ... ); virtual;</code>
+
+<i>info missing...</i>
+
+<code>function StartBuildScene( ... ) : TBuildMode; virtual; abstract;</code>
+
+<i>info missing...</i>
+
+<code>procedure EndBuildScene; virtual;</code>
+
+<i>info missing...</i>

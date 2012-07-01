@@ -1,0 +1,5 @@
+title: Skins folders
+author: cdunde
+
+<img border=0 align=right>skinfolders.png</img>
+Any Skins folder can be placed here including all of its skin textures.

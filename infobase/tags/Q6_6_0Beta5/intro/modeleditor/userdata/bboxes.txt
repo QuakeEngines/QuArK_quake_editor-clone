@@ -1,0 +1,6 @@
+title: Bounding Boxes
+author: cdunde
+
+<img border=0 align=right>bboxes.png</img>
+You can put in a Bounding Box sub-group folder with all of its bboxes in it
+or a single bounding box in the userdata panel.

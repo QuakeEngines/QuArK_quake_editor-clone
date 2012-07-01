@@ -1,0 +1,15 @@
+title: Your first room
+author: Decker
+
+Now you have learned enough to make your first room. So go ahead. Do it. :-)
+
+Maybe a little help on the way? Well, okay then:
+<ul>
+<li>Start by creating a cube, size it so it forms the floor of the room. Texture it as you like.
+<li>Next create yet a cube, size it as the first one, but make this the ceiling. Texture it.
+<li>Now create 4 cubes, size and position them so they become the walls of your room. Texture them too.
+</ul>
+
+Unfortunatly you can't test it yet, because we haven't told where the player
+should start entering the map. So continue reading, to see how to place
+<g>entities</g> in your map.

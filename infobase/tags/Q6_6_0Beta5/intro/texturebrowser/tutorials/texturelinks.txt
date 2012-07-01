@@ -1,0 +1,119 @@
+title: Texture Links, how to create
+author: Decker-cdunde
+
+1) First you make sure, that the custom textures you want to make links to,
+already exists in a game-directory.
+
+Then in QuArK, you go into the texture-browser, and choose 'New main folder'.
+
+<img>texturelinks_1.png</img>
+
+2) This will bring up a dialog-box where QuArK asks you, in what .QRK file you
+want to store the new texture-links.
+
+If you have the textures in a special game-directory, like a TC/PC/MOD, I
+suggest you choose the option 'In a new Add-on'.
+
+If you already have some custom textures from before, you can choose 'In an
+already registered Add-on', so you don't end up with multiple .QRK add-ons, but
+for this tutorial we will select the 'In a new Add-on'.
+
+<img>texturelinks_2.png</img>
+
+3) Now that you have selected 'In a new Add-on', QuArK will ask you to name
+the new .qrk file that will be created.
+Keep the file in your QuArK main directory, along with the other .QRK files, so you
+can always find it again. Also remember to save it before you uninstall QuArK for an
+updated version in the future.
+
+<img>texturelinks_3.png</img>
+
+4) In the texture-browser tree-view, there will now be a new main folder, called
+'New Folder'.
+
+<img>texturelinks_4.png</img>
+
+5) You can rename this folder (and others as well), by highlighting it and press
+the F2 key (just like in Windows' File-explorer) or just click twice on it.
+
+<img>texturelinks_5.png</img>
+
+6) While still having selected the new main folder (now called 'Action Quake 2' for this example), click on the icon at the top, in the menu-bar, just to the left of the "Search" icon. The one where the
+fly-over help is <i>'make links for a folder of Quake 2 / Heretic II textures
+(.wal and .m8)'</i>. This also works for creating Half-Life texture-links, but
+unfortunately not for Quake-1 (I don't know about Hexen-2, Sin and other games for sure.)
+
+<img>texturelinks_6.png</img>
+
+7) A click on the icon, brings the 'Texture File Finder...' dialog-box up. In this
+you select the game-directory where your custom textures are located. In this
+example, I'll choose to create texture links to whatever I have in my Action
+Quake 2 game-directory. If the game does not use shader textures then uncheck the
+"Shaderlist.txt" box. In the directory window above that, scroll down, select the
+MAIN folder where your textures are and click Ok. This will save the Main folder
+and all its sub-folders, along with their path names, in the new folder you crated
+at the start and you will now be able to view all those textures in the Texture Browser
+window to the right by just clicking on a sub-folder.
+
+<img>texturelinks_7.png</img>
+
+If you don't like the structure it has stored the texture links in, you can change it
+as you like, by moving the links into a different <u>texture-list</u>, or
+create new <u>sub-folders</u> which will contain texture-lists, etc. (almost
+just like Windows' File-explorer.)
+
+You create a 'new texture list' by using the 1st icon in the right-most set of icons of the menu (if
+in doubt, always read the fly-over help). The 'new sub-folder' can be found in
+the 'Folders' menu.
+
+<img>texturelinks_8.png</img>
+
+8) Once you saved the new .QRK file you have created in step 7 above and restart QuArK, it will
+also add a red icon to the editors tree view near the top where you can select any of those
+sub-folders to display a list of the textures in it unless they are in sub-folers already.
+We will cover how to fix that further down.
+
+<img>texturelinks_10.png</img>
+
+<b>Remember to save your changes, before leaving QuArK completely! If you forget, all your
+work will vanish, because your newly created .QRK Add-on has not been saved
+properly.</b>
+
+9) Now, close QuArK completely. As it shuts down you will see a message asking if you want to save the
+changes to your new addon .QRK file, click "yes". Restart QuArK and you will see the newly added red
+icon described in step 8 above. But, unless your textures are in a single folder, there are still a
+few more steps to do before it will work properly.
+
+<img>texturelinks_9.png</img>
+
+10) Open the Texture Browser and click on the + sign next to the folder that contains all of your sub-folders.
+
+<img>texturelinks_11.png</img>
+
+11) Select all the sub-folders by clicking on the first one and hold down the Shift key as you click on the last one.
+
+<img>texturelinks_12.png</img>
+
+12) Now drag all of those folders into the Main folder above the one they are in now. Then <g>RMB</g> click on the
+folder that is now empty that you just took them out of and select ' Cut ' to delete it.
+
+<img>texturelinks_13.png</img>
+
+13) Once again, just like in step 9 above, close QuArK completely and click "Yes" to save your changes.
+
+<img>texturelinks_14.png</img>
+
+14) Reopen QuArK and the red icon will now list all of your sub-folders and the textures in each of them
+so when you select one to apply that texture, it will also give the sub-folder as part of its name.
+
+<img>texturelinks_15.png</img>
+
+If you look in QuArK's main folder you will also find your newly created textures .QRK file, which needs
+to stay where it is or you will break the links. You will also notice that it is a very small file.
+That is because it only contains the main path to where you actually have your texture folders and files.
+
+Once again, <b> remember to save it before you uninstall QuArK for an updated version in the future.</b>
+You should be able to use the same Addon .QRK file in the new version.
+
+
+

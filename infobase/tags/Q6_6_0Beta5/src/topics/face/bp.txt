@@ -1,0 +1,60 @@
+title: Brush Primitives
+author: tiglari
+
+'Brush primitives' is the new brush format used by GtkRadiant.
+Other than some extra braces and a 'Brushdef' in the text of the format,
+its main new feature (for now at any rate) is an improved method of
+expressing the texture-mapping over the 5 'shift scale rotate'
+numbers that come after the texture name in the old
+representation.
+
+In BP format, you get something that looks like this coming
+after the threeponts info, and before the texture name:
+<code>
+( ( 0.007813 0 0 ) ( 0 0.007813 0 ) )
+</code>
+What these are is the top two rows of the 'homogeneous matrix'
+mapping the plane of the face, under a special coordinate system
+we will get to in a moment, into the texture plane (so it's sort
+of the reverse of how QuArK etp and tv6 work, since these most directly
+represent the mapping from the texture plane onto the face).
+Erm, what's a homogeneous matrix you might ask.
+
+It is 3x3 matrix whose bottom row is (0 0 1).  If you multiply
+a homogeneous matrix by a column vector whose z coordinate is
+1, 
+you'll see that the equations are exactly those for a
+linear mapping followed by a translation: the first two numbers
+of the top two rows give a 2x2 matrix describing the linear
+transformation, and the last number give a column vector to
+be added (to the a column 2-vector) to give the translation.
+So what about this coordinate system?
+
+It is one whose axis directions are gotten by rotating the
+Y and Z coordinates of map space so that they lie in the
+plane.  These direction vectors are computed by function
+GetAxisBase in QkMapPoly.pas.  It's essential that q3map
+and the editor compute them in the same way; hopefully the
+GtkRadiant/Q3map developers won't change it without telling us.
+Then of course for a coordinate system you need an origin,
+this is gotten by scaling the face's normal vector by its
+Dist (-ance from the origin).
+
+So what goes on in GetPXPY is that the (texture-scaled,
+etc.) threepoints are converted to the Axis Base coordinate
+system, and then these equations are solved for the
+coefficients aij making up the matrix (I used Maple V
+to get the solution):
+<code>
+ a11*p0x+a12*p0y+a13 =  0
+ a21*p0x+a22*p0y+a23 =  0
+
+ a11*p1x+a12*p1y+a13 =  1
+ a21*p1x+a22*p1y+a23 =  0
+
+ a11*p2x+a12*p2y+a13 =  0
+ a21*p2x+a22*p2y+a23 = -1
+</code>
+
+The conversions from Brush Primitives to QuArK (once etp, now tv6) are
+made in the procedure ReadQ3BrushDef in QkMap.pas.

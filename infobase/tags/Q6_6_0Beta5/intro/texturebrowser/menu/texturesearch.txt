@@ -1,0 +1,10 @@
+title: Texture Search
+author: cdunde
+
+<img border=1 align=right>texturesearch.png</img>
+Clicking on this icon button will bring up the <g>Search for Texture</g> dialog window.
+Enter a word in the <g>Search for:</g> box that might be in the name of the texture
+or type of texture you are looking for and click on the check mark button to do the search.
+
+The dialog window will close and if any textures where found they will now be listed in the
+<g>Searched Textures</g> folder.

@@ -1,0 +1,33 @@
+title: Making a simple bend with two pipes
+author: Decker
+
+First you create the two pipes, and place them where you want them:
+
+<center>
+<img>make_prism_simple_bend_1.png</img>
+</center>
+
+Then you intersect the ends:
+
+<center>
+<img>make_prism_simple_bend_2.png</img>
+</center>
+
+Next you use the cut tool, to cut at the exact middle of the two pipes:
+
+<center>
+<img>make_prism_simple_bend_3.png</img>
+</center>
+
+Remove the pieces that are unwanted:
+
+<center>
+<img>make_prism_simple_bend_4.png</img>
+</center>
+
+Now you got a pipe with a very simple (and unrealistic looking) bend:
+
+<center>
+<img>make_prism_simple_bend_5.png</img>
+</center>
+

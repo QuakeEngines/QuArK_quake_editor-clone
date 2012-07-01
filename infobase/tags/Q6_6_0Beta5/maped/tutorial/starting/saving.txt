@@ -1,0 +1,28 @@
+title: Saving your map in a QuArK project
+author: Decker
+
+<img width=195 height=164 align=right>image7.png</img>
+Saving your work often is also a good idea. There are several ways to do this.
+
+When you first start a new map, you should save it using the <tt>Save in QuArK
+Explorer</tt>. This will create a new entry in your QuArK project
+(<g>.QRK</g>), so you can keep multiple versions of the same map, in one
+project file.
+
+You can also choose to save it as a QuArK map-file (<g>.QKM</g>), but then
+it's only one map per file.
+
+The last option, is to save it as a <g>.MAP</g> file. However this is not
+advisable when using QuArK, because you loose all the neat information that is
+stored in the tree-view, like; groups, duplicators, negative brushes, shared
+faces, etc. Only save as a .MAP file, if you want others to look at your work,
+and they use another map-editor than QuArK.
+
+Try using the <tt>Save in QuArK Explorer</tt> a few times. Notice that you will
+be brought back to the QuArK explorer when using this, so you can see that a
+new entry is added to your project. You can rename the entries by slowly
+double-clicking on them, or press the F2 key (Just like in Windows'
+File-Explorer.)
+
+Also when saving to the QuArK explorer, you then have to save your project
+there.

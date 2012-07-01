@@ -1,0 +1,5 @@
+title: Compass X-view-axis rotation
+author: Decker
+
+<img border=0 align=right>xaxis.png</img>
+Rotates the map-views.

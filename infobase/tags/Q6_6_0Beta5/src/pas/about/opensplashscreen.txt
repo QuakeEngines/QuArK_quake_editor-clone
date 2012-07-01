@@ -1,0 +1,10 @@
+title: OpenSplashScreen
+author: DanielPharos
+
+<code>
+function OpenSplashScreen : TForm;
+</code>
+
+OpenSplashScreen creates (and displays) the QuArK splash screen and returns its <tt>TForm</tt>. Do not forget to release the splash screen when it it not needed anymore, because it will NOT auto-close!
+
+Also, please don't open the splash screen without a good reason to do so.

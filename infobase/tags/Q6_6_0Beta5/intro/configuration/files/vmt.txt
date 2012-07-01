@@ -1,0 +1,9 @@
+title: VMT
+author: DanielPharos
+
+<img align=right>vmt.png</img>
+
+
+<u>Advanced VTFLib settings</u>
+
+<i>Parse mode</i>. The parse mode used when reading in VMT files.

@@ -1,0 +1,19 @@
+title: Selected Views
+author: cdunde
+
+<img border=1 align=right>viewselector.png</img>
+These buttons will allow you to <g>freeze</g> any one, or combination of, the editor's views
+during animation and continue to animate any view that is re-activated by clicking on its
+button once again.
+
+The <ref> ./fps </ref> speed that are animated may be effected by the number of views that
+are frozen and\or different items that are also being drawn such as face outlining.
+
+The icons for each view, from left to right, are:
+<ul>
+<li><i>3Ded</i> : The editor's <g><b>3D</b></g> view.
+<li><i>X</i> : The editor's <g><b>X Back 2D</b></g> view.
+<li><i>Y</i> : The editor's <g><b>Y Side 2D</b></g> view.
+<li><i>Z</i> : The editor's <g><b>Z Top 2D</b></g> view.
+<li><i>3D</i> : The editor's <g><b>floating 3D</b></g> view.
+</ul>

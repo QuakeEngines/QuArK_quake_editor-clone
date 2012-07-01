@@ -1,0 +1,15 @@
+title: 3D Edit Window
+author: Decker
+
+<img border=0 align=right>editor.png</img>
+In the 3D window, you will be able to move around in the level, almost as if
+you were doing it using <g>NOCLIP</g> in the FPS-game.
+
+To move around, you can use the mouse, or keys, when the mouse is inside the
+3D-window so the window becomes active. The keys you can find and redefine in
+the <ref> intro/configuration/general/3dview</ref> options.
+
+Another feature of the 3D window is, that you can edit your map in it. You can
+click on a polyhedron, and it will appear selected with wireframes. You can
+move the selection around, just as you would do it on the map-views. Even align
+textures on faces can be done in the 3D window.

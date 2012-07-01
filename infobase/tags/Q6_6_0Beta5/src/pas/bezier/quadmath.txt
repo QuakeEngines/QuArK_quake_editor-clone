@@ -1,0 +1,52 @@
+title: What is the math behind Quadratic Bezier patches?
+author: Armin Rigo
+
+These patches are defined with 9 (3x3) control points. Each control point
+has 5 coordinates: x,y,z (in 3D space) and s,t (texture coordinates).
+
+In the map editor when you first insert a patch, its control points are
+ordered like this in the xy (top-down) view:
+
+<code>
+  6 7 8           c20 c21 c22
+  3 4 5     or    c10 c11 c12
+  0 1 2           c00 c01 c02
+</code>
+
+The patch is a parametric surface for two parameters u,v ranging between
+0 and 1. Each for the 5 coordinates is computed using the formula described
+below.
+
+A Quadratic Bezier Line is a curve defined by 3 control points and
+parametrized by a single variable u ranging between 0 and 1. If the 3
+control points are p0, p1, p2 then the curve is parametrized by:
+
+<code>
+  f(u,p0,p1,p2)  =  p0 * (1-u)^2  +  p1 * 2u(1-u)  +  p2 * u^2
+</code>
+
+The Bezier surface is obtained by applying this formula for u and for v:
+if cji (i=0,1,2; j=0,1,2) are the 9 control points then
+
+<code>
+  g(u,v) = f(u, f(v,c00,c10,c20), f(v,c01,c11,c21), f(v,c02,c12,c22))
+</code>
+
+The formula can be seen as operating on each coordinate independently,
+or on all 5 cordinates at the same time (with vector sum and multiply
+in the real 5-dimensional vector space). In TBezier.BuildMeshCache
+the computations are done on the first 3 coordinates only because the
+texture coordinates are not cached.
+
+The "speed vectors" 'dg/du' and 'dg/dv' are vectors that attach to each
+point (u,v) on the surface of the patch; they are the derivative of the
+function g. They tell "how fast" the point on the patch moves when u and
+v move. They are computed by extending as above the similar notion of
+speed on the Bezier curves:
+
+<code>
+  df/du (u,p0,p1,p2)  =  p0 * (-2)*(1-u)  +  p1 * (2-4u)  +  p2 * 2u
+</code>
+
+The vectors 'dg/du' and 'dg/dv' can also be used to compute (by cross
+product) a vector orthogonal to the surface at a given point.

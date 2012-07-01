@@ -1,0 +1,35 @@
+title: Specifics
+author: tiglari
+
+
+<TABLE>
+<TR>
+<TD>
+The RMB menu currently offers three basic
+shapes (arch/cap, bevel, column) in two orientations each, but
+the 'duplicators' that implement these shapes have a
+considerable number of specifics that implement variations.
+You can see what these specifics do by making an arch and
+experimenting.   If you uncheck the 'inverse' specific for
+example, the arch will turn into a 'cap'.  In general, inverse
+shapes have their textures on a concave curve-side, non-inverse
+on a convex one.
+
+Another useful one is 'lower'.  This flips the arch upside-down,
+so that the curved surface is a U that you can walk over.
+Lower arches take their texture from their bottom ('down')
+rather than their top ('up') faces.  Then there's 'onside',
+which lays the arch down its side, to make a curved wall.
+
+Another is 'stretchtex'.  If this is checked, then whatever
+texture on the back face will be stretched to cover the
+curve, without any of the alignment manipulations.  This
+is useful if you have a specially prepared texture that
+you specifically want to put on a curve, but not elsewhere.
+<BR><BR>
+Some of the remaining ones will be discussed in the section
+<ref> maped/builders/archcap/techniques</ref>
+ below.
+
+</TD></TR>
+</TABLE>

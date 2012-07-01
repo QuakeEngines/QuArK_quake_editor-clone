@@ -1,0 +1,73 @@
+title: Hunting tools
+author: DanielPharos
+
+There are many tools out there that can be used to locate and
+eliminate memory leaks.  Here's a small list of some of them,
+and where to find them:
+
+<strong>WinDBG (Debugging Tools for Windows)</strong><br>
+Microsofts official debugging tools.  Might come in handy, but
+it can only be used on the actual executable, and thus can
+only be applied when searching for leaks the hard way, or for
+locating crashes.
+
+Website:
+<a target="_blank" href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">http://www.microsoft.com/whdc/devtools/debugging/default.mspx</a>
+
+<strong>VMMap</strong><br>
+Another useful tool is VMMap.  This tool displays all memory
+allocations from a process, so memory leaks should be easy
+to spot.  It even can search from strings in specific memory
+block, so it's possible to identify what exactly is leaking.
+
+Website:
+<a target="_blank" href="http://technet.microsoft.com/en-us/sysinternals/dd535533.aspx">http://technet.microsoft.com/en-us/sysinternals/dd535533.aspx</a>
+
+<strong>MemProof</strong><br>
+A program that monitors the executable realtime, and lists
+memory usage.  When the program finishes, all the memory still
+being used has obviously leaked.
+
+Website:
+<a target="_blank" href="http://www.automatedqa.com/products/memproof/">http://www.automatedqa.com/products/memproof/</a>
+
+<strong>MemCheck</strong><br>
+Being an alternative memory manager, this replaces the old
+MemTester.pas that QuArK uses at the moment.  This has already
+been done: all you need to do is to open the .dpr file in the
+source directory, comment out MemTester, comment in MemCheck
+AND the MemChk below at the end of the file, and you're done.
+
+Website:
+<a target="_blank" href="http://v.mahon.free.fr/pro/freeware/memcheck/">http://v.mahon.free.fr/pro/freeware/memcheck/</a>
+
+<strong>FastMM</strong><br>
+Another alternative memory manager.  This one is actually so
+good, that even Borland (developers of Delphi) started using
+this in Delphi 2006!  It has a settings file,
+source/prog/FastMM4Options.inc. To enable the Full Debug Mode,
+you will need to place a DLL file into your runtime directory.
+See the FastMM readme file for more information.
+
+Website:
+<a target="_blank" href="http://sourceforge.net/projects/fastmm/">http://sourceforge.net/projects/fastmm/</a>
+
+
+The alternative memory managers have already been installed into QuArK. You can enable them by editing the MemManager.inc file and switching the comment-tags. Note: Only one can be enabled at a time!
+
+Also, don't forget:<br>
+There are a lot of debugging options already present in
+Delphi (at least in 6 and higher).  Don't forget to check
+the Project > Options > Compiler/Compiler Messages/Linker
+settings in Delphi.  Also, some of these options have to
+be enabled in order to use the full power of the tools
+listed above.  Read the respective readme file that comes
+with the tool for more information.
+
+<hr>
+
+Another tool to hunt for problems (especially Python reference
+counter bugs) is the plugin called 'devpyobjects.py', which
+can output a file containing a list of all the active Python
+objects currently in memory. See the file (located in the
+'plugins' directory) for more info.

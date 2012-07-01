@@ -1,0 +1,16 @@
+title: Map layout
+desc: classic
+desc: 3views
+desc: 4views_a
+desc: 4views_b
+
+These are the different map-layouts you can work in. Some might be easier to
+understand than others, but thats up to you to choose one you like. You will
+always be able to switch between layouts when you're working.
+See <ref> ../menu/layoutmenu </ref> on how you change between these.
+
+However, you should be aware that rotating the <ref> ../compass </ref> will
+affect all 2D-views, so the X,Y,Z axises will correspond to the angle of the
+compass. If you use the 4-views layouts, you should not need to change the
+angle of the compass.
+

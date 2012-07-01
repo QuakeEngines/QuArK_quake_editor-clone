@@ -1,0 +1,58 @@
+title: Setting values in the specifics/arg view
+author: Decker
+
+<img width=275 height=135 align=right>image24.png</img>
+There is another little feature in QuArK. You can have any of the
+<ref> intro/mapeditor/dataforms \ data views</ref> open at all times. You do
+this by clicking on the tap for the view, and drag it to the place you want to
+drop it at.
+
+Try to do it as shown in the image. Drag the
+<ref> intro/mapeditor/dataforms/specsargsview \ specifics/args view </ref>
+out, and drop it somewhere.
+
+Okay, so whats this specific/arg thingy then? Well, all entities requires some
+parameters, which the game-engine uses to figure out what the entity is and
+what it is supposed to do. These parameters are called <tt>specifics</tt> and
+<tt>arguments</tt> in QuArK. You could call them the entity's variables and
+values, if you want it in programming-terms.
+
+A specific that must always exist for every entity, is the <tt>classname</tt>
+specific. This is the 'variable-name' that the game-engine knows about, and ask
+what its argument (value) is. In the case where you have created a
+info_player_start entity, the classname argument is <tt>info_player_start</tt>,
+and so the game-engine knows that this entity will act as a info_player_start,
+and runs code to make it so.
+
+QuArK uses the argument of the classname specific in its tree-view. You can try
+to rename the info_player_start object in the tree-view, and see that it will
+also change in the specifics/args view too. Remember to undo your changes, so
+the info_player_start comes back again.
+
+Some point-entities require a point in 3D-space, to know where it must exist.
+This is the <tt>origin</tt> specific. It has tree arguments; X, Y and Z. QuArK
+has to know this origin, in order to show the entity in the 2D-views. However,
+since you can control the position of point-entities in the 2D-views, you never
+have to modify the arguments for the origin specific.
+
+There is also another specific that QuArK knows about; <tt>angle</tt>. Whenever
+this specific is present in the entity's specifics/args view and have an
+argument, and you have selected then entity, the <tt>entity pointing angle</tt>
+(ball-handle) will appear in the 2D-views. Try to change info_player_start's
+angle argument to some other value between 0 and 360. You will notice that the
+ball-handle will reflect the change.
+
+Setting values for an entity, is just the matter of typing them into the
+argument of the correct specifics, or selecting the proper checkboxes or
+listbox-items, that is shown in the specifics/args view for the entity. Notice
+that the listboxes are editable, so if you can't find an item in the list, you
+have to type it yourself.
+
+<img width=192 height=109 align=right>image25.png</img>
+You can add new specifics to your entity, by clicking on the <tt>plus icon</tt>
+in the specifics/args view. This will give you a new line, where you have to
+rename the specific and give it an argument. You can of cause also delete a
+specific/arg by first selecting the specific and press the <tt>minus icon</tt>.
+However, some specifics might not disappear when you try to delete them. That
+is because these specifics are instructed to be available for input, and usually
+part of the entity, that the game-engine parses.

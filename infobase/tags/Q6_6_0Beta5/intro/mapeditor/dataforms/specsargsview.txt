@@ -1,0 +1,62 @@
+title: Specifics/Args-view
+author: Decker
+
+<img border=0 align=right>specsargsview.png</img>
+Most entities (Monster, Weapon, Door) have a set of parameters to set, so they
+act in a certain way. These parameters are called <i>specifics</i> in QuArK.
+Each specific can have an argument (arg) attached to it.
+
+If you do not know what permitted values an arg can have, keep your
+mouse-cursor steady and a blue 'flyover' help-box will appear, if there is any
+help to that specific/arg pair.
+
+Sometimes there may be an dropdown-listbox which contain valid args, or most
+used args. Some specifics are only possible to turn on/off, these looks like
+checkboxes. There might even be pushbuttons which opens another window, with
+more specific/arg settings.
+
+The above icons from left to right:
+
+<table border=1 cellspacing=0 cellpadding=2>
+<tr>
+  <td valign=top align=center>
+    <i>SF emhd</i>
+  </td>
+  <td>
+    Short for 'SpawnFlags, selected Easy Medium Hard Deathmatch'. Click on this
+    icon to change this entity's spawnflag parameters.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i><b>+</b></i>
+  </td>
+  <td>
+    Icon to add a new specific/arg pair to this entity. You must rename the
+    specific's name, to something that the selected entity can understand in
+    the FPS-game.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i><b>-</b></i>
+  </td>
+  <td>
+    Icon to remove the selected specific/arg pair from this entity. Some
+    specifics you can't remove, and others will, by pressing the - icon, clear
+    the arg of the specific.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>HelpBook</i>
+  </td>
+  <td>
+    Keep your mouse-cursor steady on this icon to get a blue 'flyover'
+    help-box, which will contain specific description/help for the selected
+    entity, and not just a single specific/arg pair. Press the icon to start
+    your web-browser, and it will take you to a page which contain more
+    information about this entity, if there is such a page.
+  </td>
+</tr>
+</table>

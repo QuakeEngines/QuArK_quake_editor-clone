@@ -1,0 +1,21 @@
+title: Colors
+author: cdunde
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=left>
+<img valign=top align=right>colors1.png</img>
+So you don't like the default colors? Then change them here!
+
+With various lines being drawn it can be very helpful to have contrasting colors.
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=left>
+<img valign=bottom align=right>colors2.png</img>
+The editor and the Skin-view have their own independent settings.
+
+The same about contrasting colors apply even more so to the Skin-view since you will
+be dealing with textures having a whole array of colors.
+</td></tr>
+</table>

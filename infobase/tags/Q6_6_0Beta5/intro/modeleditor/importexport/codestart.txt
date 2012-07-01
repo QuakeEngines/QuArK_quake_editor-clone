@@ -1,0 +1,214 @@
+title: Writing the Start Function of the Code
+author: cdunde
+
+Now is a good time to bring up some general code writing points that apply to Python and probably some other
+programming languages as well. Basically speaking, you do not always start at the top of your file and work your
+way down, but the other way around, from the bottom to the top.
+
+As far as Python goes, there are two general types of code writing, <g>classes</g>, which we will cover later, and
+<g>standard functions</g>. <g>classes</g> can pretty much be placed anywhere in your file that you wish.
+That is because they have their own functions written within them, which makes them more placement independent and
+a broader type of operation handling item.
+
+While <g>standard functions</g> must be placed above any other functions that use them, or things just won't happen,
+except for some error messages. When you start writing your file you really don't know all the functions that you
+might need until you reach a point where you half to create some, at which case you'll want to always place them
+above the one(s) that will be using them so that they get <g>defined</g>, or loaded, first.
+So with that out of the way, lets go on from where we left off.
+
+As mentioned just above and looking near the bottom of the <g>ie_md2_import.py</g> file you will see the
+<g>def loadmodel</g> code function. This is the starting, or entry, point into your file to perform its operation,
+that of importing a <g>Quake 2 .md2 model file</g> that can be edited in
+<a href="intro.modeleditor.html">QuArK's Model Editor</a>. The same would apply to an exporter.
+
+This is where another function will be called to actually open the <g>.md2 model file</g>, read it and start
+processing it. But before we get to that part, there are a few other things that need to be done here.
+so lets breakdown the things that make up this function and what they are doing first.
+
+<a name="loadmodel1"></a>
+<u><b><i>Function Definition</i></b></u> :
+<code>
+def loadmodel(root, filename, gamename, nomessage=0):
+</code>
+This is where a function is <g>defined</g>, comes alive, and usually has <g>arguments</g> that go along with it.
+These <g>arguments</g> are things that are being sent to the function to work with and\or do special things within
+the function, like setting optional items within the function to perform or not perform. When you see something like
+the <g>nomessage=0</g> argument, that means it is being set to a default value of zero so if you don't want to
+change that to another value then you don't need to send that argument when calling this function from another function.
+
+<u><b><i>Function Description</i></b></u> :<br>
+Next we have what this function is and does...sometimes. Unless it's very obvious, I recommend this be done. It saves
+people a lot of head scratching time.
+
+<a name="progressbars1"></a>
+<u><b><i>Globals & Imports</i></b></u> :<br>
+Some functions need more then just what is being sent to them using their <g>arguments</g>. Unless a <g>global's</g>
+value is going to be changed within the function, it is not necessary to bring them in like this, they can still
+be called by their name to get whatever they represent. But if they are then
+they are the first thing that should be written to the function. <g>Globals</g> are things that are defined, set,
+elsewhere like at the beginning of a file or even another file. They are used to pass their settings from one
+function to another and\or to set their values, or what else they may be, within a function for passing to others.
+In this example we are bring in a <a href="src.quarkx.html#moduleprogressbar">progressbar</a>,
+<a href="#progressbars2">(which is covered in the footnotes at the end of this section)</a> and all the logging
+<g>globals</g> because they are needed this way for the logging to work.
+
+Next we bring in any <g>imports</g> that are needed, in this case the <g>mdleditor</g> file to define which editor
+we are working with. If an imported file is in <g>another folder location</g> then where this file will be kept,
+which it is, then the folder's name needs to proceed the files name, its file type <g>.py</g> is not required.
+This is so that Python can locate the file and import it, meaning its functions are available to use in this function.
+Most <g>imports</g> are done at the very top of a file, but if only one or two functions use the file then it might
+be imported within those functions. Other times things will not work right unless they are imported within the function,
+so experiment with this.
+<code>
+global progressbar, tobj, logging, importername, textlog, Strings
+import quarkpy.mdleditor
+editor = quarkpy.mdleditor.mdleditor
+</code>
+
+<u><b><i>The Function's Body</i></b></u> :<br>
+This is where the function does its job. First we test to see if the <g>basepath</g> of the file we will be importing
+is valid or not using the <g>ie_utils.validpath</g> function which
+<a href="intro.modeleditor.importexport.html#pathchecking">we covered earlier</a> and should have already been written
+to the importer file we are making.
+
+Next comes the call to start the logging, notice how that function is <g>returning</g> other items. Those will be
+used latter in this function to stop the logging.
+
+<a name="import_md2_model1"></a>
+Then comes the actual importing function <a href="#import_md2_model2">import_md2_model</a>
+which will be <g>returning</g> the <g>Component</g> that we will be using next to finish the importation of the model.
+
+Once the model has been imported it still needs to be <g>dropped</g> into the editor, that is what the
+<a href="src.quarkx.html#moduleundo">undo function</a>undo function</a>
+part of our code does. The part dealing with <g>compframe</g> is assigning each frame a <g>parent</g> or upper
+level. Without this process, you would not be able to relocate the order of any frames within their component.
+So it is vital that this code be included in every import\export file made.
+
+Next we close the <a href="#progressbars2">progressbar</a> since we are done with it at this point
+and we make the call to <g>end any logging</g> that might be going on.<br>
+<b>Notice</b> here how we are now using the <g>arguments</g> returned from above, when we called to
+<g>start</g> the logging function. This is a perfect example to demonstrate how you can pass things around (<g>arguments</g>)
+from one function to another and even have things <g>returned</g> to be used latter on. Like a
+<a href="http://www.wham-o.com/default.cfm?page=ViewProducts&Category=2">Frisbee</a> with a lot of players.
+
+<a name="undo1"></a>
+Finally we call the <a href="src.quarkx.html#moduleundo">editor.ok</a> of the
+<a href="src.quarkx.html#moduleundo">undo function</a>, set the current component skin (for proper selection)
+and our job is done....the model should now be imported. (SUCCESS ! ...well at least once we finish.)
+
+One last point here, have you noticed how you have also been using some of the
+<a href="src.quarkx.html#__top__">quarkx functions</a> in your file to get the job done? You can do this if you have
+also written a <g>import quarkx</g> call at the top of your file....which you have. This demonstrates how you can use
+functions from all over the place to help you do the work and, as you will see soon, even Python functions and <g>modules</g>
+which are whole sections of added functions for each <g>module</g>.
+<code>
+(not all code lines are being shown here ..... represent lines left out, see the <b>ie_md2_import.py</b> file for those lines)
+
+    basepath = ie_utils.validpath(filename)
+.....
+    ### Use "EX" for exporter text, "IM" for importer text.
+    logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM")
+.....
+    ModelRoot, Component = import_md2_model(editor, filename)
+.....
+    undo = quarkx.action()
+    undo.put(editor.Root, Component)
+    editor.Root.currentcomponent = Component
+    compframes = editor.Root.currentcomponent.findallsubitems("", ':mf') # get all frames
+    for compframe in compframes:
+        compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
+        progressbar.progress()
+
+    progressbar.close()
+.....
+    ie_utils.default_end_logging(filename, "IM", starttime) ### Use "EX" for exporter text, "IM" for importer text.
+
+    editor.ok(undo, Component.shortname + " created")
+
+    comp = editor.Root.currentcomponent
+    skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
+    if len(skins[0].subitems) != 0:
+        comp.currentskin = skins[0].subitems[0]      # To try and set to the correct skin.
+        quarkpy.mdlutils.Update_Skin_View(editor, 2) # Sends the Skin-view for updating and center the texture in the view.
+    else:
+        comp.currentskin = None
+</code>
+
+<a name="place2"></a>
+If you were also importing <a href="intro.modeleditor.editelements.html#bones">Bones</a> or
+<a href="intro.modeleditor.editelements.html#boundingboxes">BBoxes</a> (bounding boxes)
+from the model this is the second of
+<a href="intro.modeleditor.importexport.html#place1">two places</a>
+where that code would be added now that the component has been created.<br>
+See the section below covering
+<a href="intro.modeleditor.importexport.html#bones">Bones Structure</a> and
+<a href="intro.modeleditor.importexport.html#bones2">QuArK's ModelComponentList</a>
+for the needed code to copy and paste in this location of your import file.
+
+Last, but not least, at the very bottom of our importer file we need to <g>Register</g> our starting function so that
+it will show up on the <a href="intro.modeleditor.menu.html#filemenu">Files > Importer \ Exporter</a> menus in the
+<a href="intro.modeleditor.html">QuArK Model Editor</a>. This is done outside of our function and just below it.
+<code>
+### To register this Python plugin and put it on the importers menu.
+import quarkpy.qmdlbase
+quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2", loadmodel)
+</code>
+
+After reading the footnote below about <a href="src.quarkx.html#moduleprogressbar">Progress Bars</a>
+proceed on to the <a href="intro.modeleditor.importexport.html#codeprocess">next section</a>.
+
+================================================ Footnotes ==================================================
+
+<a name="progressbars2"><u>footnote 1</u></a>: <a href="src.quarkx.html#moduleprogressbar">Progress Bars</a><br>
+As <a href="#progressbars1">mentioned above</a> this file uses a <a href="src.quarkx.html#moduleprogressbar">Progress Bar</a>
+as all of them <b>should</b> but it is optional. They will not always be seen if the model file is small, but for
+those that are fairly large, such as <g>Lightwave Doom 3 .lwo outdoor scene</g> files
+(I've loaded one with <b><g>13 Components</g></b>) the progress bar lets people know that QuArK has not crashed but
+still hard at work getting the model into the editor. You might have already click on the
+<a href="src.quarkx.html#moduleprogressbar">Progress Bars</a> link to the
+<a href="src.quarkx.html#__top__">quarkx functions</a> and read about it, but there is one nice little <g>trick</g>
+that you can add to it....have the name of the component that is currently being imported displayed as you
+import them. But first let's cover how to set them up, this is done as a <g>global</g> (Aw-Ha ! Now you see why
+we called it in <a href="#progressbars1">our function above here</a>.)
+
+Originally the <g>global</g> for it could have been <g>created</g> near the very top of our file when we did the
+<a href="#logging">Logging Implementation</a> and <a href="#pathchecking">Path Checking Implementation</a>
+in the <a href="intro.modeleditor.importexport.html#codeelements">previous section</a>. But it might have been a bit
+confusing to do at that time, so I waited until now to <b>spring</b> this on you. (Aren't I a stinker !)<br>
+So now go back to the top and add this code with the rest of the <g>globals</g> to <g>initialize</g> (setup)
+your <a href="src.quarkx.html#moduleprogressbar">Progress Bar</a>. Then come back for the next step.
+<code>
+progressbar = None
+</code>
+In the next section below we will cover a function called <g>load_md2</g> and where you will once again see the
+<g>global progressbar</g> being called and soon afterwards you will see the next two lines of code.
+The first line is where that <g>trick</g> I was telling you about takes place by adding the component's name
+that is currently being processed to the <g>default string of text</g> that would <g>normally</g> be used to
+display on the progress bar, and the second line of code which activates the progressbar by giving its settings
+for the updated string and <g>md2.num_faces + (md2.num_frames * 2)</g>, maximum faces that it should count to.
+<code>
+    Strings[2454] = name + "\n" + Strings[2454]
+    progressbar = quarkx.progressbar(2454, md2.num_faces + (md2.num_frames * 2))
+</code>
+Further down in that same function you will see the next line of code that advances the progressbar as
+that particular component's models faces are processed.
+<code>
+        progressbar.progress()
+</code>
+Later on you will see these next two lines of code, the first to close the progressbar and the second to
+<g>reset its default string</g> back to what it was.
+<code>
+    progressbar.close()
+    Strings[2454] = Strings[2454].replace(Component.shortname + "\n", "")
+</code>
+This is required or you will wind up with the previously processed component's name showing up above the component's
+name that is currently being processed. This same <g>trick</g> can be used in as many places as you desire, but
+the process must always be the same. It's best to use as few as possible or they won't show up.<br>
+<g>1)</g> Import the global progressbar, <g>2)</g> add the name to the default string, <g>3)</g> activate (set) the progressbar,<br>
+<g>4)</g> advance its count, <g>5)</g> close the progrssbar and <g>6)</g> reset its default string.
+
+The <g>Strings</g> you see in the code, and also imported as a global, are all of the string (text) statements
+which are in the <g>QuArK\quarkpy\qdictionnary.py</g> file and using the number for the default setting above <g>2454</g>
+as a word search in that file you will find that default text string which is
+<g>"Preparation data read...Exporting model"</g>.
+

@@ -1,0 +1,41 @@
+title: Axes and Bases
+author: tiglari
+
+One of the most important aspects of vector spaces (sets
+of vectors with their associated math operations such as\
+addition) is that they have 'bases', or coordinate systems.
+A basis is just three vectors, taken in a definite order,
+which don't lie on the same line or plane.  We are usually
+interested only in bases where the vectors are of
+length 1, and are perpendicular to each other; these
+are called 'orthonormal bases' if you want a technical
+term for them.
+
+The most familiar (orthonormal) basis is:
+<code>
+xa = &lt;1, 0, 0>
+ya = &lt;0, 1, 0>
+za = &lt;0, 0, 1>
+</code>
+(In vector algebra books these are often called <b>i</b>,
+<b>j</b> and <b>k</b>; I'm using xa, ya and za for x-axis,
+y-axis and z-axis.)
+
+The most important fact about bases is that any vector can
+be expressed as a sum of (scalar) products of the basis
+vectors by numbers.  In the case of the standard basis
+[xa, ya, za], we have the obvious identity:
+<code>
+x*xa + y*ya + z*za = &lt;x, y, x>
+</code>
+However it's also true for arbitrary bases, and even more
+usefully, if [xr, yr, zr] is a randomly chosen basis, we
+can get the coordinates of any vector v with respect to
+that basis by using the dot product:
+<code>
+v = (xr*v)*xr + (yr*v)*yr + (zr*v)*zr
+</code>
+(Possibly a bit confusingly, the '*' inside the parentheses
+represents the dot product operation two vectors, yielding
+a number, while the '*' outside the parentheses represents
+the scalar product, multiplying a vector by a number).

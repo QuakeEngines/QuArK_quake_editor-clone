@@ -1,0 +1,60 @@
+title: Edit menu
+author: Decker
+
+<img border=0 align=right>edit.png</img>
+<i>Undo [something]</i>. This menuitem will be active, if you can undo a
+previous action. The <i>something</i>, will be the action it will undo.
+
+<i>Undo/Redo</i> will open up the Undo/Redo window, where you can undo or redo
+more actions with one mouse-click.
+
+<i>Cut</i>. You know; remove the selection and put it into the clipboard.
+
+<i>Copy</i>. Just as easy; copy the selection into the clipboard.
+
+<i>Paste</i>. Take whatever is in the clipboard, and if it is something QuArK
+can use, it will paste it to where you point.
+
+<i>Duplicate</i>. A copy <u>and</u> paste action, but without putting the
+selection in the clipboard.
+
+<i>Delete</i>. Deletes the selection. Notice that it won't put anything in the
+clipboard.
+
+<i>View group</i>. See the View Group menu. It will only be active, if you have
+selected a group in the tree view.
+
+<i>Texture flags</i>. Only some games have this menuitem. See Face-flags window
+for a description.
+
+<a name="viewgroup"></a><hr>
+
+<img border=0 align=right>viewgroup.png</img>
+If you have a group selected in the tree view, you can specify different
+behaviour for it.
+
+<i>Group is visible</i>. This is the normal setting. All objects that belongs
+to this group, are visible and selectable on the map-views.
+
+<i>Group is grayed out</i>. When this is marked, all objects that belongs to
+this group, are shaded even if they are within the visible part of the
+map-views.
+
+<i>Group is hidden</i>. Every object that belongs to this group, are not drawn
+on the map-views. Marking this option will automatically also check the
+<i>Cannot select with the mouse</i> option.
+
+<i>Hide on textured views</i>. When this option are checked, all objects
+belonging to this group are not shown on solid-, textured- or 3D-views, only
+wireframe-views. This speeds up drawing a bit.
+
+<i>Cannot select with the mouse</i>. Check this option, if you do not want to
+select and change objects belonging to this group by an accident. This is a
+good setting, when you are done with some part of your map, and starts to build
+something else near or within that finished part.
+
+<i>Ignore to build maps</i>. If this option is checked and the <i>Ignore groups
+marked so when building map</i> in the option menu also is checked, QuArK will
+not include objects belonging to this group, when you build your level. Using
+this option, you can play-test parts of your level, without having to
+<g>compile</g> the entire level every time.

@@ -1,0 +1,15 @@
+title: .md2 format
+author: cdunde
+
+<i>Original game </i>&nbsp;: Quake 2
+
+<i>Other games </i>&nbsp;: Unknown
+
+Used in Quake 2 for both static (single frame) single component and simple animated (multiple frames) single component.
+
+<b><u>uses</u></b><br>
+<a href="intro.modeleditor.editelements.html#tags">tags </a>&nbsp;: no<br>
+<a href="intro.modeleditor.editelements.html#bones">bones </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexweights">weights </a>&nbsp;: no<br>
+<a href="intro.modeleditor.vertexcolorandweights.html#vertexcoloring">uv colors </a>&nbsp;: no<br>
+<a href="intro.modeleditor.dataforms.html#specsargsview">Specifics page </a>&nbsp;: no<br>

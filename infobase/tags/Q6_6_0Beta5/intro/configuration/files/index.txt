@@ -1,0 +1,28 @@
+title: Files
+desc: textures
+desc: devil
+desc: bmp
+desc: dds
+desc: jpg
+desc: map
+desc: pcx
+desc: png
+desc: tga
+desc: vmt
+desc: vtf
+
+In QuArK, many different types of files can be loaded and saved. The most
+important are of course the maps themselves, but QuArK can also handle textures,
+models, archive files and more! Some of these files QuArK can understand
+natively; that means, without any external library or additional third-party
+software. Most pictures however are loaded through a set of libraries, and
+there are settings (like quality) in these libraries that can be set to produce
+exactly the kind of file you want. This section in the configuration lets you
+pick those settings.
+
+Warning: Not all different formats or image types (like progressive JPG or
+compressed BMP files) are supported by all game engines. Be careful when
+changing those settings.
+
+Note: If a particular file doesn't load or save correctly with one library, try
+another one! (If available)

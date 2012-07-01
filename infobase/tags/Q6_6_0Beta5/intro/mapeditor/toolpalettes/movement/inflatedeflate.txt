@@ -1,0 +1,10 @@
+title: Inflate/Deflate selection
+author: Decker
+
+<img border=0 align=right>inflatedeflate.png</img>
+Depending on the value in the <ref> ./configuration </ref>, this button will
+either inflate (make bigger), or deflate (make smaller) your selection by the
+specified units.
+
+If the inflate/deflate value is negative, the button will act as an
+deflate-button, and positive values will make it act as an inflate-button.

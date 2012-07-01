@@ -1,0 +1,66 @@
+title: Options menu
+author: Decker
+
+<img border=0 align=right>options.png</img>
+<i>Grid scale in 2D views</i>&nbsp;. These functions allow you to display a scale and tick mark guides of the current grid setting in any one, combination, or all of the 2D views of the Editor, as shown in the top sub-menu. You can also center any one or combination of the scales for each view. If&nbsp;' All 2D views '&nbsp; or&nbsp;' all scales centered '&nbsp; is checked, it will deactivate this menu's individual items.
+
+<i>Ruler guide in 2D views</i>&nbsp;. These functions allow you to display a line with the unit distance of total selected items in any one, combination, or all of the 2D views of the Editor. Much like the&nbsp;'Grid scale in 2D views'&nbsp; function above, this feature also has its own list of selections, as shown in the bottom sub-menu. If one of these sub-menu items is active, checked, then when ever a single <g>face</g>, <g>poly</g> or group of polys are selected a&nbsp;'Ruler'&nbsp; will be displayed above and/or beside them from the starting point to the end point of the selected items along with&nbsp;'0'&nbsp; at the starting point and the total amount of their distance at the end point.
+
+<i>Delete unused faces & polys</i>. If this is unchecked, you will be able to
+make invalid polyhedrons/faces. Always keep this marked, so QuArK will warn
+you, when you are going to make an invalid polyhedron/face.
+
+<i>Secondary red lines</i>. When this is marked, an extra set of red lines will
+appear in the map-views. These can be used to reduce the selection-area of one
+map-view, if you do the selection in the other.
+
+<i>3D Models in textured views</i>. Check this to see a 3D representation of
+the entity-models, in textured views.
+
+<i>Quantize angels</i>. When this is checked, adjusting any angle,
+like a face-angle or entity-angle, it will automatically adjust it to the
+nearest angle, specified in <ref> intro/configuration/map/building </ref>.
+
+<i>Paste objects at screen center</i>. Check this if you want objects that you
+paste into the map-view, appear in the center of the current map-view. Uncheck
+it, and it will paste it at the exact position as the original.
+
+<i>Ignore groups marked so when building map</i>. When this is marked, any group
+marked <i>Ignore to build map</i> will not be available in the map when running
+the FPS-game. Uncheck this if you want your entire map build.
+
+<i>Negative polys really dig in 3D views</i>. If this option is off, negative polyhedrons are shown as normal polyhedrons in textured view so that you can easily edit them. When this option is on, digging is performed and you don't see the negative polyhedron at all, but only the hole it made.
+
+<i>Ignore Duplicators</i>. Hides all duplicators and templates from being seen in the editors views.
+
+<i>Default/Sticky/Axis-sticky texture</i>. In QuArK, the textures are attached to polyhedrons in such a way that they follow all its movements. However, for easier texture alignment, you can set these options that only apply when scrolling polyhedrons (not rotating nor zooming).
+
+<i>Sticky textures</i>. The textures don't move when you look at it standing in front of the face.
+
+<i>Axis-sticky textures</i>. The textures don't move when you look at it from the nearest axis direction. To mimic the way QuArK and most other Quake editors work, choose AXIS-STICKY.
+
+<i>Don't center L-square</i>. If this item is on, threepoints aren't re-centered on face in texture positioning.
+
+<i>Set Line Thickness</i>. This lets you set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.
+
+<i>Rebuild 3D views</i>&nbsp;. This rebuilds the 3D views (actually all views) in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' untill the views unlock and clear up.
+
+<i>Axis XYZ letter indicator in view windows</i>. This display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.
+
+<i>MultiSelect on Linked Drag</i>. When this option is checked, when a face is dragged that is linked to others, they all become the multi-selection after the drag. When it is unchecked, the selection remains unchanged.
+
+<i>Link on Glue</i>. When this option is checked, the `Glue-to-tagged' command links the glued side to the tagged one, making it easy to keep them copanar.
+
+<i>Silent Glue Linked on Drag</i>. When this option is checked, when something is dragged, faces linked to its faces will be dragged along too.
+
+<i>Look and Zoom in 3D views</i>. If this menu item is checked, it will zoom in and center on the selection(s) in all of the 3D views when the 'Zoom to selection' button on the 'Selection Toolbar' is clicked. If a face is selected and the 'Shift' key is held down, it will look at the other side of the face and strive to center it in the view. If this menu item is unchecked, it will only look in the selection(s) direction from the current camera position.
+
+<i>No Selection in Map Views</i>. When this menu item is checked, selection in the map views is prevented. This is useful when touring with the 3d viewer, to prevent selecting things accidentally.
+
+<a name="developermode"></a>
+<i>Developer Mode</i>. In this mode, two extra items appear on the 'Commands' menu, to help with debugging, etc. They are <a href="intro.mapeditor.menu.html#heapstatus">HeapStatus</a> and <a href="intro.mapeditor.menu.html#reload">Reload</a>. For more detail on them see the 'Commands' menu listing above.
+
+<i>List of Plug-ins</i>. Opens a window which shows what plug-ins QuArK has
+loaded.
+
+<i>Configuration</i>. Takes you to the <ref> intro/configuration </ref>.

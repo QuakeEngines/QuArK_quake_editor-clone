@@ -1,0 +1,7 @@
+title: Add-Ons
+desc: addonelements
+desc: standards
+desc: entitytool
+
+There is old but still up-to-date information about this topic at
+<a href="http://www.planetquake.com/quark/armin/q5tech.html">this page.</a>

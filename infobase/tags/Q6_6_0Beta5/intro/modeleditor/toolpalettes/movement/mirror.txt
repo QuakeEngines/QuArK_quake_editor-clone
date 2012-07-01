@@ -1,0 +1,14 @@
+title: Mirror selection (Symmetry)
+author: cdunde
+
+<img border=1 align=right>mirror.png</img>
+These buttons will mirror your selection, around its common center. To see the
+common center of your selected object(s), you must be able to see the
+<ref> ../display/linear </ref> of the selection.
+
+The icons from left to right:
+<ul>
+<li><i>X-symmetry</i>. Mirror around the selection's common X-axis.
+<li><i>Y-symmetry</i>. Mirror around the selection's common Y-axis.
+<li><i>Z-symmetry</i>. Mirror around the selection's common Z-axis.
+</ul>

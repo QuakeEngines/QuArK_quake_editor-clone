@@ -1,0 +1,13 @@
+title: History and Plans
+desc: q62 q63 q64 q65 q66 q7etc suggestions unlikely bigideas branches
+
+Features added to this and previous versions of QuArK,
+and proposed for the future.  A big uncertainty factor is
+the QuArKplusplus project, to translate QuArK into C++ and
+use Crystal Space as the 3d view rendering engine; the more
+ambitious suggestions especially might well be overtaken by
+this project.
+
+Don't forget to look in the 'NEWS.txt' file in the main
+QuArK directory for a more detailed list of new features
+and fixes!

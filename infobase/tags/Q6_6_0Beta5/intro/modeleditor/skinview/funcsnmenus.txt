@@ -1,0 +1,110 @@
+title: Functions & RMB Menus
+author: cdunde
+
+<img border=0 align=right>funcsnmenus1.png</img>
+
+Picking up from where we left off from above, these are the <g>RMB</g> menus available in the
+Skin-view that can assist you in multi and single vertex movement and <g>realignment</g>.
+All of these functions work in conjunction with the <g>Vertex drag mode</g> button which is
+shown set to the <g>Single drag mode</g> in the screen shot to the right.
+
+Basically, these functions all center around <g>snapping</g> one or more <g>Picked</g> vertexes,
+shown here as blue handles, to a <g>Base</g> location, shown to the right as lime green.
+These colors are changeable by selection from the
+<a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Model Editors Colors Configuration</a>
+section. The <g>Base Vertex</g> uses the same color setting as the <g>Selected brushes, side view</g>
+and the <g>Skin Vertexes</g> use the same color as the <g>3D views drag lines</g> setting.
+
+The procedure is simple, first select a <g>Base Vertex</g> by placing your cursor over the one
+you wish to choose, then <g>RMB</g> click and select <g>Pick Base Vertex</g> (not shown here but it's
+at the top off the menu where it displays <g>Change Base Vertex</g> now).
+
+Second, do the same for each skin vertex choosing the <g>Pick Skin Vertex</g> menu item each time.
+
+Finally, when you are ready to make your <g>snap</g> either place your cursor over any of the selected
+skin vertexes or anywhere in the Skin-view, <g>RMB</g> click and select <g>Align skin vertexes</g>.
+
+The snap will take place and the final results will look something like the second image of the eye
+at the bottom of the screen shot. Now a couple of special situations in using these menu functions.
+
+If you are only going to snap one <g>Skin Vertex</g> to the <g>Base Vertex</g> then all you need to do
+is select that <g>Base Vertex</g> and the <g>Align skin vertexes</g> menu items following the steps above.
+You do not need to use the <g>Pick Skin Vertex</g> menu item. In addition, the <g>Base Vertex</g> will
+remain selected for you, so you can simply <g>RMB</g> click over another skin vertex to move it to the
+same position <b>or</b> you can place your cursor over any unselected vertex and choose the
+<g>Change Base Vertex</g> menu item and it will jump to that new location and you can carry on from there.
+
+Using these along with the <g>Vertex drag mode</g> button a number of various combinations of aligning
+vertexes can be accomplished. And as stated in the section above, the exact co-ordnances
+,of all of these items, will be displayed in the editor's, lower left corner,
+Help box as you proceed through the phases of your editing.
+
+<i>Clear Skin Pick list </i>&nbsp;: This will do just that, clear all of the <g>picked</g> vertexes including
+the <g>Base vertex</g> and start fresh.
+
+<i>Force to grid </i>&nbsp;: When the <g>Skin Grid is Active</g> (see menu item below) in the <g>Skin-view</g>
+this allows you to <g>snap</g> a vertex, or group of vertexes, to the closest grid point position. These grid
+points can be changed by using the grid settings covered above.
+
+<i><b>Vertex Commands</b> - submenu items </i>&nbsp;:
+
+<i>Clear Skin Pick list </i>&nbsp;: Described above.
+
+<i>Align skin vertexes </i>&nbsp;: Also described above.
+
+<i><b>Skin-view Options</b> - submenu items </i>&nbsp;: (also located on the
+<a href="intro.modeleditor.menu.html#optionsmenu">Options menu</a>)<br>
+
+<i>Sync Editor views with Skin-view </i>&nbsp;: This function will turn off other related options and synchronize selected
+<g>Skin-view mesh vertexes</g>, passing and selecting the coordinated <g>Model mesh vertexes</g> in the Editors views,
+where they can be used for editing purposes. Any selection changes in the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+will be updated to the Editors views as well. Once the selection has been passed, if this function is turned off,
+the selection will remain in both the Editor and the <a href="intro.modeleditor.skinview.html">Skin-view</a>
+for further use. The <a href="intro.modeleditor.skinview.html">Skin-view</a> and Editor views selected vertex colors can
+be changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Pass selection to Editor views </i>&nbsp;: This function will pass selected <g>Skin-view mesh vertexes</g> and select
+the coordinated <g>Model mesh vertexes</g> in the Editors views, along with any others currently selected, where they can
+be used for editing purposes. Once the selection has been passed, if this function is turned off, the selection will remain
+in the Editor for its use there. The <a href="intro.modeleditor.skinview.html">Skin-view</a> selected vertex colors can be
+changed in the <a href="intro.modeleditor.toolpalettes.viewselection.html#coloroptions">Colors Options</a> settings.
+
+<i>Clear Selected Faces </i>&nbsp;: This function will clear all faces in the Skin-view that have been drawn as 'Selected'
+or 'Show' but any related selected vertexes will remain that way for editing purposes. The 'Skin-view' selected face,
+show face and selected vertex colors can be changed in the 'Configuration Model Colors' section.
+
+<i>Skin From 3D view </i>&nbsp;: This turns the function on or off to take co-ordnances for the 'Skin-view' from the
+editors 3D view when new objects are created using the 'Quick Object Maker'. It will place that object on the skin exactly
+the same way you see it in the 3D view when the object is created. This same process applies to selected faces in the editor.
+Because the 3D view uses its own 'scale' factor, activating this function will also turn off the <g>Use Skin-view scale</g> function.
+
+<i>Use Skin-view scale </i>&nbsp;: This turns the function on or off for applying of the views 'zoom' or 'scale' factor when
+taking co-ordnances from the 'Skin-view' and which works in reverse. Meaning, when this option is checked,
+if the Skin-view is zoomed out (skin looks small) it will skin new triangles with fewer repetitions (skin looks larger)
+of that image and visa-versa. Because the 3D view uses its own 'scale' factor, activating this function will also turn
+off the <g>Skin From 3D view</g> function.
+
+<i>Skin Grid Visible </i>&nbsp;: (Also located in the Model Editor Configuration Options section) This function gives
+quick access to turn the Skin-view Grid on and off, but it will still be active for functions that use it such as
+the <g>snap to</g> function.
+
+<i>Skin Grid Active </i>&nbsp;: (Also located in the Model Editor Configuration Options section) This function also gives
+quick access to activate or deactivate the Skin-view Grid. But any functions that use it such as the <g>snap to</g> function
+will not be effective.
+
+<i>Single Sel Drag Lines </i>&nbsp;: This function stops the multiple selection drag lines of the 'Linear Handle' from
+being drawn in the Skin-view to speed up the Skin-view selection and handle creation.
+
+And Two more additional RMB items are located on the <g>Draw Ticks During Drag</g> sub-menu. These are:
+
+<i><b>Draw Ticks During Drag:</b> - submenu items </i>&nbsp;: These functions give various methods for drawing the Models
+Skin Mesh Vertex Ticks while doing a <g>rectangle drag</g>.<br>
+
+<i>Rectangle drag-method 1 </i>&nbsp;: This function will draw the Skin-view mesh vertex 'Ticks' during a rectangle drag
+with a minimum amount of flickering, but is a slower drawing method.
+
+<i>Rectangle drag-method 2 </i>&nbsp;: This function will draw the Skin-view mesh vertex 'Ticks', using the fastest method,
+during a rectangle drag, but will cause the greatest amount of flickering.
+
+
+

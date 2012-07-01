@@ -1,0 +1,29 @@
+title: Unlikely Ideas
+author: tiglari.
+
+These are things that could be done but probably won't be, unless a coder
+comes along who wants to do them.  If no explanation is provided, the
+explanation is an unfavorable apparent demand/probable effort ration.
+
+<UL>
+<li>Edit textures in .bsp files:
+<br>an as-yet-unimplemented 4.7 feature, unlikely to be implemented
+since it makes it too easy to rip off other people's work.
+
+<li>Map reconstructor for Q3 engine games:
+<br>This might be easier to do well for Q3 engine
+games because the model structure seems to include
+brush info as well as face info.  But same problem as Edit textures
+in .bsp above.
+
+<li>Daikatana support: (?)
+
+<li>Adquedit-equivalent resource display for Q1: (Seth)
+<br>That is, edit *all* Q1 engine game resources.  This might
+become more viable if QuArK gets involved in the Q1-engine source
+port scene.
+
+<li>OsFolders: (tiglari)
+<br>edit the properties of pre-existing OsFolders
+
+</UL>

@@ -1,0 +1,6 @@
+title: 3D-view
+author: Decker
+
+<img border=0 align=right>3dview.png</img>
+A quick way to see the selected objects in 3D with textures and their
+texture-alignments.

@@ -1,0 +1,6 @@
+title: AuxKeys
+author: DanielPharos
+
+<img align=right>auxkeys.png</img>
+Here you can set the AuxKey bindings. Just type in what key or what
+key combination you want to use for a specific function.

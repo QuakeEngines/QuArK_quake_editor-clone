@@ -1,0 +1,15 @@
+title: Map editor
+author: DanielPharos
+
+<UL>
+<LI>prog/QkMapPoly.pas (rev 1.89):
+<UL>
+<LI>Line 1877: A range check error occurs the first time this code
+runs.  NbAretes2 (NumberFaces2) becomes negative, which further
+down the line causes major problems.  This happens because ReallocMem
+can change the pointer to the memory.  This code apparently was not
+written with that in mind.  If you 'force' NbAretes2 to use the old
+pointer value, a lot of other problems appears.  This problem could
+be related to the views not drawing correctly on startup.<br>
+<b>Fixed just after 6.6.0 Beta 4 release.</b>
+</UL>

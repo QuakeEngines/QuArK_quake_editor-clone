@@ -1,0 +1,77 @@
+title: Basic Use
+author: tiglari
+
+The simplest duplicator for putting copies in a row
+is the 'Basic Duplicator', the first item in the
+New Polyhedrons|Duplicators & Misc toolboxlist.
+To see it at work, first create a new poly, then
+make a group over it (by hitting the `new group'
+panel button). Now, with either the group or the
+cube selected, insert the Basic Duplicator.  What
+you'll now see, in an XY view, is 5 blue outlines
+of the original New Cube heading off at a 45 degree
+angle.  These are the copies of the original brush.
+
+To control what's happening, push the tree-view
+button in the browser panel select the newly inserted
+Basic Duplicator, and look at its specifics.
+There's 'classname', and 'copy outside', which should have
+a check to its right, we'll look into those later.
+The first one that interests us now is 'offset', which will
+be the triple of numbers '32 32 0'.  This is the
+amount, in the X, Y and Z dimensions, whereby each
+copy is displaced from the previous one.  So we
+can make the copies head out in the X direction,
+spaced at a greater distance, by changing these
+numbers to say '200 0 0'.
+
+The next number is 'count', which controls the
+number of copies, so if you only want one, set it
+to '1'.  Count is giving us the number of copies,
+not including the original.
+
+Following that is 'angle'. This rotates each copy of the duplicated object by that amount in degrees from each copy's center, or origin, point. A positive number will rotate it counter clock wise and a negative number will rotate it clockwise. This creates a circular pattern of the duplicated object. They can then be made to create a stair step pattern by moving any of the solid blue handles up or down. The smaller the number used for 'angle' the bigger the circumference of the circular pattern becomes, because the rotation of each copy's center is less, and visa versa. This can also be done with the 'red ball' handle.
+
+The 'origin' specific, is where the duplicator is located and best controlled
+by dragging it around, and 'macro', which you should leave alone until you're an expert.
+
+The point of duplicators is to have any changes you make
+in the original show up automatically in the copies, so
+you should now pull the faces of the cube around a bit,
+to see the shapes of the copies change.  Also, if you drag
+the cube with respect to the duplicator, the positions
+of the copies will change.
+
+You also might have noticed that for each copy there is
+a little blue square.  If you drag a square with the
+mouse, you change the direction of the row and the spacing
+of the copies along it.  Look at the 'offset' specific
+while you're doing this, & you'll see that what you're doing
+is visually editing the offset.  So there's a quick way to get
+things into the arrangement you want.
+
+So far we've only been making copies of single brushes.
+But the Basic Duplicator (and many of the others)
+makes copies of everything in the group that contains
+it, including brushes, entities, and entities, except
+duplicators themselves.  So if you put two different
+brushes into the duplicator's group, you'll see them both
+being copied.  This lets you make copies of structures as
+complicated as you like.
+
+With a duplicator, you can edit the original, and see
+the changes in all the copies, but you can't make
+a change to some particular individual copy.  However
+sometimes that is what you
+want to do (perhaps to introduce some variations
+into a bunch of things you've created).  You can
+make the copies individually editable by RMB |
+Dissociate Duplicator Images on the duplicator
+(in the tree-view).  Now the duplicator is removed
+from the map and replaced by the copies it has been
+creating, as freestanding individual pieces of map
+structure.  Of course when you do this, you lose the
+advantage of having a duplicator.  With the undo facility,
+you can get the duplicator back (until you close the
+editing session), but then you'll also loose any individual
+changes you've made.

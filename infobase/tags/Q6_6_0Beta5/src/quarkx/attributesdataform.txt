@@ -1,0 +1,112 @@
+title: Additionnal attributes of Data form controls
+author: Armin Rigo
+
+Data Forms are created by a panel’s <tt>newdataform()</tt> method. They are screen controls that display a
+list of object parameters, like on the Specific/Args page, or like all pages of the Configuration dialog box.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+setdata(objs)<br>
+setdata(objs, formobj)
+</td><td>
+Select the object(s) whose Specifics/Args are to be displayed in the data form. <tt>objs</tt> can be either a single “ objspec ” or a list of “ objspecs ”. An “ objspec ” is either a single object or a tuple of two objects: the actual object and another one with default values. If a Specific is not found in the object, the data form displays the one from its default value. The optional argument <tt>formobj</tt> gives a <tt>:form</tt> Internal object to use.
+</td></tr>
+
+<tr><td class="doccode">
+allowedit
+</td><td>
+Allow editing of the Specific themselves, or only the Args?
+</td></tr>
+
+<tr><td class="doccode">
+addremaining
+</td><td>
+If the object has more Specifics than given in the <tt>formobj</tt>, should they be also displayed?
+</td></tr>
+
+<tr><td class="doccode">
+actionchanging<br>
+actiondeleting<br>
+actionrenaming
+</td><td>
+Texts for the actions of editing or deleting Specifics/Args, or renaming the object, resp. Note: in QuArK 5.0.c2, these are not strings, but <b>numbers</b> for the dictionnary <tt>qdictionnary.Strings</tt>.
+</td></tr>
+
+<tr><td class="doccode">
+bluehint
+</td><td>
+Should hints be displayed on a blue background, and stay longer than normal hints? (for entities Specifics/Args only)
+</td></tr>
+
+<tr><td class="doccode">
+editnames
+</td><td>
+If this string is not empty, the user can edit the name of the object, which is usually not a Specific from QuArK’s point of view. <tt>editnames</tt> gives the text to display as if it where the Specific, e.g. "<tt>classname</tt>".
+</td></tr>
+
+<tr><td class="doccode">
+flags
+</td><td>
+Flags. See <tt>qeditor.DF_XXX</tt>
+</td></tr>
+
+<tr><td class="doccode">
+form
+</td><td>
+The last value given to <tt>formobj</tt> in <tt>setdata</tt>. (read-only)
+</td></tr>
+
+<tr><td class="doccode">
+linkedobjects
+</td><td>
+List of the objects given in the last call to <tt>setdata</tt>. Does not include the objects giving the default values.
+</td></tr>
+
+<tr><td class="doccode">
+noheader
+</td><td>
+Do not display columns headers? (must be set before a call to <tt>setdata</tt>)
+</td></tr>
+
+<tr><td class="doccode">
+nospecifics
+</td><td>
+Do not enable the specifics add/delete menu-options.
+</td></tr>
+
+<tr><td class="doccode">
+sep
+</td><td>
+Separation position between the two columns. Either a percentage (between 0.0 and 1.0) or, if negative, a pixel count for the size of the left column. The user can always resize the columns unless no headers are displayed.
+</td></tr>
+
+<tr><td class="doccode">
+onchange
+</td><td>
+Callback function. Called when data is modified in the form. Single argument: the data form object itself.
+</td></tr>
+
+<tr><td class="doccode">
+bitspec(spec, bitmask)
+</td><td>
+Read the value of a single bit in the object’s Specifics, or in all the object’s Specifics if you gave several objects to <tt>setdata</tt>. <tt>spec</tt> is the Specific to read, and <tt>bitmask</tt> is the value of the bit(s) to test. Returns <tt>1</tt> if all the objects have at least one of the bits of <tt>bitmask</tt> set, <tt>0</tt> if none has any of these bits set, or <tt>None</tt> if some objects have one of these bits set and others don’t.
+</td></tr>
+
+<tr><td class="doccode">
+togglebitspec(spec, bitmask)<br>
+togglebitspec(spec, bitmask, clearzero)
+</td><td>
+Simulates a click on a check box that would correspond to the Specific <tt>spec</tt> with the bit value <tt>bitmask</tt>. If <tt>clearzero</tt> is <tt>True</tt> (which is the default), and if the resulting Arg value would be zero, the Specific is completely removed.
+</td></tr>
+
+<tr><td class="doccode">
+useraction(n)
+</td><td>
+Simulates a click on the <tt>n</tt>th item of the popup menu. The following values are currently valid: <tt>0</tt> to add a Specific, and <tt>1</tt> to delete the selected Specific.
+</td></tr>
+
+</table>
+
+Note: internally, data forms have other routines to read and set values of various types of data, but only the bit-spec ones
+are exposed to Python code now because I didn’t need the other ones yet. Just ask if you do.

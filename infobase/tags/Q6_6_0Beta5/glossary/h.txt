@@ -1,0 +1,12 @@
+title: H...
+author: Decker
+
+<dl>
+<dt><a name="halflife">         </a>Half-Life           <dd>[HL] (game) A <a href="#fps">FPS-game</a> made by <a href="#valvesoftware">Valve Software</a>. Based upon a heavily modified <a href="quake1">Quake-1</a> graphics engine.
+<dt><a name="halflife2">        </a>Half-Life-2         <dd>[HL2] (game) A <a href="#fps">FPS-game</a> made by <a href="#valvesoftware">Valve Software</a>. Uses the <a href="#source">Source graphics engine</a>.
+<dt><a name="hallofmirrors">    </a>Hall-Of-Mirrors     <dd>[HOM] (-effect). The <i>Hall-Of-Mirrors</i> effect is something you get when parts of the screen in the <a href="#fps">FPS</a>-game are not updated due to a <a href="#leak">leak</a> or when your player is outside the level in the <a href="#void">void</a>. The effect was introduced with the DOOM game, where it would look like a long corridor, going into the screen, flickering. It looked like a Hall of Mirrors, hence the name.
+<dt><a name="hexen2">           </a>Hexen-2             <dd>[HX2] (game) Based upon the <a href="#quake1">Quake-1</a> graphics engine.
+<dt><a name="heretic2">         </a>Heretic-2           <dd>[HR2] (game) Based upon the <a href="#quake2">Quake-2</a> graphics engine.
+<dt><a name="hole">             </a>Hole                <dd>See <a href="#leak">leak</a>.
+<dt><a name="hom">              </a>HOM                 <dd>See <a href="#hallofmirrors">Hall-Of-Mirrors</a>.
+</dl>
