@@ -34,8 +34,8 @@ else suddenly appears.
 Make sure you are in HL2 mode, and create a new map, then do the following:
 
 Go to [options:configuration], and then choose Half-Life 2 under the Games section.
-Where you see a button called "Add-ons", click it. You should see 3 items:
-DataHL2.qrk, textures-hl2.qrk, and entities-hl2.qrk. If you don't see these,
+Where you see a button called "Add-ons", click it. You should see at least 3 items:
+DataHL2.qrk, entities-base.qrk and entities-hl2.qrk. If you don't see these,
 click on "Add", and then browse on your computer to where these are
 (they should be in the QuArK folder, in another folder called "addons"). After you do this, you
 should see two blue cube buttons in the upper left of QuArK's window. The one on
@@ -68,7 +68,7 @@ As the error states, the compiler can't find the gameinfo.txt that goes with the
 Go to addons folders, and plugins. Add the one called 'Half-life 2 models'.
 
 <li><u>When I adjust the scale of a brush instead of following the grid snap
-I'm finding its adding an extra unit proportionally to the size
+I'm finding it's adding an extra unit proportionally to the size
 of the brush (e.g. +64.02, rather than +64)?</u>
 
 You most likely have forced the grid into a custom setting, simply change it manually back to 64.
