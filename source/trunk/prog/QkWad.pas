@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2012/07/09 15:40:59  danielpharos
+Added DOOM .wad file reading support.
+
 Revision 1.34  2009/07/30 09:41:51  danielpharos
 Added additional logging.
 
@@ -340,6 +343,12 @@ begin
           P_1:=Entrees_1;
           for I:=1 to Header.NoOfFileEntries do
           begin
+            if (P_1^.Position = 0) and (P_1^.Taille = 0) then
+            begin
+              //This is a marker. FIXME: Not sure what to do with it; skipping it for now.
+              Inc(P_1);
+              continue;
+            end;
             if (P_1^.Position+P_1^.Taille > FSize) or
                (P_1^.Position<SizeOf(Header)) or
                (P_1^.Taille<0) then
