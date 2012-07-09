@@ -439,13 +439,23 @@ def BaseMenu(sellist, editor):
     Delete1 = qmenu.item("&Delete", editor.editcmdclick)
     Delete1.cmd = "del"
 
-  #  return [Force1, qmenu.sep, Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
-    return [Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
+    modelframe = 0
+    for item in editor.layout.explorer.sellist:
+        if item.type  == ":mf":
+            modelframe += 1
+    if modelframe == 1:
+        return [Cut1, Copy1, paste1, qmenu.sep, Delete1]
+    else:
+    #  return [Force1, qmenu.sep, Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
+        return [Duplicate1, qmenu.sep, Cut1, Copy1, paste1, qmenu.sep, Delete1]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.55  2011/05/30 20:46:32  cdunde
+#Added frame name change to complete updatings and AutoFrameRenaming function.
+#
 #Revision 1.54  2011/02/11 18:55:20  cdunde
 #Added InfoBase section and direct links for Model Editor exporters to assist people in their use.
 #

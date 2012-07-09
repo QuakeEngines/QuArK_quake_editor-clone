@@ -153,7 +153,7 @@ def commandsclick(menu, oldcommand=onclick):
     if editor is None:
         return
     try:
-        if (len(editor.layout.explorer.sellist) == 0) or (editor.layout.explorer.sellist[0].type != ":mf"):
+        if (len(editor.layout.explorer.sellist) == 0) or editor.layout.explorer.sellist[0].type != ":mf" or len(editor.layout.explorer.sellist) > 1:
             NewFrame.state = qmenu.disabled
         else:
             NewFrame.state = qmenu.normal
@@ -180,6 +180,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.24  2009/06/03 05:16:22  cdunde
+# Over all updating of Model Editor improvements, bones and model importers.
+#
 # Revision 1.23  2009/04/28 21:30:56  cdunde
 # Model Editor Bone Rebuild merge to HEAD.
 # Complete change of bone system.
