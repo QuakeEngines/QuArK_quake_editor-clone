@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 5
 ============
+* [DanielPharos]: Added DOOM .wad file reading support, per user request. Note: Saving will output a Quake wad!
+
 * [DanielPharos]: Made the .map importer more resilient against bad brushes.
 
 * [cdunde]: Added Entities and Textures add-ons for Quake 3 Smoking Guns stand alone game.

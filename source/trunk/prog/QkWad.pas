@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2009/07/30 09:41:51  danielpharos
+Added additional logging.
+
 Revision 1.33  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -210,6 +213,8 @@ uses QkUnknown, Travail, Qk1, Setup, Quarkx, QkExceptions, QkHL,
 {$R *.DFM}
 
 const
+ SignatureWadI = $44415749;   { 'IWAD' }
+ SignatureWadP = $44415750;   { 'PWAD' }
  SignatureWad2 = $32444157;   { 'WAD2' }
 
 type
@@ -217,8 +222,13 @@ type
                Signature: LongInt;   { 'WAD2' }
                NoOfFileEntries, PosRep: LongInt;
               end;
+ PWadDirectoryEntry = ^TWadDirectoryEntry;
+ TWadDirectoryEntry = record //For PWAD
+               Position, Taille: LongInt;
+               Nom: array[0..7] of Byte;
+              end;
  PWadFileRec = ^TWadFileRec;
- TWadFileRec = record
+ TWadFileRec = record //For WAD2
                Position, Taille, Idem: LongInt;
                InfoType, Compression: Char;
                Dummy: Word;
@@ -266,8 +276,10 @@ begin
  else
   begin
    S:=Q.Name+Q.TypeInfo;
-   { allow any ".wad_?" or ".wad3_?" file }
-   Result:=ieResult[(CompareText(Copy(S, Length(S)-5, 5), '.wad_')  = 0)
+   { allow any ".wad" sub-file }
+   Result:=ieResult[(CompareText(Copy(S, Length(S)-4, 5), '.wadI') = 0)
+                 or (CompareText(Copy(S, Length(S)-4, 5), '.wadP') = 0)
+                 or (CompareText(Copy(S, Length(S)-5, 5), '.wad_') = 0)
                  or (CompareText(Copy(S, Length(S)-6, 6), '.wad3_') = 0)];
   end;
 end;
@@ -290,6 +302,7 @@ var
  Header: TWadHeader;
  I: Integer;
  Entrees, P: PWadFileRec;
+ Entrees_1, P_1: PWadDirectoryEntry;
  Origine: LongInt;
  Q: QObject;
  Prefix: String;
@@ -301,40 +314,75 @@ begin
         Raise EError(5519);
       Origine:=F.Position;
       F.ReadBuffer(Header, SizeOf(Header));
-      if Header.Signature=SignatureWad2 then
+      if Header.Signature=SignatureWadI then
+        Prefix:='.wadI'
+      else if Header.Signature=SignatureWadP then
+        Prefix:='.wadP'
+      else if Header.Signature=SignatureWad2 then
         Prefix:='.wad_'
+      else if Header.Signature=SignatureWad3 then
+        Prefix:='.wad3_'
+      else
+        Raise EErrorFmt(5505, [LoadName, Header.Signature, SignatureWad2, SignatureWad3]);
+
+      if (Header.Signature=SignatureWadI) or (Header.Signature=SignatureWadP) then
+      begin
+        I:=Header.NoOfFileEntries * SizeOf(TWadDirectoryEntry);
+        if (I<0) or (Header.PosRep<SizeOf(TWadHeader)) then
+          Raise EErrorFmt(5509, [71]);
+        if Header.PosRep + I > FSize then
+          Raise EErrorFmt(5186, [LoadName]);
+
+        GetMem(Entrees_1, I);
+        try
+          F.Position:=Origine + Header.PosRep;
+          F.ReadBuffer(Entrees_1^, I);
+          P_1:=Entrees_1;
+          for I:=1 to Header.NoOfFileEntries do
+          begin
+            if (P_1^.Position+P_1^.Taille > FSize) or
+               (P_1^.Position<SizeOf(Header)) or
+               (P_1^.Taille<0) then
+              Raise EErrorFmt(5509, [72]);
+            F.Position:=P_1^.Position;
+            Q:=OpenFileObjectData(F, CharToPas(P_1^.Nom)+Prefix, P_1^.Taille, Self);
+            SubElements.Add(Q);
+            LoadedItem(rf_Default, F, Q, P_1^.Taille);
+            Inc(P_1);
+          end;
+        finally
+          FreeMem(Entrees_1);
+        end;
+      end
       else
       begin
-        if Header.Signature=SignatureWad3 then
-          Prefix:='.wad3_'
-        else
-          Raise EErrorFmt(5505, [LoadName, Header.Signature, SignatureWad2, SignatureWad3]);
-      end;
-      I:=Header.NoOfFileEntries * SizeOf(TWadFileRec);
-      if (I<0) or (Header.PosRep<SizeOf(TWadHeader)) then
-        Raise EErrorFmt(5509, [71]);
-      if Header.PosRep + I > FSize then
-        Raise EErrorFmt(5186, [LoadName]);
+        //Wad2 or Wad3
+        I:=Header.NoOfFileEntries * SizeOf(TWadFileRec);
+        if (I<0) or (Header.PosRep<SizeOf(TWadHeader)) then
+          Raise EErrorFmt(5509, [71]);
+        if Header.PosRep + I > FSize then
+          Raise EErrorFmt(5186, [LoadName]);
 
-      GetMem(Entrees, I);
-      try
-        F.Position:=Origine + Header.PosRep;
-        F.ReadBuffer(Entrees^, I);
-        P:=Entrees;
-        for I:=1 to Header.NoOfFileEntries do
-        begin
-          if (P^.Position+P^.Taille > FSize) or
-             (P^.Position<SizeOf(Header)) or
-             (P^.Taille<0) then
-            Raise EErrorFmt(5509, [72]);
-          F.Position:=P^.Position;
-          Q:=OpenFileObjectData(F, CharToPas(P^.Nom)+Prefix+P^.InfoType, P^.Taille, Self);
-          SubElements.Add(Q);
-          LoadedItem(rf_Default, F, Q, P^.Taille);
-          Inc(P);
+        GetMem(Entrees, I);
+        try
+          F.Position:=Origine + Header.PosRep;
+          F.ReadBuffer(Entrees^, I);
+          P:=Entrees;
+          for I:=1 to Header.NoOfFileEntries do
+          begin
+            if (P^.Position+P^.Taille > FSize) or
+               (P^.Position<SizeOf(Header)) or
+               (P^.Taille<0) then
+              Raise EErrorFmt(5509, [72]);
+            F.Position:=P^.Position;
+            Q:=OpenFileObjectData(F, CharToPas(P^.Nom)+Prefix+P^.InfoType, P^.Taille, Self);
+            SubElements.Add(Q);
+            LoadedItem(rf_Default, F, Q, P^.Taille);
+            Inc(P);
+          end;
+        finally
+          FreeMem(Entrees);
         end;
-      finally
-        FreeMem(Entrees);
       end;
     end;
   else
@@ -360,6 +408,8 @@ begin
       Origine:=F.Position;
       F.WriteBuffer(Header, SizeOf(Header));  { updated later }
       Header.Signature:=SignatureWad2;
+
+      //FIXME: Make wadP and wadI saving... how?
 
        { write .wad entries }
       Repertoire:=TMemoryStream.Create;
@@ -403,7 +453,7 @@ begin
               if HalfLifeWad3 then
                 TexFile.SaveAsHalfLife(F)
               else
-                TexFile.SaveAsQuake1(F);  { we turn the texure into Quake 1 format }
+                TexFile.SaveAsQuake1(F);  { we turn the texture into Quake 1 format }
             finally
               TexFile.AddRef(-1);
             end;
