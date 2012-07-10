@@ -427,7 +427,10 @@ def edit_dup(editor, m=None):
                 itemtomove = editor.visualselection()[item]
                 itemtomoveparent = itemtomove.parent
                 itemtomoveparent.removeitem(itemtomove)
-                itemtomoveparent.insertitem(count, itemtomove)
+                try:
+                    itemtomoveparent.insertitem(count, itemtomove)
+                except:
+                    itemtomoveparent.insertitem(count-1, itemtomove)
 
 
 def edit_newbboxgroup(editor, m=None):
@@ -734,6 +737,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.44  2011/03/13 00:41:47  cdunde
+#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 #Revision 1.43  2011/03/10 20:56:39  cdunde
 #Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 #and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
