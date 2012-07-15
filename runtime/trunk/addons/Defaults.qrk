@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.538  2012/07/01 12:40:32  danielpharos
+//Added new Source MP engine.
+//
 //Revision 1.537  2012/03/31 20:10:52  danielpharos
 //Set a more reasonable default gamedir-argument for the Quake 2 light-compiler.
 //
@@ -1877,7 +1880,7 @@ QQRKSRC1
         AutomaticInstall = ""   //Currently hidden
         SingleInstance = "1"
         Form = "GeneralUpdate"
-        Notification_Main = "3" //Hidden: Start-index for this version
+        Notification_Main = "4" //Hidden: Start-index for this version
       }
       QuakeC:config =
       {
