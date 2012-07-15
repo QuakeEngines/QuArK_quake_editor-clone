@@ -12,6 +12,7 @@ Various Model editor utility functions.
 
 import quarkx
 import qutils
+import qhandles
 from qeditor import *
 from math import *
 
@@ -583,11 +584,19 @@ def fixUpVertexNos(tris, index):
 #
 ###############################
 
-def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, frameindex2):
+def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, keyframenbr1, keyframenbr2):
     undo = quarkx.action()
-    msg = str(int(round(1/IPF)-1)) + " key frames added"
-    includebones = check4bones = allbones = bones2move = None
+    msg = str(int(round(1/IPF)-2)) + " key frames added"
+    # To handle models that have bones and multiple components.
+    if len(sellistPerComp) == 1 and len(editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
+        framecomp = sellistPerComp[0][0]
+        group = framecomp.name.split("_")[0]
+        for item in editor.Root.subitems:
+            if item.type == ":mc" and item.name != framecomp.name and item.name.startswith(group):
+                    FrameGroup = item.dictitems['Frames:fg'].subitems # Get all the frames for this component.
+                    sellistPerComp = sellistPerComp + [[item, [FrameGroup[keyframenbr1], FrameGroup[keyframenbr2]]]]
     for comp in sellistPerComp:
+        includebones = check4bones = allbones = bones2move = None
         if comp[0].type == ":tag":
             parent = comp[0]
         else:
@@ -601,6 +610,9 @@ def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, framei
             bones2move = []
             bonelist = editor.ModelComponentList['bonelist']
             keys = bonelist.keys()
+            bones_parent_list = []
+            group_count = -1
+            group_list = []
             for bone in allbones:
                 if not bone.name in keys:
                     bone_comp = bone.dictspec['component']
@@ -618,58 +630,193 @@ def KeyframeLinearInterpolation(editor, sellistPerComp, IPF, frameindex1, framei
                         pos = vtxpos + quarkx.vect(bone.dictspec['draw_offset'])
                         bonelist[bone.name]['frames'][frame.name]['position'] = pos.tuple
                         bonelist[bone.name]['frames'][frame.name]['rotmatrix'] = bone.rotmatrix.tuple
-                if bonelist[bone.name]['frames'].has_key(frames[frameindex1].name) and bonelist[bone.name]['frames'].has_key(frames[frameindex2].name):
-                    if (str(bonelist[bone.name]['frames'][frames[frameindex1].name]['position']) != str(bonelist[bone.name]['frames'][frames[frameindex2].name]['position'])) or (str(bonelist[bone.name]['frames'][frames[frameindex1].name]['rotmatrix']) != str(bonelist[bone.name]['frames'][frames[frameindex2].name]['rotmatrix'])):
-                        bones2move = bones2move + [bone.name]
+                if (bonelist[bone.name]['frames'].has_key(frames[keyframenbr1].name) and bonelist[bone.name]['frames'].has_key(frames[keyframenbr2].name)) or (bone.dictspec['parent_name'] in bones_parent_list):
+                    if (bone.dictspec['parent_name'] in bones_parent_list) or (str(bonelist[bone.name]['frames'][frames[keyframenbr1].name]['position']) != str(bonelist[bone.name]['frames'][frames[keyframenbr2].name]['position'])) or (str(bonelist[bone.name]['frames'][frames[keyframenbr1].name]['rotmatrix']) != str(bonelist[bone.name]['frames'][frames[keyframenbr2].name]['rotmatrix'])):
+                        if not bone.name in bones_parent_list:
+                            if not bone.dictspec['parent_name'] in bones_parent_list and ((str(bonelist[bone.name]['frames'][frames[keyframenbr1].name]['position']) != str(bonelist[bone.name]['frames'][frames[keyframenbr2].name]['position'])) or (str(bonelist[bone.name]['frames'][frames[keyframenbr1].name]['rotmatrix']) != str(bonelist[bone.name]['frames'][frames[keyframenbr2].name]['rotmatrix']))):
+                                group_count += 1
+                                group_list = []
+                                bones2move.append(group_list)
+                            bones_parent_list.append(bone.name)
+                                
+                        bones2move[group_count].append(bone.name)
                     else:
                         includebones = includebones + [bone.name]
         insertbefore = comp[1][1]
-        Factor=0.0
         PrevFrame = comp[1][0].copy()
         NextFrame = comp[1][1].copy()
-        for framenbr in range(frameindex1+1, frameindex2):
+        for framenbr in range(keyframenbr1+1, keyframenbr2):
             old = frames[framenbr]
             undo.exchange(old, None)
-        for framenbr in range(1, int(round(1/IPF))):
+        if bones2move is None:
+            count = 1
+        else:
+            count = len(bones2move)
+        for framenbr in range(1, int(round(1/IPF))-1):
             Factor = IPF * framenbr
             ReducedFactor = Factor - floor(Factor)
             newframe = PrevFrame.copy()
             newframe.shortname = PrevFrame.shortname + "-" + str(framenbr)
-            if comp[0].type == ":tag":
-                OldPos = quarkx.vect(PrevFrame.dictspec['origin'])
-                NewPos = quarkx.vect(NextFrame.dictspec['origin'])
-                pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
-                newframe['origin'] = pos.tuple
-                msg = str(int(round(1/IPF)-1)) + " key and tag frames added"
-            else:
-                PrevVertices = PrevFrame.vertices
-                NextVertices = NextFrame.vertices
-                newvertices = []
+
+            PrevVertices = PrevFrame.vertices
+            NextVertices = NextFrame.vertices
+            if bones2move is not None:
+                vtxcount = len(PrevVertices)
+                oldverticespos = {}
+                newverticespos = {}
+                verticesweight = {}
+                oldverticespos[comp[0].name] = PrevVertices
+                newverticespos[comp[0].name] = [[]] * vtxcount
+                verticesweight[comp[0].name] = [[]] * vtxcount
+                for vtx in range(vtxcount):
+                    newverticespos[comp[0].name][vtx] = None
+                    verticesweight[comp[0].name][vtx] = 0.0
+
+            for c in range(count):
+                if includebones is not None:
+                    rotbone = bones2move[c][0]
+                    dragbone = bones2move[c][1]
+                    rotationorigin = quarkx.vect(bonelist[rotbone]['frames'][PrevFrame.name]['position'])
+                    rotationorigin_start = quarkx.vect(bonelist[dragbone]['frames'][PrevFrame.name]['position']) - quarkx.vect(bonelist[rotbone]['frames'][PrevFrame.name]['position'])
+                    rotationorigin_end = quarkx.vect(bonelist[dragbone]['frames'][NextFrame.name]['position']) - quarkx.vect(bonelist[rotbone]['frames'][NextFrame.name]['position'])
+                    delta_diff = rotationorigin_end - rotationorigin_start
+                    mOld = quarkx.matrix(bonelist[rotbone]['frames'][PrevFrame.name]['rotmatrix'])
+                    mNew = quarkx.matrix(bonelist[rotbone]['frames'][NextFrame.name]['rotmatrix'])
+                    mDIFF = mNew - mOld # Tells us which axes we rotated on.
+                    mCHECK = mDIFF.tuple # Tells us which axes we rotated on.
+                    if mCHECK[0][0]==0 and mCHECK[0][1]==0 and mCHECK[0][2]==0:
+                        #Get the X-view
+                        for view in editor.layout.views:
+                            if view.info["type"] == "YZ":
+                                break
+                        rotationorigin_end = rotationorigin_start + ReducedFactor * delta_diff
+                        normal = view.vector("Z").normalized
+                        oldpos = rotationorigin_start - normal*(normal*rotationorigin_start)
+                        newpos = rotationorigin_end - normal*(normal*rotationorigin_end)
+                        m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
+                        mDIFF = m
+                    elif mCHECK[1][0]==0 and mCHECK[1][1]==0 and mCHECK[1][2]==0:
+                        #Get the Y-view
+                        for view in editor.layout.views:
+                            if view.info["type"] == "XZ":
+                                break
+                        rotationorigin_end = rotationorigin_start + ReducedFactor * delta_diff
+                        normal = view.vector("Z").normalized
+                        oldpos = rotationorigin_start - normal*(normal*rotationorigin_start)
+                        newpos = rotationorigin_end - normal*(normal*rotationorigin_end)
+                        m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
+                        mDIFF = m
+                    elif mCHECK[2][0]==0 and mCHECK[2][1]==0 and mCHECK[2][2]==0:
+                        #Get the Z-view
+                        for view in editor.layout.views:
+                            if view.info["type"] == "XY":
+                                break
+                        rotationorigin_end = rotationorigin_start + ReducedFactor * delta_diff
+                        normal = view.vector("Z").normalized
+                        oldpos = rotationorigin_start - normal*(normal*rotationorigin_start)
+                        newpos = rotationorigin_end - normal*(normal*rotationorigin_end)
+                        m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
+                        mDIFF = m
+                    else:
+                        #Get the editor's view
+                        for view in editor.layout.views:
+                            if view.info["type"] == "2D":
+                                break
+                        rotationorigin_end = rotationorigin_start + ReducedFactor * delta_diff
+                        normal = view.vector("Z").normalized
+                        oldpos = rotationorigin_start - normal*(normal*rotationorigin_start)
+                        newpos = rotationorigin_end - normal*(normal*rotationorigin_end)
+                        m = qhandles.UserRotationMatrix(normal, newpos, oldpos, 0)
+                        mDIFF = m
+                    if m is None:
+                        m = quarkx.matrix(quarkx.vect(1.0, 0.0, 0.0), quarkx.vect(0.0, 1.0, 0.0), quarkx.vect(0.0, 0.0, 1.0))
+                if comp[0].type == ":tag":
+                    OldPos = quarkx.vect(PrevFrame.dictspec['origin'])
+                    NewPos = quarkx.vect(NextFrame.dictspec['origin'])
+                    pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
+                    newframe['origin'] = pos.tuple
+                    msg = str(int(round(1/IPF)-2)) + " key and tag frames added"
+                else:
+                    if includebones is not None: # Stores the bone position (that did NOT move) for the newly created frame.
+                        for bone in includebones:
+                            OldPos = bonelist[bone]['frames'][PrevFrame.name]['position']
+                            OldRot = bonelist[bone]['frames'][PrevFrame.name]['rotmatrix']
+                            bonelist[bone]['frames'][newframe.name] = {}
+                            bonelist[bone]['frames'][newframe.name]['position'] = OldPos
+                            bonelist[bone]['frames'][newframe.name]['rotmatrix'] = OldRot
+
+                    if bones2move is not None: # Stores the bone position (that DID move) for the newly created frame.
+                        bones = []
+                        for bone in bones2move[c]:
+                            for bone2 in allbones:
+                                if bone2.name == bone:
+                                    bones.append(bone2)
+                                    break
+                            OldPos = bonelist[bone]['frames'][PrevFrame.name]['position']
+                            OldRot = quarkx.matrix(bonelist[bone]['frames'][PrevFrame.name]['rotmatrix'])
+                            try:
+                                NewPos = bonelist[bone]['frames'][NextFrame.name]['position']
+                                NewRot = quarkx.matrix(bonelist[bone]['frames'][NextFrame.name]['rotmatrix'])
+                                rot = (OldRot * (1.0 - ReducedFactor)) + (NewRot * ReducedFactor)
+                                if bone == bones2move[c][0]:
+                                    pos = (quarkx.vect(OldPos) * (1.0 - ReducedFactor)) + (quarkx.vect(NewPos) * ReducedFactor)
+                                    rot = m * OldRot
+                                else:
+                                    changedpos = quarkx.vect(OldPos) - rotationorigin
+                                    changedpos = m * changedpos
+                                    pos = changedpos + rotationorigin
+                                    ParNewRot = quarkx.matrix(bonelist[bone2.dictspec['parent_name']]['frames'][newframe.name]['rotmatrix'])
+                                    rot = ParNewRot * OldRot
+                            except:
+                                ParOldPos = quarkx.vect(bonelist[bone2.dictspec['parent_name']]['frames'][PrevFrame.name]['position'])
+                                ParNewPos = quarkx.vect(bonelist[bone2.dictspec['parent_name']]['frames'][newframe.name]['position'])
+                                ParNewRot = quarkx.matrix(bonelist[bone2.dictspec['parent_name']]['frames'][newframe.name]['rotmatrix'])
+                                changedpos = quarkx.vect(OldPos) - rotationorigin
+                                changedpos = m * changedpos
+                                pos = changedpos + rotationorigin
+                                rot = ParNewRot * OldRot
+                            bonelist[bone]['frames'][newframe.name] = {}
+                            bonelist[bone]['frames'][newframe.name]['position'] = pos.tuple
+                            bonelist[bone]['frames'][newframe.name]['rotmatrix'] = rot.tuple
+                    # Positions the newly created frame's vertices.
+                    newvertices = []
+                    if bones2move is not None: # For models with bones, fills the 3 dictionary list below.
+                        for bone in bones:
+                            vertices = bone.vtxlist
+                            for compname in vertices:
+                                for vtx in vertices[compname]:
+                                    if editor.ModelComponentList[compname]['weightvtxlist'].has_key(vtx) and editor.ModelComponentList[compname]['weightvtxlist'][vtx].has_key(bone.name):
+                                        weight_value = editor.ModelComponentList[compname]['weightvtxlist'][vtx][bone.name]['weight_value']
+                                    else:
+                                        weight_value = 1.0
+                                    try:
+                                      #  changedpos = oldverticespos[compname][vtx] - rotationorigin
+                                        changedpos = PrevVertices[vtx] - rotationorigin
+                                        changedpos = m * changedpos
+                                        if newverticespos[compname][vtx] is None:
+                                            newverticespos[compname][vtx] = quarkx.vect(0, 0, 0)
+                                        newverticespos[compname][vtx] = newverticespos[compname][vtx] + (changedpos + rotationorigin) * weight_value
+                                        verticesweight[compname][vtx] = verticesweight[compname][vtx] + weight_value
+                                    except:
+                                        break
+            if bones2move is not None: # For models with bones.
+                for compname in newverticespos.keys():
+                    for vtx in range(len(newverticespos[compname])):
+                        if newverticespos[compname][vtx] is None:
+                            newverticespos[compname][vtx] = oldverticespos[compname][vtx]
+                            verticesweight[compname][vtx] = 1.0
+                        if abs(verticesweight[compname][vtx] - 1.0) > 0.001:
+                            oldpartpos = oldverticespos[compname][vtx] * (1.0 - verticesweight[compname][vtx])
+                            newverticespos[compname][vtx] = newverticespos[compname][vtx] + oldpartpos
+                newvertices = newverticespos[compname]
+            else: # For models with NO bones.
                 for i in range(len(PrevVertices)):
                     OldPos = PrevVertices[i]
                     NewPos = NextVertices[i]
                     pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
                     newvertices = newvertices + [pos]
-                newframe.vertices = newvertices
-                if includebones is not None:
-                    for bone in includebones:
-                        OldPos = bonelist[bone]['frames'][PrevFrame.name]['position']
-                        OldRot = bonelist[bone]['frames'][PrevFrame.name]['rotmatrix']
-                        bonelist[bone]['frames'][newframe.name] = {}
-                        bonelist[bone]['frames'][newframe.name]['position'] = OldPos
-                        bonelist[bone]['frames'][newframe.name]['rotmatrix'] = OldRot
-                if bones2move is not None:
-                    for bone in bones2move:
-                        OldPos = quarkx.vect(bonelist[bone]['frames'][PrevFrame.name]['position'])
-                        OldRot = quarkx.matrix(bonelist[bone]['frames'][PrevFrame.name]['rotmatrix'])
-                        NewPos = quarkx.vect(bonelist[bone]['frames'][NextFrame.name]['position'])
-                        NewRot = quarkx.matrix(bonelist[bone]['frames'][NextFrame.name]['rotmatrix'])
-                        pos = (OldPos * (1.0 - ReducedFactor)) + (NewPos * ReducedFactor)
-                        rot = (OldRot * (1.0 - ReducedFactor)) + (NewRot * ReducedFactor)
-                        bonelist[bone]['frames'][newframe.name] = {}
-                        bonelist[bone]['frames'][newframe.name]['position'] = pos.tuple
-                        bonelist[bone]['frames'][newframe.name]['rotmatrix'] = rot.tuple
-                        
+            newframe.vertices = newvertices
+
             undo.put(parent, newframe, insertbefore)
     editor.ok(undo, msg)
 
@@ -4789,6 +4936,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.169  2012/03/25 01:07:49  cdunde
+#To fix error in KeyframeLinearInterpolation function for models that do not have any bones.
+#
 #Revision 1.168  2011/12/28 07:28:51  cdunde
 #Setting up system for bone.dictspec['type'] to store what kind of IMPORTER or
 #default QuArK new bones ('type' = qrk) a bone is.
