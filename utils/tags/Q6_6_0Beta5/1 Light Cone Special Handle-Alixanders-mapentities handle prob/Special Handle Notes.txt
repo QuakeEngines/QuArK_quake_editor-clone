@@ -1,0 +1,79 @@
+Seems only 3 files invoulved are
+H-L2 base.qrk, mapentities.py & maphandles.py
+
+Word search base.qrk file for func_useableladder and func_breakable_surf
+======================================================================
+
+quarkpy\mapentities.py line 667 get the direction of the spot light.
+u,v,p,d are 
+1.5
+3.5
+0 56 0 <type 'vector'> (= p spots that the handle "qubes" are drawn-4 of them)
+0 0 -128 <type 'vector'>
+o.normal  1 0 0 <type 'vector'> (is the direction of the handle)
+pointpos is  1 56 0 (= p + o.normal)
+
+
+quarkpy\maphandles.py line 458 draws the extended handle, but Alex
+used the parent class of (FaceHandle) in line 414 when he should have
+used the parent class of (PointSpecHandle). That is why his
+class SpecialHandle on line 458 drew his special handle for
+a face selection instead of the light_spot entitiy he wanted.
+
+Now I think it should be quarkpy\maphandles.py
+(Angles3DHandle) line 312
+def __init__(self, pos, normal, scale1, entity, spec):
+pos 0 0 0 posisition of center of light entitiy on  view grid. (= pointpos)
+normal 0.54 0.77 -0.33 direction of the handle (= o.normal)
+scale1 1.0
+entity light_environment:e full name of the entity "classname"
+spec angles (set to = "angles")
+
+ERROR IN CONSOLE:
+================
+
+in maphandles.py file, class SpecialHandle line 453, light handle moved  -16 64 
+0
+
+Traceback (most recent call last):
+  File "C:\QuArK_6.5.0alpha1_81805 Final rel. test\quarkpy\qbaseeditor.py", line
+ 521, in mousemap
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\qhandles.py", line 924, in ok
+    old = self.dragto(x, y, flags)
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\qhandles.py", line 817, in dragto
+    old, ri = self.buildredimages(x, y, flags)
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\qhandles.py", line 986, in buildredi
+mages
+    result = self.handle.drag(self.pt0, pt1, flags, self.view)
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\maphandles.py", line 485, in drag
+    return [self.face], None #new
+AttributeError: SpecialHandle instance has no attribute 'face'
+
+I changed that parent class and stopped the special handle from
+drawing on a face selection, but we need to have it draw for the
+light_spot entitiy and it is not doing that right now. So need to
+varify that is the correct parent class and\or its arguments to
+get the special handle to draw.
+
+Most of it is working right now. Plus only the light_spot entitiy
+on the board is setup correctly, the one in the "New Items" is not,
+it just needs default values set for the 1st "_light" Specific and
+that should be 255 255 255 500 like the one on the icon board.
+
+The light_environment is setup correctly for both.
+
+Got Circles to draw and this erron now:
+=====================================
+
+Traceback (most recent call last):
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\qbaseeditor.py", line 604, in mousem
+ap
+    self.dragobject.dragto(x, y, flags)
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\qhandles.py", line 817, in dragto
+    old, ri = self.buildredimages(x, y, flags)
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\qhandles.py", line 996, in buildredi
+mages
+    result = self.handle.drag(self.pt0, pt1, flags, self.view)
+  File "C:\QuArK_6.5.0alpha1_081805\quarkpy\maphandles.py", line 469, in drag
+    pos0 = self.cv.origin
+quarkx.error: Unknown attribute

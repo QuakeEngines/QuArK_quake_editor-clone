@@ -1,0 +1,70 @@
+From: "Rowdy" <rowdy@netspace.net.au>
+To: "cdunde" <cdunde1@comcast.net>
+Subject: Re: Light and Spot_light entities
+Date: Tuesday, August 30, 2005 2:10 AM
+
+cdunde wrote:
+> Hi Rowdy;
+>  
+> I have a question that may be you can help me with.
+>  
+> The quarkpy\mapentities.py file has a number of classes that deal with 
+> different types of entities like
+>  
+> class FaceType(EntityManager):
+>     "Polyhedron Faces"
+>  
+> But I can not seem to tie down which one deals with "Light and 
+> Spot_light" entities.
+> Do you know which one would do that?
+Hey cdunde,
+
+Apologies again for the delays, better late than never eh? :)
+
+in mapentities.py there is:
+
+Mapping = {
+     ":d": DuplicatorType(),
+     ":e": EntityType(),
+     ":g": GroupType(),
+     ":b": BrushEntityType(),
+     ":p": PolyhedronType(),
+     ":f": FaceType(),
+     ":b2": BezierType() }
+
+Pick an addon (DataQ2.qrk for example) and the light entity is configred 
+as "light:e".
+
+ From that I assume that you should be looking at class EntityType().
+
+> Also in the quarkpy\maphandles.py file there are a number of classes 
+> that deal with drawing the handles for entities. The best I can tell the 
+> class Angles3DHandle deals with the drag handle for Lights and 
+> Spot_lights. Can you take a look at that and see if that is correct please?
+> If not, which one would be?
+
+As far as I can tell, from the comment "3D rotating handle, for 
+'angles'-like Specifics." at the start of class Angles3DHandle I would 
+suspect refers to the direction handle, like to indicate the direction 
+the player character is looking in.
+
+My guess (this is a guess, I do not *know*) is:
+
+quarkpu/mapentities.py:
+
+class EntityType(EntityManager):
+     "Quake non-brush Entities"
+
+     def handles(o, editor, view):
+         return maphandles.CenterEntityHandle(o, view)
+
+WHen you create an instance of class EntityType(), you can call the 
+handles() method of that instance to return the drag handle for that 
+entity.  When you call handles() the above code executes, specifically 
+the function CenterEntityHandle() in file quarkpy/maphandles.py.
+
+> Thank you,
+>  
+> cdunde
+
+Rowdy 

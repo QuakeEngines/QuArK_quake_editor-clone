@@ -1,0 +1,7 @@
+Hello,
+
+This is not all of the distribution of the "PASZLIB" package thats avaliable,
+i've removed the files that are not needed for compiling,
+the only file i have modified is minizip.pas
+
+Andy.

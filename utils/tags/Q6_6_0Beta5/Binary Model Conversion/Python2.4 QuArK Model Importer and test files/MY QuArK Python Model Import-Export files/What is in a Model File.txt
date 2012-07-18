@@ -1,0 +1,366 @@
+This will help to understand how to call or access data in a model file directly:
+================================================================================
+
+editor.Root is the model file itself and has its own
+editor.Root.name      = MyModel:mr
+editor.Root.shortname = MyModel
+editor.Root.type      = :mr
+
+[0] will give the first item of a "group" of items which can be a "list" or "subitems", ex:
+
+    If you do a "for" loop you can replace [0] with the name you use in that "for" statement, ex:
+        for item in editor.Root.subitems:
+            print editor.Root.subitems[item]
+            print editor.Root.subitems[item].name # this will produce the full name of that item.
+
+but NOT for "dictitems" because those are "Key\Value" pair items and need to be called by
+their full "name" or by "iterating" through them, as shown below, in a "for" statement, ex:
+
+    for dictitem in editor.Root.dictitems:
+        print dictitem                             # either one will produce the full name of that item.
+        print editor.Root.dictitems[dictitem].name # but this is the "direct call" method
+
+editor.Root = subitems (a "list") of dictitems key:type\value pairs.
+                          |        |            |   |     |
+        editor.Root.subitems[0]    |            |   |     |
+                   editor.Root.dictitems        |   |     |
+                   editor.Root.dictitems[shortname] |     |
+                   editor.Root.dictitems |       [type]   |
+                                         |__________|     |
+                                           |              |
+                   editor.Root.dictitems[name] gives its value
+
+===================================
+editor.Root.name, type
+Model:mr <type 'str'>
+-----------------------------------
+editor.Root.shortname, type
+Model <type 'str'>
+-----------------------------------
+editor.Root.type, type
+:mr <type 'str'>
+-----------------------------------
+editor.Root.subitems, type
+[<QuArK Internal object at 0x00D50B70>,
+ <QuArK Internal object at 0x00C70B74>,
+ <QuArK Internal object at 0x0165FEA4>,
+ <QuArK Internal object at 0x00CC1E4C>
+]
+ <type 'list'>
+editor.Root.subitems[0] # a single item direct call
+ <QuArK Internal object at 0x00D50B70>
+-----------------------------------
+editor.Root.dictitems, type
+{'teeth:mc': <QuArK Internal object at 0x00CC1E4C>,
+ 'Misc:mg': <QuArK Internal object at 0x00D50B70>,
+ 'autopsy:mc': <QuArK Internal object at 0x00C70B74>,
+ 'deadeye:mc': <QuArK Internal object at 0x0165FEA4>
+}
+ <type 'dict'>
+-----------------------------------
+dictitem, type
+teeth:mc <type 'str'>
+teeth:mc
+-----------------------------------
+dictitem, type
+Misc:mg <type 'str'>
+Misc:mg
+-----------------------------------
+dictitem, type
+autopsy:mc <type 'str'>
+autopsy:mc
+-----------------------------------
+dictitem, type
+deadeye:mc <type 'str'>
+deadeye:mc
+-----------------------------------
+    print "our direct call for teeth:mc"
+
+    print editor.Root.dictitems['teeth:mc']
+
+    print editor.Root.dictitems['teeth:mc'].subitems
+
+    print editor.Root.dictitems['teeth:mc'].dictitems
+
+    print editor.Root.dictitems['teeth:mc'].dictitems['Frames:fg']
+
+    print editor.Root.dictitems['teeth:mc'].dictitems['Frames:fg'].dictitems
+
+    print editor.Root.dictitems['teeth:mc'].dictitems['Frames:fg'].dictitems['Frame 17:mf']
+
+    print editor.Root.dictitems['teeth:mc'].dictitems['Frames:fg'].dictitems['Frame 17:mf'].dictspec
+
+    print editor.Root.dictitems['teeth:mc'].dictitems['Frames:fg'].dictitems['Frame 17:mf'].dictspec['index']
+
+    print editor.Root.dictitems['teeth:mc'].dictitems['Frames:fg'].dictitems['Frame 17:mf'].dictspec['Vertices'][3]
+    <type 'dict'>
+===================================
+
+our direct call for teeth:mc
+
+<QuArK Internal object at 0x00CC1E4C>
+
+[<QuArK Internal object at 0x0166D48C>, <QuArK Internal object at 0x0166D864>,
+ <QuArK Internal object at 0x0166DC54>, <QuArK Internal object at 0x0165FE7C>]
+
+{'SDO:sdo': <QuArK Internal object at 0x0165FE7C>,
+ 'Skins:sg': <QuArK Internal object at 0x0166D48C>,
+ 'Skeleton:bg': <QuArK Internal object at 0x0166DC54>,
+ 'Frames:fg': <QuArK Internal object at 0x0166D864>}
+
+<QuArK Internal object at 0x0166D864>
+
+{'Frame 11:mf': <QuArK Internal object at 0x016827FC>, 'Frame 1:mf': <QuArK Inte
+rnal object at 0x016813C4>, 'Frame 17:mf': <QuArK Internal object at 0x01674424>
+, 'Frame 16:mf': <QuArK Internal object at 0x01674228>, 'Frame 15:mf': <QuArK In
+ternal object at 0x0167402C>, 'Frame 4:mf': <QuArK Internal object at 0x01681A34
+>, 'Frame 23:mf': <QuArK Internal object at 0x0167500C>, 'Frame 19:mf': <QuArK I
+nternal object at 0x0167481C>, 'Frame 2:mf': <QuArK Internal object at 0x0168165
+C>, 'Frame 9:mf': <QuArK Internal object at 0x016823F4>, 'Frame 27:mf': <QuArK I
+nternal object at 0x016757FC>, 'Frame 3:mf': <QuArK Internal object at 0x0168183
+C>, 'Frame 29:mf': <QuArK Internal object at 0x01675BF4>, 'Frame 12:mf': <QuArK 
+Internal object at 0x016829F8>, 'Frame 20:mf': <QuArK Internal object at 0x01674
+A18>, 'Frame 10:mf': <QuArK Internal object at 0x01682600>, 'Frame 8:mf': <QuArK
+ Internal object at 0x016821FC>, 'Frame 25:mf': <QuArK Internal object at 0x0167
+5404>, 'Frame 13:mf': <QuArK Internal object at 0x01682BF4>, 'Frame 7:mf': <QuAr
+K Internal object at 0x01682004>, 'Frame 5:mf': <QuArK Internal object at 0x0168
+1C2C>, 'Frame 21:mf': <QuArK Internal object at 0x01674C14>, 'Frame 14:mf': <QuA
+rK Internal object at 0x01682E64>, 'Frame 22:mf': <QuArK Internal object at 0x01
+674E10>, 'Frame 26:mf': <QuArK Internal object at 0x01675600>, 'Frame 30:mf': <Q
+uArK Internal object at 0x01675EA4>, 'Frame 28:mf': <QuArK Internal object at 0x
+016759F8>, 'Frame 6:mf': <QuArK Internal object at 0x01681E0C>, 'Frame 24:mf': <
+QuArK Internal object at 0x01675208>, 'Frame 18:mf': <QuArK Internal object at 0
+x01674620>}
+
+<QuArK Internal object at 0x01674424>
+
+{'index': (17.0,), 'Vertices': (-1.859375, 31.234375, 52.65625, -1.171875, 29.25
+, 52.75, -1.5, 31.65625, 53.265625, -1.125, 29.59375, 53.59375, -0.1875, 28.875,
+ 52.96875, -0.1875, 29.25, 53.765625, -1.203125, 29.84375, 53.96875, -1.171875, 
+30.640625, 54.875, -1.5, 31.703125, 53.265625, -1.796875, 32.203125, 54.078125, 
+-0.1875, 30.234375, 55.046875, -0.1875, 29.4375, 54.203125, 0.765625, 29.25, 52.
+75, 1.46875, 31.234375, 52.65625, 1.09375, 31.65625, 53.265625, 0.71875, 29.5937
+5, 53.59375, 0.78125, 30.640625, 54.875, 0.796875, 29.84375, 53.96875, 1.109375,
+ 31.703125, 53.265625, 1.390625, 32.203125, 54.078125)}
+
+(17.0,)
+
+-1.171875
+===================================
+===================================
+
+WHAT IS IN EACH OF THESE GROUPS:
+==============================
+(model Root):mr contains this dictitems:
+---------------------------------------
+Misc:mg
+-------
+subitems
+[<QuArK Internal object at 0x016813C4>, a bunch of these which are the Bone Frames, ]
+
+dictitems
+{'Bone Frame 30:bone': <QuArK Internal object at 0x00C70830>, 'Bone Frame 16:bon
+e': <QuArK Internal object at 0x00CC4E7C>, 'Bone Frame 10:bone': <QuArK Internal
+ object at 0x00C7169C>, 'Bone Frame 28:bone': <QuArK Internal object at 0x00C705
+34>, 'Bone Frame 18:bone': <QuArK Internal object at 0x00CC5178>, 'Bone Frame 17
+:bone': <QuArK Internal object at 0x00CC4FF4>, 'Bone Frame 3:bone': <QuArK Inter
+nal object at 0x00D53098>, 'Bone Frame 2:bone': <QuArK Internal object at 0x00C7
+1F84>, 'Bone Frame 15:bone': <QuArK Internal object at 0x00C71D80>, 'Bone Frame 
+19:bone': <QuArK Internal object at 0x00CC52F0>, 'Bone Frame 12:bone': <QuArK In
+ternal object at 0x00B1CA04>, 'Bone Frame 9:bone': <QuArK Internal object at 0x0
+0D538E0>, 'Bone Frame 22:bone': <QuArK Internal object at 0x00CC5770>, 'Bone Fra
+me 23:bone': <QuArK Internal object at 0x00CC58E8>, 'Bone Frame 26:bone': <QuArK
+ Internal object at 0x00C70238>, 'Bone Frame 27:bone': <QuArK Internal object at
+ 0x00C703B0>, 'Bone Frame 29:bone': <QuArK Internal object at 0x00C706AC>, 'Bone
+ Frame 6:bone': <QuArK Internal object at 0x00D52940>, 'Bone Frame 14:bone': <Qu
+ArK Internal object at 0x00C71548>, 'Bone Frame 11:bone': <QuArK Internal object
+ at 0x00C716FC>, 'Bone Frame 21:bone': <QuArK Internal object at 0x00CC55EC>, 'B
+one Frame 1:bone': <QuArK Internal object at 0x00D53248>, 'Bone Frame 13:bone': 
+<QuArK Internal object at 0x00B1CB78>, 'Bone Frame 4:bone': <QuArK Internal obje
+ct at 0x00C73850>, 'Bone Frame 8:bone': <QuArK Internal object at 0x00C72944>, '
+Bone Frame 5:bone': <QuArK Internal object at 0x00B1CEB8>, 'Bone Frame 7:bone': 
+<QuArK Internal object at 0x00C73AC4>, 'Bone Frame 25:bone': <QuArK Internal obj
+ect at 0x00C700CC>, 'Bone Frame 20:bone': <QuArK Internal object at 0x00CC5474>,
+ 'Bone Frame 24:bone': <QuArK Internal object at 0x00CC5A6C>}
+
+	example: ['Bone Frame 10:bone'].dictspec
+	the object is the bone itself and contains these dictspec items:
+	{'position': (0.0, 0.0, 0.0), 'Q3A_Style': '\x01', 'mins': (0.0, 0.0, 0.0),
+	 'scale': (68.874237060546875,), 'maxs': (0.0, 0.0, 0.0)}
+
+dictspec
+{'type': '\x06'}
+
+and the model component groups
+
+(type):mc
+
+
+
+(type):mc contain these dictspec:
+--------------------------------
+{'skinsize': (128.0, 64.0), 'Tris': '\x00\x00\x7f\x008\x00\x02\x00z\x00&\x00\x01
+\x00V\x00=\x00\x02\x00z\x00&\x00\x03\x00U\x00+\x00\x01\x00V\x00=\x00\x01\x00V\x0
+0=\x00\x03\x00U\x00+\x00\x04\x00@\x00=\x00\x03\x00U\x00+\x00\x05\x00@\x00+\x00\x
+04\x00@\x00=\x00\x06\x00W\x00$\x00\x08\x00|\x00\x1b\x00\x07\x00V\x00\x0b\x00\x08
+\x00|\x00\x1b\x00\t\x00x\x00\x04\x00\x07\x00V\x00\x0b\x00\x07\x00V\x00\x0b\x00\n
+\x00@\x00\x0e\x00\x06\x00W\x00$\x00\x06\x00W\x00$\x00\n\x00@\x00\x0e\x00\x0b\x00
+@\x00&\x00\x0c\x00V\x00=\x00\x0e\x00z\x00&\x00\r\x00\x7f\x008\x00\x0c\x00V\x00=\
+x00\x0f\x00U\x00+\x00\x0e\x00z\x00&\x00\x04\x00@\x00=\x00\x0f\x00U\x00+\x00\x0c\
+x00V\x00=\x00\x04\x00@\x00=\x00\x05\x00@\x00+\x00\x0f\x00U\x00+\x00\x10\x00V\x00
+\x0b\x00\x12\x00|\x00\x1b\x00\x11\x00W\x00$\x00\x10\x00V\x00\x0b\x00\x13\x00x\x0
+0\x04\x00\x12\x00|\x00\x1b\x00\x11\x00W\x00$\x00\n\x00@\x00\x0e\x00\x10\x00V\x00
+\x0b\x00\x0b\x00@\x00&\x00\n\x00@\x00\x0e\x00\x11\x00W\x00$\x00', 'show': '\x01'
+}
+
+(type):mc contain these dictitems:
+--------------------------------
+SDO:sdo
+Skins:sg
+Skeleton:bg
+Frames:fg
+=============
+SDO:sdo
+-----------
+subitems
+[]
+dictitems
+{}
+dictspec
+{}
+
+Skins:sg
+-----------
+subitems
+[<QuArK Internal object at 0x00CC2468>]
+dictspec
+{'models/characters/teeth_d.tga': <QuArK Internal object at 0x00CC2468>}
+	the object is the image file itself and contains these dictspec items:
+		{x00\x00\..a bunch more..\x00\x00\x00\x00\x00\x00\x00\x00', 'Size': (128.0, 64.0)}
+dictspec
+{'type': '\x02'}
+
+Skeleton:bg
+-----------
+subitems
+[]
+dictitems
+{}
+dictspec
+{'type': '\x05'}
+
+Frames:fg
+-----------
+subitems
+[<QuArK Internal object at 0x016813C4>, a bunch of these which are the animation frames, ]
+
+dictitems
+(see above detail breakdown example)
+
+dictspec
+{'type': '\x01'}
+
+
+
+
+mdlutils line 871 item.dictspec {'index': (3.0,), 'Vertices': (-1.859375, 31.234
+375, 52.65625, -1.171875, 29.25, 52.75, -1.5, 31.65625, 53.265625, -1.125, 29.59
+375, 53.59375, -0.1875, 28.875, 52.96875, -0.1875, 29.25, 53.765625, -1.203125, 
+29.84375, 53.96875, -1.171875, 30.640625, 54.875, -1.5, 31.703125, 53.265625, -1
+.796875, 32.203125, 54.078125, -0.1875, 30.234375, 55.046875, -0.1875, 29.4375, 
+54.203125, 0.765625, 29.25, 52.75, 1.46875, 31.234375, 52.65625, 1.09375, 31.656
+25, 53.265625, 0.71875, 29.59375, 53.59375, 0.78125, 30.640625, 54.875, 0.796875
+, 29.84375, 53.96875, 1.109375, 31.703125, 53.265625, 1.390625, 32.203125, 54.07
+8125)}
+mdlutils line 872 item.name Frame 3:mf
+mdlutils line 872 item.parent.parent.name teeth:mc
+
+
+===================================
+editor.Root.name
+Model:mr
+-----------------------------------
+editor.Root.subitems
+[<QuArK Internal object at 0x00B1CFD8>, <QuArK Internal object at 0x00C702B4>,
+<QuArK Internal object at 0x00C713D4>, <QuArK Internal object at 0x00C726B8>]
+-----------------------------------
+subitem.name <type 'str'>
+teeth:mc
+-----------------------------------
+subitem.dictspec <type 'dict'>
+{'skinsize': (128.0, 64.0), 'Tris': '\x00\x00\x7f\x008\x00\x02\x00z\x00&\x00\x01
+\x00V\x00=\x00\x02\x00z\x00&\x00\x03\x00U\x00+\x00\x01\x00V\x00=\x00\x01\x00V\x0
+0=\x00\x03\x00U\x00+\x00\x04\x00@\x00=\x00\x03\x00U\x00+\x00\x05\x00@\x00+\x00\x
+04\x00@\x00=\x00\x06\x00W\x00$\x00\x08\x00|\x00\x1b\x00\x07\x00V\x00\x0b\x00\x08
+\x00|\x00\x1b\x00\t\x00x\x00\x04\x00\x07\x00V\x00\x0b\x00\x07\x00V\x00\x0b\x00\n
+\x00@\x00\x0e\x00\x06\x00W\x00$\x00\x06\x00W\x00$\x00\n\x00@\x00\x0e\x00\x0b\x00
+@\x00&\x00\x0c\x00V\x00=\x00\x0e\x00z\x00&\x00\r\x00\x7f\x008\x00\x0c\x00V\x00=\
+x00\x0f\x00U\x00+\x00\x0e\x00z\x00&\x00\x04\x00@\x00=\x00\x0f\x00U\x00+\x00\x0c\
+x00V\x00=\x00\x04\x00@\x00=\x00\x05\x00@\x00+\x00\x0f\x00U\x00+\x00\x10\x00V\x00
+\x0b\x00\x12\x00|\x00\x1b\x00\x11\x00W\x00$\x00\x10\x00V\x00\x0b\x00\x13\x00x\x0
+0\x04\x00\x12\x00|\x00\x1b\x00\x11\x00W\x00$\x00\n\x00@\x00\x0e\x00\x10\x00V\x00
+\x0b\x00\x0b\x00@\x00&\x00\n\x00@\x00\x0e\x00\x11\x00W\x00$\x00', 'show': '\x01'
+}
+-----------------------------------
+
+
+
+===================================
+editor.Root.name <type 'str'>
+Model:mr
+-----------------------------------
+editor.Root.subitems <type 'list'>
+[<QuArK Internal object at 0x00B1C5BC>, <QuArK Internal object at 0x00C735EC>]
+-----------------------------------
+subitem.name <type 'str'>
+Misc:mg
+-----------------------------------
+subitem.dictitems <type 'dict'>
+{}
+-----------------------------------
+subitem.name <type 'str'>
+Component 1:mc
+-----------------------------------
+subitem.dictitems <type 'dict'>
+{'SDO:sdo': <QuArK Internal object at 0x00C736CC>,
+'Skins:sg': <QuArK Internal object at 0x00D54D6C>,
+'Skeleton:bg': <QuArK Internal object at 0x00C71F1C>,
+'Frames:fg': <QuArK Internal object at 0x00CC4174>}
+-----------------------------------
+===================================
+
+===================================
+remove_triangle_list [210, 211]
+triangle ((326, 69, 196), (325, 69, 205), (136, 66, 204))
+triangle ((133, 66, 196), (326, 69, 196), (136, 66, 204))
+temp_list [326, 325, 136, 133]
+sort_list [133, 136, 325, 326]
+remove_vertices_list before fixing [326, 325, 136, 133]
+remove_vertices_list AFTER fixing [326]
+
+
+
+
+
+
+new_comp.name
+new component:mc
+-----------------------------------
+new_comp.dictspec
+{'skinsize': (128.0, 64.0), 'Tris': '\x00\x00\x7f\x008\x00\x02\x00z\x00&\x00\x01
+\x00V\x00=\x00\x02\x00z\x00&\x00\x03\x00U\x00+\x00\x01\x00V\x00=\x00\x01\x00V\x0
+0=\x00\x03\x00U\x00+\x00\x04\x00@\x00=\x00\x03\x00U\x00+\x00\x05\x00@\x00+\x00\x
+04\x00@\x00=\x00\x06\x00W\x00$\x00\x08\x00|\x00\x1b\x00\x07\x00V\x00\x0b\x00\x08
+\x00|\x00\x1b\x00\t\x00x\x00\x04\x00\x07\x00V\x00\x0b\x00\x07\x00V\x00\x0b\x00\n
+\x00@\x00\x0e\x00\x06\x00W\x00$\x00\x06\x00W\x00$\x00\n\x00@\x00\x0e\x00\x0b\x00
+@\x00&\x00\x0c\x00V\x00=\x00\x0e\x00z\x00&\x00\r\x00\x7f\x008\x00\x0c\x00V\x00=\
+x00\x0f\x00U\x00+\x00\x0e\x00z\x00&\x00\x04\x00@\x00=\x00\x0f\x00U\x00+\x00\x0c\
+x00V\x00=\x00\x04\x00@\x00=\x00\x05\x00@\x00+\x00\x0f\x00U\x00+\x00\x10\x00V\x00
+\x0b\x00\x12\x00|\x00\x1b\x00\x11\x00W\x00$\x00\x10\x00V\x00\x0b\x00\x13\x00x\x0
+0\x04\x00\x12\x00|\x00\x1b\x00\x11\x00W\x00$\x00\n\x00@\x00\x0e\x00\x10\x00V\x00
+\x0b\x00\x0b\x00@\x00&\x00\n\x00@\x00\x0e\x00\x11\x00W\x00$\x00', 'show': '\x01'
+}
+===================================
+
+
+
