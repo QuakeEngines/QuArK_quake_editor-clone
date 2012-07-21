@@ -11,56 +11,6 @@ QuArK Model Editor exporter for original Half-Life .mdl model files.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-"""
-FILE TODO LIST
-
-NOTE 4 (use, case sensitive, to find location in this file )
-======
-ex: bone.scale = [scale, scale, scale, 0.00001, 0.00001, 0.00001]
-The HARD CODED values of 0.00001 effect Euler Angles.
-When they are imported we DO NOT save them but we may NEED to
-even thought they are VERY SMALL to correctly export the models.
-CAUSION: These are "e" float values that we may not want to
-change to 0.0 like NOTE 2 above covers.
-
-NOTE 5 (use, case sensitive, to find location in this file )
-======
-The value for "trace" in the original formula:
-    #See: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-is suppose to be "trace + 1"
-Should this be changed?
-ALSO in OUR code Dan kind of hid that "1" amount by using "m[3][3]"
-which is a HARD CODE value in our matrix.
-Should that just be changed to 1 in the PROPER places for "trace"?
-
-NOTE 6 (use, case sensitive, to find location in this file )
-======
-Skins correct on re-importing but not right in HL1 MDLViewer.
-To designate ex:
-    mesh.skinref = mesh_index # this works for QuArK.
-    mesh.skinref = mesh_index+1 # this works for MDLViewer barney.mdl but not arcticorange.mdl,
-                                  both causes QuArK re-import crash.
-
-Import barney.mdl with log on and look at its header offsets.
-It seems that the offset NAMES are being SWAPPED for the data they relate to.
-    texture_index_offset = 261696 but the data is class mdl_skin_info binary_format
-  80 bytes * 3 num_textures = 240
-                           ------
-                           261936
-                           ======
-            skins_offset = 261936 but the data is skin_index, single ints (no class)
-       4 bytes * 3 num_skins = 12
-                           ------
-   texture_data_offset S/B 261948 but the barney.mdl log shows 261944 which IS CORRECT
-                           ====== or the texture_data_offset (image data) would be off
-   causing the skins to distort, change colors...very noticeable.
-
-Also see the ie_md0_HL1_import.py file lines 1762 & 1763
-  where we use texture_index_offset = end
-Is the original model file's mesh data order and texture data order out of sync
-  causing our problem, do we need to change the order we export our meshes?
-"""
-
 #$Header$
 
 
@@ -1754,10 +1704,7 @@ def fill_mdl(dlg):
             ang = matrix2euler(m)
             bone.value = [pos[0], pos[1], pos[2], ang[0], ang[1], ang[2]]
             scale = 0.0039063692092895508
-            ## NOTE 4 of HL1 EXPORTER NOTES at top of this file.
             bone.scale = [scale, scale, scale, 0.00001, 0.00001, 0.00001]
-        #    print "bone.value", bone.value
-        #    print "bone.scale", bone.scale
             mdl.bones.append(bone)
 
         ### OFFSET FOR ATTACHMENTS SECTION.
@@ -1946,7 +1893,6 @@ def fill_mdl(dlg):
                 data = all_bone_data[j]
                 mdl.QuArK_anim_data[i] += [[]]
 
-                ## NOTE 4 of HL1 EXPORTER NOTES at top of this file.
                 # Calculate the final bone.scale, apply them and then save the data
                 for k in xrange(6):
                     # Get the largest deviation from value, and set that as the scale
@@ -2142,7 +2088,7 @@ def fill_mdl(dlg):
                         mesh = mdl_mesh()
                         mesh.numtris = len(QuArK_tris)
                         mesh.tri_offset = bodypart.model_offset + bodyparts_section_in_bytes
-                        mesh.skinref = mesh_index # NOTE 6 (use, case sensitive, to find location in this file )
+                        mesh.skinref = mesh_index
                         mesh.numnorms = len(model.normals[mesh_index])
                       #  mesh.dump()
                         for l in xrange(0, mesh.numtris):
@@ -2178,7 +2124,6 @@ def fill_mdl(dlg):
         mdl.num_skin_refs = mdl.num_textures
 
         ### OFFSETS FOR TEXTURE AND SKIN SECTIONS.
-        # NOTE 6 (use, case sensitive, to find location in this file )
         mdl.texture_index_offset = mdl.length
         mdl.texture_data_offset = mdl.texture_index_offset + (mdl.num_textures * 80) # 80 = class mdl_skin_info binary_format.
         next_skin_offset = 0
@@ -2840,6 +2785,9 @@ def UIExportDialog(root, filename, editor, comp_group):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2012/03/10 10:00:39  cdunde
+# Added texture skin flag support.
+#
 # Revision 1.8  2012/03/04 00:02:32  cdunde
 # DanielPharos code for normals and dialog settings.
 #
