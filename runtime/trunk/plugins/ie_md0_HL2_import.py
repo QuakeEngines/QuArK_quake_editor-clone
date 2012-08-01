@@ -3082,7 +3082,6 @@ class mdl_obj(object):
 
     binaryFormat = ("<4sii%dsi3f3f3f3f3f3f44if11i3B7i" % (MAX_QPATH))  # little-endian (<).
 
-    frames = []
     hitboxsets = []
     keys = []
     tags = []
@@ -3092,6 +3091,7 @@ class mdl_obj(object):
 
     #mdl data objects
     bones = []
+    QuArKBonesData = []
     skins_group = []
     materials_group = []
     demand_seq_groups = []
@@ -3204,7 +3204,6 @@ class mdl_obj(object):
         self.array5 = 0
         self.array6 = 0
 
-        self.frames = []
         self.hitboxsets = []        # A list of QuArK :bbg bbox groups with QuArK :p hitbox polys.
         self.keys = []
         self.tags = []
@@ -3246,7 +3245,7 @@ class mdl_obj(object):
         folder_name = folder_name.lower() # Make sure all text is lower case.
         tmpData = file.read(struct.calcsize(self.binaryFormat))
         data = struct.unpack(self.binaryFormat, tmpData)
-        possible_files = ["_animations.mdl", "_animations.ani", "_gestures.mdl", "_gestures.ani", "_postures.mdl", "_postures.ani"]
+        possible_files = ["_animations.mdl", "_animations.ani", "_anims.mdl", "_anims.ani", "_gestures.mdl", "_gestures.ani", "_postures.mdl", "_postures.ani"]
 
         self.ident = data[0]
         self.version = data[1]
@@ -3269,11 +3268,11 @@ class mdl_obj(object):
                 # If related .ani for .mdl file exist, open it for data read in later.
                 if os.path.isfile(ani_file_name):
                     main_mdl_name = file_name.split(possible_files[i])[0]
-                    full_main_mdl_name = folder_name + "_" + main_mdl_name + "_" + main_mdl_name
+                    full_main_mdl_name = folder_name + "_" + main_mdl_name # + "_" + main_mdl_name
                     for item in editor.Root.subitems:
                         if item.type == ":mc":
                             name = item.shortname.lower() # Make sure all text is lower case.
-                            if name.startswith(full_main_mdl_name):
+                            if name.startswith(full_main_mdl_name + "_" + main_mdl_name) or name.startswith(full_main_mdl_name):
                                 self.main_mdl_comps = self.main_mdl_comps + [item]
                     if len(self.main_mdl_comps) == 0:
                         quarkx.msgbox("Main Half-Life 2 .mdl model\nfor this animation .mdl file not loaded.\n\nImport the main file first\nthen reload this .mdl file:\n\n" + file_name, quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
@@ -5238,6 +5237,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.17  2012/03/10 20:30:32  cdunde
+# Fix for skin flag and its comp proper setting handling.
+#
 # Revision 1.16  2012/03/10 08:10:12  cdunde
 # Added texture skin flag support.
 #
