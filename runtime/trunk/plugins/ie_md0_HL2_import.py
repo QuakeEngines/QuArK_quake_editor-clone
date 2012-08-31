@@ -4468,7 +4468,7 @@ class mdl_obj(object):
         tobj.logcon ("version: " + str(self.version))
         tobj.logcon ("-----has to be the same in the phy and vtx files to load----")
         tobj.logcon ("checksum: " + str(self.checksum))
-        tobj.logcon ("version: " + self.name)
+        tobj.logcon ("name: " + self.name)
         tobj.logcon ("length: " + str(self.length))
         tobj.logcon ("-----ideal eye position----")
         tobj.logcon ("eyeposition: " + str(self.eyeposition))
@@ -5237,6 +5237,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.18  2012/08/01 01:34:49  cdunde
+# File cleanup and added animation file name possibilities.
+#
 # Revision 1.17  2012/03/10 20:30:32  cdunde
 # Fix for skin flag and its comp proper setting handling.
 #
