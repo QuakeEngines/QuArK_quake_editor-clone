@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.100  2011/06/03 19:35:35  danielpharos
+Fixed long-standing pointer corruption bug when loading poly faces.
+
 Revision 1.99  2010/11/24 05:56:55  cdunde
 New quarkx function call changedfaces by DanielPharos.
 Makes the Delphi code add + sign to poly in the tree-view without going through undo code.
@@ -356,8 +359,6 @@ interface
 uses SysUtils, Windows, Classes, Graphics,
      QkObjects, Qk3D, QkMapObjects, qmath, qmatrices,
      QkExplorer, Setup, QkTextures, Python, PyMath;
-
-{ $DEFINE WriteOnlyIntegers}
 
 const
  MaxFVertices  = 64;   { sommets par face, maximum }

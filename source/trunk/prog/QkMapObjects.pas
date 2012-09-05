@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2011/06/03 20:28:49  danielpharos
+Fixed RGB float color values not being clamped.
+
 Revision 1.56  2010/06/15 18:04:49  danielpharos
 Attempt to fix .qkl files being saved with the wrong extension.
 
@@ -408,7 +411,7 @@ var
   l_MapCommentsPrefix: String;
 begin
   { If user has choosen to disable .MAP comments, then return an empty string. }
-  if (SetupSubSet(ssMap,'Options').Specifics.Values['DisableMapComments'] = '1') then
+  if not (SetupSubSet(ssFiles,'MAP').Specifics.Values['WriteComments'] <> '') then
   begin
     Result := '';
     Exit;

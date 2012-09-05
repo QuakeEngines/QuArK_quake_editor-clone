@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.103  2012/07/01 12:11:08  danielpharos
+Made the .map importer more resilient against bad brushes.
+
 Revision 1.102  2010/05/23 15:58:04  danielpharos
 Added some options to handle texture names better. Should fix wrong slashes on export.
 
@@ -3087,11 +3090,11 @@ begin
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
 
        saveflags:=0;
-       if MapOptionSpecs.Values['IgnoreToBuild']<>'' then
+       if SetupSubSet(ssMap,'Options').Specifics.Values['IgnoreToBuild']<>'' then
          saveflags:=saveflags or soIgnoreToBuild;
-       if MapOptionSpecs.Values['DisableFPCoord']<>'' then
+       if not (MapOptionSpecs.Values['UseFPCoord']<>'') then
          saveflags:=saveflags or soDisableFPCoord;
-       if MapOptionSpecs.Values['UseIntegralVertices']<>'' then
+       if not (MapOptionSpecs.Values['UseIntegralVertices']<>'') then
          saveflags:=saveflags or soUseIntegralVertices;
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
@@ -3425,7 +3428,7 @@ begin
    hashpos:=Pos('#', S);
    if (MapSaveSettings.MapFormat<>HL2Type) or ((hashpos=0) or (hashpos=1)) then
    begin
-     if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
+     if (S<>'') and (S[1]<>';') and not IsFloatSpec(S) then //FIXME: IsIntSpec?
      begin
        P:=Pos('=', S);
        Msg:=Copy(S, P+1, 255);
@@ -3813,7 +3816,7 @@ begin
    end;
    
     { these means brutally round off the threepoints, whatever they are }
- WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags2 and soDisableFPCoord <> 0 {$ENDIF};
+ WriteIntegers:=Flags2 and soDisableFPCoord <> 0;
 
 // UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
 // ExpandThreePoints:=WriteIntegers and UseIntegralVertices;

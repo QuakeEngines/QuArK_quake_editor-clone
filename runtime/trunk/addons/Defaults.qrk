@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.539  2012/07/15 19:39:32  danielpharos
+//Update for new notification.
+//
 //Revision 1.538  2012/07/01 12:40:32  danielpharos
 //Added new Source MP engine.
 //
@@ -4334,6 +4337,10 @@ QQRKSRC1
       MAP:config =
       {
         SaveMapVersion = "2"
+        WriteComments = "1"
+      //WriteEnhTex = "1"
+        UseFPCoord = "1"
+        UseIntegralVertices = ""
         Form = "FilesMAP"
       }
       PCX:config =
@@ -4488,10 +4495,6 @@ QQRKSRC1
         HandleHints             = "1"
         TreeKeybDelay           = "1"
         IgnoreToBuild           = "1"
-        DisableMapComments      = ""
-      //DisableEnhTex           = ""
-        DisableFPCoord          = ""
-        UseIntetralVertices     = ""
         CompassNumbers          = "1"
         ComputePolys            = "1"
         HideMouseDrag           = "1"
@@ -8755,6 +8758,10 @@ QQRKSRC1
                $0D"2"
         Hint    = "Doom 3 works with two different map versions. Map version 2 should be used."
       }
+      WriteComments: = {Typ="X" Txt="Write comments in .map files" Cap="Enabled"}
+    //WriteEnhTex: = {Typ="X" Txt="Write //TX# in .map files" Cap="Enabled"}
+      UseFPCoord: = {Typ="X" Txt="Write floating-point coords" Cap="Enabled"}
+      UseIntegralVertices: = {Typ="X" Txt="Use Integral Vertices as Threepoints" Cap="Enabled"}
     }
     FilesPCX:form =
     {
@@ -9923,10 +9930,6 @@ QQRKSRC1
       Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
       AutoCheckMap:             = {Typ="X" Txt="When building the map"          Cap="Perform checks first"                 }
       IgnoreToBuild:            = {Typ="X" Txt="   ``"                          Cap="Ignore groups marked so"              }
-      DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
-    //DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
-      DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
-      UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
     }
     MdlOptions:form =
     {
