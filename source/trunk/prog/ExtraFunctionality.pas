@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2010/05/05 18:45:19  danielpharos
+Added logging for GetGameFileBase call.
+
 Revision 1.25  2010/04/16 20:16:15  danielpharos
 Added more OS version info to log.
 
@@ -160,6 +163,8 @@ function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
 type
   PByte = ^Byte;
   PInteger = ^Integer;
+  PSingle = ^Single;
+  PDouble = ^Double;
   PPointer = ^Pointer;
 
 { IsPathDelimiter returns True if the character at byte S[Index]

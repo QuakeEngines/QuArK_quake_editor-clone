@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2010/10/05 03:25:34  cdunde
+New slide bar dialog form type control added by DanielPharos.
+
 Revision 1.56  2009/09/22 18:12:40  danielpharos
 TList --> TQList
 
@@ -2892,9 +2895,9 @@ begin
          begin
           S:=Links[J*2].Specifics[I];
           S:=Copy(S, 1, Pos('=',S)-1);
-          IsFloat:=(S<>'') and (Ord(S[1])>=chrFloatSpec);
+          IsFloat:=IsFloatSpec(S);
           if IsFloat then
-           S[1]:=Chr(Ord(S[1])-chrFloatSpec);
+           S:=NormalSpecOfFloatSpec(S);
           Q:=Form.SubElements.FindShortName(S);
           if Q=Nil then
            begin   { found an extra Spec }

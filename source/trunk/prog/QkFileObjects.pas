@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2011/07/31 16:30:23  danielpharos
+Massive moving around of QuArK SAS stuff and SteamFS things.
+
 Revision 1.71  2010/06/15 18:04:49  danielpharos
 Attempt to fix .qkl files being saved with the wrong extension.
 
@@ -1416,7 +1419,7 @@ var
  C: Char;
  Q: QObject;
  Value{, Value2}: Single;
- ValueI: Integer;
+ //ValueI: Integer;
 {ValueL: LongInt absolute Value;
  Value2L: LongInt absolute Value2;}
 begin
@@ -1428,9 +1431,9 @@ begin
    S:=Level.Specifics[J];
    P:=Pos('=', S);
    Arg:=Indent + Copy(S, 1, P-1) + ' = ';
-   if (Ord(S[1])>=chrFloatSpec) and ((Length(S)-P) and 3 = 0) then
+   if IsFloatSpec(S) and ((Length(S)-P) and 3 = 0) then
     begin  { float Specific }
-     Arg[Length(Indent)+1]:=Chr(Ord(S[1]) and not chrFloatSpec);
+     Arg[Length(Indent)+1]:=NormalSpecOfFloatSpec(S)[1];
      C:='''';
      for I:=1 to (Length(S)-P) div 4 do
       begin
@@ -1447,9 +1450,9 @@ begin
      Arg:=Arg+'''';
     end
    else
-    if (Length(S)>1) and (Ord(S[2])>=chrFloatSpec) and ((Length(S)-P) and 3 = 0) then
+(*    if IsIntSpec(S) and ((Length(S)-P) and 3 = 0) then
      begin  { integer Specific }
-      Arg[Length(Indent)+2]:=Chr(Ord(S[2]) and not chrFloatSpec);
+      Arg[Length(Indent)+2]:=NormalSpecOfIntSpec(S)[2];
       C:='|';
       for I:=1 to (Length(S)-P) div 4 do
        begin
@@ -1465,7 +1468,7 @@ begin
       if C<>' ' then Arg:=Arg+C;
       Arg:=Arg+'|';
      end
-    else
+    else*)
      if P=Length(S) then
       Arg:=Arg+'""'   { empty Specific }
 //     else if (Length(S)=P+1) and (S[P+1]='!') then

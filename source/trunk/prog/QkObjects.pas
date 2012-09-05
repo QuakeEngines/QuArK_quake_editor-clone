@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.127  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.126  2009/11/28 15:48:32  danielpharos
 Commented out unused variable.
 
@@ -402,7 +405,7 @@ interface
 
 {$I DelphiVer.inc}
 
-uses Windows, SysUtils, Messages, Classes, Clipbrd,
+uses SysUtils, Messages, Classes, Clipbrd, Windows,
      Controls, Graphics, Forms, qmath, Menus,
      CommCtrl, Python;
 
@@ -490,8 +493,6 @@ const
 
  {MaxFloatAccept = 1E7-1;
   MinFloatAccept = 1E-8;}
-
-  chrFloatSpec = 128;
 
   DefaultForm = 'Default';
 
@@ -773,6 +774,10 @@ function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
 (*function IntSpecNameOf(const Name: String) : String;*)
 function FloatSpecNameOf(const Name: String) : String;
+(*function IsIntSpec(const Name: String) : Boolean;*)
+function IsFloatSpec(const Name: String) : Boolean;
+(*function NormalSpecOfIntSpec(const Name: String) : String;*)
+function NormalSpecOfFloatSpec(const Name: String) : String;
 procedure CheckValidSpec(var Spec: String);
 function StringListConcatWithSeparator(theStringList: TStrings; theStringSeparator: Byte) : String;
 {procedure FreeOldObjects;}
@@ -804,6 +809,9 @@ uses
 
 var
   QFileList: TStringList;
+
+const
+  chrFloatSpec = 128;
 
  {------------------------}
 
@@ -1103,7 +1111,7 @@ begin
       begin
         if FHandle>0 then
           TemporaryClose;
-        DeleteFile(QFileList[I]);
+        DeleteFile(PChar(QFileList[I]));
       end;
       QFileList.Delete(I);
     end;
@@ -2554,7 +2562,7 @@ end;
 
 function QObject.GetVectSpec(const Name: String) : TVect;
 { (Comment by Decker 2001-02-23)
- Retrives a specific's arg-data of 3 Singles, and convert them into
+ Retrieves a specific's arg-data of 3 Singles, and convert them into
  a vector.
 }
 var
@@ -2609,6 +2617,30 @@ function FloatSpecNameOf(const Name: String) : String;
 begin
   Result:=Name;
   Result[1]:=Chr(Ord(Result[1]) or chrFloatSpec);
+end;
+
+(*function IsIntSpec(const Name: String) : Boolean;
+begin
+  Result:=(Length(Name)>1) and (Ord(Name[2])>=chrFloatSpec);
+end;*)
+
+function IsFloatSpec(const Name: String) : Boolean;
+begin
+  Result:=(Length(Name)>0) and (Ord(Name[1])>=chrFloatSpec);
+end;
+
+(*function NormalSpecOfIntSpec(const Name: String) : String;
+begin
+  Result:=Name;
+  if IsIntSpec(Name) then
+    Result[2]:=Chr(Ord(Result[2])-chrFloatSpec);
+end;*)
+
+function NormalSpecOfFloatSpec(const Name: String) : String;
+begin
+  Result:=Name;
+  if IsFloatSpec(Name) then
+    Result[1]:=Chr(Ord(Result[1])-chrFloatSpec);
 end;
 
 procedure CheckValidSpec(var Spec: String);
@@ -3038,7 +3070,7 @@ function QObject.PyGetAttr(attr: PChar) : PyObject;
 var
   I, J, N: Integer;
   o: PyObject;
-  S: String;
+  S, S2: String;
   PF: ^Single;
 (*  PI: ^Integer;*)
   L: TStringList;
@@ -3089,39 +3121,37 @@ begin
       Result:=PyDict_New;
       for I:=0 to Specifics.Count-1 do
       begin
-        S:=Specifics[I];
-        J:=Pos('=', S);
-        if J>1 then
+        S:=Specifics.Names[I];
+        if Length(S) > 0 then
         begin
-          S[J]:=#0;
-          if Ord(S[1]) and chrFloatSpec = 0 then
+          S2:=Specifics.ValueFromIndex[I];           
+(*          if IsIntSpec(S) then
           begin
-(*            if (Length(S) > 1) and not (Ord(S[2]) and chrFloatSpec = 0) then
+            N:=Length(S2) div 4;    { SizeOf(Integer) }
+            PChar(PI):=PChar(S2);
+            o:=PyTuple_New(N);
+            for J:=0 to N-1 do
             begin
-              N:=(Length(S)-J) div 4;    { SizeOf(Integer) }
-              PChar(PI):=PChar(S)+J;
-              o:=PyTuple_New(N);
-              for J:=0 to N-1 do
-              begin
-                PyTuple_SetItem(o, J, PyInt_FromLong(PI^));
-                Inc(PI);
-              end;
-              S[2]:=Chr(Ord(S[2]) and not chrFloatSpec);
-            end
-            else*)
-              o:=PyString_FromStringAndSize(PChar(S)+J, Length(S)-J);
+              PyTuple_SetItem(o, J, PyInt_FromLong(PI^));
+              Inc(PI);
+            end;
+            S:=NormalSpecOfIntSpec(S);
           end
-          else
+          else*) if IsFloatSpec(S) then
           begin
-            N:=(Length(S)-J) div 4;    { SizeOf(Single) }
-            PChar(PF):=PChar(S)+J;
+            N:=Length(S2) div 4;    { SizeOf(Single) }
+            PChar(PF):=PChar(S2);
             o:=PyTuple_New(N);
             for J:=0 to N-1 do
             begin
               PyTuple_SetItem(o, J, PyFloat_FromDouble(PF^));
               Inc(PF);
             end;
-            S[1]:=Chr(Ord(S[1]) and not chrFloatSpec);
+            S:=NormalSpecOfFloatSpec(S);
+          end
+          else
+          begin
+            o:=PyString_FromStringAndSize(PChar(S2), Length(S2));
           end;
           PyDict_SetItemString(Result, PChar(S), o);
           Py_DECREF(o);

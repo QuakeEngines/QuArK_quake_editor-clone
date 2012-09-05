@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.40  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -413,7 +416,7 @@ var
   begin
    J:=Pos('=', Spec);
      { ignore specifics that cannot be written as text }
-   if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
+   if (J>0) and not IsFloatSpec(Spec) then //FIXME: and not IsIntSpec(Spec)
     Result:=Result + Indent + Copy(Spec,1,J-1) + TrimRight(' ' + Copy(Spec,J+1,MaxInt)) + #13#10;
       { dump the specific as a shader or stage attribute }
   end;

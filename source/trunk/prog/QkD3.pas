@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2009/07/17 10:49:26  danielpharos
+Removed redundant uses.
+
 Revision 1.13  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -255,7 +258,7 @@ var
   begin
    J:=Pos('=', Spec);
    { ignore specifics that cannot be written as text }
-   if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
+   if (J>0) and not IsFloatSpec(Spec) then //FIXME: and not IsIntSpec(Spec)
     Result:=Result + Indent + Copy(Spec,1,J-1) + TrimRight(' ' + Copy(Spec,J+1,MaxInt)) + #13#10;
     { dump the specific as a shader or stage attribute }
   end;
