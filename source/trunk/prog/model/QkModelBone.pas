@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/03/09 22:39:31  danielpharos
+Fixed a horrible crash with rotmatrix.
+
 Revision 1.28  2010/02/21 19:57:32  danielpharos
 Fixed a Python reference count leak.
 
@@ -223,7 +226,7 @@ begin
   CVert^[1]:=P[1];
   CVert^[2]:=P[2];
   if Specifics.IndexofName(PosSpec)<>-1 then
-    //@ BAD CODING TACTIC!
+    //FIXME: BAD CODING TACTIC!
     Specifics.Delete(Specifics.IndexofName(PosSpec));
   Specifics.Add(s);
 end;
@@ -251,7 +254,7 @@ begin
   PChar(CVert):=PChar(S)+RotSpecLen;
   Move(P, CVert^, Sizeof(TMatrixTransformation));
   if Specifics.IndexofName(RotSpec)<>-1 then
-    //@ BAD CODING TACTIC!
+    //FIXME: BAD CODING TACTIC!
     Specifics.Delete(Specifics.IndexofName(RotSpec));
   Specifics.Add(s);
 end;
@@ -439,7 +442,7 @@ begin
           DestP^[2]:=Z;
         end;
         if Specifics.IndexofName(PosSpec)<>-1 then
-          //@ BAD CODING TACTIC!
+          //FIXME: BAD CODING TACTIC!
           Specifics.Delete(Specifics.IndexofName(PosSpec));
         Specifics.Add(S);
         Result:=True;
@@ -467,7 +470,7 @@ begin
           DestM^[3][3]:=M[3][3];
         end;
         if Specifics.IndexofName(RotSpec)<>-1 then
-          //@ BAD CODING TACTIC!
+          //FIXME: BAD CODING TACTIC!
           Specifics.Delete(Specifics.IndexofName(RotSpec));
         Specifics.Add(S);
         Result:=True;
@@ -507,9 +510,9 @@ begin
             I:=I+SizeOf(Integer);
           end;
         end;
-        //@ FIXME: Check for ref counters bugs!
+        //FIXME: Check for ref counters bugs!
         if Specifics.IndexofName(VertSpec)<>-1 then
-          //@ BAD CODING TACTIC!
+          //FIXME: BAD CODING TACTIC!
           Specifics.Delete(Specifics.IndexofName(VertSpec));
         Specifics.Add(S);
         Result:=True;
@@ -549,9 +552,9 @@ begin
             I:=I+SizeOf(Integer);
           end;
         end;
-        //@ FIXME: Check for ref counters bugs!
+        //FIXME: Check for ref counters bugs!
         if Specifics.IndexofName(VertPosSpec)<>-1 then
-          //@ BAD CODING TACTIC!
+          //FIXME: BAD CODING TACTIC!
           Specifics.Delete(Specifics.IndexofName(VertPosSpec));
         Specifics.Add(S);
         Result:=True;
