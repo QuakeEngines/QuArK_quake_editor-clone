@@ -3785,6 +3785,7 @@ QQRKSRC1
     {
      Help = "A brazier"
      bbox = '-16 -18 -52 16 18 0'
+	 mdl = "models/burner.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -3818,6 +3819,7 @@ QQRKSRC1
     {
      Help = "Default light value is 300"
      bbox = '-7 -7 -15 7 7 31'
+	 mdl = "models/candle.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -3917,6 +3919,7 @@ QQRKSRC1
     {
      Help = "A castle lantern that hangs on the wall"
      bbox = '-11 -11 -41 11 11 5'
+	 mdl = "models/lantern.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -3942,6 +3945,7 @@ QQRKSRC1
     {
      Help = "Large yellow flame"
      bbox = '-10 -10 -13 10 10 41'
+	 mdl = "models/newfire.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -3975,6 +3979,7 @@ QQRKSRC1
     {
      Help = "A palatial wall torch of some sort"
      bbox = '-19 -19 0 19 19 35'
+	 mdl = "models/palight.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -4048,6 +4053,7 @@ QQRKSRC1
     {
      Help = "The Archer monster with snow booties"
      bbox = '-16 -16 0 16 16 50'
+	 mdl = "models/archer2.mdl"
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
@@ -4128,6 +4134,7 @@ QQRKSRC1
     {
      Help = "The Big Baddie"
      bbox = '-16 -16 0 16 16 50'
+	 mdl = "models/pravus.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5104,6 +5111,7 @@ QQRKSRC1
     {
      Help = "WereCat with snow leopard skin"
      bbox = '-16 -16 0 16 16 56'
+	 mdl = "models/snowleopard.mdl"
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
@@ -5144,6 +5152,7 @@ QQRKSRC1
     {
      Help = "WereCat with Siberian Tiger skin"
      bbox = '-16 -16 0 16 16 56'
+	 mdl = "models/snowleopard.mdl"
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
@@ -5184,6 +5193,7 @@ QQRKSRC1
     {
      Help = "The Yakman Cometh... and the Yakman taketh away..."
      bbox = '-28 -28 0 28 28 80'
+	 mdl = "models/yakman.mdl"
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
@@ -5288,6 +5298,7 @@ QQRKSRC1
     {
      Help = "Hnaging chinese kite lamp or something"
      bbox = '-22 -22 -120 22 22 0'
+	 mdl = "models/ch-kite.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5319,6 +5330,7 @@ QQRKSRC1
     {
      Help = "Hanging chinese sign or something"
      bbox = '-48 -48 -66 48 48 0'
+	 mdl = "models/ch-hang.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5350,6 +5362,7 @@ QQRKSRC1
     {
      Help = "demoness statue?"
      bbox = '-16 -16 0 16 16 44'
+	 mdl = "models/demstat.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5381,6 +5394,7 @@ QQRKSRC1
     {
      Help = "sam the statue"
      bbox = '-32 -32 0 32 32 72'
+	 mdl = "models/samurai.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5412,6 +5426,7 @@ QQRKSRC1
     {
      Help = "4 armed lady with hip action"
      bbox = '-32 -32 0 32 32 72'
+	 mdl = "models/4arm.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5446,6 +5461,7 @@ QQRKSRC1
     {
      Help = "A skeleton laying face up, arms crossed"
      bbox = '-37 -12 0 37 12 11'
+	 mdl = "models/skeleton.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5477,6 +5493,7 @@ QQRKSRC1
     {
      Help = "Frickin' kick-ass Skeletal King on his Throne O' Bones!"
      bbox = '-33 -33 -0 33 33 115'
+	 mdl = "models/sk-throne.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5511,6 +5528,7 @@ QQRKSRC1
     {
      Help = "A corner pile of snow, faces south-east if using an angle of 0"
      bbox = '-41 -55 0 41 55 65'
+	 mdl = "models/snowcrnr.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5542,6 +5560,7 @@ QQRKSRC1
     {
      Help = "pile of snow"
      bbox = '-52 -52 0 52 52 16'
+	 mdl = "models/snowpile.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5573,6 +5592,7 @@ QQRKSRC1
     {
      Help = "A wide wall of now of snow, faces east if using an angle of 0"
      bbox = '-83 -83 0 83 83 45'
+	 mdl = "models/snowwall.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -5604,6 +5624,7 @@ QQRKSRC1
     {
      Help = "A tall, thin stalagmite or stalactite"
      bbox = '-10 -10 -17 10 10 17'
+	 mdl = "models/stlgmt1.mdl"
      angles: =
         {Txt = "&" Hint = "typical values are 180 0 0 or 0 0 180"
        }
@@ -5635,6 +5656,7 @@ QQRKSRC1
     {
      Help = "A thicker stalagmite or stalactite"
      bbox = '-24 -24 -21 24 24 21'
+	 mdl = "models/stlgmt2.mdl"
      angles: =
         {Txt = "&" Hint = "typical values are 180 0 0 or 0 0 180"
        }
@@ -5666,6 +5688,7 @@ QQRKSRC1
     {
      Help = "Statue of a dragon lion?"
      bbox = '-25 -25 0 25 25 62'
+	 mdl = "models/draglion.mdl"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
