@@ -705,6 +705,7 @@ def Import(basepath, filename):
                 if imagefile is None:
                     if surface.shaders[i].name != "":
                         tryskin = surface.shaders[i].name.rsplit(".", 1)[0]
+                        tryskin = tryskin.replace("\\", "/")
                         tryskin = tryskin.rsplit("/", 1)[1]
                         for type in ImageTypes:
                             if os.path.isfile(FolderPath + "/" + tryskin + type):
@@ -1401,6 +1402,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.25  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
