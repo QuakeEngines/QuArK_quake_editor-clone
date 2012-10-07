@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.540  2012/09/05 18:20:05  danielpharos
+//Moved some map options around to make them more findable, and to make them work again.
+//
 //Revision 1.539  2012/07/15 19:39:32  danielpharos
 //Update for new notification.
 //
@@ -4944,7 +4947,8 @@ QQRKSRC1
         $0D"%file%     - Gives the map's path and filename without extension"
         $0D"%mappath%  - Gives the map's path with ending backslash"
         $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
-        $0D"%basepath% - Gives the base directory of the game (see Game Settings above)"
+        $0D"%basepath% - Gives the main directory of the game (see Game Settings above)"
+        $0D"%basedir%  - Gives the base directory of the game (see Game Settings above)"
         $0D"%gamedir%  - Gives the game directory of the game (see Game Settings above)"
         $0D"%buildpgmsdir% - Gives the Default directory of the build program(s)"
         $0D
