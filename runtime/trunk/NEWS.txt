@@ -12,6 +12,10 @@ $Id$
        #####
         #####       Quake Army Knife 6.6 Changelog
 
+6.6.0 Beta 6
+============
+* [DanielPharos]: Fixed SOF1 tools: they don't work with the proper slashes.
+
 6.6.0 Beta 5
 ============
 * [DanielPharos]: Added DOOM .wad file reading support, per user request. Note: Saving will output a Quake wad!

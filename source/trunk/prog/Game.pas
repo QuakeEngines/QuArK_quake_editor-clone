@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.86  2012/07/01 12:40:43  danielpharos
+Added new Source MP engine.
+
 Revision 1.85  2011/08/13 22:17:19  danielpharos
 Simplified Steam file path handling. Should be much more uniform.
 
@@ -722,6 +725,7 @@ var
 
   argument_mappath: String;
   argument_mapfile: String;
+  argument_mapfile_wrongslash: String;
   argument_file: String;
   argument_filename: String;
   argument_fullfilename: String;
@@ -795,6 +799,7 @@ var
 
    path:=StringReplace(path, '%mappath%', argument_mappath, [rfReplaceAll]);
    path:=StringReplace(path, '%mapfile%', argument_mapfile, [rfReplaceAll]);
+   path:=StringReplace(path, '%mapfile_wrongslash%', argument_mapfile_wrongslash, [rfReplaceAll]);
    path:=StringReplace(path, '%file%', argument_file, [rfReplaceAll]);
    path:=StringReplace(path, '%filename%', argument_filename, [rfReplaceAll]);
    path:=StringReplace(path, '%fullfilename%', argument_fullfilename, [rfReplaceAll]);
@@ -895,6 +900,8 @@ begin
     argument_filename  := '';
     argument_grouppath := '';
   end;
+
+  argument_mapfile_wrongslash := ReverseSlashes(argument_mapfile);
 
   //Be careful when making changes here, because the order of these replacements is not arbitrary!
   Result.Filename:=FileToResolve.Commandline;

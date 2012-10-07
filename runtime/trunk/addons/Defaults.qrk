@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.541  2012/10/07 12:24:08  danielpharos
+//Small correction to path descriptions.
+//
 //Revision 1.540  2012/09/05 18:20:05  danielpharos
 //Moved some map options around to make them more findable, and to make them work again.
 //
@@ -3603,18 +3606,18 @@ QQRKSRC1
         ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
         BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
+        BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22""
+        BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
         BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
+        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
         BuildPgm4 = "BSPC.EXE"
-        BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22""
+        BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22
         BuildPgm5 = "BSPC.EXE"
-        BuildArgs5 = "-ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22""
+        BuildArgs5 = "-ext _b1 -cfg "$22"%buildpgmsdir%\aascfg_sm.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22
         BuildPgm6 = "Rename.bat"
-        BuildArgs6 = "%filename% "$22"%mappath%"$22""
+        BuildArgs6 = "%filename% "$22"%mappath%"$22
 
         MapCommentsPrefix = "//"
 
@@ -3680,14 +3683,14 @@ QQRKSRC1
         AlwaysWriteThreeFields = "1"   // hidden setting
 
         BuildPgm1  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs1 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22""
+        BuildArgs1 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs2 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22""
+        BuildArgs2 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
         BuildPgm3  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs3 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22""
+        BuildArgs3 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
         BuildPgm4  = "C:\Program Files\Wolfenstein - Enemy Territory\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
-        BuildArgs4 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -light -fast "$22"%file%"$22""
+        BuildArgs4 = "-game "$22"et"$22" -fs_basepath "$22"%basepath%"$22" -light -fast "$22"%file%"$22
         MapCommentsPrefix = "//"
 
    // Other hidden settings
@@ -3803,9 +3806,9 @@ QQRKSRC1
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "SOFVIS.EXE"
-        BuildArgs2 = ""
+        BuildArgs2 = ""$22"%mapfile_wrongslash%"$22
         BuildPgm3  = "SOFARGHRAD.EXE"
-        BuildArgs3 = "-gamedir .. -moddir ."
+        BuildArgs3 = "-gamedir %basedir% -moddir %gamedir% "$22"%mapfile_wrongslash%"$22
 
         TexturesPath = "textures"
         Q2TexFlags = "1"

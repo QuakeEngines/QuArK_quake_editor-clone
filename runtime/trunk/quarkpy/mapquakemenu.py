@@ -439,7 +439,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     if p1: cmdline = cmdline + " " + p1
 
                     # Add %mapfile% if there is no filename-string present
-                    if (cmdline.find("%mapfile%") == -1) and (cmdline.find("%file%") == -1) and (cmdline.find("%filename%") == -1):
+                    if (cmdline.find("%mapfile%") == -1) and (cmdline.find("%file%") == -1) and (cmdline.find("%filename%") == -1) and (cmdline.find("%mapfile_wrongslash%") == -1):
                       cmdline = cmdline + " %mapfile%"
 
                     # Search and replace any user-variable
@@ -630,6 +630,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.62  2011/07/31 12:07:55  danielpharos
+#Removed bad try-except, and fixed file-groups not working properly.
+#
 #Revision 1.61  2010/02/21 15:42:49  danielpharos
 #Fixed orangebox compiler not finishing compile.
 #
