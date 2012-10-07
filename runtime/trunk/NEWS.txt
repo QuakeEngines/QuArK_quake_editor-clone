@@ -16,6 +16,8 @@ $Id$
 ============
 * [DanielPharos]: Fixed SOF1 tools: they don't work with the proper slashes.
 
+* [DanielPharos]: Moved some map options around to make them more findable, and to make them work again.
+
 6.6.0 Beta 5
 ============
 * [DanielPharos]: Added DOOM .wad file reading support, per user request. Note: Saving will output a Quake wad!
