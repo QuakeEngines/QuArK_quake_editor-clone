@@ -237,6 +237,8 @@ def SaveTreeView(editor):
     for obj in sellist:
         sel = [obj.name]
         par = obj.parent
+        if par.name == "New model.qkl":
+            par = editor.Root
         while par.type != ":mr":
             sel = sel + [par.name]
             par = par.parent
@@ -4936,6 +4938,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.170  2012/07/15 20:40:47  cdunde
+#Fixed KeyFrame rotation function for models with bones.
+#
 #Revision 1.169  2012/03/25 01:07:49  cdunde
 #To fix error in KeyframeLinearInterpolation function for models that do not have any bones.
 #
