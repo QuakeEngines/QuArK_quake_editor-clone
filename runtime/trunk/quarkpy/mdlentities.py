@@ -1800,6 +1800,110 @@ class MiscGroupType(EntityManager):
     "Misc. Object Group, type = :mg"
 
 
+# Has no subitems or dictitems items, only dictspec items (synctype and flags).
+class ModelRootType(EntityManager):
+    "Model Root, type = :mr"
+
+    def dataformname(o):
+        "Returns the data form for this type of object 'o' (the Model Root) to use for the Specific/Args page."
+
+        import mdleditor
+        editor = mdleditor.mdleditor
+        root = editor.Root
+
+        dlgdef = """
+        {
+          Help = "These are the Specific settings for the Model Root."$0D
+                 "Used for Quake 1 and Hexen II .mdl models only."$0D0D22
+                 "flags"$22" - Select an item from this dropdown list."
+          flags_setting: = {
+              Txt="flags"
+              Typ = "C"
+              Hint="Select an item from this dropdown list."
+          items =
+              "None"$0D
+              "ROCKET-leave trail"$0D
+              "GRENADE-leave trail"$0D
+              "GIB-leave trail"$0D
+              "ROTATE"$0D
+              "TRACER-green split trail"$0D
+              "ZOMGIB-small blood trail"$0D
+              "TRACER2-orange split trail + rotate"$0D
+              "TRACER3-purple trail"$0D
+              "FIREBALL-Yellow transparent trail in all directions"$0D
+              "ICE-Blue-white transparent trail, with gravity"$0D
+              "MIP_MAP-This model has mip-maps"$0D
+              "SPIT-Black transparent trail with negative light"$0D
+              "TRANSPARENT-Transparent sprite"$0D
+              "SPELL-Vertical spray of particles"$0D
+              "HOLEY-Solid model with color 0"$0D
+              "SPECIAL_TRANS-Translucency through the particle table"$0D
+              "FACE_VIEW-Poly Model always faces you"$0D
+              "VORP_MISSILE-leave a trail at top and bottom of model"$0D
+              "SET_STAFF-slowly move up and left/right"$0D
+              "MAGICMISSILE-a trickle of blue/white particles with gravity"$0D
+              "BONESHARD-a trickle of brown particles with gravity"$0D
+              "SCARAB-white transparent particles with little gravity"$0D
+              "ACIDBALL-Green drippy acid shit"$0D
+              "BLOODSHOT-Blood rain shot trail"$0D
+              "MIP_MAP_FAR-Set per frame, this model will use the far mip map"$0D
+          values =
+              "(0 0)"$0D
+              "(1 1)"$0D
+              "(1 2)"$0D
+              "(1 4)"$0D
+              "(1 8)"$0D
+              "(1 16)"$0D
+              "(1 32)"$0D
+              "(1 64)"$0D
+              "(1 128)"$0D
+              "(1 256)"$0D
+              "(1 512)"$0D
+              "(1 1024)"$0D
+              "(1 2048)"$0D
+              "(1 4096)"$0D
+              "(1 8192)"$0D
+              "(1 16384)"$0D
+              "(1 32768)"$0D
+              "(1 65536)"$0D
+              "(1 131072)"$0D
+              "(1 262144)"$0D
+              "(1 524288)"$0D
+              "(1 1048576)"$0D
+              "(1 2097152)"$0D
+              "(1 4194304)"$0D
+              "(1 8388608)"$0D
+              "(1 16777216)"
+                 }
+        }
+        """
+        print "o.dictspec1", o.dictspec
+        if o.dictspec.has_key("flags_setting"):
+          #  o['flags_setting'] = str((o.dictspec['synctype'], o.dictspec['flags']))
+            temp = o.dictspec['flags_setting']
+            temp = temp.replace("(", "")
+            temp = temp.replace(")", "")
+            temp = temp.split(" ")
+            print "temp", temp, type(temp)
+            o['synctype'] = (int(temp[0]),)
+            print "synctype", o.dictspec['synctype']
+            o['flags'] = (int(temp[1]),)
+            print "flags", o.dictspec['flags']
+        else:
+            if o.dictspec.has_key("synctype") and o.dictspec.has_key("flags"):
+                synctype = int(o.dictspec['synctype'][0])
+                flags = int(o.dictspec['flags'][0])
+                o['flags_setting'] = "(" + str(synctype) + " "+ str(flags) + ")"
+                print "flags_setting", o.dictspec['flags_setting'], type(o.dictspec['flags_setting'])
+            else:
+                o['flags_setting'] = "(0 0)"
+        print "o.dictspec2", o.dictspec
+
+        formobj = quarkx.newobj("root:form")
+        formobj.loadtext(dlgdef)
+        return formobj
+
+
 # Has no subitems or dictitems items, only dictspec items (position, mins, maxs and scale).
 class BoundType(EntityManager):
     "Bound Frame, type = :bound"
@@ -3164,6 +3268,7 @@ Mapping = {
     ":g":        GroupType(),
     ":p":        PolyhedronType(),
     ":bbg":      BBoxGroupType(),
+    ":mr":       ModelRootType(),
     ":mc":       ComponentType(),
     ":mf":       FrameType(),
     ":sg":       SkinGroupType(),
@@ -3227,6 +3332,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.90  2011/11/13 04:32:41  cdunde
+#Bone control hint update.
+#
 #Revision 1.89  2011/11/13 03:15:10  cdunde
 #To allow the changing of bonecontrol indexes.
 #

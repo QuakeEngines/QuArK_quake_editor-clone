@@ -531,7 +531,9 @@ class ModelLayout(BaseLayout):
         try:
             # Gets the selected item's type "form" if the "if" test is passed.
             import mdlentities
-            if selitem.type == ":bound":
+            if selitem.type == ":mr":
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":bound":
                 formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":tag":
                 formobj = mdlentities.CallManager("dataformname", selitem)
@@ -566,7 +568,9 @@ class ModelLayout(BaseLayout):
 
         try:
             # Tries to use the data returned to make the selected item's type form again.
-            if selitem.type == ":bound": # Sets the bound frame form items.
+            if selitem.type == ":mr": # Sets the model root form items.
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the model root's form again.
+            elif selitem.type == ":bound": # Sets the bound frame form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the bound frame's form again.
             elif selitem.type == ":tag": # Sets the tag form items.
                 self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the tag frame's form again.
@@ -781,7 +785,9 @@ class ModelLayout(BaseLayout):
 
         try:
             import mdlentities
-            if selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+            if selitem.type == ":mr": # Gets the "model root form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":tag": # Gets the "tag frame form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
@@ -822,7 +828,12 @@ class ModelLayout(BaseLayout):
                         formobj = quarkx.getqctxlist(selitem, sfbtn.caption.strip(".") + DummyItem.type.replace(":","_"))[-1]
                     except:
                         formobj = None
-            if selitem.type == ":bound": # Sets the bound frame form items.
+            if selitem.type == ":mr": # Sets the model root form items.
+                # Uses the data returned from the mdlentities.py file, class ModelRootType, def dataformname function
+                # to create the Specifics/Args page form for model root.
+                selitem = selitem
+                self.dataform.setdata(selitem, formobj) # Tries to use the data returned to make the model root's form again.
+            elif selitem.type == ":bound": # Sets the bound frame form items.
                 # Uses the data returned from the mdlentities.py file, class BoundType, def dataformname function
                 # to create the Specifics/Args page form for bound frames.
                 selitem = selitem
@@ -1230,7 +1241,9 @@ class ModelLayout(BaseLayout):
         formobj = None
         try:
             import mdlentities
-            if selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
+            if selitem.type == ":mr": # Gets the "model root form" if the "if" test is passed.
+                formobj = mdlentities.CallManager("dataformname", selitem)
+            elif selitem.type == ":bound": # Gets the "bound frame form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
             elif selitem.type == ":tag": # Gets the "tag form" if the "if" test is passed.
                 formobj = mdlentities.CallManager("dataformname", selitem)
@@ -2008,6 +2021,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.136  2011/11/13 03:15:10  cdunde
+#To allow the changing of bonecontrol indexes.
+#
 #Revision 1.135  2011/11/12 06:01:59  cdunde
 #Updated bone settings.
 #
