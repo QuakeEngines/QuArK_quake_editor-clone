@@ -1877,27 +1877,22 @@ class ModelRootType(EntityManager):
                  }
         }
         """
-        print "o.dictspec1", o.dictspec
+
         if o.dictspec.has_key("flags_setting"):
           #  o['flags_setting'] = str((o.dictspec['synctype'], o.dictspec['flags']))
             temp = o.dictspec['flags_setting']
             temp = temp.replace("(", "")
             temp = temp.replace(")", "")
             temp = temp.split(" ")
-            print "temp", temp, type(temp)
             o['synctype'] = (int(temp[0]),)
-            print "synctype", o.dictspec['synctype']
             o['flags'] = (int(temp[1]),)
-            print "flags", o.dictspec['flags']
         else:
             if o.dictspec.has_key("synctype") and o.dictspec.has_key("flags"):
                 synctype = int(o.dictspec['synctype'][0])
                 flags = int(o.dictspec['flags'][0])
                 o['flags_setting'] = "(" + str(synctype) + " "+ str(flags) + ")"
-                print "flags_setting", o.dictspec['flags_setting'], type(o.dictspec['flags_setting'])
             else:
                 o['flags_setting'] = "(0 0)"
-        print "o.dictspec2", o.dictspec
 
         formobj = quarkx.newobj("root:form")
         formobj.loadtext(dlgdef)
@@ -3332,6 +3327,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.91  2012/10/09 05:31:55  cdunde
+#To add dictspec items for Model Root that apply to Quake1 and HexenII models.
+#
 #Revision 1.90  2011/11/13 04:32:41  cdunde
 #Bone control hint update.
 #
