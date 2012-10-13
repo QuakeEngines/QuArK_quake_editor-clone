@@ -1815,7 +1815,20 @@ class ModelRootType(EntityManager):
         {
           Help = "These are the Specific settings for the Model Root."$0D
                  "Used for Quake 1 and Hexen II .mdl models only."$0D0D22
+                 "synctype"$22" - Select an item from this dropdown list."$0D22
                  "flags"$22" - Select an item from this dropdown list."
+          synctype_setting: = {
+              Txt="synctype"
+              Typ = "C"
+              Hint="Select an item from this dropdown list."
+          items =
+              "synchron"$0D
+              "random"
+          values =
+              "0"$0D
+              "1"
+                 }
+
           flags_setting: = {
               Txt="flags"
               Typ = "C"
@@ -1848,51 +1861,50 @@ class ModelRootType(EntityManager):
               "BLOODSHOT-Blood rain shot trail"$0D
               "MIP_MAP_FAR-Set per frame, this model will use the far mip map"$0D
           values =
-              "(0 0)"$0D
-              "(1 1)"$0D
-              "(1 2)"$0D
-              "(1 4)"$0D
-              "(1 8)"$0D
-              "(1 16)"$0D
-              "(1 32)"$0D
-              "(1 64)"$0D
-              "(1 128)"$0D
-              "(1 256)"$0D
-              "(1 512)"$0D
-              "(1 1024)"$0D
-              "(1 2048)"$0D
-              "(1 4096)"$0D
-              "(1 8192)"$0D
-              "(1 16384)"$0D
-              "(1 32768)"$0D
-              "(1 65536)"$0D
-              "(1 131072)"$0D
-              "(1 262144)"$0D
-              "(1 524288)"$0D
-              "(1 1048576)"$0D
-              "(1 2097152)"$0D
-              "(1 4194304)"$0D
-              "(1 8388608)"$0D
-              "(1 16777216)"
+              "0"$0D
+              "1"$0D
+              "2"$0D
+              "4"$0D
+              "8"$0D
+              "16"$0D
+              "32"$0D
+              "64"$0D
+              "128"$0D
+              "256"$0D
+              "512"$0D
+              "1024"$0D
+              "2048"$0D
+              "4096"$0D
+              "8192"$0D
+              "16384"$0D
+              "32768"$0D
+              "65536"$0D
+              "131072"$0D
+              "262144"$0D
+              "524288"$0D
+              "1048576"$0D
+              "2097152"$0D
+              "4194304"$0D
+              "8388608"$0D
+              "16777216"
                  }
         }
         """
 
-        if o.dictspec.has_key("flags_setting"):
-          #  o['flags_setting'] = str((o.dictspec['synctype'], o.dictspec['flags']))
-            temp = o.dictspec['flags_setting']
-            temp = temp.replace("(", "")
-            temp = temp.replace(")", "")
-            temp = temp.split(" ")
-            o['synctype'] = (int(temp[0]),)
-            o['flags'] = (int(temp[1]),)
+        if o.dictspec.has_key("synctype_setting"):
+            o['synctype'] = o.dictspec['synctype_setting']
         else:
-            if o.dictspec.has_key("synctype") and o.dictspec.has_key("flags"):
-                synctype = int(o.dictspec['synctype'][0])
-                flags = int(o.dictspec['flags'][0])
-                o['flags_setting'] = "(" + str(synctype) + " "+ str(flags) + ")"
+            if o.dictspec.has_key("synctype"):
+                o['synctype_setting'] = o.dictspec['synctype']
             else:
-                o['flags_setting'] = "(0 0)"
+                o['synctype_setting'] = "0"
+        if o.dictspec.has_key("flags_setting"):
+            o['flags'] = o.dictspec['flags_setting']
+        else:
+            if o.dictspec.has_key("flags"):
+                o['flags_setting'] = o.dictspec['flags']
+            else:
+                o['flags_setting'] = "0"
 
         formobj = quarkx.newobj("root:form")
         formobj.loadtext(dlgdef)
@@ -3327,6 +3339,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.92  2012/10/09 06:10:24  cdunde
+#Forgot to remove print statements...My Bad!
+#
 #Revision 1.91  2012/10/09 05:31:55  cdunde
 #To add dictspec items for Model Root that apply to Quake1 and HexenII models.
 #

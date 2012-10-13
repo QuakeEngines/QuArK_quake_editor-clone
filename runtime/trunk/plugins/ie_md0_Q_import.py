@@ -363,11 +363,8 @@ class mdl_obj:
         self.size = data[20]
 
         # sets the Model Root dictspec items and flag settings for the editor.
-        editor.Root['synctype'] = (self.synctype,)
-        editor.Root['flags'] = (self.flags,)
-        synctype = int(editor.Root.dictspec['synctype'][0])
-        flags = int(editor.Root.dictspec['flags'][0])
-        editor.Root['flags_setting'] = "(" + str(synctype) + " "+ str(flags) + ")"
+        editor.Root['synctype_setting'] = editor.Root['synctype'] = str(self.synctype)
+        editor.Root['flags_setting'] = editor.Root['flags'] = str(self.flags)
 
         # get the skin(s) texture information
         self.texture_info = mdl_texture_info()
@@ -678,6 +675,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake1 Importer", ".mdl file", "*.mdl
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.11  2012/10/09 06:22:38  cdunde
+# To split up Quake1 and HexenII importers and exporters due to different skin texture image game palettes
+# and to handle possible other differences in the future.
+#
 # Revision 1.10  2011/10/03 08:12:13  cdunde
 # Removed unused dictspecs and fixed related exporter model distortion problem.
 #

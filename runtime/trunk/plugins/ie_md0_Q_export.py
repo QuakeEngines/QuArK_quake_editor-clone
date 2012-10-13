@@ -326,11 +326,11 @@ class mdl_obj:
         self.num_tris = len(component.triangles)
         self.num_frames = len(frames)
         if editor.Root.dictspec.has_key('synctype'):
-            self.synctype = int(editor.Root.dictspec['synctype'][0])
+            self.synctype = int(editor.Root.dictspec['synctype'])
         else:
-            self.synctype = 1
+            self.synctype = 0
         if editor.Root.dictspec.has_key('flags'):
-            self.flags = int(editor.Root.dictspec['flags'][0])
+            self.flags = int(editor.Root.dictspec['flags'])
         else:
             self.flags = 0
         self.size = 8.45938873291
@@ -527,6 +527,10 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake 1 Exporter", ".mdl file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2012/10/09 06:22:38  cdunde
+# To split up Quake1 and HexenII importers and exporters due to different skin texture image game palettes
+# and to handle possible other differences in the future.
+#
 # Revision 1.4  2011/10/03 08:12:13  cdunde
 # Removed unused dictspecs and fixed related exporter model distortion problem.
 #
