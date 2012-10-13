@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 6
 ============
+* [cdunde]: Added Quake 1 and Hexen II Specific items for Model Root in the Model Editor.
+
 * [DanielPharos]: Fixed SOF1 tools: they don't work with the proper slashes.
 
 * [DanielPharos]: Moved some map options around to make them more findable, and to make them work again.
