@@ -414,15 +414,17 @@ def get_tris_data(file, mdl, component):
         if u_values[0] == 1 and u_values[1] == 1 and u_values[2] == 1:
             frontface = 1
         else:
-            frontface = 0
+          #  frontface = 0
+            frontface = 1
         for j in xrange(0, 3):
             vtx, u, v = tri[j]
             tris_list[i][j+1] = vtx
-            onseam = 32
-            if u == seam:
-                onseam = 0
-            if u > seam:
-                u = u - seam
+          #  onseam = 32
+            onseam = 0
+          #  if u == seam:
+          #      onseam = 0
+          #  elif u > seam:
+          #      u = u - seam
             uv_list[vtx] = [onseam, u, v]
         tris_list[i][0] = frontface
         progressbar.progress()
@@ -527,6 +529,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdl HexenII Exporter", ".mdl file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2012/10/13 21:54:33  cdunde
+# To correct and update model settings.
+#
 # Revision 1.1  2012/10/09 06:22:38  cdunde
 # To split up Quake1 and HexenII importers and exporters due to different skin texture image game palettes
 # and to handle possible other differences in the future.
