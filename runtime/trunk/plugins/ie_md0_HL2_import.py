@@ -510,7 +510,7 @@ class mdl_bone:
     unused7 = 0            #item   52     int.
     unused8 = 0            #item   53     int.
     binary_format="<ii6i3f4f3f3f3f12f4f6i8i"  #little-endian (<), see #item descriptions above.
-    data_read_in = 256 # Total binary_format byte value above, used below to set the file offset pointer back.
+    data_read_in = 216 # Total binary_format byte value above, used below to set the file offset pointer back.
 
     value = (0.0)*6    # For QuArK's own use.
     scale = (0.0)*6    # For QuArK's own use.
@@ -5237,6 +5237,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.19  2012/08/31 22:59:40  cdunde
+# Minor logging label correction.
+#
 # Revision 1.18  2012/08/01 01:34:49  cdunde
 # File cleanup and added animation file name possibilities.
 #
