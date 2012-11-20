@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.87  2012/10/07 17:57:40  danielpharos
+Workaround for SOF1 tools needing the wrong slashes.
+
 Revision 1.86  2012/07/01 12:40:43  danielpharos
 Added new Source MP engine.
 
@@ -701,21 +704,22 @@ var
 begin
  //Note: Do NOT forget to end any paths you might send through with a PathDelim!
  qFilename:=QuickResolveFilename(Filename);
- I:=StartIndex;
- if I<1 then I:=1;
- while I<=Length(qFilename) do
+ I:=PosEx(PathDelim, qFilename, StartIndex);
+ while (I<>0) do
   begin
-   if qFilename[I]=PathDelim then
+   S:=Copy(qFilename, 1, I-1);
+   if (StartIndex>1) or (Length(S)<>2) or (S[2]<>':') then
     begin
+     //This is not a drive letter
      {$I-}
-     S:=Copy(qFilename, 1, I-1);
      MkDir(S);
      {$I+}
      ErrorCode:=IOResult;
      if not (ErrorCode in [0,183]) then
       Raise EErrorFmt(5587, [S, SetupGameSet.Name, ErrorCode]);
     end;
-   Inc(I);
+   StartIndex:=I+1;
+   I:=PosEx(PathDelim, qFilename, StartIndex);
   end;
 end;
 
