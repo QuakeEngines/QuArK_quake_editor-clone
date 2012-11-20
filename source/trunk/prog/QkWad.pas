@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2012/07/09 20:49:57  danielpharos
+Skip over in wad markers for now.
+
 Revision 1.35  2012/07/09 15:40:59  danielpharos
 Added DOOM .wad file reading support.
 
@@ -664,10 +667,10 @@ begin
         for I:=0 to SubElements.Count-1 do
          begin
           Q:=SubElements[I];
-          if Q is QPixelSet then
-           begin
-            P1:=F.Position;
-            try
+          P1:=F.Position;
+          try
+           if Q is QPixelSet then
+            begin
              if Q is QTexture1 then
               Q.SaveFile1(Info)   { default saving method }
              else
@@ -679,11 +682,17 @@ begin
                  TexFile.AddRef(-1);
                end;
               end;
-             P^:=P1-Origine;  { ok }
-            except
-             F.Position:=P1;   { could not store texture }
+            end
+           else
+            begin
+             //No clue what this is... Let's try to save it anyway...
+             Q.SaveFile1(Info)   { default saving method }
             end;
-           end;
+           P^:=P1-Origine;  { ok }
+          except
+           Log(LOG_WARNING, 'Error when trying to save texture: %s', [Q.GetFullName()]);
+           F.Position:=P1;   { could not store texture }
+          end;
           Inc(P);
           ProgressIndicatorIncrement;
          end;
