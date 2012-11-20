@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2012/11/20 19:19:50  danielpharos
+Try to save everything in a texturelist. Helps HL1 BSP MipTex saving.
+
 Revision 1.36  2012/07/09 20:49:57  danielpharos
 Skip over in wad markers for now.
 
@@ -620,7 +623,10 @@ begin
             end;
           end;
          if Size=0 then
-          Q:=OpenFileObjectData(F, S, Size, Self)
+          begin
+           Size:=SizeOf(Header);
+           Q:=OpenFileObjectData(F, S, Size, Self)
+          end
          else
           if (CharModeJeu = mjHalfLife) then
            {Decker - If we're in Half-Life gamemode, then load as '.wad3_C' type}
