@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2012/11/20 20:52:16  danielpharos
+Fully fixed HL1 BSP MipTex saving.
+
 Revision 1.37  2012/11/20 19:19:50  danielpharos
 Try to save everything in a texturelist. Helps HL1 BSP MipTex saving.
 
@@ -587,6 +590,7 @@ begin
         begin
          if P^<0 then  { missing texture }
           begin
+           MaxSize:=-1;
            Size:=0;
            S:=LoadStr1(5522);
           end
@@ -624,7 +628,9 @@ begin
           end;
          if Size=0 then
           begin
-           Size:=SizeOf(Header);
+           //Let's read this in anyway (for example: Half-Life .bsp's empty texture)
+           if MaxSize>=0 then
+             Size:=MaxSize;
            Q:=OpenFileObjectData(F, S, Size, Self)
           end
          else
