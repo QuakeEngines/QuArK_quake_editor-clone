@@ -1,0 +1,4095 @@
+QQRKSRC1
+// Xonotic Entities file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Xonotic Entities"
+
+  Toolbox Folders.qtx =
+  {
+    Toolbox = "New map items..."
+    Root = "Xonotic Entities.qtxfolder"
+    Xonotic Entities.qtxfolder =
+    {
+      ;desc = "Created from XonoticEntities.def"
+      _* entities.qtxfolder =
+      {
+        _skybox:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      dom_* entities.qtxfolder =
+      {
+        dom_controlpoint:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        dom_team:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      func_* entities.qtxfolder =
+      {
+        func_assault_destructible:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_assault_wall:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_bobbing:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_breakable:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_button:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_camera:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_clientillusionary:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_clientwall:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door_secret:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_fourier:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_group:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_illusionary:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_ladder:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_plat:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_pointparticles:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_rain:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_snow:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_stardust:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        func_train:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_vectormamamam:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_wall:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      info_* entities.qtxfolder =
+      {
+        info_location:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_notnull:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_null:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_attacker:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_deathmatch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_defender:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_race:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_team1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_team2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_team3:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_team4:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      item_* entities.qtxfolder =
+      {
+        item_armor_big:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_armor_large:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_armor_medium:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_armor_small:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_bullets:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_cells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_flag_team1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_flag_team2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_fuel:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_fuel_regen:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health_large:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health_medium:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health_mega:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health_small:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_invincible:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_jetpack:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_minst_cells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_rockets:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_shells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_strength:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      misc_* entities.qtxfolder =
+      {
+        misc_clientmodel:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_follow:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_gamemodel:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_laser:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_model:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_teleporter_dest:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_warpzone_position:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      nexball_* entities.qtxfolder =
+      {
+        nexball_basketball:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        nexball_bluegoal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        nexball_fault:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        nexball_football:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        nexball_out:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        nexball_pinkgoal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        nexball_redgoal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        nexball_yellowgoal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      onslaught_* entities.qtxfolder =
+      {
+        onslaught_controlpoint:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        onslaught_generator:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        onslaught_link:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      other entities.qtxfolder =
+      {
+        light:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        lightJunior:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        worldspawn:b =
+        {
+        }
+      }
+      path_* entities.qtxfolder =
+      {
+        path_corner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      runematch_* entities.qtxfolder =
+      {
+        runematch_spawn_point:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      target_* entities.qtxfolder =
+      {
+        target_assault_roundend:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_assault_roundstart:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_items:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_objective:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_objective_decrease:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_position:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_spawn:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_speaker:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      trigger_* entities.qtxfolder =
+      {
+        trigger_counter:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_delay:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_disablerelay:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_flipflop:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_gamestart:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_heal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_hurt:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_impulse:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_magicear:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_monoflop:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_multiple:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_multivibrator:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_once:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_push:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_race_checkpoint:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_race_penalty:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_relay:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_relay_if:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_relay_teamcheck:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_swamp:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_teleport:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_warpzone:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      turret_* entities.qtxfolder =
+      {
+        turret_checkpoint:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_ewheel:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_flac:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_fusionreactor:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_hellion:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_hk:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_machinegun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_mlrs:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_phaser:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_plasma:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_plasma_dual:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_targettrigger:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        turret_tesla:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        turret_walker:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      weapon_* entities.qtxfolder =
+      {
+        weapon_campingrifle:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_crylink:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_electro:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_fireball:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_grenadelauncher:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_hagar:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_hlac:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_hook:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_laser:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_minstanex:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_nex:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_porto:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_rocketlauncher:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_shotgun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        weapon_uzi:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+    }
+  }
+  Entity Forms.fctx =
+  {
+    // Definition of includes
+
+    t_commonspecifics:incl =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = "Name of the entity that this one targets."
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name of this entity, used as a target by another entity."
+            $0D"Click the 'Help Book' above for more possible detail."
+      }
+    }
+
+    t_modelbrowser:incl =
+    {
+      hint = "Use this to select any .md3 file you want."$0D
+            "You must extract the folder with the .md3 files"$0D
+            "from the .pk3 file and put it in your 'Xonotic' folder."
+            $0D"Click the 'Help Book' above for more possible detail."
+      Typ = "EP"
+      BasePath = "$Game\Xonotic"
+      CutPath = "$Game\?\"
+      DefExt = "md3"
+      DirSep = "/"
+    }
+
+    t_soundbrowser:incl =
+    {
+      hint = "Use this to select any .ogg file you want."$0D
+            "You must extract the folder with the .ogg files"$0D
+            "from the .pk3 file and put it in your 'Xonotic' folder."
+            $0D"Click the 'Help Book' above for more possible detail."
+      Typ = "EP"
+      BasePath = "$Game\Xonotic"
+      CutPath = "$Game\?\"
+      DefExt = "ogg"
+      DirSep = "/"
+    }
+
+    t_musicbrowser:incl =
+    {
+      hint = "Use this to select any .ogg file you want."$0D
+            "You must extract the folder with the .ogg files"$0D
+            "from the .pk3 file and put it in your 'Xonotic' folder."
+            $0D"Click the 'Help Book' above for more possible detail."
+      Typ = "EP"
+      BasePath = "$Game\Xonotic"
+      CutPath = "$Game\?\"
+      DefExt = "ogg"
+      DirSep = "/"
+    }
+
+    _skybox:form =
+    {
+      help = "Compiler-only entity that specifies a the origin of a sky box (a"
+       " wholly contained, separate area of the map), similar to some games' p"
+       "ortal skies. When compiled with Q3Map2, the sky box surfaces will be v"
+       "isible from any place where sky is normally visible. It will cast shad"
+       "ows on the normal parts of the map, and can be used with cloud layers "
+       "and other effects. As it is compiler-only, it can't 'scale up' entitie"
+       "s in its box."$0D"To use this, carve a small box in some larger struct"
+       "ure on your map, place this entity inside that box hole, and make a sm"
+       "all version on what should be seen in the sky there."$0D"angle: rotati"
+       "on angle of the sky surfaces."$0D"angles: Individual control of PITCH,"
+       " YAW, and ROLL (default 0 0 0)."$0D"_scale: scaling factor (default 64"
+       "), good values are between 50 and 300, depending on the map."
+      bbox = '-4 -4 -4 4 4 4'
+      t_commonspecifics = !
+    }
+    dom_controlpoint:form =
+    {
+      help = "Domination control point"$0D"In order to get Domination working "
+       "well in your map, you need to place dom_team and dom_controlpoint enti"
+       "ties. You *must* have at least 3 dom_team entities - 2 minimum teams a"
+       "nd one blank one (empty netname and no team). You can have up to 4 tea"
+       "ms (5 dom_team entities)."$0D"message: message to be displayed to all "
+       "players when this point is captured, preceded by the team's name. This"
+       " defaults to "$22" has captured a control point"$22". You can specify "
+       "different names for each point, for example "$22" has captured the Lav"
+       "a Room"$22"."$0D"wait: How often this point gives its controlling team"
+       " frags."$0D"frags: How many frags this point gives each wait cycle."$0D
+       "zbqry="$22"zbqryf/qbzvangvba/qbz_hapynvzrq.zq3"$22
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    dom_team:form =
+    {
+      help = "Domination team."$0D"In order to get Domination working well in "
+       "your map, you need to place dom_team and dom_controlpoint entities. Yo"
+       "u *must* have at least 3 dom_team entities - 2 minimum teams and one b"
+       "lank one (empty netname and no team). You can have up to 4 teams (5 do"
+       "m_team entities)."$0D"netname: name of team (Red Team). Set to "$2222" "
+       "or don't define for the required blank team."$0D"cnt: color of the tea"
+       "m. See the "$22"Helpful Extras"$22" section for info."$0D"model: When "
+       "this team captures control points, the points turn to this model. If t"
+       "his is the neutral team, points start out as this model."$0D"noise: So"
+       "und to be played on the control point when it's captured. Only players"
+       " nearby will hear it."$0D"noise1: Sound to be played to all players wh"
+       "en the control point is captured. Also good for an announcer voice ("$22
+       "Red Team has captured a control point"$22")"
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    func_assault_destructible:form =
+    {
+      help = "This is a brush model which can be damaged. Once triggered it's "
+       "active and will happily receive damage players inflict upon it. Once a"
+       "ll health is consumed it'll disappear and trigger the targeted entity/"
+       "entities. As damage is received the brush model will be tinted in an i"
+       "ncreasingly visible flavor of red to give visible feedback."$0D"health"
+       ": The damage this trigger can take"$0D"target: The entity/entities to "
+       "be triggered once this entity gets invisible"$0D"targetname: The name "
+       "other entities can use to target this entity"$0D"mdl: particle effect "
+       "name to show when destroyed"$0D"count: particle effect multiplier"$0D"m"
+       "dl_dead: optional replacement model to show when destroyed"$0D"debris:"
+       " names of debris models to show when destroyed, separated by spaces"$0D
+       "noise: sound to play when destroyed"$0D"dmg: damage to deal to the env"
+       "ironment when destroyed"$0D"dmg_edge: edge damage to deal to the envir"
+       "onment when destroyed"$0D"dmg_radius: damage radius"$0D"dmg_force: dam"
+       "age force"$0D"message: death message when a player gets hit by the exp"
+       "losion"$0D"message2: death message when someone gets pushed into this "
+       "(default: "$22"was pushed into an explosion by"$22"). The # character "
+       "is replaced by the attacker name if present (and it instead does not g"
+       "et appended to the end)"$0D"debrismovetype: way in which the debris mo"
+       "ves: one of 1 = ANGLENOCLIP, 2 = ANGLECLIP, 3 = WALK, 4 = STEP, 5 = FL"
+       "Y, 6 = TOSS, 7 = PUSH, 8 = NOCLIP, 9 = FLYMISSILE, 10 = BOUNCE, 11 = B"
+       "OUNCEMISSILE"$0D"debrissolid: solidity of the debris: one of 0 = NOT, "
+       "1 = TRIGGER, 2 = BBOX, 3 = SLIDEBOX, 4 = BSP, 5 = CORPSE"$0D"debrisvel"
+       "ocity: initial velocity vector of the debris (static part)"$0D"debrisv"
+       "elocityjitter: initial velocity vector of the debris (random part)"$0D
+       "debrisavelocityjitter: initial angular velocity vector of the debris ("
+       "random part)"$0D"debristime: time till the debris fades (average)"$0D"d"
+       "ebristimejitter: time till the debris fades (random part)"$0D"debrisfa"
+       "detime: how long debris takes to fade"$0D"debrisdamageforcescale: how "
+       "much debris is affected by damage force (e.g. explosions)"$0D"debrissk"
+       "in: skin number of debris"$0D"NOSPLASH: if set, splash damage cannot a"
+       "ctivate the door, only direct damage can (requires health to be set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    func_assault_wall:form =
+    {
+      help = "Brush model that will disappear once the targeted target_objecti"
+       "ve is fulfilled. This can be used to restrict access to parts of the m"
+       "ap until a certain objective has been conquered."$0D"target: targetnam"
+       "e of a target_objective"
+      t_commonspecifics = !
+    }
+    func_bobbing:form =
+    {
+      help = "Solid entity that oscillates back and forth in a linear motion. "
+       "By default, it will have an amount of displacement in either direction"
+       " equal to the dimension of the brush in the axis in which it's bobbing"
+       ". Entity bobs on the Z axis (up-down) by default. It can also emit sou"
+       "nd if the "$22"noise"$22" key is set. Will crush the player when block"
+       "ed."$0D"speed: amount of time in seconds for one complete oscillation "
+       "cycle (default 4)."$0D"height: sets the amount of travel of the oscill"
+       "ation movement (default 32)."$0D"phase: sets the start offset of the o"
+       "scillation cycle. Values must be 0 < phase < 1. Any integer phase valu"
+       "e is the same as no offset (default 0)."$0D"noise: path/name of .wav o"
+       "r .ogg file to play. Use looping sounds only (e.g. sound/world/drone6."
+       "wav - See Notes)."$0D"dmg: damage a player who gets crushed by it rece"
+       "ives"$0D"dmgtime: interval to apply dmg to a player who is s in the wa"
+       "y"$0D"message: death message when a player gets crushed"$0D"message2: "
+       "death message when someone gets pushed into this (default: "$22"was th"
+       "rown into a world of hurt by"$22"). The # character is replaced by the"
+       " attacker name if present (and it instead does not get appended to the"
+       " end)"$0D"X_AXIS: entity will bob along the X axis."$0D"Y_AXIS: entity"
+       " will bob along the Y axis."
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "Y_AXIS"
+      }
+      t_commonspecifics = !
+    }
+    func_button:form =
+    {
+      help = "When a button is touched by a player, it moves in the direction "
+       "set by the "$22"angle"$22" key, triggers all its targets, stays presse"
+       "d by an amount of time set by the "$22"wait"$22" key, then returns to "
+       "it's original position where it can be operated again."$0D"angle: dete"
+       "rmines the direction in which the button will move (up = -1, down = -2"
+       ")."$0D"target: all entities with a matching targetname will be trigger"
+       "ed."$0D"target2: all entities with a matching targetname will be trigg"
+       "ered."$0D"target3: all entities with a matching targetname will be tri"
+       "ggered."$0D"target4: all entities with a matching targetname will be t"
+       "riggered."$0D"speed: speed of button's displacement (default 40)."$0D"w"
+       "ait: number of seconds button stays pressed (default 1, -1 = return im"
+       "mediately)."$0D"lip: lip remaining at end of move (default 4 units)."$0D
+       "health: (default 0) if set to any non-zero value, the button must take"
+       " damage (any amount) to activate."$0D"NOSPLASH: if set, splash damage "
+       "cannot activate the door, only direct damage can (requires health to b"
+       "e set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    func_door:form =
+    {
+      help = "Normal sliding door entity. By default, the door will activate w"
+       "hen player walks close to it or when damage is inflicted to it."$0D"If"
+       " DOOR_DONT_LINK is not set, the door will be linked with all doors it "
+       "touches. Note however that for linked doors to work properly, it is ne"
+       "cessary that ALL linked doors have SOME volume of common area (that is"
+       ", there must be a point that is part of ALL doors)."$0D"message: is pr"
+       "inted when the door is touched if it is a trigger door and it hasn't b"
+       "een fired yet, or death message if dmg is set"$0D"message2: death mess"
+       "age when someone gets pushed into this (default: "$22"was thrown into "
+       "a world of hurt by"$22"). The # character is replaced by the attacker "
+       "name if present (and it instead does not get appended to the end)"$0D"a"
+       "ngle: determines the opening direction"$0D"targetname: if set, no touc"
+       "h field will be spawned and a remote button or trigger field activates"
+       " the door."$0D"health: if set, door must be shot open"$0D"speed: movem"
+       "ent speed (100 default)"$0D"wait: wait before returning (3 default, -1"
+       " = never return)"$0D"lip: lip remaining at end of move (8 default)"$0D
+       "dmg: damage to inflict when blocked (when triggered and someone is in "
+       "the way)"$0D"sounds: when 1, use default door sounds"$0D"noise1: sound"
+       " when the door opens"$0D"noise2: sound when the door closes"$0D"START_"
+       "OPEN: causes the door to move to its destination when spawned, and ope"
+       "rate in reverse. It is used to temporarily or permanently close off an"
+       " area when triggered (not useful for touch or damage triggered doors)."
+       $0D"DOOR_DONT_LINK: the door won't link with another door it touches"$0D
+       "TOGGLE: causes the door to wait in both the start and end states for a"
+       " trigger event."$0D"NOSPLASH: if set, splash damage cannot activate th"
+       "e door, only direct damage can (requires health to be set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_OPEN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DOOR_DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "TOGGLE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    func_door_rotating:form =
+    {
+      help = "Normal rotating door entity that opens by rotating around an axi"
+       "s (default: Z). Use an origin brush to specify the rotation axis."$0D"B"
+       "y default, the door will activate when player walks close to it or whe"
+       "n damage is inflicted to it."$0D"If DOOR_DONT_LINK is not set, the doo"
+       "r will be linked with all doors it touches."$0D"BIDIR makes the door w"
+       "ork bidirectional, so that the opening direction is always away from t"
+       "he requestor."$0D"The usage of bidirectional doors requires two manual"
+       "ly instantiated triggers (trigger_multiple), the one to open it in the"
+       " other direction"$0D"must have set trigger_reverse to 1."$0D"BIDIR_IN_"
+       "DOWN will the door prevent from reopening while closing if it is trigg"
+       "ered from the other side."$0D"message: is printed when the door is tou"
+       "ched if it is a trigger door and it hasn't been fired yet, or death me"
+       "ssage if dmg is set"$0D"message2: death message when someone gets push"
+       "ed into this (default: "$22"was thrown into a world of hurt by"$22"). "
+       "The # character is replaced by the attacker name if present (and it in"
+       "stead does not get appended to the end)"$0D"angle: determines the dest"
+       "ination angle for opening. negative values reverse the direction (90 d"
+       "efault)"$0D"targetname: if set, no touch field will be spawned and a r"
+       "emote button or trigger field activates the door."$0D"health: if set, "
+       "door must be shot open"$0D"speed: speed to rotate (in degrees per seco"
+       "nd)"$0D"wait: wait before returning (3 default, -1 = never return)"$0D
+       "dmg: damage to inflict when blocked (when triggered and someone is in "
+       "the way)"$0D"sounds: when 1, use default door sounds"$0D"noise1: sound"
+       " when the door opens"$0D"noise2: sound when the door closes"$0D"START_"
+       "OPEN: causes the door to move to its destination when spawned, and ope"
+       "rate in reverse. It is used to temporarily or permanently close off an"
+       " area when triggered (not useful for touch or damage triggered doors)."
+       $0D"DOOR_DONT_LINK: the door won't link with another door it touches"$0D
+       "TOGGLE: causes the door to wait in both the start and end states for a"
+       " trigger event."$0D"NOSPLASH: if set, splash damage cannot activate th"
+       "e door, only direct damage can (requires health to be set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_OPEN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "BIDIR"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DOOR_DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "BIDIR_IN_DOWN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "TOGGLE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "Y_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    func_door_secret:form =
+    {
+      help = "Basic secret door. Slides back, then to the side. Angle determin"
+       "es direction. Opens when targeted or when shot; does not create its ow"
+       "n trigger field like func_door does."$0D"wait: # of seconds before com"
+       "ing back"$0D"key1: first entity key with one-line description"$0D"key2"
+       ": second entity key with one-line description"$0D"t_width: override WI"
+       "DTH to move back (or height if going down)"$0D"t_length: override LENG"
+       "TH to move sideways"$0D"dmg: damage to inflict when blocked (2 default"
+       ")"$0D"message: text to display when activating the door, or death mess"
+       "age if dmg is set"$0D"message2: death message when someone gets pushed"
+       " into this (default: "$22"was thrown into a world of hurt by"$22"). Th"
+       "e # character is replaced by the attacker name if present (and it inst"
+       "ead does not get appended to the end)"$0D"noise1: sound when opening b"
+       "ackwards or closing"$0D"noise2: sound when opening sideways"$0D"noise3"
+       ": sound when stopping"$0D"OPEN_ONCE: only work once, then stay open"$0D
+       "1ST_LEFT: 1st move is left of arrow"$0D"1ST_DOWN: 1st move is down fro"
+       "m arrow"$0D"NO_SHOOT: never respond to shots"$0D"ALWAYS_SHOOT: even if"
+       " targetname is set, respond to shots"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "OPEN_ONCE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "1"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "ST_LEFT"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "1"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "ST_DOWN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "NO_SHOOT"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "ALWAYS_SHOOT"
+      }
+      t_commonspecifics = !
+    }
+    func_group:form =
+    {
+      help = "This is not an entity as such. It is strictly an editor utility "
+       "to group world brushes and patches together for convenience (selecting"
+       ", moving, copying, etc). You cannot group entities with this."$0D"_lig"
+       "htmapscale: light map resolution factor"$0D"_castshadows: Allows per-e"
+       "ntity control over shadow casting. Defaults to 0 on entities, 1 on wor"
+       "ld. 0 = no shadow casting. 1 = cast shadows on world. > 1 = cast shado"
+       "ws on entities with _rs (or _receiveshadows) with the corresponding va"
+       "lue, AND world. Negative values imply same, but DO NOT cast shadows on"
+       " world."$0D"_receiveshadows: Allows per-entity control over shadow rec"
+       "eption. Defaults to 1 on everything (world shadows). 0 = receives NO s"
+       "hadows. > 1 = receive shadows only from corresponding keyed entities ("
+       "see above) and world. < 1 = receive shadows ONLY from corresponding ke"
+       "yed entities."$0D"_celshader: Sets the cel shader used for this geomet"
+       "ry. Note: omit the "$22"textures/"$22" prefix."$0D"_indexmap: Path/nam"
+       "e for the TGA file used to guide the mapping of textures on the terrai"
+       "n surface."$0D"_layers: number of unique root shaders that will be use"
+       " on the terrain."$0D"_shader: Path to the metashader used to assign te"
+       "xtures to the terrain entity. Note: Omit the "$22"textures/"$22" prefi"
+       "x."$0D"_offsets: space separated list of height offsets for the index "
+       "map"
+      t_commonspecifics = !
+    }
+    func_ladder:form =
+    {
+      help = "a ladder, need i say no more"$0D"grab a trigger brush and put it"
+       " in front of the part that you want the player to climb"
+      t_commonspecifics = !
+    }
+    func_plat:form =
+    {
+      help = "Rising platform the player can ride to reach higher places. Plat"
+       "s must always be drawn in the raised position, so they will operate an"
+       "d be lighted correctly but they spawn in the lowered position. The pla"
+       "t will stay in the raised position until the player steps off."$0D"spe"
+       "ed: determines how fast the plat moves (default 150)."$0D"lip: lip rem"
+       "aining at end of move (default 16). Has no effect if "$22"height"$22" "
+       "is set."$0D"height: if set, this will determine the total amount of ve"
+       "rtical travel of the plat."$0D"dmg: damage to inflict on player when h"
+       "e blocks operation of plat. Plat will reverse direction when blocked."$0D
+       "targetname: if set, the trigger that points to this will lower the pla"
+       "t each time it fires. The plat lowers and lifts someone up later."$0D"s"
+       "ounds: 2 for alternate sound set, -1 for silence, or use the fields be"
+       "low"$0D"sound1: platform starts moving sound"$0D"sound2: platform stop"
+       " sound"$0D"message: kill message, when someone gets killed by this pla"
+       "t"$0D"message2: death message when someone gets pushed into this (defa"
+       "ult: "$22"was thrown into a world of hurt by"$22"). The # character is"
+       " replaced by the attacker name if present (and it instead does not get"
+       " appended to the end)"$0D"CRUSH: crush players hit by the platform ins"
+       "tantly"$0D"By default, the total amount of vertical travel of a platfo"
+       "rm is implicitly determined by the overall vertical size of the brushe"
+       "s of which it's made minus the lip value. But if the "$22"height"$22" "
+       "key is used, then the total amount of vertical travel of the plat will"
+       " be exactly that value regardless of the shape and size of the plat an"
+       "d regardless of the value of the "$22"lip"$22" key. Using the "$22"hei"
+       "ght"$22" key is the best method for any kind of platforms and the only"
+       " possible one for thin plats which need to travel vertical distances m"
+       "any times their own thickness. Setting the origin key is simply an alt"
+       "ernate method to using an origin brush. When using the model2 key, the"
+       " origin point of the model will correspond to the origin point defined"
+       " by either the origin brush or the origin coordinate value."
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "CRUSH"
+      }
+      t_commonspecifics = !
+    }
+    func_rain:form =
+    {
+      help = "This is an invisible area like a trigger, which rain falls insid"
+       "e of."$0D"velocity: falling direction (should be something like '0 0 -"
+       "700', use the X and Y velocity for wind)"$0D"cnt: sets color of rain i"
+       "n the Quake palette (default 12 - white)"$0D"count: adjusts density, t"
+       "his many particles fall every second for a 1024x1024 area, default is "
+       "2000"
+      t_commonspecifics = !
+    }
+    func_rotating:form =
+    {
+      help = "Brush entity that spins in place on one axis (default Z). Use an"
+       " origin brush to specify the rotation axis."$0D"To rotate around anoth"
+       "er axis, make a func_wall with an explicit avelocity given."$0D"speed:"
+       " speed to rotate (in degrees per second)"$0D"noise: path/name of loopi"
+       "ng .wav file to play."$0D"dmg: Do this much dmg every .dmgtime interva"
+       "l when blocked"$0D"dmgtime: See above. (0.25s default)"$0D"message: ki"
+       "ll message when crushed by this"$0D"message2: death message when someo"
+       "ne gets pushed into this (default: "$22"was thrown into a world of hur"
+       "t by"$22"). The # character is replaced by the attacker name if presen"
+       "t (and it instead does not get appended to the end)"$0D"X_AXIS: rotate"
+       " around the X axis"$0D"Y_AXIS: rotate around the Y axis"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "Y_AXIS"
+      }
+      t_commonspecifics = !
+    }
+    func_snow:form =
+    {
+      help = "This is an invisible area like a trigger, which snow falls insid"
+       "e of."$0D"velocity: falling direction (should be something like '0 0 -"
+       "300', use the X and Y velocity for wind)"$0D"cnt: sets color of snow i"
+       "n the Quake palette (default 12 - white)"$0D"count: adjusts density, t"
+       "his many particles fall every second for a 1024x1024 area, default is "
+       "2000"
+      t_commonspecifics = !
+    }
+    func_stardust:form =
+    {
+      help = "Point entity with EF_STARDUST applied. This will spawn a particl"
+       "e cloud with mostly golden particles. Used as eye-candy."
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    func_train:form =
+    {
+      help = "Trains are moving solids that follow a cycle of path_corner enti"
+       "ties. Origin brushes are NOT supported; they use the "$22"mins"$22" co"
+       "rner as reference (that is, lowest x, y, and z coordinates)."$0D"At ea"
+       "ch node, the train's mins corner hits exactly the path_corner."$0D"Tra"
+       "ins always start on in the game."$0D"Trains do not damage the played w"
+       "hen blocked."$0D"Trains cannot emit sound."$0D"Trains are not trigger-"
+       "able or toggle-able."$0D"Trains cannot be block-stopped just by gettin"
+       "g in their way, the player must be wedged between the train and anothe"
+       "r obstacle to block it."$0D"speed: default/initial speed of train (def"
+       "ault 100 or overridden by speed value of targeted path_corner)"$0D"tar"
+       "get: targetname of first path_corner to move to at the default speed; "
+       "ideally, this path_corner shall be exactly where the train starts"$0D"n"
+       "oise: path/name of .wav or .ogg file to play while moving. Use looping"
+       " sounds only (e.g. sound/world/drone6.wav - See Notes)."$0D"dmg: damag"
+       "e a player who gets crushed by it receives"$0D"dmgtime: interval to ap"
+       "ply dmg to a player who is s in the way"$0D"message: death message whe"
+       "n a player gets crushed"$0D"message2: death message when someone gets "
+       "pushed into this (default: "$22"was thrown into a world of hurt by"$22
+       "). The # character is replaced by the attacker name if present (and it"
+       " instead does not get appended to the end)"
+      t_commonspecifics = !
+    }
+    info_location:form =
+    {
+      help = "Location for use by the %l escape in "$22"say"$22" messages."$0D
+       "The closest "$22"visible"$22" info_location entity is chosen to find t"
+       "he right location name for a point."$0D"netname: name of location, pos"
+       "sibly with color codes"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    info_notnull:form =
+    {
+      help = "Entity that does nothing, but may be targeted (e.g. to use its p"
+       "osition)"$0D"targetname: must match the target key of entity that uses"
+       " this for pointing."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    info_null:form =
+    {
+      help = "Aiming target for q3map2-internal entities like _decal or light."
+       " Removes itself when loaded, so it can NOT be used for in-game stuff!"$0D
+       "targetname: the entity that requires an aiming direction points to thi"
+       "s."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    info_player_attacker:form =
+    {
+      help = "Attacking team's player spawning location in Assault. Should tou"
+       "ch the floor, but not the walls, and should point where the player sho"
+       "uld look when he spawns there."$0D"target: this should point to a targ"
+       "et_objective to decide when this spawning point is active."$0D"target2"
+       ": trigger all entities with this targetname when someone spawns"$0D"cn"
+       "t: weight of spawn point for random selection. Set to a lower value if"
+       " you have many spawn points close together. Default value is 1."$0D"re"
+       "striction: when 1, only bots can spawn here; when 2, only humans can s"
+       "pawn here (be careful with these, or the game will crash because someo"
+       "ne cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    info_player_deathmatch:form =
+    {
+      help = "Normal player spawning location in game types without team spawn"
+       "s. Should touch the floor, but not the walls, and should point where t"
+       "he player should look when he spawns there."$0D"cnt: weight of spawn p"
+       "oint for random selection. Set to a lower value if you have many spawn"
+       " points close together. Default value is 1."$0D"target: trigger all en"
+       "tities with this targetname when someone spawns"$0D"targetname: when t"
+       "argeted by a func_button, pressing the button will assign the spawn po"
+       "int to the team of the activator as an additional spawn point, or reas"
+       "sign it if it was already assigned. Also used to assign spawn points t"
+       "o Onslaught control points."$0D"restriction: when 1, only bots can spa"
+       "wn here; when 2, only humans can spawn here (be careful with these, or"
+       " the game will crash because someone cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    info_player_defender:form =
+    {
+      help = "Defending team's player spawning location in Assault. Should tou"
+       "ch the floor, but not the walls, and should point where the player sho"
+       "uld look when he spawns there."$0D"target: this should point to a targ"
+       "et_objective to decide when this spawning point is active."$0D"target2"
+       ": trigger all entities with this targetname when someone spawns"$0D"cn"
+       "t: weight of spawn point for random selection. Set to a lower value if"
+       " you have many spawn points close together. Default value is 1."$0D"re"
+       "striction: when 1, only bots can spawn here; when 2, only humans can s"
+       "pawn here (be careful with these, or the game will crash because someo"
+       "ne cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    info_player_team1:form =
+    {
+      help = "Red team's player spawning location in e.g. CTF and Onslaught. S"
+       "hould touch the floor, but not the walls, and should point where the p"
+       "layer should look when he spawns there."$0D"cnt: weight of spawn point"
+       " for random selection. Set to a lower value if you have many spawn poi"
+       "nts close together. Default value is 1."$0D"target: trigger all entiti"
+       "es with this targetname when someone spawns"$0D"targetname: when targe"
+       "ted by a func_button, pressing the button will reassign the spawn poin"
+       "t to the team of the activator. If a team has no more spawn point left"
+       ", it immediately loses."$0D"restriction: when 1, only bots can spawn h"
+       "ere; when 2, only humans can spawn here (be careful with these, or the"
+       " game will crash because someone cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    info_player_team2:form =
+    {
+      help = "Blue team's player spawning location in e.g. CTF and Onslaught. "
+       "Should touch the floor, but not the walls, and should point where the "
+       "player should look when he spawns there."$0D"cnt: weight of spawn poin"
+       "t for random selection. Set to a lower value if you have many spawn po"
+       "ints close together. Default value is 1."$0D"target: trigger all entit"
+       "ies with this targetname when someone spawns"$0D"targetname: when targ"
+       "eted by a func_button, pressing the button will reassign the spawn poi"
+       "nt to the team of the activator. If a team has no more spawn point lef"
+       "t, it immediately loses."$0D"restriction: when 1, only bots can spawn "
+       "here; when 2, only humans can spawn here (be careful with these, or th"
+       "e game will crash because someone cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    info_player_team3:form =
+    {
+      help = "Yellow team's player spawning location, but there is no game mod"
+       "e to use this yet. Anyway, should touch the floor, but not the walls, "
+       "and should point where the player should look when he spawns there."$0D
+       "cnt: weight of spawn point for random selection. Set to a lower value "
+       "if you have many spawn points close together. Default value is 1."$0D"t"
+       "arget: trigger all entities with this targetname when someone spawns"$0D
+       "targetname: when targeted by a func_button, pressing the button will r"
+       "eassign the spawn point to the team of the activator. If a team has no"
+       " more spawn point left, it immediately loses."$0D"restriction: when 1,"
+       " only bots can spawn here; when 2, only humans can spawn here (be care"
+       "ful with these, or the game will crash because someone cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    info_player_team4:form =
+    {
+      help = "Pink team's player spawning location, but there is no game mode "
+       "to use this yet. Anyway, should touch the floor, but not the walls, an"
+       "d should point where the player should look when he spawns there."$0D"c"
+       "nt: weight of spawn point for random selection. Set to a lower value i"
+       "f you have many spawn points close together. Default value is 1."$0D"t"
+       "arget: trigger all entities with this targetname when someone spawns"$0D
+       "targetname: when targeted by a func_button, pressing the button will r"
+       "eassign the spawn point to the team of the activator. If a team has no"
+       " more spawn point left, it immediately loses."$0D"restriction: when 1,"
+       " only bots can spawn here; when 2, only humans can spawn here (be care"
+       "ful with these, or the game will crash because someone cannot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    item_armor_large:form =
+    {
+      help = "Large Armor (default 100 armor points)"$0D"respawntime: time til"
+       "l it respawns (default: 30)"$0D"armorvalue: amount of armor it gives ("
+       "default: 100 (g_pickup_armorlarge))"$0D"max_armorvalue: max of armor i"
+       "t increases to (default: 999 (g_pickup_armorlarge_max))"$0D"team: out "
+       "of items with the same value here, only one (random one) will spawn. U"
+       "seful to put multiple items on one spot."$0D"cnt: weight of this item "
+       "for random selection using "$22"team"$22". Set to a lower value for it"
+       "ems you want to see less likely."$0D"FLOATING: the item will float in "
+       "air, instead of aligning to the floor by falling"$0D"model="$22"models"
+       "/items/g_a25.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_armor_big:form =
+    {
+      help = "Big Armor (default 50 armor points)"$0D"respawntime: time till i"
+       "t respawns (default: 20)"$0D"armorvalue: amount of armor it gives (def"
+       "ault: 50 (g_pickup_armorlarge))"$0D"max_armorvalue: max of armor it in"
+       "creases to (default: 999 (g_pickup_armorlarge_max))"$0D"team: out of i"
+       "tems with the same value here, only one (random one) will spawn. Usefu"
+       "l to put multiple items on one spot."$0D"cnt: weight of this item for "
+       "random selection using "$22"team"$22". Set to a lower value for items "
+       "you want to see less likely."$0D"FLOATING: the item will float in air,"
+       " instead of aligning to the floor by falling"$0D"model="$22"models/ite"
+       "ms/g_a50.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_armor_medium:form =
+    {
+      help = "Medium Armor (default 25 armor points)"$0D"respawntime: time til"
+       "l it respawns (default: 20)"$0D"armorvalue: amount of armor it gives ("
+       "default: 25 (g_pickup_armormedium))"$0D"max_armorvalue: max of armor i"
+       "t increases to (default: 999 (g_pickup_armormedium_max))"$0D"team: out"
+       " of items with the same value here, only one (random one) will spawn. "
+       "Useful to put multiple items on one spot."$0D"cnt: weight of this item"
+       " for random selection using "$22"team"$22". Set to a lower value for i"
+       "tems you want to see less likely."$0D"FLOATING: the item will float in"
+       " air, instead of aligning to the floor by falling"$0D"model="$22"model"
+       "s/items/g_armormedium.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_armor_small:form =
+    {
+      help = "Small Armor (default 5 armor points)"$0D"respawntime: time till "
+       "it respawns (default: 15)"$0D"armorvalue: amount of armor it gives (de"
+       "fault: 5 (g_pickup_armorsmall))"$0D"max_armorvalue: max of armor it in"
+       "creases to (default: 999 (g_pickup_armorsmall_max))"$0D"team: out of i"
+       "tems with the same value here, only one (random one) will spawn. Usefu"
+       "l to put multiple items on one spot."$0D"cnt: weight of this item for "
+       "random selection using "$22"team"$22". Set to a lower value for items "
+       "you want to see less likely."$0D"FLOATING: the item will float in air,"
+       " instead of aligning to the floor by falling"$0D"model="$22"models/ite"
+       "ms/g_a1.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_bullets:form =
+    {
+      help = "Machine Gun ammo"$0D"ammo_nails: bullets gained by this item (if"
+       " unset, g_pickup_nails is used)"$0D"respawntime: time till it respawns"
+       " (default: 15)"$0D"team: out of items with the same value here, only o"
+       "ne (random one) will spawn. Useful to put multiple items on one spot."$0D
+       "cnt: weight of this item for random selection using "$22"team"$22". Se"
+       "t to a lower value for items you want to see less likely."$0D"FLOATING"
+       ": the item will float in air, instead of aligning to the floor by fall"
+       "ing"$0D"model="$22"models/items/a_bullets.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_cells:form =
+    {
+      help = "Nex, Electro and Crylink ammo"$0D"ammo_cells: cells gained by th"
+       "is item (if unset, g_pickup_cells is used)"$0D"respawntime: time till "
+       "it respawns (default: 15)"$0D"team: out of items with the same value h"
+       "ere, only one (random one) will spawn. Useful to put multiple items on"
+       " one spot."$0D"cnt: weight of this item for random selection using "$22
+       "team"$22". Set to a lower value for items you want to see less likely."
+       $0D"FLOATING: the item will float in air, instead of aligning to the fl"
+       "oor by falling"$0D"model="$22"models/items/a_cells.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_flag_team1:form =
+    {
+      help = "CTF flag for team one (Red). Use more than one if you really ins"
+       "ist."$0D"model: model to use"$0D"scale: scaling factor (DO set this wh"
+       "en using your own model!)"$0D"noise: sound played when flag is picked "
+       "up"$0D"noise1: sound played when flag is returned"$0D"noise2: sound pl"
+       "ayed when flag is captured"$0D"noise3: sound played when flag is lost "
+       "in the field and respawns itself"$0D"zbqry="$22"zbqryf/pgs/enqvnag/syn"
+       "t_erq_enqvnag.zq3"$22
+      bbox = '-32 -32 0 32 32 74'
+      t_commonspecifics = !
+    }
+    item_flag_team2:form =
+    {
+      help = "CTF flag for team two (Blue). Use more than one if you really in"
+       "sist."$0D"model: model to use"$0D"scale: scaling factor (DO set this w"
+       "hen using your own model!)"$0D"noise: sound played when flag is picked"
+       " up"$0D"noise1: sound played when flag is returned"$0D"noise2: sound p"
+       "layed when flag is captured"$0D"noise3: sound played when flag is lost"
+       " in the field and respawns itself"$0D"zbqry="$22"zbqryf/pgs/enqvnag/sy"
+       "nt_oyhr_enqvnag.zq3"$22
+      bbox = '-32 -32 0 32 32 74'
+      t_commonspecifics = !
+    }
+    item_health_large:form =
+    {
+      help = "Large Health (default 50 health points)"$0D"respawntime: time ti"
+       "ll it respawns (default: 20)"$0D"health: amount of health it gives (de"
+       "fault: 50 (g_pickup_healthlarge))"$0D"max_health: max of health it inc"
+       "reases to (default: 999 (g_pickup_healthlarge_max))"$0D"team: out of i"
+       "tems with the same value here, only one (random one) will spawn. Usefu"
+       "l to put multiple items on one spot."$0D"cnt: weight of this item for "
+       "random selection using "$22"team"$22". Set to a lower value for items "
+       "you want to see less likely."$0D"FLOATING: the item will float in air,"
+       " instead of aligning to the floor by falling"$0D"model="$22"models/ite"
+       "ms/g_h50.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_health_medium:form =
+    {
+      help = "Medium Health (default 25 health points)"$0D"respawntime: time t"
+       "ill it respawns (default: 15)"$0D"health: amount of health it gives (d"
+       "efault: 25 (g_pickup_healthmedium))"$0D"max_health: max of health it i"
+       "ncreases to (default: 999 (g_pickup_healthmedium_max))"$0D"team: out o"
+       "f items with the same value here, only one (random one) will spawn. Us"
+       "eful to put multiple items on one spot."$0D"cnt: weight of this item f"
+       "or random selection using "$22"team"$22". Set to a lower value for ite"
+       "ms you want to see less likely."$0D"FLOATING: the item will float in a"
+       "ir, instead of aligning to the floor by falling"$0D"model="$22"models/"
+       "items/g_h25.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_health_mega:form =
+    {
+      help = "Mega Health (default 100 health points)"$0D"In Minstagib, this r"
+       "andomly turns into either an invisibility, an extra lives or a speed p"
+       "ower-up with a default respawn time of 120."$0D"respawntime: time till"
+       " it respawns (default: 30)"$0D"health: amount of health it gives (defa"
+       "ult: 100 (g_pickup_healthmega))"$0D"max_health: max of health it incre"
+       "ases to (default: 999 (g_pickup_healthmega_max))"$0D"team: out of item"
+       "s with the same value here, only one (random one) will spawn. Useful t"
+       "o put multiple items on one spot."$0D"cnt: weight of this item for ran"
+       "dom selection using "$22"team"$22". Set to a lower value for items you"
+       " want to see less likely."$0D"FLOATING: the item will float in air, in"
+       "stead of aligning to the floor by falling"$0D"model="$22"models/items/"
+       "g_h100.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_health_small:form =
+    {
+      help = "Small Health (default 5 health points)"$0D"respawntime: time til"
+       "l it respawns (default: 15)"$0D"health: amount of health it gives (def"
+       "ault: 5 (g_pickup_healthsmall))"$0D"max_health: max of health it incre"
+       "ases to (default: 5 (g_pickup_healthsmall_max))"$0D"team: out of items"
+       " with the same value here, only one (random one) will spawn. Useful to"
+       " put multiple items on one spot."$0D"cnt: weight of this item for rand"
+       "om selection using "$22"team"$22". Set to a lower value for items you "
+       "want to see less likely."$0D"FLOATING: the item will float in air, ins"
+       "tead of aligning to the floor by falling"$0D"model="$22"models/items/g"
+       "_h1.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_invincible:form =
+    {
+      help = "Strong Shield"$0D"In Minstagib, this randomly turns into either "
+       "an invisibility, an extra lives or a speed power-up with a default res"
+       "pawn time of 120."$0D"respawntime: time till it respawns (default: 120"
+       ")"$0D"team: out of items with the same value here, only one (random on"
+       "e) will spawn. Useful to put multiple items on one spot."$0D"cnt: weig"
+       "ht of this item for random selection using "$22"team"$22". Set to a lo"
+       "wer value for items you want to see less likely."$0D"FLOATING: the ite"
+       "m will float in air, instead of aligning to the floor by falling"$0D"m"
+       "odel="$22"models/items/g_invincible.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_minst_cells:form =
+    {
+      help = "Minstagib ammo."$0D"Always contains 5 (g_minstagib_ammo_drop) sh"
+       "ots."$0D"It only appears when playing Minstagib and prevents auto-repl"
+       "acement of weapon_nex & weapon_rocketlauncher when used."$0D"respawnti"
+       "me: time till it respawns (default: 45)"$0D"team: out of items with th"
+       "e same value here, only one (random one) will spawn. Useful to put mul"
+       "tiple items on one spot."$0D"cnt: weight of this item for random selec"
+       "tion using "$22"team"$22". Set to a lower value for items you want to "
+       "see less likely."$0D"FLOATING: the item will float in air, instead of "
+       "aligning to the floor by falling"$0D"model="$22"models/items/a_cells.m"
+       "d3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_rockets:form =
+    {
+      help = "Rocket Launcher, Hagar and Mortar ammo"$0D"ammo_rockets: rockets"
+       " gained by this item (if unset, g_pickup_rockets is used)"$0D"respawnt"
+       "ime: time till it respawns (default: 15)"$0D"team: out of items with t"
+       "he same value here, only one (random one) will spawn. Useful to put mu"
+       "ltiple items on one spot."$0D"cnt: weight of this item for random sele"
+       "ction using "$22"team"$22". Set to a lower value for items you want to"
+       " see less likely."$0D"FLOATING: the item will float in air, instead of"
+       " aligning to the floor by falling"$0D"model="$22"models/items/a_rocket"
+       "s.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_shells:form =
+    {
+      help = "Shotgun ammo"$0D"ammo_shells: shells gained by this item (if uns"
+       "et, g_pickup_shells is used)"$0D"respawntime: time till it respawns (d"
+       "efault: 15)"$0D"team: out of items with the same value here, only one "
+       "(random one) will spawn. Useful to put multiple items on one spot."$0D
+       "cnt: weight of this item for random selection using "$22"team"$22". Se"
+       "t to a lower value for items you want to see less likely."$0D"FLOATING"
+       ": the item will float in air, instead of aligning to the floor by fall"
+       "ing"$0D"model="$22"models/items/a_shells.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_strength:form =
+    {
+      help = "Strength aka Quad damage"$0D"In Minstagib, this randomly turns i"
+       "nto either an invisibility, an extra lives or a speed power-up with a "
+       "default respawn time of 120."$0D"respawntime: time till it respawns (d"
+       "efault: 120)"$0D"team: out of items with the same value here, only one"
+       " (random one) will spawn. Useful to put multiple items on one spot."$0D
+       "cnt: weight of this item for random selection using "$22"team"$22". Se"
+       "t to a lower value for items you want to see less likely."$0D"FLOATING"
+       ": the item will float in air, instead of aligning to the floor by fall"
+       "ing"$0D"model="$22"models/items/g_strength.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    light:form =
+    {
+      help = "Non-displayed point light source. The -pointscale and -scale arg"
+       "uments to Q3Map2 affect the brightness of these lights. The -skyscale "
+       "argument affects brightness of entity sun lights."$0D"Maximum intensit"
+       "y (in a radius 16 sphere around the light): regular lights have light/"
+       "256, linear lights have light/8000-16*fade."$0D"Falloff radius to a ne"
+       "gligible light amount: regular lights have light have 16*sqrt(light), "
+       "linear lights have light/(fade*8000)."$0D"By this you see that you HAV"
+       "E to specify fade for a linear light... use values below 0.01 there."$0D
+       "light: intensity factor (default: 300). A linear"$0D"_color: weighted "
+       "RGB value of light color (default white - 1.0 1.0 1.0)."$0D"target: Li"
+       "ghts pointed at a target will be spotlights."$0D"radius: radius of a s"
+       "potlight at the target point (default: 64)"$0D"_anglescale: scales ang"
+       "le attenuation"$0D"fade: Fade factor of light attenuation of linear li"
+       "ghts. Linear lights completely vanish at distance light/(fade*8000), s"
+       "o if you want the light to vanish at distance X, specify light/(8000*X"
+       ") here."$0D"_filterradius: filter radius for this light, similar to -l"
+       "ight -filter"$0D"_sun: if 1, this light is an infinite sun light"$0D"_"
+       "samples: number of samples to use to get soft shadows from a light"$0D
+       "_deviance: position deviance of the samples of a regular light (distri"
+       "butes the light samples in a cube of side length 2*_deviance around th"
+       "e origin), or angle deviance of the sun light samples in radians"$0D"L"
+       "INEAR: Use a linear falloff. Default is inverse distance squared (more"
+       " realistic)."$0D"NOANGLE: Ignore angle attenuation."$0D"NOGRIDLIGHT: D"
+       "o not affect the light grid (dynamic entity lighting)."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "LINEAR"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOANGLE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "NOGRIDLIGHT"
+      }
+      t_commonspecifics = !
+    }
+    lightJunior:form =
+    {
+      help = "Non-displayed point light source that JUST APPLIES TO THE LIGHT "
+       "GRID. No idea what this is good for. The -pointscale and -scale argume"
+       "nts to Q3Map2 affect the brightness of these lights. The -skyscale arg"
+       "ument affects brightness of entity sun lights."$0D"Maximum intensity ("
+       "in a radius 16 sphere around the light): regular lights have light/256"
+       ", linear lights have light/8000-16*fade."$0D"Falloff radius to a negli"
+       "gible light amount: regular lights have light have 16*sqrt(light), lin"
+       "ear lights have light/(fade*8000)."$0D"By this you see that you HAVE t"
+       "o specify fade for a linear light... use values below 0.01 there."$0D"l"
+       "ight: intensity factor (default: 300). A linear"$0D"_color: weighted R"
+       "GB value of light color (default white - 1.0 1.0 1.0)."$0D"target: Lig"
+       "hts pointed at a target will be spotlights."$0D"radius: radius of a sp"
+       "otlight at the target point (default: 64)"$0D"_anglescale: scales angl"
+       "e attenuation"$0D"fade: Fade factor of light attenuation of linear lig"
+       "hts. Linear lights completely vanish at distance light/(fade*8000), so"
+       " if you want the light to vanish at distance X, specify light/(8000*X)"
+       " here."$0D"_filterradius: filter radius for this light, similar to -li"
+       "ght -filter"$0D"_sun: if 1, this light is an infinite sun light"$0D"_s"
+       "amples: number of samples to use to get soft shadows from a light"$0D"_"
+       "deviance: position deviance of the samples of a regular light (distrib"
+       "utes the light samples in a cube of side length 2*_deviance around the"
+       " origin), or angle deviance of the sun light samples in radians"$0D"LI"
+       "NEAR: Use a linear falloff. Default is inverse distance squared (more "
+       "realistic)."$0D"NOANGLE: Ignore angle attenuation."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "LINEAR"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOANGLE"
+      }
+      t_commonspecifics = !
+    }
+    misc_laser:form =
+    {
+      help = "Laser beam emitter. Note that for the laser to be deadly, it has"
+       " to start OUTSIDE the player's collision box. To ensure this, you may "
+       "want to put this entity inside the walls (or directly on their surface"
+       "), or cover it with a playerclip brush."$0D"target: target_position th"
+       "e laser targets (may be another entity, preferably target_position, po"
+       "ssibly controlled by misc_follow)"$0D"mdl: name of particle effect for"
+       " the beam end point (see effectinfo.txt; default is laser_deadly if dm"
+       "g is set, and none if not)"$0D"colormod: color of the laser beam (defa"
+       "ult: red, that is, 1 0 0)"$0D"dmg: damage inflicted by the beam per se"
+       "cond, or -1 for an instant-death ray"$0D"targetname: name to target th"
+       "is (then its state is toggled)"$0D"alpha: when set, makes a dark laser"
+       " of the given strength; may be combined with colormod"$0D"scale: scale"
+       "s the beam thickness (default 1)"$0D"modelscale: scales the dynamic li"
+       "ght radius at the endpoint (default 1, -1 to turn off)"$0D"START_ON: w"
+       "hen targeted, the laser will start switched on"$0D"FINITE: the laser d"
+       "oes not extend over its target like light would do, but stops there (t"
+       "akes more bandwidth)"$0D"Use trigger_monoflop if you want the laser to"
+       " turn off for a while, then turn back on."$0D"When the laser's target "
+       "has itself target set, its targets are triggered when someone enters o"
+       "r leaves the laser."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_ON"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "FINITE"
+      }
+      t_commonspecifics = !
+    }
+    misc_model:form =
+    {
+      help = "Generic placeholder for inserting MD3 models in game. Requires c"
+       "ompilation of map geometry to be added to level. If the map is compile"
+       "d with Q3Map2, then ASE, 3DS, OBJ and other model formats are supporte"
+       "d."$0D"model: file name of model to include"$0D"_frame: frame of model"
+       " to include"$0D"_remap: string of the form from;to specifying which te"
+       "xture name of the model to replace by which shader; * is allowed. Any "
+       "key starting with this prefix will work, so if you need more remapping"
+       "s, create _remap2, etc."$0D"angle: view direction of the model"$0D"ang"
+       "les: view direction of the model in PITCH YAW ROLL"$0D"modelscale: sca"
+       "ling factor"$0D"modelscale_vec: scaling vector for non-uniform scaling"
+       $0D"_castshadows: Allows per-entity control over shadow casting. Defaul"
+       "ts to 0 on entities, 1 on world. 0 = no shadow casting. 1 = cast shado"
+       "ws on world. > 1 = cast shadows on entities with _rs (or _receiveshado"
+       "ws) with the corresponding value, AND world. Negative values imply sam"
+       "e, but DO NOT cast shadows on world."$0D"_receiveshadows: Allows per-e"
+       "ntity control over shadow reception. Defaults to 1 on everything (worl"
+       "d shadows). 0 = receives NO shadows. > 1 = receive shadows only from c"
+       "orresponding keyed entities (see above) and world. < 1 = receive shado"
+       "ws ONLY from corresponding keyed entities."$0D"_lightmapscale: light m"
+       "ap resolution factor"$0D"_celshader: the cel shader for this"$0D"SOLID"
+       ": make the model solid"$0D"EXTRUDE_NORMALS: for converting triangles t"
+       "o clip brushes, extrude along the model normals (by default, extrusion"
+       " happens in a coordinate axis direction that is decided per triangle)"$0D
+       "EXTRUDE_TERRAIN: always extrude downwards (for terrain)"$0D"COLOR_TO_A"
+       "LPHA: use the color value as alpha (for terrain blending)"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "SOLID"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "EXTRUDE_NORMALS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "EXTRUDE_TERRAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "COLOR_TO_ALPHA"
+      }
+      t_commonspecifics = !
+    }
+    misc_gamemodel:form =
+    {
+      help = "A way to load models from a map by the engine (e.g. self-animate"
+       "d zym models)."$0D"Is non-solid by default."$0D"The keys below actuall"
+       "y apply to most engine-loaded model entities as they are engine featur"
+       "es; however, they are described here as they aren't overridden by game"
+       " code in misc_gamemodel. Its q3map2 keys below will work on any brush "
+       "entity!"$0D"model: when used as a point entity, file name of model to "
+       "load; when used as a brush entity, do not specify that"$0D"frame: anim"
+       "ation frame to play (for self-animated zym models)"$0D"skin: number of"
+       " skin to load (when model is used)"$0D"movetype: way in which it moves"
+       ": one of 0 = NONE, 1 = ANGLENOCLIP, 2 = ANGLECLIP, 3 = WALK, 4 = STEP,"
+       " 5 = FLY, 6 = TOSS, 7 = PUSH, 8 = NOCLIP, 9 = FLYMISSILE, 10 = BOUNCE,"
+       " 11 = BOUNCEMISSILE"$0D"solid: solidity: one of 0 = NOT, 1 = TRIGGER, "
+       "2 = BBOX, 3 = SLIDEBOX, 4 = BSP, 5 = CORPSE"$0D"avelocity: vector givi"
+       "ng its angular velocity (useful for spinning models)"$0D"scale: scale "
+       "factor of the model (range: 0.0625 to 15.9375)"$0D"colormap: 1024 + 16"
+       " * pantscolor + shirtcolor"$0D"velocity: when movetype isn't 0, initia"
+       "l velocity vector"$0D"angles: initial looking direction"$0D"modelscale"
+       ": scaling factor"$0D"effects: sum of 1 = BRIGHTFIELD, 4 = BRIGHTLIGHT,"
+       " 8 = DIMLIGHT, 32 = ADDITIVE, 64 = BLUE, 128 = RED, 512 = FULLBRIGHT, "
+       "1024 = FLAME, 2048 = STARDUST, 4096 = NOSHADOW, 8192 = NODEPTHTEST, 32"
+       "768 = DOUBLESIDED, 8388608 = NOMODELFLAGS (ignores the following comin"
+       "g from a model file), 16777216 = ROCKET, 33554432 = GRENADE, 67108864 "
+       "= GIB, 134217728 = ROTATE, 268435456 = TRACER, 536870912 = ZOMGIB, 107"
+       "3741824 = TRACER2, -2147483648 = TRACER3"$0D"loddistance1: distance af"
+       "ter which to show the first LOD model replacement (default: 1000)"$0D"l"
+       "oddistance2: distance after which to show the second LOD model replace"
+       "ment (default: 2000)"$0D"lodmodel1: file name of the first LOD model r"
+       "eplacement"$0D"lodmodel2: file name of the second LOD model replacemen"
+       "t"$0D"targetname: when invoking it by a button etc., it changes the co"
+       "lor to the initiator of the action (e.g. the one pressing a button). I"
+       "n Onslaught, this can be used to color control points for team who own"
+       "s them. In other game types, this can be used as a fun feature."$0D"or"
+       "iginjitter: a vector describing a random offset this entity will be mo"
+       "ved on initial spawn. This corresponds to the "$22"origin"$22" field. "
+       "Works on any non-q3map2-only entity."$0D"anglesjitter: a vector in the"
+       " order "$22"pitch yaw roll"$22" describing a random angles change on t"
+       "his entity on initial spawn. The value 180 180 180 makes the angles en"
+       "tirely random and uniformly distributed (among euler angles). This cor"
+       "responds to the "$22"angles"$22" field. Works on any non-q3map2-only e"
+       "ntity."$0D"anglejitter: a float describing a random yaw angle change o"
+       "n this entity on initial spawn. The value 180 makes the yaw angle enti"
+       "rely random (maybe good for items). This corresponds to the "$22"angle"
+       $22" field. Works on any non-q3map2-only entity."$0D"gametypefilter: ei"
+       "ther a + sign and a comma separated list of game types or the aliases "
+       $22"teams"$22" and "$22"noteams"$22" to ONLY show the entity in the lis"
+       "ted game types, or a - sign and a comma separated list of game types o"
+       "r the aliases "$22"teams"$22" and "$22"noteams"$22" to NOT show the en"
+       "tity in the listed game types. The syntax is the same as in sbar_colum"
+       "ns_set strings. Works on any non-q3map2-only entity."$0D"cvarfilter: e"
+       "ither a + sign and a space separated list of conditions, or a - sign a"
+       "nd the same for an inverted filter. The conditions are ALWAYS combined"
+       " with AND! Possible conditions are: "$22"cvar==value"$22", "$22"cvar!="
+       "value"$22", "$22"cvar<value"$22", "$22"cvar>value"$22", "$22"cvar<=val"
+       "ue"$22", "$22"cvar>=value"$22", "$22"cvar===string"$22", "$22"cvar!==s"
+       "tring"$22", "$22"cvar"$22", "$22"!cvar"$22". Ridiculous example filter"
+       ": "$22"-g_balance_health_start<150 g_balance_armor_start==0"$22" spawn"
+       "s an item only if start health is at least 150 or start armor is not 0"
+       ". Other ideas: "$22"+g_campaign"$22" and "$22"-g_campaign"$22" for ena"
+       "bling/disabling items when the map is played as part of the campaign."$0D
+       "ALIGN_ORIGN: align the origin to the surface below the model"$0D"ALIGN"
+       "_BOTTOM: align the bottom of the model to the surface below it"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "ALIGN_ORIGIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "ALIGN_BOTTOM"
+      }
+      t_commonspecifics = !
+    }
+    func_illusionary:form =
+    {
+      help = "NOTE: THIS ENTITY IS BROKEN REGARDING CLIENT AND PROJECTILE PRED"
+       "ICTION. DO NOT USE IT. USE NONSOLID SHADERS OR FUNC_CLIENTILLUSIONARY "
+       "INSTEAD."$0D"A non-solid brush entity. Use func_wall if you want it so"
+       "lid."$0D"The keys below actually apply to most brush entities as they "
+       "are engine features; however, they are described here as they aren't o"
+       "verridden by game code in misc_models. Its q3map2 keys below will work"
+       " on any brush entity!"$0D"movetype: way in which it moves: one of 0 = "
+       "NONE, 1 = ANGLENOCLIP, 2 = ANGLECLIP, 3 = WALK, 4 = STEP, 5 = FLY, 6 ="
+       " TOSS, 7 = PUSH, 8 = NOCLIP, 9 = FLYMISSILE, 10 = BOUNCE, 11 = BOUNCEM"
+       "ISSILE"$0D"avelocity: vector giving its angular velocity (useful for s"
+       "pinning models)"$0D"scale: scale factor of the model (range: 0.0625 to"
+       " 15.9375)"$0D"colormap: 1024 + 16 * pantscolor + shirtcolor"$0D"veloci"
+       "ty: when movetype isn't 0, initial velocity vector"$0D"angles: initial"
+       " looking direction"$0D"effects: sum of 1 = BRIGHTFIELD, 4 = BRIGHTLIGH"
+       "T, 8 = DIMLIGHT, 32 = ADDITIVE, 64 = BLUE, 128 = RED, 512 = FULLBRIGHT"
+       ", 1024 = FLAME, 2048 = STARDUST, 4096 = NOSHADOW, 8192 = NODEPTHTEST, "
+       "32768 = DOUBLESIDED, 8388608 = NOMODELFLAGS (ignores the following com"
+       "ing from a model file), 16777216 = ROCKET, 33554432 = GRENADE, 6710886"
+       "4 = GIB, 134217728 = ROTATE, 268435456 = TRACER, 536870912 = ZOMGIB, 1"
+       "073741824 = TRACER2, -2147483648 = TRACER3"$0D"loddistance1: distance "
+       "after which to show the first LOD model replacement (default: 1000)"$0D
+       "loddistance2: distance after which to show the second LOD model replac"
+       "ement (default: 2000)"$0D"lodtarget1: targetname of the first LOD mode"
+       "l entity (can be used instead of lodmodel1 to use a brush model instea"
+       "d)"$0D"lodtarget2: targetname of the second LOD model entity (can be u"
+       "sed instead of lodmodel2 to use a brush model instead)"$0D"targetname:"
+       " when invoking it by a button etc., it changes the color to the initia"
+       "tor of the action (e.g. the one pressing a button). In Onslaught, this"
+       " can be used to color control points for team who owns them. In other "
+       "game types, this can be used as a fun feature. Works only with _shirt "
+       "and _pants textures."$0D"originjitter: a vector describing a random of"
+       "fset this entity will be moved on initial spawn. This corresponds to t"
+       "he "$22"origin"$22" field. Works on any non-q3map2-only entity."$0D"an"
+       "glesjitter: a vector in the order "$22"pitch yaw roll"$22" describing "
+       "a random angles change on this entity on initial spawn. The value 180 "
+       "180 180 makes the angles entirely random and uniformly distributed (am"
+       "ong euler angles). This corresponds to the "$22"angles"$22" field. Wor"
+       "ks on any non-q3map2-only entity."$0D"anglejitter: a float describing "
+       "a random yaw angle change on this entity on initial spawn. The value 1"
+       "80 makes the yaw angle entirely random (maybe good for items). This co"
+       "rresponds to the "$22"angle"$22" field. Works on any non-q3map2-only e"
+       "ntity."$0D"gametypefilter: either a + sign and a comma separated list "
+       "of game types or the aliases "$22"teams"$22" and "$22"noteams"$22" to "
+       "ONLY show the entity in the listed game types, or a - sign and a comma"
+       " separated list of game types or the aliases "$22"teams"$22" and "$22"n"
+       "oteams"$22" to NOT show the entity in the listed game types. The synta"
+       "x is the same as in sbar_columns_set strings. Works on any non-q3map2-"
+       "only entity."$0D"_castshadows: Allows per-entity control over shadow c"
+       "asting. Defaults to 0 on entities, 1 on world. 0 = no shadow casting. "
+       "1 = cast shadows on world. > 1 = cast shadows on entities with _rs (or"
+       " _receiveshadows) with the corresponding value, AND world. Negative va"
+       "lues imply same, but DO NOT cast shadows on world."$0D"_receiveshadows"
+       ": Allows per-entity control over shadow reception. Defaults to 1 on ev"
+       "erything (world shadows). 0 = receives NO shadows. > 1 = receive shado"
+       "ws only from corresponding keyed entities (see above) and world. < 1 ="
+       " receive shadows ONLY from corresponding keyed entities."$0D"_clone: c"
+       "opies brushes from entity with identical _clonename. Still needs a sin"
+       "gle brush that will get replaced."$0D"_clonename: template name so one"
+       " can clone from it"$0D"min: override automatically found minimum coord"
+       "inate bounds"$0D"max: override automatically found maximum coordinate "
+       "bounds"$0D"targetname: if targeted by a misc_model, its brushes get in"
+       "serted into this"$0D"_celshader: Sets the cel shader used for this geo"
+       "metry. Note: omit the "$22"textures/"$22" prefix."
+      t_commonspecifics = !
+    }
+    func_wall:form =
+    {
+      help = "A solid brush entity. Use func_clientillusionary if you want it "
+       "non-solid."$0D"The keys below actually apply to most brush entities as"
+       " they are engine features; however, they are described here as they ar"
+       "en't overridden by game code in misc_models. Its q3map2 keys below wil"
+       "l work on any brush entity!"$0D"movetype: way in which it moves: one o"
+       "f 0 = NONE, 1 = ANGLENOCLIP, 2 = ANGLECLIP, 3 = WALK, 4 = STEP, 5 = FL"
+       "Y, 6 = TOSS, 7 = PUSH, 8 = NOCLIP, 9 = FLYMISSILE, 10 = BOUNCE, 11 = B"
+       "OUNCEMISSILE"$0D"solid: solidity: one of 1 = TRIGGER, 2 = BBOX, 3 = SL"
+       "IDEBOX, 4 = BSP, 5 = CORPSE (default: 4, any other value causes predic"
+       "tion problems and should not be used until further notice)"$0D"aveloci"
+       "ty: vector giving its angular velocity (useful for spinning models)"$0D
+       "scale: scale factor of the model (range: 0.0625 to 15.9375)"$0D"colorm"
+       "ap: 1024 + 16 * pantscolor + shirtcolor"$0D"velocity: when movetype is"
+       "n't 0, initial velocity vector"$0D"angles: initial looking direction"$0D
+       "effects: sum of 1 = BRIGHTFIELD, 4 = BRIGHTLIGHT, 8 = DIMLIGHT, 32 = A"
+       "DDITIVE, 64 = BLUE, 128 = RED, 512 = FULLBRIGHT, 1024 = FLAME, 2048 = "
+       "STARDUST, 4096 = NOSHADOW, 8192 = NODEPTHTEST, 32768 = DOUBLESIDED, 83"
+       "88608 = NOMODELFLAGS (ignores the following coming from a model file),"
+       " 16777216 = ROCKET, 33554432 = GRENADE, 67108864 = GIB, 134217728 = RO"
+       "TATE, 268435456 = TRACER, 536870912 = ZOMGIB, 1073741824 = TRACER2, -2"
+       "147483648 = TRACER3"$0D"loddistance1: distance after which to show the"
+       " first LOD model replacement (default: 1000)"$0D"loddistance2: distanc"
+       "e after which to show the second LOD model replacement (default: 2000)"
+       $0D"lodtarget1: targetname of the first LOD model entity (can be used i"
+       "nstead of lodmodel1 to use a brush model instead)"$0D"lodtarget2: targ"
+       "etname of the second LOD model entity (can be used instead of lodmodel"
+       "2 to use a brush model instead)"$0D"targetname: when invoking it by a "
+       "button etc., it changes the color to the initiator of the action (e.g."
+       " the one pressing a button). In Onslaught, this can be used to color c"
+       "ontrol points for team who owns them. In other game types, this can be"
+       " used as a fun feature. Works only with _shirt and _pants textures."$0D
+       "originjitter: a vector describing a random offset this entity will be "
+       "moved on initial spawn. This corresponds to the "$22"origin"$22" field"
+       ". Works on any non-q3map2-only entity."$0D"anglesjitter: a vector in t"
+       "he order "$22"pitch yaw roll"$22" describing a random angles change on"
+       " this entity on initial spawn. The value 180 180 180 makes the angles "
+       "entirely random and uniformly distributed (among euler angles). This c"
+       "orresponds to the "$22"angles"$22" field. Works on any non-q3map2-only"
+       " entity."$0D"anglejitter: a float describing a random yaw angle change"
+       " on this entity on initial spawn. The value 180 makes the yaw angle en"
+       "tirely random (maybe good for items). This corresponds to the "$22"ang"
+       "le"$22" field. Works on any non-q3map2-only entity."$0D"gametypefilter"
+       ": either a + sign and a comma separated list of game types or the alia"
+       "ses "$22"teams"$22" and "$22"noteams"$22" to ONLY show the entity in t"
+       "he listed game types, or a - sign and a comma separated list of game t"
+       "ypes or the aliases "$22"teams"$22" and "$22"noteams"$22" to NOT show "
+       "the entity in the listed game types. The syntax is the same as in sbar"
+       "_columns_set strings. Works on any non-q3map2-only entity."$0D"_castsh"
+       "adows: Allows per-entity control over shadow casting. Defaults to 0 on"
+       " entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on worl"
+       "d. > 1 = cast shadows on entities with _rs (or _receiveshadows) with t"
+       "he corresponding value, AND world. Negative values imply same, but DO "
+       "NOT cast shadows on world."$0D"_receiveshadows: Allows per-entity cont"
+       "rol over shadow reception. Defaults to 1 on everything (world shadows)"
+       ". 0 = receives NO shadows. > 1 = receive shadows only from correspondi"
+       "ng keyed entities (see above) and world. < 1 = receive shadows ONLY fr"
+       "om corresponding keyed entities."$0D"_clone: copies brushes from entit"
+       "y with identical _clonename. Still needs a single brush that will get "
+       "replaced."$0D"_clonename: template name so one can clone from it"$0D"m"
+       "in: override automatically found minimum coordinate bounds"$0D"max: ov"
+       "erride automatically found maximum coordinate bounds"$0D"targetname: i"
+       "f targeted by a misc_model, its brushes get inserted into this"$0D"_ce"
+       "lshader: Sets the cel shader used for this geometry. Note: omit the "$22
+       "textures/"$22" prefix."
+      t_commonspecifics = !
+    }
+    misc_clientmodel:form =
+    {
+      help = "A way to load models from a map by the engine (e.g. self-animate"
+       "d zym models) on client side."$0D"Is non-solid by default."$0D"scale: "
+       "scale factor of the model (range: 0.0625 to 15.9375)"$0D"colormap: 102"
+       "4 + 16 * pantscolor + shirtcolor"$0D"angles: initial looking direction"
+       $0D"targetname: when invoking it by a button etc., it changes the color"
+       " to the initiator of the action (e.g. the one pressing a button). In O"
+       "nslaught, this can be used to color control points for team who owns t"
+       "hem. In other game types, this can be used as a fun feature. Works onl"
+       "y with _shirt and _pants textures."$0D"bgmscript: emitter class from t"
+       "he BGM script (if prefixed with <, movedir is treated as an angle valu"
+       "e)"$0D"bgmscriptattack: attack time of the effect strength (0 to 3.9)"$0D
+       "bgmscriptdecay: decay time of the effect strength (0 to 3.9)"$0D"bgmsc"
+       "riptsustain: sustain level of the effect strength (0.1 to 1, set to -1"
+       " to disable sustain)"$0D"bgmscriptrelease: release time of the effect "
+       "strength (0 to 3.9)"$0D"movedir: vector by which the entity moves when"
+       " "$22"pressed"$22" by the bgmscript"$0D"lip: alpha change when "$22"pr"
+       "essed"$22" by the bgmscript (if > 0, it fades in when pressed, if < 0,"
+       " it fades out when pressed)"$0D"originjitter: a vector describing a ra"
+       "ndom offset this entity will be moved on initial spawn. This correspon"
+       "ds to the "$22"origin"$22" field. Works on any non-q3map2-only entity."
+       $0D"anglesjitter: a vector in the order "$22"pitch yaw roll"$22" descri"
+       "bing a random angles change on this entity on initial spawn. The value"
+       " 180 180 180 makes the angles entirely random and uniformly distribute"
+       "d (among euler angles). This corresponds to the "$22"angles"$22" field"
+       ". Works on any non-q3map2-only entity."$0D"anglejitter: a float descri"
+       "bing a random yaw angle change on this entity on initial spawn. The va"
+       "lue 180 makes the yaw angle entirely random (maybe good for items). Th"
+       "is corresponds to the "$22"angle"$22" field. Works on any non-q3map2-o"
+       "nly entity."$0D"gametypefilter: either a + sign and a comma separated "
+       "list of game types or the aliases "$22"teams"$22" and "$22"noteams"$22
+       " to ONLY show the entity in the listed game types, or a - sign and a c"
+       "omma separated list of game types or the aliases "$22"teams"$22" and "$22
+       "noteams"$22" to NOT show the entity in the listed game types. The synt"
+       "ax is the same as in sbar_columns_set strings. Works on any non-q3map2"
+       "-only entity."$0D"ALIGN_ORIGN: align the origin to the surface below t"
+       "he model"$0D"ALIGN_BOTTOM: align the bottom of the model to the surfac"
+       "e below it"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "ALIGN_ORIGIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "ALIGN_BOTTOM"
+      }
+      t_commonspecifics = !
+    }
+    func_clientillusionary:form =
+    {
+      help = "A client-side non-solid brush entity. Use func_wall if you want "
+       "it solid."$0D"scale: scale factor of the model (range: 0.0625 to 15.93"
+       "75)"$0D"colormap: 1024 + 16 * pantscolor + shirtcolor"$0D"angles: init"
+       "ial looking direction"$0D"targetname: when invoking it by a button etc"
+       "., it changes the color to the initiator of the action (e.g. the one p"
+       "ressing a button). In Onslaught, this can be used to color control poi"
+       "nts for team who owns them. In other game types, this can be used as a"
+       " fun feature. Works only with _shirt and _pants textures."$0D"bgmscrip"
+       "t: emitter class from the BGM script"$0D"bgmscriptattack: attack time "
+       "of the effect strength (0 to 3.9)"$0D"bgmscriptdecay: decay time of th"
+       "e effect strength (0 to 3.9)"$0D"bgmscriptsustain: sustain level of th"
+       "e effect strength (0.1 to 1, set to -1 to disable sustain)"$0D"bgmscri"
+       "ptrelease: release time of the effect strength (0 to 3.9)"$0D"movedir:"
+       " vector by which the entity moves when "$22"pressed"$22" by the bgmscr"
+       "ipt"$0D"lip: alpha change when "$22"pressed"$22" by the bgmscript (if "
+       "> 0, it fades in when pressed, if < 0, it fades out when pressed)"$0D"o"
+       "riginjitter: a vector describing a random offset this entity will be m"
+       "oved on initial spawn. This corresponds to the "$22"origin"$22" field."
+       " Works on any non-q3map2-only entity."$0D"anglesjitter: a vector in th"
+       "e order "$22"pitch yaw roll"$22" describing a random angles change on "
+       "this entity on initial spawn. The value 180 180 180 makes the angles e"
+       "ntirely random and uniformly distributed (among euler angles). This co"
+       "rresponds to the "$22"angles"$22" field. Works on any non-q3map2-only "
+       "entity."$0D"anglejitter: a float describing a random yaw angle change "
+       "on this entity on initial spawn. The value 180 makes the yaw angle ent"
+       "irely random (maybe good for items). This corresponds to the "$22"angl"
+       "e"$22" field. Works on any non-q3map2-only entity."$0D"gametypefilter:"
+       " either a + sign and a comma separated list of game types or the alias"
+       "es "$22"teams"$22" and "$22"noteams"$22" to ONLY show the entity in th"
+       "e listed game types, or a - sign and a comma separated list of game ty"
+       "pes or the aliases "$22"teams"$22" and "$22"noteams"$22" to NOT show t"
+       "he entity in the listed game types. The syntax is the same as in sbar_"
+       "columns_set strings. Works on any non-q3map2-only entity."$0D"_castsha"
+       "dows: Allows per-entity control over shadow casting. Defaults to 0 on "
+       "entities, 1 on world. 0 = no shadow casting. 1 = cast shadows on world"
+       ". > 1 = cast shadows on entities with _rs (or _receiveshadows) with th"
+       "e corresponding value, AND world. Negative values imply same, but DO N"
+       "OT cast shadows on world."$0D"_receiveshadows: Allows per-entity contr"
+       "ol over shadow reception. Defaults to 1 on everything (world shadows)."
+       " 0 = receives NO shadows. > 1 = receive shadows only from correspondin"
+       "g keyed entities (see above) and world. < 1 = receive shadows ONLY fro"
+       "m corresponding keyed entities."$0D"_clone: copies brushes from entity"
+       " with identical _clonename. Still needs a single brush that will get r"
+       "eplaced."$0D"_clonename: template name so one can clone from it"$0D"mi"
+       "n: override automatically found minimum coordinate bounds"$0D"max: ove"
+       "rride automatically found maximum coordinate bounds"$0D"targetname: if"
+       " targeted by a misc_model, its brushes get inserted into this"$0D"_cel"
+       "shader: Sets the cel shader used for this geometry. Note: omit the "$22
+       "textures/"$22" prefix."
+      t_commonspecifics = !
+    }
+    func_clientwall:form =
+    {
+      help = "NOTE: THIS ENTITY IS IN MOST USE CASES BROKEN REGARDING CLIENT A"
+       "ND PROJECTILE PREDICTION. DO NOT USE IT. USE FUNC_WALL INSTEAD."$0D"A "
+       "client-side solid brush entity. Use func_clientillusionary if you want"
+       " it non-solid."$0D"solid: solidity: one of 1 = TRIGGER, 2 = BBOX, 3 = "
+       "SLIDEBOX, 4 = BSP, 5 = CORPSE (default: 4, any other value causes pred"
+       "iction problems and should not be used until further notice)"$0D"scale"
+       ": scale factor of the model (range: 0.0625 to 15.9375)"$0D"colormap: 1"
+       "024 + 16 * pantscolor + shirtcolor"$0D"angles: initial looking directi"
+       "on"$0D"targetname: when invoking it by a button etc., it changes the c"
+       "olor to the initiator of the action (e.g. the one pressing a button). "
+       "In Onslaught, this can be used to color control points for team who ow"
+       "ns them. In other game types, this can be used as a fun feature. Works"
+       " only with _shirt and _pants textures."$0D"bgmscript: emitter class fr"
+       "om the BGM script"$0D"bgmscriptattack: attack time of the effect stren"
+       "gth (0 to 3.9)"$0D"bgmscriptdecay: decay time of the effect strength ("
+       "0 to 3.9)"$0D"bgmscriptsustain: sustain level of the effect strength ("
+       "0.1 to 1, set to -1 to disable sustain)"$0D"bgmscriptrelease: release "
+       "time of the effect strength (0 to 3.9)"$0D"movedir: vector by which th"
+       "e entity moves when "$22"pressed"$22" by the bgmscript"$0D"lip: alpha "
+       "change when "$22"pressed"$22" by the bgmscript (if > 0, it fades in wh"
+       "en pressed, if < 0, it fades out when pressed)"$0D"originjitter: a vec"
+       "tor describing a random offset this entity will be moved on initial sp"
+       "awn. This corresponds to the "$22"origin"$22" field. Works on any non-"
+       "q3map2-only entity."$0D"anglesjitter: a vector in the order "$22"pitch"
+       " yaw roll"$22" describing a random angles change on this entity on ini"
+       "tial spawn. The value 180 180 180 makes the angles entirely random and"
+       " uniformly distributed (among euler angles). This corresponds to the "$22
+       "angles"$22" field. Works on any non-q3map2-only entity."$0D"anglejitte"
+       "r: a float describing a random yaw angle change on this entity on init"
+       "ial spawn. The value 180 makes the yaw angle entirely random (maybe go"
+       "od for items). This corresponds to the "$22"angle"$22" field. Works on"
+       " any non-q3map2-only entity."$0D"gametypefilter: either a + sign and a"
+       " comma separated list of game types or the aliases "$22"teams"$22" and"
+       " "$22"noteams"$22" to ONLY show the entity in the listed game types, o"
+       "r a - sign and a comma separated list of game types or the aliases "$22
+       "teams"$22" and "$22"noteams"$22" to NOT show the entity in the listed "
+       "game types. The syntax is the same as in sbar_columns_set strings. Wor"
+       "ks on any non-q3map2-only entity."$0D"_castshadows: Allows per-entity "
+       "control over shadow casting. Defaults to 0 on entities, 1 on world. 0 "
+       "= no shadow casting. 1 = cast shadows on world. > 1 = cast shadows on "
+       "entities with _rs (or _receiveshadows) with the corresponding value, A"
+       "ND world. Negative values imply same, but DO NOT cast shadows on world"
+       "."$0D"_receiveshadows: Allows per-entity control over shadow reception"
+       ". Defaults to 1 on everything (world shadows). 0 = receives NO shadows"
+       ". > 1 = receive shadows only from corresponding keyed entities (see ab"
+       "ove) and world. < 1 = receive shadows ONLY from corresponding keyed en"
+       "tities."$0D"_clone: copies brushes from entity with identical _clonena"
+       "me. Still needs a single brush that will get replaced."$0D"_clonename:"
+       " template name so one can clone from it"$0D"min: override automaticall"
+       "y found minimum coordinate bounds"$0D"max: override automatically foun"
+       "d maximum coordinate bounds"$0D"targetname: if targeted by a misc_mode"
+       "l, its brushes get inserted into this"$0D"_celshader: Sets the cel sha"
+       "der used for this geometry. Note: omit the "$22"textures/"$22" prefix."
+      t_commonspecifics = !
+    }
+    misc_teleporter_dest:form =
+    {
+      help = "Teleport destination location point for trigger_teleport entitie"
+       "s. Do not let it touch the floor, but place it slightly higher (like, "
+       "16 units above) for better flow when jumping through it."$0D"targetnam"
+       "e: make the trigger_teleporter point to this."$0D"target: target to ac"
+       "tivate when a teleporter targeting this is used"$0D"angle: direction i"
+       "n which player will look when teleported, OR use"$0D"angles: pitch and"
+       " yaw when coming out of the teleporter (also specifies the direction t"
+       "he player will aim when coming out)"$0D"cnt: weight for random selecti"
+       "on, in case a teleporter points at multiple misc_teleporter_dest"$0D"s"
+       "peed: maximum speed cap for the teleported player (if -1, teleported p"
+       "layers will have no speed)"
+      bbox = '-16 -16 -24 16 16 45'
+      t_commonspecifics = !
+    }
+    onslaught_controlpoint:form =
+    {
+      help = "Control point. Be sure to give this enough clearance so that the"
+       " shootable part has room to exist"$0D"This should link to an onslaught"
+       "_controlpoint entity or onslaught_generator entity."$0D"targetname: na"
+       "me that onslaught_link entities will use to target this."$0D"target: t"
+       "arget any entities that are tied to this control point, such as vehicl"
+       "es and buildable structure entities."$0D"message: name of this control"
+       " point (should reflect the location in the map, such as "$22"center br"
+       "idge"$22", "$22"north tower"$22", etc)"
+      bbox = '-32 -32 0 32 32 128'
+      t_commonspecifics = !
+    }
+    onslaught_generator:form =
+    {
+      help = "Base generator."$0D"onslaught_link entities can target this."$0D
+       "team: team that owns this generator (5 = red, 14 = blue, etc), MUST BE"
+       " SET."$0D"targetname: name that onslaught_link entities will use to ta"
+       "rget this."
+      bbox = '-32 -32 -24 32 32 64'
+      t_commonspecifics = !
+    }
+    onslaught_link:form =
+    {
+      help = "Link between control points."$0D"This entity targets two differe"
+       "nt onslaught_controlpoint or onslaught_generator entities, and suppres"
+       "ses shielding on both if they are owned by different teams."$0D"target"
+       ": first control point."$0D"target2: second control point."
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    path_corner:form =
+    {
+      help = "Path corner entity that func_train will follow."$0D"All path_cor"
+       "ner entities of a train have to connect in a circular manner, while th"
+       "e func_train shall point to one of the path_corners (ideally the one a"
+       "t the train's starting point)"$0D"target: point to next path_corner in"
+       " the path."$0D"targetname: the train following the path or the previou"
+       "s path_corner in the path points to this."$0D"speed: speed of func_tra"
+       "in while moving to this path corner. If unset, the value from the func"
+       "_train will be used."$0D"wait: number of seconds func_train will pause"
+       " on this path corner before moving to next path corner (default: 0.1; "
+       "to not wait, set this to -1"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    runematch_spawn_point:form =
+    {
+      help = "Spawn point for runes in a runematch."$0D"Runematch can work wit"
+       "hout runes also, it then spawn runes at random safe locations."
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    target_assault_roundend:form =
+    {
+      help = "This entity ends the current assault round if triggered or if th"
+       "e timelimit is reached."$0D"Ending a round means swapping attacker/def"
+       "ender teams, resetting objectives and rewarding the winning team."$0D"E"
+       "very assault map needs this entity. There should only be one per map."$0D
+       "targetname: Name to target this entity"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    target_assault_roundstart:form =
+    {
+      help = "This entity triggers its targets whenever a new assault round is"
+       " started. This can be used to e.g. activate the first objective."$0D"t"
+       "arget: targetname of entities to be enabled/triggered on round start ("
+       "e.g. the first target_objective)"$0D"target2: targetname of entities t"
+       "o be enabled/triggered on round start (e.g. the func_assault_destructi"
+       "bles targeting the target_objective)"$0D"target3: targetname of entiti"
+       "es to be enabled/triggered on round start"$0D"target4: targetname of e"
+       "ntities to be enabled/triggered on round start"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    target_objective:form =
+    {
+      help = "target_objective controls an objective. Once triggered the objec"
+       "tive is active and has 100 "$22"health"$22" points. If this "$22"healt"
+       "h"$22" falls below zero it is assumed this objective has been fulfille"
+       "d and entities targeted will be triggered (e.g. to activate the next o"
+       "bjective or to end this round). Use target_objective_decrease to decre"
+       "ase the objective health."$0D"target: targetname of entities to be ena"
+       "bled/triggered on objective fulfilling (e.g. the next target_objective"
+       ", or target_assault_roundend)"$0D"target2: targetname of entities to b"
+       "e enabled/triggered on objective fulfilling (e.g. the func_assault_des"
+       "tructibles targeting the target_objective)"$0D"target3: targetname of "
+       "entities to be enabled/triggered on objective fulfilling"$0D"target4: "
+       "targetname of entities to be enabled/triggered on objective fulfilling"
+       $0D"targetname: targetname for this entity so it can be triggered by ot"
+       "her entities."
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    target_objective_decrease:form =
+    {
+      help = "When triggered decreases health of the targeted target_objective"
+       " by the amount specified in dmg. Remember, target_objective has 100 he"
+       "alth points and is considered conquered if health falls below zero."$0D
+       "If you want e.g. two events to happen to conquer an objective you'd ne"
+       "ed two target_objective_decrease, each with a value for cnt of e.g. 51"
+       ". To show attackers and defenders where to go, target_objective_decrea"
+       "se will show a fitting sprite ("$22"Defend"$22" to defenders, "$22"Des"
+       "troy"$22"/"$22"Push"$22" to attackers) which can be seen through walls"
+       "."$0D"target: The targetname of the target_objective you want to manip"
+       "ulate."$0D"targetname: Name for other entities to target this entity."$0D
+       "dmg: The amount of "$22"health"$22"-points you want to subtract from t"
+       "he objective health. Defaults to 101. Also used as score for triggerin"
+       "g this objective."
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    target_position:form =
+    {
+      help = "Aiming target for entities like light and trigger_push."$0D"targ"
+       "etname: the entity that requires an aiming direction points to this."$0D
+       "target: target to activate when a jumppad targeting this is used"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    target_speaker:form =
+    {
+      help = "Sound generating entity that plays sound files."$0D"If targeted,"
+       " it plays the sound file every time when triggered."$0D"If not targete"
+       "d, it loops the sound file as an ambient noise."$0D"noise: path/name o"
+       "f .wav/.ogg file to play"$0D"targetname: the activating button or trig"
+       "ger points to this."$0D"atten: distance attenuation of the sound (a va"
+       "lue from 0.1 to 3.9), default is 0.5 if targeted, 3 otherwise; set to "
+       "-1 for no attenuation (global sound)"$0D"volume: volume of the sound"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    trigger_counter:form =
+    {
+      help = "Acts as an intermediary for an action that takes multiple inputs"
+       "."$0D"After the counter has been triggered "$22"count"$22" times, it w"
+       "ill fire all of its targets and remove itself."$0D"count: how many tim"
+       "es this needs to be triggered to activate its targets"$0D"target: trig"
+       "ger all entities with this targetname when triggered"$0D"targetname: n"
+       "ame that identifies this entity so it can be triggered"$0D"delay: dela"
+       "y the triggering by the given time"$0D"message: print this message to "
+       "the player who activated the trigger"$0D"killtarget: remove all entiti"
+       "es with this targetname when triggered"$0D"NOMESSAGE: don't print a "$22
+       "2 more to go..."$22"-like message when triggered"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NOMESSAGE"
+      }
+      t_commonspecifics = !
+    }
+    trigger_delay:form =
+    {
+      help = "Trigger that delays triggering by a given amount of time. Only o"
+       "ne action can be waited for; if triggered again before the "$22"wait"$22
+       " time expires, the timer will restart (as opposed to trigger_relay)."$0D
+       "wait: delay the triggering by the given time"$0D"target: trigger all e"
+       "ntities with this targetname when triggered"$0D"targetname: name that "
+       "identifies this entity so it can be triggered"$0D"message: print this "
+       "message to the player who activated the trigger"$0D"killtarget: remove"
+       " all entities with this targetname when triggered"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    trigger_hurt:form =
+    {
+      help = "Any object touching this will be hurt."$0D"Has the useful effect"
+       " of automatically returning flags, keys and runes when they touch it."$0D
+       "dmg: amount of damage to deal (default: 1000)"$0D"message: kill messag"
+       "e when someone gets killed by this (default: "$22"was in the wrong pla"
+       "ce"$22")"$0D"message2: kill message when someone gets pushed into this"
+       " (default: "$22"was thrown into a world of hurt by"$22"). The # charac"
+       "ter is replaced by the attacker name if present (and it instead does n"
+       "ot get appended to the end)"
+      t_commonspecifics = !
+    }
+    trigger_impulse:form =
+    {
+      help = "An accelerator/dampener/wind field."$0D"Can be used in two ways:"
+       $0D22"dampener field"$22": just set strength to a value from 0 to 1. En"
+       "tering the field will slow down to this factor."$0D22"accelerator fiel"
+       "d"$22": just set strength to a value from 1 to infinity. Entering the "
+       "field will accelerate by this factor."$0D22"wind field"$22": set stren"
+       "gth to the amount of velocity to add per second, and target a target_p"
+       "osition. The field will apply force in the direction from its own orig"
+       "in to the target (use an origin brush to specify its own origin, or th"
+       "is will fail) when touched."$0D22"gravity field"$22": set strength to "
+       "the amount of velocity to add per second at the center, and set radius"
+       " to the radius of the field. Set falloff to the desired falloff charac"
+       "teristics."$0D"target: "$22"wind field"$22": points to the target_posi"
+       "tion to which the player will get pushed."$0D"strength: "$22"wind fiel"
+       "d"$22", "$22"gravity field"$22": amount of force per second to apply. "
+       $22"dampener/accelerator field"$22": slowdown/speedup factor."$0D"fallo"
+       "ff: "$22"gravity field"$22": 0 means no falloff, 1 means linear fallof"
+       "f (zero at the outside), 2 means inverted linear falloff (zero at the "
+       "inside)"
+      t_commonspecifics = !
+      dampener field: =
+      {
+        txt = "&"
+        hint = ": just set strength to a value from 0 to 1. Entering the field will slow down to this factor."
+      }
+      accelerator field: =
+      {
+        txt = "&"
+        hint = ": just set strength to a value from 1 to infinity. Entering the field will accelerate by this factor."
+      }
+      wind field: =
+      {
+        txt = "&"
+        hint = ": set strength to the amount of velocity to add per second, and target a target_position. The field will apply force in the direction from its own origin to the target (use an origin brush to specify its own origin, or this will fail) when touched."
+      }
+      gravity field: =
+      {
+        txt = "&"
+        hint = ": set strength to the amount of velocity to add per second at the center, and set radius to the radius of the field. Set falloff to the desired falloff characteristics."
+      }
+    }
+    trigger_multiple:form =
+    {
+      help = "Variable sized repeatable trigger. Must be targeted at one or mo"
+       "re entities. If "$22"health"$22" is set, the trigger must be killed to"
+       " activate each time."$0D"health: amount of damage that has to be dealt"
+       " to the trigger to activate (it then won't respond to merely touching "
+       "it)"$0D"wait: prevent triggering again for this amount of time (defaul"
+       "t: 0.2, set to -1 to wait indefinitely, or -2 to not wait at all)"$0D"s"
+       "ounds: 1 to play misc/secret.wav, 2 to play misc/talk.wav, 3 to play m"
+       "isc/trigger1.wav"$0D"noise: path to sound file, if you want to play so"
+       "mething else"$0D"target: trigger all entities with this targetname whe"
+       "n triggered"$0D"target2: trigger all entities with this targetname whe"
+       "n triggered"$0D"target3: trigger all entities with this targetname whe"
+       "n triggered"$0D"target4: trigger all entities with this targetname whe"
+       "n triggered"$0D"targetname: name that identifies this entity so it can"
+       " be triggered"$0D"delay: delay the triggering by the given time"$0D"me"
+       "ssage: print this message to the player who activated the trigger"$0D"k"
+       "illtarget: remove all entities with this targetname when triggered"$0D
+       "NOTOUCH: the trigger can only be triggered by other entities, not by t"
+       "ouching or firing (you should probably use trigger_relay or trigger_de"
+       "lay instead)"$0D"ALLENTS: the trigger responds to all entities, not ju"
+       "st players (useful for targetting trigger_items)"$0D"NOSPLASH: if set,"
+       " splash damage cannot activate the door, only direct damage can (requi"
+       "res health to be set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NOTOUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "ALLENTS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    trigger_once:form =
+    {
+      help = "Variable sized repeatable trigger. Must be targeted at one or mo"
+       "re entities. If "$22"health"$22" is set, the trigger must be killed to"
+       " activate each time."$0D"Basically, it's a use-once trigger_multiple."$0D
+       "health: amount of damage that has to be dealt to the trigger to activa"
+       "te (it then won't respond to merely touching it)"$0D"sounds: 1 to play"
+       " misc/secret.wav, 2 to play misc/talk.wav, 3 to play misc/trigger1.wav"
+       $0D"noise: path to sound file, if you want to play something else"$0D"t"
+       "arget: trigger all entities with this targetname when triggered"$0D"ta"
+       "rgetname: name that identifies this entity so it can be triggered"$0D"d"
+       "elay: delay the triggering by the given time"$0D"message: print this m"
+       "essage to the player who activated the trigger"$0D"killtarget: remove "
+       "all entities with this targetname when triggered"$0D"NOTOUCH: the trig"
+       "ger can only be triggered by other entities, not by touching or firing"
+       " (you should probably use trigger_relay or trigger_delay instead)"$0D"N"
+       "OSPLASH: if set, splash damage cannot activate the door, only direct d"
+       "amage can (requires health to be set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NOTOUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    trigger_push:form =
+    {
+      help = "Jump pad. What else?"$0D"Can be used in three ways:"$0D"Nexuiz "$22
+       "target/height"$22" way: put the target_position where the player shoul"
+       "d land, and tune height to get a nice jump path. A good starting value"
+       " for height is 100."$0D"Q3A "$22"target"$22" way: put the target_posit"
+       "ion at the apex of the jump, and hope the player will land at the righ"
+       "t spot. Good luck."$0D"Quake "$22"movedir/speed"$22" way: player will "
+       "get velocity movedir * speed * 10 when using the jump pad"$0D"target: "
+       "point the player will fly to when using the jump pad (use a target_pos"
+       "ition here)"$0D"height: if height is 0, the (player's origin at the) a"
+       "pex of the jump will be at the target; otherwise, the apex will be abs"
+       "(height) above the higher point of player's origin and the target; if "
+       "positive, the apex will be reached in the jump from initial origin to "
+       "target"$0D"movedir: when target is not set, direction vector to push t"
+       "o"$0D"speed: speed of jump pad (default: 1000)"$0D"noise: sound to pla"
+       "y when jump pad is used; default is misc/jumppad.wav; you can set it t"
+       "o "$2222" to make the pad silent"$0D"team: team that owns this jump pa"
+       "d (5 = red, 14 = blue, etc) (when set, only this team can teleport)"$0D
+       "targetname: when targeted by a func_button, pressing the button will r"
+       "eassign the teleporter to the team of the activator."$0D"INVERT_TEAM: "
+       "the team that owns the teleporter will NOT jump when touching this"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "INVERT_TEAM"
+      }
+      t_commonspecifics = !
+    }
+    trigger_relay:form =
+    {
+      help = "This fixed size trigger cannot be touched, it can only be fired "
+       "by other events. It can, like any other trigger, contain killtargets, "
+       "targets, delays, and messages."$0D"One possible use is to trigger enti"
+       "ties with more than one targetname on an action, e.g. a button. For th"
+       "is, set target of your button to foobar. Create two trigger_relay with"
+       " targetname=foobar. Give one of the trigger_relay entities target=ent1"
+       ", and give the other target=ent2."$0D"More than one "$22"trigger event"
+       $22" can be delayed at once, as opposed to trigger_delay."$0D"target: t"
+       "rigger all entities with this targetname when triggered"$0D"target2: t"
+       "rigger all entities with this targetname when triggered"$0D"target3: t"
+       "rigger all entities with this targetname when triggered"$0D"target4: t"
+       "rigger all entities with this targetname when triggered"$0D"targetname"
+       ": name that identifies this entity so it can be triggered"$0D"delay: d"
+       "elay the triggering by the given time"$0D"message: print this message "
+       "to the player who activated the trigger"$0D"killtarget: remove all ent"
+       "ities with this targetname when triggered"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    trigger_swamp:form =
+    {
+      help = "Players getting into the swamp will get slowed down and damaged"$0D
+       "dmg: damage per interval to deal (default is 5)"$0D"swamp_interval: in"
+       "terval of damage when in swamp (default is 1)"$0D"swamp_slowdown: amou"
+       "nt of slowdown caused by the swamp (default is 0.5)"
+      t_commonspecifics = !
+    }
+    trigger_teleport:form =
+    {
+      help = "Touching this will teleport players to the location of the targe"
+       "ted misc_teleporter_dest entity."$0D"Note that in Nexuiz, teleporters "
+       "preserve momentum of the player using them."$0D"target: this must poin"
+       "t to a misc_teleporter_dest entity. If it points to more than one, a d"
+       "estination is randomly selected on teleport."$0D"team: team that owns "
+       "this teleporter (5 = red, 14 = blue, etc) (when set, only this team ca"
+       "n teleport)"$0D"targetname: when targeted by a func_button, pressing t"
+       "he button will reassign the teleporter to the team of the activator."$0D
+       "INVERT_TEAM: the team that owns the teleporter will NOT teleport when "
+       "touching this"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "INVERT_TEAM"
+      }
+      t_commonspecifics = !
+    }
+    weapon_crylink:form =
+    {
+      help = "the Crylink"$0D"ammo_cells: initial cells of the weapon (if unse"
+       "t, g_pickup_cells is used)"$0D"respawntime: time till it respawns (def"
+       "ault: 15)"$0D"team: out of items with the same value here, only one (r"
+       "andom one) will spawn. Useful to put multiple items on one spot."$0D"c"
+       "nt: weight of this item for random selection using "$22"team"$22". Set"
+       " to a lower value for items you want to see less likely."$0D"FLOATING:"
+       " the item will float in air, instead of aligning to the floor by falli"
+       "ng"$0D"model="$22"models/weapons/g_crylink.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_electro:form =
+    {
+      help = "the Electro"$0D"ammo_cells: initial cells of the weapon (if unse"
+       "t, g_pickup_cells is used)"$0D"respawntime: time till it respawns (def"
+       "ault: 15)"$0D"team: out of items with the same value here, only one (r"
+       "andom one) will spawn. Useful to put multiple items on one spot."$0D"c"
+       "nt: weight of this item for random selection using "$22"team"$22". Set"
+       " to a lower value for items you want to see less likely."$0D"FLOATING:"
+       " the item will float in air, instead of aligning to the floor by falli"
+       "ng"$0D"model="$22"models/weapons/g_electro.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_grenadelauncher:form =
+    {
+      help = "the Mortar"$0D"ammo_rockets: initial rockets of the weapon (if u"
+       "nset, g_pickup_rockets is used)"$0D"respawntime: time till it respawns"
+       " (default: 15)"$0D"team: out of items with the same value here, only o"
+       "ne (random one) will spawn. Useful to put multiple items on one spot."$0D
+       "cnt: weight of this item for random selection using "$22"team"$22". Se"
+       "t to a lower value for items you want to see less likely."$0D"FLOATING"
+       ": the item will float in air, instead of aligning to the floor by fall"
+       "ing"$0D"model="$22"models/weapons/g_gl.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_hagar:form =
+    {
+      help = "the Hagar"$0D"ammo_rockets: initial rockets of the weapon (if un"
+       "set, g_pickup_rockets is used)"$0D"respawntime: time till it respawns "
+       "(default: 15)"$0D"team: out of items with the same value here, only on"
+       "e (random one) will spawn. Useful to put multiple items on one spot."$0D
+       "cnt: weight of this item for random selection using "$22"team"$22". Se"
+       "t to a lower value for items you want to see less likely."$0D"FLOATING"
+       ": the item will float in air, instead of aligning to the floor by fall"
+       "ing"$0D"model="$22"models/weapons/g_hagar.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_laser:form =
+    {
+      help = "the Laser. Note that unless you use"$0D"settemp_for_type all g_s"
+       "tart_weapon_laser 0"$0D"in your mapinfo file, everyone will already sp"
+       "awn with one, making this pickup useless."$0D"respawntime: time till i"
+       "t respawns (default: 15)"$0D"team: out of items with the same value he"
+       "re, only one (random one) will spawn. Useful to put multiple items on "
+       "one spot."$0D"cnt: weight of this item for random selection using "$22
+       "team"$22". Set to a lower value for items you want to see less likely."
+       $0D"FLOATING: the item will float in air, instead of aligning to the fl"
+       "oor by falling"$0D"model="$22"models/weapons/g_laser.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_nex:form =
+    {
+      help = "the Nex"$0D"In Minstagib, this turns into an item_minst_cells if"
+       " no explicit item_minst_cells have been placed."$0D"ammo_cells: initia"
+       "l cells of the weapon (if unset, g_pickup_cells is used)"$0D"respawnti"
+       "me: time till it respawns (default: 15 * g_balance_nex_respawntime_mod"
+       "ifier)"$0D"team: out of items with the same value here, only one (rand"
+       "om one) will spawn. Useful to put multiple items on one spot."$0D"cnt:"
+       " weight of this item for random selection using "$22"team"$22". Set to"
+       " a lower value for items you want to see less likely."$0D"FLOATING: th"
+       "e item will float in air, instead of aligning to the floor by falling"$0D
+       "model="$22"models/weapons/g_nex.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_rocketlauncher:form =
+    {
+      help = "the Rocket Launcher"$0D"In Minstagib, this turns into an item_mi"
+       "nst_cells if no explicit item_minst_cells have been placed."$0D"ammo_r"
+       "ockets: initial rockets of the weapon (if unset, g_pickup_rockets is u"
+       "sed)"$0D"respawntime: time till it respawns (default: 15)"$0D"team: ou"
+       "t of items with the same value here, only one (random one) will spawn."
+       " Useful to put multiple items on one spot."$0D"cnt: weight of this ite"
+       "m for random selection using "$22"team"$22". Set to a lower value for "
+       "items you want to see less likely."$0D"FLOATING: the item will float i"
+       "n air, instead of aligning to the floor by falling"$0D"model="$22"mode"
+       "ls/weapons/g_rl.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_shotgun:form =
+    {
+      help = "the Shotgun. Note that unless you use"$0D"settemp_for_type all g"
+       "_start_weapon_shotgun 0"$0D"in your mapinfo file, everyone will alread"
+       "y spawn with one, making this pickup useless."$0D"ammo_shells: initial"
+       " shells of the weapon (if unset, g_pickup_shells is used)"$0D"respawnt"
+       "ime: time till it respawns (default: 15)"$0D"team: out of items with t"
+       "he same value here, only one (random one) will spawn. Useful to put mu"
+       "ltiple items on one spot."$0D"cnt: weight of this item for random sele"
+       "ction using "$22"team"$22". Set to a lower value for items you want to"
+       " see less likely."$0D"FLOATING: the item will float in air, instead of"
+       " aligning to the floor by falling"$0D"model="$22"models/weapons/g_shot"
+       "gun.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_uzi:form =
+    {
+      help = "the Machine Gun"$0D"ammo_nails: initial bullets of the weapon (i"
+       "f unset, g_pickup_nails is used)"$0D"respawntime: time till it respawn"
+       "s (default: 15)"$0D"team: out of items with the same value here, only "
+       "one (random one) will spawn. Useful to put multiple items on one spot."
+       $0D"cnt: weight of this item for random selection using "$22"team"$22"."
+       " Set to a lower value for items you want to see less likely."$0D"FLOAT"
+       "ING: the item will float in air, instead of aligning to the floor by f"
+       "alling"$0D"model="$22"models/weapons/g_uzi.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    worldspawn:form =
+    {
+      help = "The world."$0D"If you see this, the currently selected brush is "
+       "not of an entity."$0D"fog: fog parameters of the map (density red gree"
+       "n blue alpha mindist maxdist); works just like the "$22"fog"$22" conso"
+       "le command"$0D"author: name of the author of the map, if not specified"
+       " in "$22"message"$22". Will get copied to the "$22"author"$22" entry o"
+       "f the mapinfo file when none is present."$0D"message: text to print at"
+       " user logon. Used for name of level. Ideally: "$22"NAMEOFLEVEL by AUTH"
+       "OR"$22". Will get copied to the "$22"title"$22" and "$22"author"$22" e"
+       "ntries of the mapinfo file when none is present."$0D"_description: one"
+       "-line description of the map. Will get copied to the "$22"description"$22
+       " entry of the mapinfo file when none is present."$0D"_blocksize: vecto"
+       "r specifying the automatic vis subdivision block size (default: 1024 1"
+       "024 1024)"$0D"gridsize: lightgrid granularity vector (default: 64 64 1"
+       "28)"$0D"_color: color of the global light parameters"$0D"_ambient: lig"
+       "ht added to all surfaces"$0D"_mingridlight: minimum grid light"$0D"_mi"
+       "nlight: minimum light value on both surfaces and lightgrid"$0D"_keepLi"
+       "ghts: do not remove light entities from the map (useful e.g. for realt"
+       "ime lighting)"$0D"_floodlight: flood light parameters (red green blue "
+       "distance intensity), start with 240 240 255 1024 128"$0D"_farplanedist"
+       ": range after which everything is completely invisible by fog (when fo"
+       "g is being used)"$0D"_noshadersun: turn off sun defined by shaders (us"
+       "eful if you defined your own light entity to be a sun)"$0D"_ignoreleak"
+       "s: ignore leaks when compiling"$0D"_lightmapscale: light map resolutio"
+       "n factor"$0D"_castshadows: Allows per-entity control over shadow casti"
+       "ng. Defaults to 0 on entities, 1 on world. 0 = no shadow casting.1 = c"
+       "ast shadows on world. > 1 = cast shadows on entities with _rs (or _rec"
+       "eiveshadows) with the corresponding value, AND world. Negative values "
+       "imply same, but DO NOT cast shadows on world."$0D"_receiveshadows: All"
+       "ows per-entity control over shadow reception. Defaults to 1 on everyth"
+       "ing (world shadows). 0 = receives NO shadows. > 1 = receive shadows on"
+       "ly from corresponding keyed entities (see above) and world. < 1 = rece"
+       "ive shadows ONLY from corresponding keyed entities."$0D"_celshader: Se"
+       "ts the cel shader used for this geometry. Note: omit the "$22"textures"
+       "/"$22" prefix."
+    }
+    trigger_race_checkpoint:form =
+    {
+      help = "A checkpoint, for the race game mode. Be sure to make them quite"
+       " long, so they actually catch a player reliably!"$0D"cnt: Number of th"
+       "e checkpoint. 0 for start/finish line, and at least two other checkpoi"
+       "nts have to exist. They MUST be touched in sequential order!"$0D"messa"
+       "ge: Death message, when touching checkpoints in the wrong order."$0D"m"
+       "essage2: Death message when someone gets pushed into this (default: "$22
+       "was thrown into a world of hurt by"$22"). The # character is replaced "
+       "by the attacker name if present (and it instead does not get appended "
+       "to the end)"$0D"targetname: Name of the checkpoint. info_player_race c"
+       "an target this to assign a spawn to a checkpoint. Also used for trigge"
+       "ring a checkpoint by an event."$0D"target: when the checkpoint is pass"
+       "ed, these entities are triggered. Useful for forcing items in certain "
+       "areas using trigger_items"$0D"race_penalty: when set, this penalty tim"
+       "e is given if passing this checkpoint, and the checkpoint does not sho"
+       "w up with a sprite. Useful for invisible checkpoints to detect driving"
+       " around the intended checkpoint"$0D"race_penalty_reason: reason to dis"
+       "play when the penalty time is imposed. Default: "$22"missing a checkpo"
+       "int"$220D"NOTOUCH: the checkpoint will not become active when touched,"
+       " it HAS to be targeted"$0D"STRICTTRIGGER: only trigger the targets whe"
+       "n the checkpoint actually was reached in a valid way (that is, not whe"
+       "n going back)"$0D"CRUSH: the checkpoint kills when used at the wrong t"
+       "ime"$0D"FINISH: when set on the last checkpoint (i.e. the one with hig"
+       "hest cnt), it is marked as finish line and the CP with cnt=0 is the st"
+       "art line"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NOTOUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "STRICTTRIGGER"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "CRUSH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "FINISH"
+      }
+      t_commonspecifics = !
+    }
+    trigger_race_penalty:form =
+    {
+      help = "A penalty trigger."$0D"race_penalty: this penalty time is given "
+       "if passing this trigger"$0D"race_penalty_reason: reason to display whe"
+       "n the penalty time is imposed. Default: "$22"leaving the track"$220D"N"
+       "OTOUCH: the trigger will not become active when touched, it HAS to be "
+       "targeted"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NOTOUCH"
+      }
+      t_commonspecifics = !
+    }
+    info_player_race:form =
+    {
+      help = "Race spawn point."$0D"NOTE for race_place: when the race starts "
+       "after the qualifying, the player with the fastest lap ends up at the i"
+       "nfo_player_race with race_place 1, and so on. If there are too many pl"
+       "ayers, or if someone comes in later, he will spawn at an info_player_r"
+       "ace with highest race_place. If someone dies after reaching the the st"
+       "arting checkpoint, he will spawn at race_place 0. So for each trigger_"
+       "race_checkpoint, there must be at least one corresponding info_player_"
+       "race with race_place NOT set."$0D"target: this should point to a trigg"
+       "er_race_checkpoint to decide when this spawning point is active. The c"
+       "heckpoint has to be AFTER this spawn."$0D"target2: trigger all entitie"
+       "s with this targetname when someone spawns"$0D"cnt: weight of spawn po"
+       "int for random selection. Set to a lower value if you have many spawn "
+       "points close together. Default value is 1."$0D"race_place: if target p"
+       "oints to the trigger_race_checkpoint with cnt 0 (finish line), this se"
+       "ts which place the spawn corresponds to; the special value 0 stands fo"
+       "r spawns for players who died in game, and -1 marks the spawnpoint for"
+       " qualifying mode only; any race map must have spawnpoints with race_pl"
+       "ace being 1, 2, 3 or it gets marked as a frustrating map"$0D"restricti"
+       "on: when 1, only bots can spawn here; when 2, only humans can spawn he"
+       "re (be careful with these, or the game will crash because someone cann"
+       "ot spawn)"
+      bbox = '-16 -16 -24 16 16 45'
+    }
+    func_pointparticles:form =
+    {
+      help = "A brush that emits particles."$0D"mdl: particle effect name from"
+       " effectinfo.txt"$0D"impulse: when positive, number of particles to emi"
+       "t per second; when negative; number of particles to emit per second an"
+       "d 64^3 block"$0D"velocity: particle direction and speed"$0D"waterlevel"
+       ": extra velocity jitter amount"$0D"count: particle count multiplier (p"
+       "er spawned particle)"$0D"movedir: when set, trace direction (particles"
+       " will then be emitted from the surface the trace hits); the length of "
+       "the vector is used as strength of taking the normal of the trace into "
+       "account"$0D"noise: sound to play when the particle is emitted"$0D"atte"
+       "n: distance attenuation of the sound (a value from 0.1 to 3.9), defaul"
+       "t is 0.5; set to -1 for no attenuation (global sound)"$0D"volume: volu"
+       "me of the sound"$0D"targetname: name to target this (then its state is"
+       " toggled)"$0D"bgmscript: emitter class from the BGM script"$0D"bgmscri"
+       "ptattack: attack time of the effect strength (0 to 3.9)"$0D"bgmscriptd"
+       "ecay: decay time of the effect strength (0 to 3.9)"$0D"bgmscriptsustai"
+       "n: sustain level of the effect strength (0.1 to 1, set to -1 to disabl"
+       "e sustain)"$0D"bgmscriptrelease: release time of the effect strength ("
+       "0 to 3.9)"$0D"START_ON: when targeted, the particle emitter will start"
+       " switched on"$0D"IMPULSE: only send the full amount of impulse particl"
+       "es when the entity is triggered"$0D"Use trigger_monoflop if you want t"
+       "he particles to turn off for a while, then turn back on."$0D"A BGM scr"
+       "ipt is a .bgs file named like the map, in the maps directory. Its form"
+       "at is lines of the form"$0D"<emitter class> <time since start of backg"
+       "round music> <0 if the emitters are to be switched off, >0 and <=1 if "
+       "they are to be switched on>"$0D"e.g."$0D"smokers 4.7 1"$0D"smokers 4.9"
+       " 0"$0D"The lines MUST be sorted by emitter class as primary key, and b"
+       "y the time since start of the BGM as secondary key."
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_ON"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "IMPULSE"
+      }
+      t_commonspecifics = !
+    }
+    trigger_flipflop:form =
+    {
+      help = $22"Flip-flop"$22" trigger gate... lets only every second trigger"
+       " event through"$0D"target: trigger all entities with this targetname w"
+       "hen triggered"$0D"targetname: name that identifies this entity so it c"
+       "an be triggered"$0D"START_ON: assume it is already turned on (so the f"
+       "irst event is NOT passed through)"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_ON"
+      }
+      t_commonspecifics = !
+    }
+    trigger_monoflop:form =
+    {
+      help = $22"Mono-flop"$22" trigger gate... turns trigger events into pair"
+       "s of events"$0D"target: trigger all entities with this targetname when"
+       " triggered"$0D"targetname: name that identifies this entity so it can "
+       "be triggered"$0D"wait: time to wait until the "$22"off"$22" event is f"
+       "ired"$0D"FIXED: do pulses of fixed length (so the "$22"off"$22" delay "
+       "is NOT extended as usual and new events are just ignored)"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FIXED"
+      }
+      t_commonspecifics = !
+    }
+    trigger_multivibrator:form =
+    {
+      help = $22"Multivibrator"$22" trigger gate... repeatedly sends trigger e"
+       "vents. When triggered, turns on or off."$0D"target: trigger all entiti"
+       "es with this targetname when it goes off"$0D"targetname: name that ide"
+       "ntifies this entity so it can be triggered"$0D"phase: phase of the mul"
+       "tivibrator (it is added to the time)"$0D"wait: "$22"on"$22" cycle time"
+       " (default: 1)"$0D"respawntime: "$22"off"$22" cycle time (default: same"
+       " as wait)"$0D"START_ON: assume it is already turned on (when targeted)"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_ON"
+      }
+      t_commonspecifics = !
+    }
+    trigger_gamestart:form =
+    {
+      help = "Triggers once when the game starts, then no longer does anything"
+       "."$0D"target: trigger all entities with this targetname when starting "
+       "the game"$0D"target2: trigger all entities with this targetname when s"
+       "tarting the game"$0D"target3: trigger all entities with this targetnam"
+       "e when starting the game"$0D"target4: trigger all entities with this t"
+       "argetname when starting the game"$0D"wait: wait so many seconds before"
+       " triggering"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    misc_follow:form =
+    {
+      help = "Makes one entity follow another. Will not work with all entities"
+       "."$0D"target: points to the entity to move (e.g. something that won't "
+       "move by itself)"$0D"killtarget: points to the entity that is to be use"
+       "d as the source (e.g. a func_plat)"$0D"message: tag name to attach to "
+       "(if ATTACH is used)"$0D"punchangle: angle modifier (if LOCAL is used, "
+       "and ATTACH is not)"$0D"ATTACH: attachment will be used instead of MOVE"
+       "TYPE_FOLLOW (mostly useful for attaching stuff to ZYM models)"$0D"LOCA"
+       "L: do not untransform the coordinates (that is, the map specifies loca"
+       "l coordinates, not global ones). Mostly useful with ATTACH."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "ATTACH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "LOCAL"
+      }
+      t_commonspecifics = !
+    }
+    weapon_minstanex:form =
+    {
+      help = "Placing this entity on a map kills your cat, voids the warranty "
+       "on your toaster, and makes your map an unenjoyable campers' paradise."$0D
+       "the MinstaGib Nex. Always kills with one shot."$0D"ammo_cells: initial"
+       " cells of the weapon (if unset, g_pickup_cells is used)"$0D"respawntim"
+       "e: time till it respawns (default: 15)"$0D"team: out of items with the"
+       " same value here, only one (random one) will spawn. Useful to put mult"
+       "iple items on one spot."$0D"cnt: weight of this item for random select"
+       "ion using "$22"team"$22". Set to a lower value for items you want to s"
+       "ee less likely."$0D"FLOATING: the item will float in air, instead of a"
+       "ligning to the floor by falling"$0D"model="$22"models/weapons/g_minsta"
+       "nex.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_porto:form =
+    {
+      help = "the Port-O-Launch. Only can be shot once."$0D"Portals cannot be "
+       "made on noimpact surfaces, and the portal missile will bounce on slick"
+       " surfaces."$0D"respawntime: time till it respawns (default: 120)"$0D"t"
+       "eam: out of items with the same value here, only one (random one) will"
+       " spawn. Useful to put multiple items on one spot."$0D"cnt: weight of t"
+       "his item for random selection using "$22"team"$22". Set to a lower val"
+       "ue for items you want to see less likely."$0D"FLOATING: the item will "
+       "float in air, instead of aligning to the floor by falling"$0D"model="$22
+       "models/weapons/g_porto.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    target_items:form =
+    {
+      help = "Sets the items of any player who triggers this."$0D"For the numb"
+       "er fields, not specifying a value means not changing it. To clear armo"
+       "r, you need to explicitly set "$22"armor"$22" to "$22"-1"$22"."$0D"You"
+       " may want to target this by a race checkpoint, a teleporter, or a trig"
+       "ger_multiple with ALLENTS set (so it removes weapons thrown through th"
+       "e field to avoid getting a weapon through it)."$0D"targetname: used to"
+       " trigger this"$0D"netname: space separated list of items (either weapo"
+       "n short names (like in g_start_weapon_* cvars), or item short names "$22
+       "unlimited_ammo"$22", "$22"unlimited_weapon_ammo"$22", "$22"unlimited_s"
+       "uperweapons"$22", "$22"invincible"$22", "$22"strength"$22", "$22"jetpa"
+       "ck"$22" and "$22"fuel_regen"$220D"message: message to print"$0D"ammo_s"
+       "hells: amount of shells"$0D"ammo_nails: amount of bullets"$0D"ammo_roc"
+       "kets: amount of rockets"$0D"ammo_cells: amount of cells"$0D"ammo_fuel:"
+       " amount of fuel"$0D"health: amount of health"$0D"armorvalue: amount of"
+       " armor"$0D"strength_finished: if "$22"strength"$22" is specified, the "
+       "time in seconds for which the strength will hold"$0D"invincible_finish"
+       "ed: if "$22"invincible"$22" is specified, the time in seconds for whic"
+       "h the invincibility will hold"$0D"AND: any items not listed will get r"
+       "emoved, and none will get added"$0D"OR: the player may keep items not "
+       "listed"$0D"ANDNOT: the items listed will get removed from the player"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "AND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "OR"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "ANDNOT"
+      }
+      t_commonspecifics = !
+    }
+    target_spawn:form =
+    {
+      help = "Spawns or modifies an entity when triggered."$0D"The entity fiel"
+       "d list is a single string of the form:"$0D"'field' 'value' 'field' 'va"
+       "lue' ... 'classname' 'item_bullets' ... 'field' 'value'"$0D"The specia"
+       "l "$22"field"$22" name $ calls a void(void) function, for example a sp"
+       "awn function."$0D"Special function names available are _setmodel and _"
+       "setsize."$0D"Field values can use various variable replacements:"$0D"$"
+       "E"$0D"$E.field"$0D"$E.field+offset"$0D"$E.field+offset+randomoffset"$0D
+       "where "$22"E"$22" can be self, activator, target (the entity being cre"
+       "ated/modified), killtarget, target2, target3, target4 and pusher."$0D"E"
+       "xample is a Mario-style question mark block which could throw a new we"
+       "apon_nex when activated like this:"$0D"{"$0D22"classname"$22" 'func_bu"
+       "tton'"$0D22"angle"$22" '-1'"$0D22"wait"$22" '5'"$0D22"target"$22" 'mak"
+       "enex'"$0D22"speed"$22" '1000'"$0D22"lip"$22" '64'"$0D"..."$0D"}"$0D"{"$0D
+       $22"classname"$22" 'target_spawn'"$0D22"origin"$22" '0 0 448'"$0D22"tar"
+       "getname"$22" 'makenex'"$0D22"message"$22" 'origin $self.origin owner $"
+       "activator flags 65536 colormap $activator.colormap classname droppedwe"
+       "apon $ spawnfunc_weapon_nex think thrown_wep_think nextthink $time+0.5"
+       " velocity $activator.velocity velocity_z 512 movetype 3'"$0D"}"$0D"tar"
+       "getname: used to trigger this"$0D"message: entity field list"$0D"targe"
+       "t: when set, target_spawn edits entities, instead of creating new ones"
+       $0D"count: make sure no more than count entities have been created by t"
+       "his (refuse to spawn new ones if exceeded)"$0D"killtarget: reference e"
+       "ntity (can be used as $killtarget)"$0D"target2: reference entity (can "
+       "be used as $target2)"$0D"target3: reference entity (can be used as $ta"
+       "rget3)"$0D"target4: reference entity (can be used as $target4)"$0D"ONL"
+       "OAD: create a first entity on map load"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "ONLOAD"
+      }
+      t_commonspecifics = !
+      classname: =
+      {
+        txt = "&"
+        hint = "'func_button'"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = "'-1'"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "'5'"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "'1000'"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "'64'"
+      }
+      classname: =
+      {
+        txt = "&"
+        hint = "'target_spawn'"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = "'0 0 448'"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "'origin $self.origin owner $activator flags 65536 colormap $activator.colormap classname droppedweapon $ spawnfunc_weapon_nex think thrown_wep_think nextthink $time+0.5 velocity $activator.velocity velocity_z 512 movetype 3'"
+      }
+    }
+    func_breakable:form =
+    {
+      help = "This is a brush model which can be damaged."$0D"Once all health "
+       "is consumed it'll disappear and trigger the targeted entity/entities."$0D
+       "When triggered, it resets to full health, and unbreaks."$0D"health: Th"
+       "e damage this trigger can take"$0D"target: The entity/entities to be t"
+       "riggered once this entity gets invisible"$0D"targetname: The name othe"
+       "r entities can use to target this entity"$0D"mdl: particle effect name"
+       " to show when destroyed"$0D"count: particle effect multiplier"$0D"mdl_"
+       "dead: optional replacement model to show when destroyed"$0D"debris: na"
+       "mes of debris models to show when destroyed, separated by spaces"$0D"n"
+       "oise: sound to play when destroyed"$0D"dmg: damage to deal to the envi"
+       "ronment when destroyed"$0D"dmg_edge: edge damage to deal to the enviro"
+       "nment when destroyed"$0D"dmg_radius: damage radius"$0D"dmg_force: dama"
+       "ge force"$0D"message: death message when a player gets hit by the expl"
+       "osion"$0D"message2: death message when someone gets pushed into this ("
+       "default: "$22"was pushed into an explosion by"$22"). The # character i"
+       "s replaced by the attacker name if present (and it instead does not ge"
+       "t appended to the end)"$0D"debrismovetype: way in which the debris mov"
+       "es: one of 1 = ANGLENOCLIP, 2 = ANGLECLIP, 3 = WALK, 4 = STEP, 5 = FLY"
+       ", 6 = TOSS, 7 = PUSH, 8 = NOCLIP, 9 = FLYMISSILE, 10 = BOUNCE, 11 = BO"
+       "UNCEMISSILE"$0D"debrissolid: solidity of the debris: one of 0 = NOT, 1"
+       " = TRIGGER, 2 = BBOX, 3 = SLIDEBOX, 4 = BSP, 5 = CORPSE"$0D"debrisvelo"
+       "city: initial velocity vector of the debris (static part)"$0D"debrisve"
+       "locityjitter: initial velocity vector of the debris (random part)"$0D"d"
+       "ebrisavelocityjitter: initial angular velocity vector of the debris (r"
+       "andom part)"$0D"debristime: time till the debris fades (average)"$0D"d"
+       "ebristimejitter: time till the debris fades (random part)"$0D"debrisfa"
+       "detime: how long debris takes to fade"$0D"debrisdamageforcescale: how "
+       "much debris is affected by damage force (e.g. explosions)"$0D"debrissk"
+       "in: skin number of debris"$0D"DISABLED: do not allow damaging this unt"
+       "il it is first activated"$0D"INDICATE: indicate amount of damage alrea"
+       "dy taken by coloring"$0D"NOSPLASH: if set, splash damage cannot activa"
+       "te the door, only direct damage can (requires health to be set)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DISABLED"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "INDICATE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "NOSPLASH"
+      }
+      t_commonspecifics = !
+    }
+    trigger_relay_if:form =
+    {
+      help = "Relays the trigger event if a cvar is set to a specified value."$0D
+       "target: The entity/entities to relay the trigger events to"$0D"targetn"
+       "ame: The name other entities can use to target this entity"$0D"netname"
+       ": The name of the cvar to check"$0D"message: The value of the cvar to "
+       "check"$0D"count: The count of entities that must be found"$0D"NEGATE: "
+       "trigger if the cvar does NOT match the value."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NEGATE"
+      }
+      t_commonspecifics = !
+    }
+    weapon_hlac:form =
+    {
+      help = "the Heavy Laser Assault Cannon."$0D"ammo_cells: initial cells of"
+       " the weapon (if unset, g_pickup_cells is used)"$0D"respawntime: time t"
+       "ill it respawns (default: 30)"$0D"team: out of items with the same val"
+       "ue here, only one (random one) will spawn. Useful to put multiple item"
+       "s on one spot."$0D"cnt: weight of this item for random selection using"
+       " "$22"team"$22". Set to a lower value for items you want to see less l"
+       "ikely."$0D"FLOATING: the item will float in air, instead of aligning t"
+       "o the floor by falling"$0D"model="$22"models/weapons/g_hlac.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    weapon_hook:form =
+    {
+      help = "the on-hand Grappling Hook."$0D"ammo_cells: initial cells of the"
+       " weapon (if unset, g_pickup_cells is used)"$0D"respawntime: time till "
+       "it respawns (default: 30)"$0D"team: out of items with the same value h"
+       "ere, only one (random one) will spawn. Useful to put multiple items on"
+       " one spot."$0D"cnt: weight of this item for random selection using "$22
+       "team"$22". Set to a lower value for items you want to see less likely."
+       $0D"FLOATING: the item will float in air, instead of aligning to the fl"
+       "oor by falling"$0D"model="$22"models/weapons/g_hookgun.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    trigger_heal:form =
+    {
+      help = "Any object touching this will be healed."$0D"health: health to g"
+       "ive per second (default 10)"$0D"max_health: max health this trigger wi"
+       "ll give (default 200)"$0D"noise: sound file to play (use misc/null.wav"
+       " to make it silent), default = item_health_medium sound"
+      t_commonspecifics = !
+    }
+    weapon_campingrifle:form =
+    {
+      help = "the Camping Rifle."$0D"ammo_nails: initial bullets of the weapon"
+       " (if unset, g_pickup_nails is used)"$0D"respawntime: time till it resp"
+       "awns (default: 30)"$0D"team: out of items with the same value here, on"
+       "ly one (random one) will spawn. Useful to put multiple items on one sp"
+       "ot."$0D"cnt: weight of this item for random selection using "$22"team"$22
+       ". Set to a lower value for items you want to see less likely."$0D"FLOA"
+       "TING: the item will float in air, instead of aligning to the floor by "
+       "falling"$0D"model="$22"models/weapons/g_campingrifle.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    func_fourier:form =
+    {
+      help = "Solid entity that oscillates according to a sum of sine waves."$0D
+       "speed: amount of time in seconds for one complete oscillation cycle in"
+       " the base frequency (default 4)."$0D"height: sets the amount of travel"
+       " of the oscillation movement (default 32)."$0D"phase: sets the start o"
+       "ffset of the oscillation cycle. Values must be 0 < phase < 1. Any inte"
+       "ger phase value is the same as no offset (default 0)."$0D"noise: path/"
+       "name of .wav or .ogg file to play. Use looping sounds only (e.g. sound"
+       "/world/drone6.wav - See Notes)."$0D"dmg: damage a player who gets crus"
+       "hed by it receives"$0D"dmgtime: interval to apply dmg to a player who "
+       "is s in the way"$0D"message: death message when a player gets crushed"$0D
+       "message2: death message when someone gets pushed into this (default: "$22
+       "was thrown into a world of hurt by"$22"). The # character is replaced "
+       "by the attacker name if present (and it instead does not get appended "
+       "to the end)"$0D"netname: list of <frequencymultiplier> <phase> <x> <y>"
+       " <z> quadruples, separated by spaces; note that phase 0 represents a s"
+       "ine wave, and phase 0.25 a cosine wave (by default, it uses 1 0 0 0 1,"
+       " to match func_bobbing's defaults"
+      t_commonspecifics = !
+    }
+    func_vectormamamam:form =
+    {
+      help = "Solid entity that moves according to the movement of multiple gi"
+       "ven entities (max 4)"$0D"target: first reference entity"$0D"targetfact"
+       "or: factor by which to take the first reference entity (default 1)."$0D
+       "targetnormal: if set, the first reference entity's location is first p"
+       "rojected onto a plane with that normal"$0D"target2: second reference e"
+       "ntity"$0D"target2factor: factor by which to take the second reference "
+       "entity (default 1)."$0D"target2normal: if set, the second reference en"
+       "tity's location is first projected onto a plane with that normal"$0D"t"
+       "arget3: third reference entity (optional)"$0D"target3factor: factor by"
+       " which to take the third reference entity (default 1)."$0D"target3norm"
+       "al: if set, the third reference entity's location is first projected o"
+       "nto a plane with that normal"$0D"target4: fourth reference entity (opt"
+       "ional)"$0D"target4factor: factor by which to take the fourth reference"
+       " entity (default 1)."$0D"target4normal: if set, the fourth reference e"
+       "ntity's location is first projected onto a plane with that normal"$0D"n"
+       "oise: path/name of .wav or .ogg file to play. Use looping sounds only "
+       "(e.g. sound/world/drone6.wav - See Notes)."$0D"dmg: damage a player wh"
+       "o gets crushed by it receives"$0D"dmgtime: interval to apply dmg to a "
+       "player who is s in the way"$0D"message: death message when a player ge"
+       "ts crushed"$0D"message2: death message when someone gets pushed into t"
+       "his (default: "$22"was thrown into a world of hurt by"$22"). The # cha"
+       "racter is replaced by the attacker name if present (and it instead doe"
+       "s not get appended to the end)"$0D"PROJECT_ON_TARGETNORMAL: target's o"
+       "rigin is projected onto the given direction vector, not on the plane p"
+       "erpendicular to it"$0D"PROJECT_ON_TARGET2NORMAL: target2's origin is p"
+       "rojected onto the given direction vector, not on the plane perpendicul"
+       "ar to it"$0D"PROJECT_ON_TARGET3NORMAL: target3's origin is projected o"
+       "nto the given direction vector, not on the plane perpendicular to it"$0D
+       "PROJECT_ON_TARGET4NORMAL: target4's origin is projected onto the given"
+       " direction vector, not on the plane perpendicular to it"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "PROJECT_ON_TARGETNORMAL"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "TARGET2NORMAL_IS_DIRECTION"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "TARGET3NORMAL_IS_DIRECTION"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "TARGET4NORMAL_IS_DIRECTION"
+      }
+      t_commonspecifics = !
+    }
+    trigger_relay_teamcheck:form =
+    {
+      help = "Works similar to trigger_relay, but only relays trigger events i"
+       "f the team of the activator matches this entity's team"$0D"target: tri"
+       "gger all entities with this targetname when triggered"$0D"target2: tri"
+       "gger all entities with this targetname when triggered"$0D"target3: tri"
+       "gger all entities with this targetname when triggered"$0D"target4: tri"
+       "gger all entities with this targetname when triggered"$0D"targetname: "
+       "name that identifies this entity so it can be triggered"$0D"delay: del"
+       "ay the triggering by the given time"$0D"message: print this message to"
+       " the player who activated the trigger"$0D"killtarget: remove all entit"
+       "ies with this targetname when triggered"$0D"team: 5 for red, 14 for bl"
+       "ue, 13 for yellow, 10 for pink team"$0D"NOTEAM_TOO: also relay events "
+       "if the activator has no team set"$0D"INVERT: only relay the event if t"
+       "his entity has the matching team"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "NOTEAM_TOO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "INVERT"
+      }
+      t_commonspecifics = !
+    }
+    trigger_disablerelay:form =
+    {
+      help = "Disables a trigger_relay temporarily (until triggered again)"$0D
+       "target: disable/enable all relays with this targetname when triggered"$0D
+       "targetname: name that identifies this entity so it can be triggered"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    nexball_redgoal:form =
+    {
+      help = "Red goal. Defended by the red team."$0D"noise: sound played when"
+       " a point is scored"$0D"GOAL_TOUCHPLAYER: The trigger also affects ball"
+       "-carrying players (the ball is then auto-dropped)"
+      t_commonspecifics = !
+    }
+    nexball_bluegoal:form =
+    {
+      help = "Blue goal. Defended by the blue team."$0D"noise: sound played wh"
+       "en a point is scored"$0D"GOAL_TOUCHPLAYER: The trigger also affects ba"
+       "ll-carrying players (the ball is then auto-dropped)"
+      t_commonspecifics = !
+    }
+    nexball_yellowgoal:form =
+    {
+      help = "Yellow goal. Defended by the yellow team. Needs both red and blu"
+       "e goals on the map to work."$0D"noise: sound played when a point is sc"
+       "ored"$0D"GOAL_TOUCHPLAYER: The trigger also affects ball-carrying play"
+       "ers (the ball is then auto-dropped)"
+      t_commonspecifics = !
+    }
+    nexball_pinkgoal:form =
+    {
+      help = "Pink goal. Defended by the pink team. Needs red, blue and yellow"
+       " goals on the map to work."$0D"noise: sound played when a point is sco"
+       "red"$0D"GOAL_TOUCHPLAYER: The trigger also affects ball-carrying playe"
+       "rs (the ball is then auto-dropped)"
+      t_commonspecifics = !
+    }
+    nexball_fault:form =
+    {
+      help = "This acts as a goal that always gives points to the opposing tea"
+       "m."$0D"noise: sound played when a point is scored"$0D"GOAL_TOUCHPLAYER"
+       ": The trigger also affects ball-carrying players (the ball is then aut"
+       "o-dropped)"
+      t_commonspecifics = !
+    }
+    nexball_out:form =
+    {
+      help = "When the ball touches this, it is returned."$0D"noise: sound pla"
+       "yed when a point is scored"$0D"GOAL_TOUCHPLAYER: The trigger also affe"
+       "cts ball-carrying players (the ball is then auto-dropped)"
+      t_commonspecifics = !
+    }
+    nexball_football:form =
+    {
+      help = "The soccer type Nexball."$0D"model: set this if you want to use "
+       "your own model"$0D"scale: if you're using your own model, change this "
+       "to scale it to 32*32*32"$0D"noise: played when the ball bounces"$0D"no"
+       "ise1: played when the ball is dropped on the map"
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    nexball_basketball:form =
+    {
+      help = "The basket ball type Nexball."$0D"model: set this if you want to"
+       " use your own model"$0D"scale: if you're using your own model, change "
+       "this to scale it to 32*32*32"$0D"noise: played when the ball bounces"$0D
+       "noise1: played when the ball is dropped on the map"$0D"noise2: played "
+       "when the ball is stolen from the enemy"
+      bbox = '-16 -16 -16 16 16 16'
+      t_commonspecifics = !
+    }
+    item_fuel:form =
+    {
+      help = "Jetpack fuel"$0D"ammo_fuel: fuel units gained by this item (if u"
+       "nset, g_pickup_fuel is used)"$0D"respawntime: time till it respawns (d"
+       "efault: 15)"$0D"team: out of items with the same value here, only one "
+       "(random one) will spawn. Useful to put multiple items on one spot."$0D
+       "cnt: weight of this item for random selection using "$22"team"$22". Se"
+       "t to a lower value for items you want to see less likely."$0D"FLOATING"
+       ": the item will float in air, instead of aligning to the floor by fall"
+       "ing"$0D"model="$22"models/items/g_fuel.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_fuel_regen:form =
+    {
+      help = "Fuel regenerator"$0D"respawntime: time till it respawns (default"
+       ": 120)"$0D"team: out of items with the same value here, only one (rand"
+       "om one) will spawn. Useful to put multiple items on one spot."$0D"cnt:"
+       " weight of this item for random selection using "$22"team"$22". Set to"
+       " a lower value for items you want to see less likely."$0D"FLOATING: th"
+       "e item will float in air, instead of aligning to the floor by falling"$0D
+       "model="$22"models/items/g_fuelregen.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    item_jetpack:form =
+    {
+      help = "Jetpack"$0D"ammo_fuel: fuel units gained by this item (if unset,"
+       " g_pickup_fuel_jetpack is used)"$0D"respawntime: time till it respawns"
+       " (default: 120)"$0D"team: out of items with the same value here, only "
+       "one (random one) will spawn. Useful to put multiple items on one spot."
+       $0D"cnt: weight of this item for random selection using "$22"team"$22"."
+       " Set to a lower value for items you want to see less likely."$0D"FLOAT"
+       "ING: the item will float in air, instead of aligning to the floor by f"
+       "alling"$0D"model="$22"models/items/g_jetpack.md3"$22
+      bbox = '-30 -30 0 30 30 48'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    trigger_magicear:form =
+    {
+      help = "Triggers targets when a given magic word has been said"$0D"messa"
+       "ge: message to wait for (can start or end with * for wildcards)"$0D"ne"
+       "tname: replacement text (by default, no replacement is performed if em"
+       "pty)"$0D"radius: radius in which the player has to be for this to matc"
+       "h"$0D"target: all entities with a matching targetname will be triggere"
+       "d."$0D"target2: all entities with a matching targetname will be trigge"
+       "red."$0D"target3: all entities with a matching targetname will be trig"
+       "gered."$0D"target4: all entities with a matching targetname will be tr"
+       "iggered."$0D"IGNORE_SAY: do not respond to "$22"say"$22" messages"$0D"I"
+       "GNORE_TEAMSAY: do not respond to "$22"say_team"$22" messages"$0D"IGNOR"
+       "E_TELL: do not respond to "$22"tell"$22" messages"$0D"IGNORE_INVALIDTE"
+       "LL: do not respond to "$22"tell"$22" messages of invalid syntax"$0D"RE"
+       "PLACE_WHOLE_MESSAGE: replace the whole message by netname, or drop the"
+       " message if netname is empty"$0D"REPLACE_OUTSIDE: also perform the rep"
+       "lacement when outside the radius (to hide the "$22"secret word"$22")"$0D
+       "CONTINUE: even if this magic ear matched, continue looking for further"
+       " matches/replacements (useful for swear word filters)"$0D"NODECOLORIZE"
+       ": do not decolorize the input string before matching"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "IGNORE_SAY"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "IGNORE_TEAMSAY"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "IGNORE_TELL"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "IGNORE_INVALIDTELL"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "REPLACE_WHOLE_MESSAGE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "REPLACE_OUTSIDE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "CONTINUE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "NODECOLORIZE"
+      }
+      t_commonspecifics = !
+    }
+    weapon_fireball:form =
+    {
+      help = "the Fireball"$0D"ammo_rockets: initial rockets of the weapon (if"
+       " unset, g_pickup_rockets is used)"$0D"respawntime: time till it respaw"
+       "ns (default: 15)"$0D"team: out of items with the same value here, only"
+       " one (random one) will spawn. Useful to put multiple items on one spot"
+       "."$0D"cnt: weight of this item for random selection using "$22"team"$22
+       ". Set to a lower value for items you want to see less likely."$0D"FLOA"
+       "TING: the item will float in air, instead of aligning to the floor by "
+       "falling"$0D"model="$22"models/weapons/g_fireball.md3"$22
+      bbox = '-30 -30 0 30 30 32'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "FLOATING"
+      }
+      t_commonspecifics = !
+    }
+    trigger_warpzone:form =
+    {
+      help = "A warp zone, i.e. seamlessly connecting two parts of the map."$0D
+       "One surface of this entity must have the common/warpzone shader - this"
+       " will be the warp plane - the others should be common/trigger."$0D"Mus"
+       "t target, or be targeted by, another trigger_warpzone with a congruent"
+       " common/warpzone surface."$0D"Should target a target_position, or be t"
+       "argeted by a misc_warpzone_position."$0D"Should be thick enough to fit"
+       " a player entity (i.e. 32 units), preferably even thicker."$0D"target:"
+       " must point to another trigger_warpzone, or..."$0D"targetname: must be"
+       " pointed to by another trigger_warpzone. Should be pointed to by a mis"
+       "c_warpzone_position entity, or..."$0D"killtarget: should point to a ta"
+       "rget_position entity, or"
+      t_commonspecifics = !
+    }
+    misc_warpzone_position:form =
+    {
+      help = "Orientation specification for a trigger_warpzone"$0D"target: mus"
+       "t point to a trigger_warpzone"$0D"angles: must point perpendicular to "
+       "the common/warpzone surface of the trigger_warpzone, and away from the"
+       " trigger brush"$0D"origin: must be on the common/warpzone surface of t"
+       "he trigger_warpzone"
+      bbox = '-8 -8 -8 8 8 8'
+      t_commonspecifics = !
+    }
+    func_camera:form =
+    {
+      help = "A camera, i.e. a surface that shows a view from another part of "
+       "the map."$0D"One surface of this entity must have the common/camera sh"
+       "ader, the others should be common/caulk."$0D"Must target a target_posi"
+       "tion that indicates the view to be shown (and whose angles also indica"
+       "te the orientation of the view)"$0D"target: must point to a target_pos"
+       "ition"
+      t_commonspecifics = !
+    }
+    turret_machinegun:form =
+    {
+      help = "Fast firing moderate damage bullet (hitscan) turret."$0D"turret_"
+       "scale_damage: 2 = double damage, 0.5 = half"$0D"turret_scale_range: 2 "
+       "= double range, 0.5 = half"$0D"turret_scale_refire: 2 = double refire "
+       "(SLOWER!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2 = double ammo"
+       " carry & regen, 0.5 = half ammo carry & regen"$0D"turret_scale_aim: 2 "
+       "= aim twice as fast, 0,5 = aim at half speed"$0D"turret_scale_health: "
+       "2 = double health, 0.5 = half"$0D"master_name: This turret controls wh"
+       "at all turrets with master_nameof set to this aim at"$0D"master_nameof"
+       ": Dont select own targets, use the target of the turret with this mast"
+       "er_name"$0D"target: Defend the position of this entity"$0D"team: 5=red"
+       ", 14=blue"$0D"PILLAR: Adds a supporting pillar under this turret, for "
+       "turrets on terrain/uneven surfaces. (only for visuals)"$0D"model="$22"m"
+       "odels/turrets/radiant/mg.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "PILLAR"
+      }
+      t_commonspecifics = !
+    }
+    turret_plasma:form =
+    {
+      help = "turret_scale_damage: 2 = double damage, 0.5 = half"$0D"turret_sc"
+       "ale_range: 2 = double range, 0.5 = half"$0D"turret_scale_refire: 2 = d"
+       "ouble refire (SLOWER!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2 "
+       "= double ammo carry & regen, 0.5 = half ammo carry & regen"$0D"turret_"
+       "scale_aim: 2 = aim twice as fast, 0,5 = aim at half speed"$0D"turret_s"
+       "cale_health: 2 = double health, 0.5 = half"$0D"master_name: This turre"
+       "t controls what all turrets with master_nameof set to this aim at"$0D"m"
+       "aster_nameof: Dont select own targets, use the target of the turret wi"
+       "th this master_name"$0D"target: Defend the position of this entity"$0D
+       "team: 5=red, 14=blue"$0D"PILLAR: Adds a supporting pillar under this t"
+       "urret, for turrets on terrain/uneven surfaces. (only for visuals)"$0D"B"
+       "asic energy cannon"$0D"model="$22"models/turrets/radiant/plasma.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "PILLAR"
+      }
+      t_commonspecifics = !
+    }
+    turret_plasma_dual:form =
+    {
+      help = "basic energy cannon * 2"$0D"turret_scale_damage: 2 = double dama"
+       "ge, 0.5 = half"$0D"turret_scale_range: 2 = double range, 0.5 = half"$0D
+       "turret_scale_refire: 2 = double refire (SLOWER!), 0.5 = half (FASTER!)"
+       $0D"turret_scale_ammo: 2 = double ammo carry & regen, 0.5 = half ammo c"
+       "arry & regen"$0D"turret_scale_aim: 2 = aim twice as fast, 0,5 = aim at"
+       " half speed"$0D"turret_scale_health: 2 = double health, 0.5 = half"$0D
+       "master_name: This turret controls what all turrets with master_nameof "
+       "set to this aim at"$0D"master_nameof: Dont select own targets, use the"
+       " target of the turret with this master_name"$0D"target: Defend the pos"
+       "ition of this entity"$0D"team: 5=red, 14=blue"$0D"PILLAR: Adds a suppo"
+       "rting pillar under this turret, for turrets on terrain/uneven surfaces"
+       ". (only for visuals)"$0D"model="$22"models/turrets/radiant/plasma2.md3"
+       $22
+      bbox = '-32 -32 0 32 32 50'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "PILLAR"
+      }
+      t_commonspecifics = !
+    }
+    turret_flac:form =
+    {
+      help = "Only kills missiles, rockets, grenadelauncher & electro secondar"
+       "ies to be precise."$0D"turret_scale_damage: 2 = double damage, 0.5 = h"
+       "alf"$0D"turret_scale_range: 2 = double range, 0.5 = half"$0D"turret_sc"
+       "ale_refire: 2 = double refire (SLOWER!), 0.5 = half (FASTER!)"$0D"turr"
+       "et_scale_ammo: 2 = double ammo carry & regen, 0.5 = half ammo carry & "
+       "regen"$0D"turret_scale_aim: 2 = aim twice as fast, 0,5 = aim at half s"
+       "peed"$0D"turret_scale_health: 2 = double health, 0.5 = half"$0D"master"
+       "_name: This turret controls what all turrets with master_nameof set to"
+       " this aim at"$0D"master_nameof: Dont select own targets, use the targe"
+       "t of the turret with this master_name"$0D"target: Defend the position "
+       "of this entity"$0D"team: 5=red, 14=blue"$0D"PILLAR: Adds a supporting "
+       "pillar under this turret, for turrets on terrain/uneven surfaces. (onl"
+       "y for visuals)"$0D"model="$22"models/turrets/radiant/flac.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "PILLAR"
+      }
+      t_commonspecifics = !
+    }
+    turret_mlrs:form =
+    {
+      help = "6 unguided rockers fired in a rapid burst."$0D"turret_scale_dama"
+       "ge: 2 = double damage, 0.5 = half"$0D"turret_scale_range: 2 = double r"
+       "ange, 0.5 = half"$0D"turret_scale_refire: 2 = double refire (SLOWER!),"
+       " 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2 = double ammo carry & r"
+       "egen, 0.5 = half ammo carry & regen"$0D"turret_scale_aim: 2 = aim twic"
+       "e as fast, 0,5 = aim at half speed"$0D"turret_scale_health: 2 = double"
+       " health, 0.5 = half"$0D"master_name: This turret controls what all tur"
+       "rets with master_nameof set to this aim at"$0D"master_nameof: Dont sel"
+       "ect own targets, use the target of the turret with this master_name"$0D
+       "target: Defend the position of this entity"$0D"team: 5=red, 14=blue"$0D
+       "PILLAR: Adds a supporting pillar under this turret, for turrets on ter"
+       "rain/uneven surfaces. (only for visuals)"$0D"model="$22"models/turrets"
+       "/radiant/mlrs.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+    }
+    turret_hellion:form =
+    {
+      help = "2 guided moderate damage accelerating rockets"$0D"turret_scale_d"
+       "amage: 2 = double damage, 0.5 = half"$0D"turret_scale_range: 2 = doubl"
+       "e range, 0.5 = half"$0D"turret_scale_refire: 2 = double refire (SLOWER"
+       "!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2 = double ammo carry "
+       "& regen, 0.5 = half ammo carry & regen"$0D"turret_scale_aim: 2 = aim t"
+       "wice as fast, 0,5 = aim at half speed"$0D"turret_scale_health: 2 = dou"
+       "ble health, 0.5 = half"$0D"master_name: This turret controls what all "
+       "turrets with master_nameof set to this aim at"$0D"master_nameof: Dont "
+       "select own targets, use the target of the turret with this master_name"
+       $0D"target: Defend the position of this entity"$0D"team: 5=red, 14=blue"
+       $0D"PILLAR: Adds a supporting pillar under this turret, for turrets on "
+       "terrain/uneven surfaces. (only for visuals)"$0D"model="$22"models/turr"
+       "ets/radiant/hellion.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+    }
+    turret_hk:form =
+    {
+      help = "Single powerful rocket with the ability to evade obstacles to fi"
+       "nd its target. Varied speed."$0D"turret_scale_damage: 2 = double damag"
+       "e, 0.5 = half"$0D"turret_scale_range: 2 = double range, 0.5 = half"$0D
+       "turret_scale_refire: 2 = double refire (SLOWER!), 0.5 = half (FASTER!)"
+       $0D"turret_scale_ammo: 2 = double ammo carry & regen, 0.5 = half ammo c"
+       "arry & regen"$0D"turret_scale_aim: 2 = aim twice as fast, 0,5 = aim at"
+       " half speed"$0D"turret_scale_health: 2 = double health, 0.5 = half"$0D
+       "master_name: This turret controls what all turrets with master_nameof "
+       "set to this aim at"$0D"master_nameof: Dont select own targets, use the"
+       " target of the turret with this master_name"$0D"target: Defend the pos"
+       "ition of this entity"$0D"team: 5=red, 14=blue"$0D"PILLAR: Adds a suppo"
+       "rting pillar under this turret, for turrets on terrain/uneven surfaces"
+       ". (only for visuals)"$0D"model="$22"models/turrets/radiant/hk.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+    }
+    turret_tesla:form =
+    {
+      help = "Fires a lightning bolt that will jump to up to 10 targets if the"
+       "y are close enough to each other. Missiles included."$0D"turret_scale_"
+       "damage: 2 = double damage, 0.5 = half"$0D"turret_scale_range: 2 = doub"
+       "le range, 0.5 = half"$0D"turret_scale_refire: 2 = double refire (SLOWE"
+       "R!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2 = double ammo carry"
+       " & regen, 0.5 = half ammo carry & regen"$0D"turret_scale_aim: 2 = aim "
+       "twice as fast, 0,5 = aim at half speed"$0D"turret_scale_health: 2 = do"
+       "uble health, 0.5 = half"$0D"master_name: This turret controls what all"
+       " turrets with master_nameof set to this aim at"$0D"master_nameof: Dont"
+       " select own targets, use the target of the turret with this master_nam"
+       "e"$0D"target: Defend the position of this entity"$0D"team: 5=red, 14=b"
+       "lue"$0D"PILLAR: Adds a supporting pillar under this turret, for turret"
+       "s on terrain/uneven surfaces. (only for visuals)"$0D"model="$22"models"
+       "/turrets/radiant/tesla.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+    }
+    turret_phaser:form =
+    {
+      help = "Constant beam weapon that will considerably slow its target down"
+       " while dealing low but constant damage."$0D"turret_scale_damage: 2 = d"
+       "ouble damage, 0.5 = half"$0D"turret_scale_range: 2 = double range, 0.5"
+       " = half"$0D"turret_scale_refire: 2 = double refire (SLOWER!), 0.5 = ha"
+       "lf (FASTER!)"$0D"turret_scale_ammo: 2 = double ammo carry & regen, 0.5"
+       " = half ammo carry & regen"$0D"turret_scale_aim: 2 = aim twice as fast"
+       ", 0,5 = aim at half speed"$0D"turret_scale_health: 2 = double health, "
+       "0.5 = half"$0D"master_name: This turret controls what all turrets with"
+       " master_nameof set to this aim at"$0D"master_nameof: Dont select own t"
+       "argets, use the target of the turret with this master_name"$0D"target:"
+       " Defend the position of this entity"$0D"team: 5=red, 14=blue"$0D"PILLA"
+       "R: Adds a supporting pillar under this turret, for turrets on terrain/"
+       "uneven surfaces. (only for visuals)"$0D"model="$22"models/turrets/radi"
+       "ant/phaser.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+    }
+    turret_fusionreactor:form =
+    {
+      help = "turret_scale_damage: 2 = double damage, 0.5 = half"$0D"turret_sc"
+       "ale_range: 2 = double range, 0.5 = half"$0D"turret_scale_refire: 2 = d"
+       "ouble refire (SLOWER!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2 "
+       "= double ammo carry & regen, 0.5 = half ammo carry & regen"$0D"turret_"
+       "scale_aim: 2 = aim twice as fast, 0,5 = aim at half speed"$0D"turret_s"
+       "cale_health: 2 = double health, 0.5 = half"$0D"team: 5=red, 14=blue"$0D
+       "PILLAR: Adds a supporting pillar under this turret, for turrets on ter"
+       "rain/uneven surfaces. (only for visuals)"$0D"Supplies neerby energy ba"
+       "sed turrets with more power so they can fire more often."$0D"model="$22
+       "models/turrets/radiant/reactor.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+    }
+    turret_targettrigger:form =
+    {
+      help = "Used to feed turrets capable of it with remote target info. curr"
+       "ently only turret_hk supports this."
+      t_commonspecifics = !
+    }
+    turret_walker:form =
+    {
+      help = "turret_scale_damage: 2 = double damage, 0.5 = half"$0D"turret_sc"
+       "ale_range: 2 = double range, 0.5 = half"$0D"turret_scale_refire: 2 = d"
+       "oubble refire (SLOWER!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2"
+       " = doubble ammo carry & regen, 0.5 = half ammo carry & regen"$0D"turre"
+       "t_scale_aim: 2 = aim twice as fast, 0,5 = aim at half speed"$0D"turret"
+       "_scale_health: 2 = double health, 0.5 = half"$0D22"team"$22" 5=red, 14"
+       "=blue"$0D"A nasty mechanical ceature that will engage longrange target"
+       " with missiles, midrange with its miniguna and meele things up close a"
+       "nd personal."$0D"model="$22"models/turrets/radiant/walker.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+      team: =
+      {
+        txt = "&"
+        hint = "5=red, 14=blue"
+      }
+    }
+    turret_ewheel:form =
+    {
+      help = "turret_scale_damage: 2 = double damage, 0.5 = half"$0D"turret_sc"
+       "ale_range: 2 = double range, 0.5 = half"$0D"turret_scale_refire: 2 = d"
+       "oubble refire (SLOWER!), 0.5 = half (FASTER!)"$0D"turret_scale_ammo: 2"
+       " = doubble ammo carry & regen, 0.5 = half ammo carry & regen"$0D"turre"
+       "t_scale_aim: 2 = aim twice as fast, 0,5 = aim at half speed"$0D"turret"
+       "_scale_health: 2 = double health, 0.5 = half"$0D22"team"$22" 5=red, 14"
+       "=blue"$0D"Small, agile and move capable turret."$0D"model="$22"models/"
+       "turrets/radiant/ewheel.md3"$22
+      bbox = '-32 -32 0 32 32 50'
+      t_commonspecifics = !
+      team: =
+      {
+        txt = "&"
+        hint = "5=red, 14=blue"
+      }
+    }
+    turret_checkpoint:form =
+    {
+      help = "target: .targetname of next wapoint in chain."$0D"wait: Pause at"
+       " this point # seconds."$0D"If a loop is of targets are formed, any uni"
+       "t entering this loop will patrol it indefinitly."$0D"If the checkpoint"
+       " chain in not looped, the unit will go "$22"Roaming"$22" when the last"
+       " point is reached."
+      bbox = '-32 -32 -32 32 32 32'
+      t_commonspecifics = !
+    }
+  }
+}

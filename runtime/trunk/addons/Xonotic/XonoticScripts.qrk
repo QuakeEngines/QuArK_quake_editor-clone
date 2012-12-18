@@ -1,0 +1,2436 @@
+QQRKSRC1
+// Xonotic Scripts file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Xonotic Scripts"
+
+  Scripts.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "Xonotic Scripts.qtxfolder"
+
+    t_Xonoticscripts_alphamod:incl                              = { a="Xonotic" b="alphamod.shader" }
+    t_Xonoticscripts_common:incl                                = { a="Xonotic" b="common.shader" }
+    t_Xonoticscripts_decals:incl                                = { a="Xonotic" b="decals.shader" }
+    t_Xonoticscripts_effects_beam:incl                          = { a="Xonotic" b="effects_beam.shader" }
+    t_Xonoticscripts_effects_forcefield:incl                    = { a="Xonotic" b="effects_forcefield.shader" }
+    t_Xonoticscripts_effects_healpod:incl                       = { a="Xonotic" b="effects_healpod.shader" }
+    t_Xonoticscripts_effects_item:incl                          = { a="Xonotic" b="effects_item.shader" }
+    t_Xonoticscripts_effects_jumppad:incl                       = { a="Xonotic" b="effects_jumppad.shader" }
+    t_Xonoticscripts_effects_lightning:incl                     = { a="Xonotic" b="effects_lightning.shader" }
+    t_Xonoticscripts_effects_warpzone:incl                      = { a="Xonotic" b="effects_warpzone.shader" }
+    t_Xonoticscripts_ex2x:incl                                  = { a="Xonotic" b="ex2x.shader" }
+    t_Xonoticscripts_exomorphx:incl                             = { a="Xonotic" b="exomorphx.shader" }
+    t_Xonoticscripts_exx:incl                                   = { a="Xonotic" b="exx.shader" }
+    t_Xonoticscripts_facility114invx:incl                       = { a="Xonotic" b="facility114invx.shader" }
+    t_Xonoticscripts_facility114x:incl                          = { a="Xonotic" b="facility114x.shader" }
+    t_Xonoticscripts_liquids_lava:incl                          = { a="Xonotic" b="liquids_lava.shader" }
+    t_Xonoticscripts_liquids_slime:incl                         = { a="Xonotic" b="liquids_slime.shader" }
+    t_Xonoticscripts_liquids_water:incl                         = { a="Xonotic" b="liquids_water.shader" }
+    t_Xonoticscripts_logos:incl                                 = { a="Xonotic" b="logos.shader" }
+    t_Xonoticscripts_map_courtfun:incl                          = { a="Xonotic" b="map_courtfun.shader" }
+    t_Xonoticscripts_map_darkzone:incl                          = { a="Xonotic" b="map_darkzone.shader" }
+    t_Xonoticscripts_map_g-23:incl                              = { a="Xonotic" b="map_g-23.shader" }
+    t_Xonoticscripts_map_glowplant:incl                         = { a="Xonotic" b="map_glowplant.shader" }
+    t_Xonoticscripts_map_leave_em_behind:incl                   = { a="Xonotic" b="map_leave_em_behind.shader" }
+    t_Xonoticscripts_map_lightspeed:incl                        = { a="Xonotic" b="map_lightspeed.shader" }
+    t_Xonoticscripts_map_newtonian-nightmare:incl               = { a="Xonotic" b="map_newtonian-nightmare.shader" }
+    t_Xonoticscripts_map_red-planet:incl                        = { a="Xonotic" b="map_red-planet.shader" }
+    t_Xonoticscripts_map_solarium:incl                          = { a="Xonotic" b="map_solarium.shader" }
+    t_Xonoticscripts_map_space-elevator:incl                    = { a="Xonotic" b="map_space-elevator.shader" }
+    t_Xonoticscripts_map_stormkeep:incl                         = { a="Xonotic" b="map_stormkeep.shader" }
+    t_Xonoticscripts_map_techassault:incl                       = { a="Xonotic" b="map_techassault.shader" }
+    t_Xonoticscripts_map_xoylent:incl                           = { a="Xonotic" b="map_xoylent.shader" }
+    t_Xonoticscripts_metaltechx:incl                            = { a="Xonotic" b="metaltechx.shader" }
+    t_Xonoticscripts_narmorx:incl                               = { a="Xonotic" b="narmorx.shader" }
+    t_Xonoticscripts_nexcompat-accident:incl                    = { a="Xonotic" b="nexcompat-accident.shader" }
+    t_Xonoticscripts_nexcompat-aggressor:incl                   = { a="Xonotic" b="nexcompat-aggressor.shader" }
+    t_Xonoticscripts_nexcompat-blacksky:incl                    = { a="Xonotic" b="nexcompat-blacksky.shader" }
+    t_Xonoticscripts_nexcompat-cel:incl                         = { a="Xonotic" b="nexcompat-cel.shader" }
+    t_Xonoticscripts_nexcompat-cyberparcour01:incl              = { a="Xonotic" b="nexcompat-cyberparcour01.shader" }
+    t_Xonoticscripts_nexcompat-desertfactory:incl               = { a="Xonotic" b="nexcompat-desertfactory.shader" }
+    t_Xonoticscripts_nexcompat-domination:incl                  = { a="Xonotic" b="nexcompat-domination.shader" }
+    t_Xonoticscripts_nexcompat-dsi:incl                         = { a="Xonotic" b="nexcompat-dsi.shader" }
+    t_Xonoticscripts_nexcompat-e7:incl                          = { a="Xonotic" b="nexcompat-e7.shader" }
+    t_Xonoticscripts_nexcompat-eggandbacon:incl                 = { a="Xonotic" b="nexcompat-eggandbacon.shader" }
+    t_Xonoticscripts_nexcompat-egyptsoc:incl                    = { a="Xonotic" b="nexcompat-egyptsoc.shader" }
+    t_Xonoticscripts_nexcompat-el3dm1:incl                      = { a="Xonotic" b="nexcompat-el3dm1.shader" }
+    t_Xonoticscripts_nexcompat-evil1_grates:incl                = { a="Xonotic" b="nexcompat-evil1_grates.shader" }
+    t_Xonoticscripts_nexcompat-evil2:incl                       = { a="Xonotic" b="nexcompat-evil2.shader" }
+    t_Xonoticscripts_nexcompat-evil3:incl                       = { a="Xonotic" b="nexcompat-evil3.shader" }
+    t_Xonoticscripts_nexcompat-evil4_techtrims:incl             = { a="Xonotic" b="nexcompat-evil4_techtrims.shader" }
+    t_Xonoticscripts_nexcompat-evil5:incl                       = { a="Xonotic" b="nexcompat-evil5.shader" }
+    t_Xonoticscripts_nexcompat-evil6_floors:incl                = { a="Xonotic" b="nexcompat-evil6_floors.shader" }
+    t_Xonoticscripts_nexcompat-evil6_lights:incl                = { a="Xonotic" b="nexcompat-evil6_lights.shader" }
+    t_Xonoticscripts_nexcompat-evil6_support:incl               = { a="Xonotic" b="nexcompat-evil6_support.shader" }
+    t_Xonoticscripts_nexcompat-evil6_trims:incl                 = { a="Xonotic" b="nexcompat-evil6_trims.shader" }
+    t_Xonoticscripts_nexcompat-evil6_walls:incl                 = { a="Xonotic" b="nexcompat-evil6_walls.shader" }
+    t_Xonoticscripts_nexcompat-evil8_base:incl                  = { a="Xonotic" b="nexcompat-evil8_base.shader" }
+    t_Xonoticscripts_nexcompat-eX:incl                          = { a="Xonotic" b="nexcompat-eX.shader" }
+    t_Xonoticscripts_nexcompat-exosystem:incl                   = { a="Xonotic" b="nexcompat-exosystem.shader" }
+    t_Xonoticscripts_nexcompat-final_rage:incl                  = { a="Xonotic" b="nexcompat-final_rage.shader" }
+    t_Xonoticscripts_nexcompat-harlequin_sky:incl               = { a="Xonotic" b="nexcompat-harlequin_sky.shader" }
+    t_Xonoticscripts_nexcompat-hip_interstellar:incl            = { a="Xonotic" b="nexcompat-hip_interstellar.shader" }
+    t_Xonoticscripts_nexcompat-kaznexctf2:incl                  = { a="Xonotic" b="nexcompat-kaznexctf2.shader" }
+    t_Xonoticscripts_nexcompat-liquids:incl                     = { a="Xonotic" b="nexcompat-liquids.shader" }
+    t_Xonoticscripts_nexcompat-mandelbrotsky:incl               = { a="Xonotic" b="nexcompat-mandelbrotsky.shader" }
+    t_Xonoticscripts_nexcompat-morphed:incl                     = { a="Xonotic" b="nexcompat-morphed.shader" }
+    t_Xonoticscripts_nexcompat-newsky_asteroids:incl            = { a="Xonotic" b="nexcompat-newsky_asteroids.shader" }
+    t_Xonoticscripts_nexcompat-newsky_planets:incl              = { a="Xonotic" b="nexcompat-newsky_planets.shader" }
+    t_Xonoticscripts_nexcompat-nexdm18_rmx:incl                 = { a="Xonotic" b="nexcompat-nexdm18_rmx.shader" }
+    t_Xonoticscripts_nexcompat-official_cmp1:incl               = { a="Xonotic" b="nexcompat-official_cmp1.shader" }
+    t_Xonoticscripts_nexcompat-racetrack:incl                   = { a="Xonotic" b="nexcompat-racetrack.shader" }
+    t_Xonoticscripts_nexcompat-reaper:incl                      = { a="Xonotic" b="nexcompat-reaper.shader" }
+    t_Xonoticscripts_nexcompat-ruiner:incl                      = { a="Xonotic" b="nexcompat-ruiner.shader" }
+    t_Xonoticscripts_nexcompat-sav-graysky1:incl                = { a="Xonotic" b="nexcompat-sav-graysky1.shader" }
+    t_Xonoticscripts_nexcompat-sav-liquids:incl                 = { a="Xonotic" b="nexcompat-sav-liquids.shader" }
+    t_Xonoticscripts_nexcompat-savdm6ish:incl                   = { a="Xonotic" b="nexcompat-savdm6ish.shader" }
+    t_Xonoticscripts_nexcompat-sfx:incl                         = { a="Xonotic" b="nexcompat-sfx.shader" }
+    t_Xonoticscripts_nexcompat-stormkeep:incl                   = { a="Xonotic" b="nexcompat-stormkeep.shader" }
+    t_Xonoticscripts_nexcompat-stralenex1:incl                  = { a="Xonotic" b="nexcompat-stralenex1.shader" }
+    t_Xonoticscripts_nexcompat-stralenex8:incl                  = { a="Xonotic" b="nexcompat-stralenex8.shader" }
+    t_Xonoticscripts_nexcompat-strength:incl                    = { a="Xonotic" b="nexcompat-strength.shader" }
+    t_Xonoticscripts_nexcompat-swamp:incl                       = { a="Xonotic" b="nexcompat-swamp.shader" }
+    t_Xonoticscripts_nexcompat-terrain_alphafade:incl           = { a="Xonotic" b="nexcompat-terrain_alphafade.shader" }
+    t_Xonoticscripts_nexcompat-terrain_dotproduct2:incl         = { a="Xonotic" b="nexcompat-terrain_dotproduct2.shader" }
+    t_Xonoticscripts_nexcompat-terrain_dotproduct2projected:incl = { a="Xonotic" b="nexcompat-terrain_dotproduct2projected.shader" }
+    t_Xonoticscripts_nexcompat-test3:incl                       = { a="Xonotic" b="nexcompat-test3.shader" }
+    t_Xonoticscripts_nexcompat-toxic:incl                       = { a="Xonotic" b="nexcompat-toxic.shader" }
+    t_Xonoticscripts_nexcompat-trak4:incl                       = { a="Xonotic" b="nexcompat-trak4.shader" }
+    t_Xonoticscripts_nexcompat-trak5:incl                       = { a="Xonotic" b="nexcompat-trak5.shader" }
+    t_Xonoticscripts_nexcompat-tree:incl                        = { a="Xonotic" b="nexcompat-tree.shader" }
+    t_Xonoticscripts_nexcompat-tutorial:incl                    = { a="Xonotic" b="nexcompat-tutorial.shader" }
+    t_Xonoticscripts_nexcompat-tznex01:incl                     = { a="Xonotic" b="nexcompat-tznex01.shader" }
+    t_Xonoticscripts_nexcompat-water:incl                       = { a="Xonotic" b="nexcompat-water.shader" }
+    t_Xonoticscripts_phillipk1x:incl                            = { a="Xonotic" b="phillipk1x.shader" }
+    t_Xonoticscripts_phillipk2x:incl                            = { a="Xonotic" b="phillipk2x.shader" }
+    t_Xonoticscripts_proceduralx:incl                           = { a="Xonotic" b="proceduralx.shader" }
+    t_Xonoticscripts_screens:incl                               = { a="Xonotic" b="screens.shader" }
+    t_Xonoticscripts_skies_calm_sea:incl                        = { a="Xonotic" b="skies_calm_sea.shader" }
+    t_Xonoticscripts_skies_distant_sunset:incl                  = { a="Xonotic" b="skies_distant_sunset.shader" }
+    t_Xonoticscripts_skies_exosystem:incl                       = { a="Xonotic" b="skies_exosystem.shader" }
+    t_Xonoticscripts_skies_exosystem2:incl                      = { a="Xonotic" b="skies_exosystem2.shader" }
+    t_Xonoticscripts_skies_extragalactic:incl                   = { a="Xonotic" b="skies_extragalactic.shader" }
+    t_Xonoticscripts_skies_heaven:incl                          = { a="Xonotic" b="skies_heaven.shader" }
+    t_Xonoticscripts_skies_polluted_earth:incl                  = { a="Xonotic" b="skies_polluted_earth.shader" }
+    t_Xonoticscripts_stein1x:incl                               = { a="Xonotic" b="stein1x.shader" }
+    t_Xonoticscripts_techpanelx:incl                            = { a="Xonotic" b="techpanelx.shader" }
+    t_Xonoticscripts_terrain01x:incl                            = { a="Xonotic" b="terrain01x.shader" }
+    t_Xonoticscripts_trak4x:incl                                = { a="Xonotic" b="trak4x.shader" }
+    t_Xonoticscripts_trak5x:incl                                = { a="Xonotic" b="trak5x.shader" }
+    t_Xonoticscripts_trak6x:incl                                = { a="Xonotic" b="trak6x.shader" }
+    t_Xonoticscripts_trak7x:incl                                = { a="Xonotic" b="trak7x.shader" }
+
+    Xonotic Scripts.qtxfolder =
+    {
+      alphamod.txlist =
+      {
+        alphamod/alpha_000.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_001.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_002.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_003.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_004.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_005.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_006.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_007.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_008.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_009.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_010.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_011.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_012.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_013.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_014.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_015.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_016.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_017.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_018.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_019.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_020.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_021.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_022.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_023.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_024.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_025.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_026.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_027.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_028.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_029.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_030.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_031.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_032.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_033.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_034.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_035.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_036.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_037.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_038.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_039.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_040.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_041.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_042.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_043.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_044.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_045.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_046.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_047.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_048.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_049.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_050.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_051.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_052.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_053.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_054.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_055.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_056.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_057.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_058.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_059.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_060.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_061.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_062.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_063.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_064.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_065.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_066.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_067.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_068.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_069.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_070.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_071.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_072.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_073.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_074.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_075.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_076.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_077.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_078.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_079.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_080.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_081.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_082.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_083.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_084.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_085.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_086.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_087.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_088.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_089.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_090.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_091.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_092.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_093.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_094.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_095.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_096.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_097.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_098.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_099.wl    = { t_Xonoticscripts_alphamod=! }
+        alphamod/alpha_100.wl    = { t_Xonoticscripts_alphamod=! }
+      }
+      common.txlist =
+      {
+        common/antiportal.wl    = { t_Xonoticscripts_common=! }
+        common/botclip.wl    = { t_Xonoticscripts_common=! }
+        common/camera.wl    = { t_Xonoticscripts_common=! }
+        common/caulk.wl    = { t_Xonoticscripts_common=! }
+        common/clip.wl    = { t_Xonoticscripts_common=! }
+        common/donotenter.wl    = { t_Xonoticscripts_common=! }
+        common/forcecaulk.wl    = { t_Xonoticscripts_common=! }
+        common/full_clip.wl    = { t_Xonoticscripts_common=! }
+        common/hint.wl    = { t_Xonoticscripts_common=! }
+        common/hintskip.wl    = { t_Xonoticscripts_common=! }
+        common/invisible.wl    = { t_Xonoticscripts_common=! }
+        common/lavanodraw.wl    = { t_Xonoticscripts_common=! }
+        common/lightgrid.wl    = { t_Xonoticscripts_common=! }
+        common/nodraw.wl    = { t_Xonoticscripts_common=! }
+        common/nodrawnonsolid.wl    = { t_Xonoticscripts_common=! }
+        common/nodrop.wl    = { t_Xonoticscripts_common=! }
+        common/noimpact.wl    = { t_Xonoticscripts_common=! }
+        common/nolightmap.wl    = { t_Xonoticscripts_common=! }
+        common/origin.wl    = { t_Xonoticscripts_common=! }
+        common/skip.wl    = { t_Xonoticscripts_common=! }
+        common/slimenodraw.wl    = { t_Xonoticscripts_common=! }
+        common/terrain.wl    = { t_Xonoticscripts_common=! }
+        common/terrain2.wl    = { t_Xonoticscripts_common=! }
+        common/trigger.wl    = { t_Xonoticscripts_common=! }
+        common/warpzone.wl    = { t_Xonoticscripts_common=! }
+        common/waternodraw.wl    = { t_Xonoticscripts_common=! }
+        common/weapclip.wl    = { t_Xonoticscripts_common=! }
+      }
+      decals.txlist =
+      {
+        decals/scorch01.wl    = { t_Xonoticscripts_decals=! }
+        decals/scorch02.wl    = { t_Xonoticscripts_decals=! }
+        decals/splatter01.wl    = { t_Xonoticscripts_decals=! }
+        decals/splatter02.wl    = { t_Xonoticscripts_decals=! }
+        decals/splatter03.wl    = { t_Xonoticscripts_decals=! }
+        decals/splatter04.wl    = { t_Xonoticscripts_decals=! }
+        decals/splatter05.wl    = { t_Xonoticscripts_decals=! }
+      }
+      effects_beam.txlist =
+      {
+        effects_beam/beam-blue.wl    = { t_Xonoticscripts_effects_beam=! }
+        effects_beam/beam-green.wl    = { t_Xonoticscripts_effects_beam=! }
+        effects_beam/beam-purple.wl    = { t_Xonoticscripts_effects_beam=! }
+        effects_beam/beam-red.wl    = { t_Xonoticscripts_effects_beam=! }
+        effects_beam/beam-yellow.wl    = { t_Xonoticscripts_effects_beam=! }
+      }
+      effects_forcefield.txlist =
+      {
+        effects_forcefield/forcefield1_a.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_a_surflight.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_b.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_b_surflight.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_c.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_c_surflight.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_d.wl    = { t_Xonoticscripts_effects_forcefield=! }
+        effects_forcefield/forcefield1_d_surflight.wl    = { t_Xonoticscripts_effects_forcefield=! }
+      }
+      effects_healpod.txlist =
+      {
+        effects_healpod/healpod1_d.wl    = { t_Xonoticscripts_effects_healpod=! }
+      }
+      effects_item.txlist =
+      {
+        effects_item/respawnring-blue.wl    = { t_Xonoticscripts_effects_item=! }
+        effects_item/respawnring-red.wl    = { t_Xonoticscripts_effects_item=! }
+      }
+      effects_jumppad.txlist =
+      {
+        effects_jumppad/jumppadfx1_a.wl    = { t_Xonoticscripts_effects_jumppad=! }
+        effects_jumppad/jumppadfx1_b.wl    = { t_Xonoticscripts_effects_jumppad=! }
+        effects_jumppad/jumppadfx1_c.wl    = { t_Xonoticscripts_effects_jumppad=! }
+        effects_jumppad/jumppadfx1_d.wl    = { t_Xonoticscripts_effects_jumppad=! }
+      }
+      effects_lightning.txlist =
+      {
+        effects_lightning/gradient_white.wl    = { t_Xonoticscripts_effects_lightning=! }
+        effects_lightning/lightning1_a.wl    = { t_Xonoticscripts_effects_lightning=! }
+        effects_lightning/lightning1_b.wl    = { t_Xonoticscripts_effects_lightning=! }
+        effects_lightning/lightning1_c.wl    = { t_Xonoticscripts_effects_lightning=! }
+        effects_lightning/lightning1_d.wl    = { t_Xonoticscripts_effects_lightning=! }
+      }
+      effects_warpzone.txlist =
+      {
+        effects_warpzone/blueedge.wl    = { t_Xonoticscripts_effects_warpzone=! }
+        effects_warpzone/greenedge.wl    = { t_Xonoticscripts_effects_warpzone=! }
+        effects_warpzone/rededge.wl    = { t_Xonoticscripts_effects_warpzone=! }
+        effects_warpzone/warpzone_backdrop.wl    = { t_Xonoticscripts_effects_warpzone=! }
+        effects_warpzone/wavy.wl    = { t_Xonoticscripts_effects_warpzone=! }
+      }
+      ex2x.txlist =
+      {
+        ex2x/base-bluepaint.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-chainlink.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-metal1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-metal2.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-metal3.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-metal4.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-metalmaterial1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-stone_metal.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/base-yellowpaint.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-h1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-h2.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-h3.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-h4.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-metal3.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-plate1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-plate2.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/floor-r1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/light-1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/light-beam_blue.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/light-beam_green.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/light-beam_red.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/trim-green2.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/trim-warn1.wl    = { t_Xonoticscripts_ex2x=! }
+        ex2x/wall-purple1.wl    = { t_Xonoticscripts_ex2x=! }
+      }
+      exomorphx.txlist =
+      {
+        exomorphx/base-concrete.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_floor01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_floor02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_floor03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_floor04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_floor05.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_panel_floor01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_panel_floor02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/floor-metal_panel_floor03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/grate-metal_grate01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/grate-metal_grate02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/grate-metal_grate03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/grate-metal_grate04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/grate-metal_grate05.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/grate-metal_grate06.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light05.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light06.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light07.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light08.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_light09.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/light-metal_panel_light01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-htrim_metal.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_concrete01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal05.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal06.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal07.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal_panel01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal_panel02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal_panel03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal_panel04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/trim-trim_metal_panel05.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_metal_wallplate01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_metal_wallplate02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_metal_wallplate03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_metal01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_metal02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_slab01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_slab02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_slab03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_slab04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_slab04blue.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-concrete_wall_slab04red.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel01_blue.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel01_red.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel05.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel05_blue.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_panel05_red.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_wall01.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_wall02.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_wall03.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_wall04.wl    = { t_Xonoticscripts_exomorphx=! }
+        exomorphx/wall-metal_wall05.wl    = { t_Xonoticscripts_exomorphx=! }
+      }
+      exx.txlist =
+      {
+        exx/base-crete01.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-crete01blue.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-crete01red.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-crete02.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-crete03.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal01.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal02.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal03.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal04.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal05rust.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal06rust.wl    = { t_Xonoticscripts_exx=! }
+        exx/base-metal07rust.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-clang01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-clang01b.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-crete01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-crete01-phoenix.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-crete01-phoenixb.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-crete01b.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate01-cull.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate02.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate02-cull.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate03.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate03-cull.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate04.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-grate04-cull.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-metal02.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-panel01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-rnd01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-rnd02.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-simple05.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-simplines.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-tile03.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-tread01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-wrn01.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-wrn01-blue.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-wrn01-purple.wl    = { t_Xonoticscripts_exx=! }
+        exx/floor-wrn01-red.wl    = { t_Xonoticscripts_exx=! }
+        exx/light-panel01.wl    = { t_Xonoticscripts_exx=! }
+        exx/light-panel01-surfacelight.wl    = { t_Xonoticscripts_exx=! }
+        exx/light-u201.wl    = { t_Xonoticscripts_exx=! }
+        exx/light-u201-surfacelight.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-grate01.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-grate01-cull.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal01.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal01b.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal01c.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal02.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal03.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal04.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metal05.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metalbig04.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-metalbig04b.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-q201.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-q201b.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-q201c.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-q201d.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-q201e.wl    = { t_Xonoticscripts_exx=! }
+        exx/panel-rs01.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-01.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-baseboard.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-baseboard02.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-baseboard03.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-horz01.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-metalsupp01.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-psimple04.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-psimple05.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-simple01.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-simple03.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-steptop01.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-support03.wl    = { t_Xonoticscripts_exx=! }
+        exx/trim-vert01.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-bigrib02.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-bplate06.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-crete01.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-crete02.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-crete03.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-crete03b.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-des01.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-metal01.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-metal01b.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-metal01c.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-metal02.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-metalb01.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-metalrib01.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-panel05.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-panels08.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-panels08b.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-pipe.wl    = { t_Xonoticscripts_exx=! }
+        exx/wall-u207.wl    = { t_Xonoticscripts_exx=! }
+      }
+      facility114invx.txlist =
+      {
+        facility114invx/base-baseblack.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/ceiling-ceiling00inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/ceiling-ceiling00invr.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/ceiling-ceiling01inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/ceiling-ceiling01invr.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/floor-floor00inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/floor-floor02inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/misc-door01inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/misc-lift00inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/misc-lift01inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/misc-lift02inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/misc-lift02invgreen.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/misc-lift02invred.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/trim-trim00inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/trim-trim01inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/trim-trim01invg.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/trim-trim01invr.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/trim-trim02inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor00inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor00invr.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor01inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor01invr.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor02inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor02invr.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor03inv.wl    = { t_Xonoticscripts_facility114invx=! }
+        facility114invx/wall-corridor04inv.wl    = { t_Xonoticscripts_facility114invx=! }
+      }
+      facility114x.txlist =
+      {
+        facility114x/base-base.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/base-baseblue.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/base-basegray.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/base-basepurple.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/base-basered.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/base-baseyellow.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/ceiling-ceiling00.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/ceiling-ceiling00b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/ceiling-ceiling00r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/ceiling-ceiling01.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/ceiling-ceiling01b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/ceiling-ceiling01r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/floor-floor00.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/floor-floor01.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/floor-floor02.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-door01.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift00.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift00b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift00r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift01.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift01b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift01r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift02.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift02b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-lift02r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/misc-tube.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/trim-trim00.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/trim-trim01.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/trim-trim01b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/trim-trim01r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/trim-trim02.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor00.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor00b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor00r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor01.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor01b.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor01r.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor02.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor03.wl    = { t_Xonoticscripts_facility114x=! }
+        facility114x/wall-corridor04.wl    = { t_Xonoticscripts_facility114x=! }
+      }
+      liquids_lava.txlist =
+      {
+        liquids_lava/lava0.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_blue.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_blue_flow.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_blue_flow_pipe.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_flow.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_flow_pipe.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_green.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_green_flow.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_green_flow_pipe.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_purple.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_purple_flow.wl    = { t_Xonoticscripts_liquids_lava=! }
+        liquids_lava/lava0_purple_flow_pipe.wl    = { t_Xonoticscripts_liquids_lava=! }
+      }
+      liquids_slime.txlist =
+      {
+        liquids_slime/gelslime-purple.wl    = { t_Xonoticscripts_liquids_slime=! }
+        liquids_slime/gelslime-purple_cubemap.wl    = { t_Xonoticscripts_liquids_slime=! }
+        liquids_slime/slime0.wl    = { t_Xonoticscripts_liquids_slime=! }
+        liquids_slime/slime1.wl    = { t_Xonoticscripts_liquids_slime=! }
+      }
+      liquids_water.txlist =
+      {
+        liquids_water/ruiner_water.wl    = { t_Xonoticscripts_liquids_water=! }
+        liquids_water/water0.wl    = { t_Xonoticscripts_liquids_water=! }
+        liquids_water/water0_cubemap.wl    = { t_Xonoticscripts_liquids_water=! }
+        liquids_water/water0_cubemap_alphamod.wl    = { t_Xonoticscripts_liquids_water=! }
+        liquids_water/water1.wl    = { t_Xonoticscripts_liquids_water=! }
+        liquids_water/water2.wl    = { t_Xonoticscripts_liquids_water=! }
+      }
+      logos.txlist =
+      {
+        logos/logo01_blue.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_blue_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_green.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_green_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_red.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_red_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_yellow.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo01_yellow_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_blue.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_blue_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_green.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_green_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_red.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_red_glowy.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_yellow.wl    = { t_Xonoticscripts_logos=! }
+        logos/logo02_yellow_glowy.wl    = { t_Xonoticscripts_logos=! }
+      }
+      map_courtfun.txlist =
+      {
+        map_courtfun/screen_backdrop.wl    = { t_Xonoticscripts_map_courtfun=! }
+        map_courtfun/screen_obey.wl    = { t_Xonoticscripts_map_courtfun=! }
+        map_courtfun/screen_xon.wl    = { t_Xonoticscripts_map_courtfun=! }
+        map_courtfun/screenanim_work.wl    = { t_Xonoticscripts_map_courtfun=! }
+      }
+      map_darkzone.txlist =
+      {
+        map_darkzone/bluelight.wl    = { t_Xonoticscripts_map_darkzone=! }
+      }
+      map_g-23.txlist =
+      {
+        map_g-23/conveyor_belt.wl    = { t_Xonoticscripts_map_g-23=! }
+      }
+      map_glowplant.txlist =
+      {
+        map_glowplant/biolumi2_blue.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/biolumi2_blue-lowlight.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/biolumi2_blue-nolight.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/biolumi2_red.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/biolumi2b_red.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/biolumi2c_red.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/distort_glass.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/gradient_light.wl    = { t_Xonoticscripts_map_glowplant=! }
+        map_glowplant/sky.wl    = { t_Xonoticscripts_map_glowplant=! }
+      }
+      map_leave_em_behind.txlist =
+      {
+        map_leave_em_behind/biolumi2_green.wl    = { t_Xonoticscripts_map_leave_em_behind=! }
+        map_leave_em_behind/biolumi2_green_wave.wl    = { t_Xonoticscripts_map_leave_em_behind=! }
+        map_leave_em_behind/biolumi2_yellow_wave.wl    = { t_Xonoticscripts_map_leave_em_behind=! }
+      }
+      map_lightspeed.txlist =
+      {
+        map_lightspeed/env1.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/env2.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/env3.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lcd_compile.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/light_nonglow.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lightning1.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lightning2.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lightning3.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lightning4.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lightspeedscrn.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/lightspeedscrn_t.wl    = { t_Xonoticscripts_map_lightspeed=! }
+        map_lightspeed/vines.wl    = { t_Xonoticscripts_map_lightspeed=! }
+      }
+      map_newtonian-nightmare.txlist =
+      {
+        map_newtonian-nightmare/screen_offline.wl    = { t_Xonoticscripts_map_newtonian-nightmare=! }
+        map_newtonian-nightmare/screen_online.wl    = { t_Xonoticscripts_map_newtonian-nightmare=! }
+        map_newtonian-nightmare/trimlight_blue_s.wl    = { t_Xonoticscripts_map_newtonian-nightmare=! }
+        map_newtonian-nightmare/trimlight_green_s.wl    = { t_Xonoticscripts_map_newtonian-nightmare=! }
+        map_newtonian-nightmare/trimlight_red_s.wl    = { t_Xonoticscripts_map_newtonian-nightmare=! }
+      }
+      map_red-planet.txlist =
+      {
+        map_red-planet/env1.wl    = { t_Xonoticscripts_map_red-planet=! }
+        map_red-planet/env2.wl    = { t_Xonoticscripts_map_red-planet=! }
+        map_red-planet/env3.wl    = { t_Xonoticscripts_map_red-planet=! }
+      }
+      map_solarium.txlist =
+      {
+        map_solarium/cubemap_glass.wl    = { t_Xonoticscripts_map_solarium=! }
+        map_solarium/water4.wl    = { t_Xonoticscripts_map_solarium=! }
+        map_solarium/waterfall.wl    = { t_Xonoticscripts_map_solarium=! }
+      }
+      map_space-elevator.txlist =
+      {
+        map_space-elevator/hangwires.wl    = { t_Xonoticscripts_map_space-elevator=! }
+        map_space-elevator/panels.wl    = { t_Xonoticscripts_map_space-elevator=! }
+        map_space-elevator/sign-station-blue.wl    = { t_Xonoticscripts_map_space-elevator=! }
+        map_space-elevator/sign-station-red.wl    = { t_Xonoticscripts_map_space-elevator=! }
+        map_space-elevator/sign-train-blue.wl    = { t_Xonoticscripts_map_space-elevator=! }
+        map_space-elevator/sign-train-red.wl    = { t_Xonoticscripts_map_space-elevator=! }
+        map_space-elevator/solarmetal.wl    = { t_Xonoticscripts_map_space-elevator=! }
+      }
+      map_stormkeep.txlist =
+      {
+        map_stormkeep/rock.wl    = { t_Xonoticscripts_map_stormkeep=! }
+      }
+      map_techassault.txlist =
+      {
+        map_techassault/red-alert.wl    = { t_Xonoticscripts_map_techassault=! }
+      }
+      map_xoylent.txlist =
+      {
+        map_xoylent/base_cutmetal.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/base_pipes.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/base_pipes_nolight.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/border_big.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/border_small.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/border_withlight.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/light-panel01-surfacelight.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/light-u201-surfacelight.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/panels_floor.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/panels_horizontal.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/panels_trim.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/panels_vertical.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/panels_wall.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/panels_warning.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/sky.wl    = { t_Xonoticscripts_map_xoylent=! }
+        map_xoylent/trak6_trim4_edit.wl    = { t_Xonoticscripts_map_xoylent=! }
+      }
+      metaltechx.txlist =
+      {
+        metaltechx/detail-grate.wl    = { t_Xonoticscripts_metaltechx=! }
+        metaltechx/detail-wires.wl    = { t_Xonoticscripts_metaltechx=! }
+        metaltechx/wall-alu.wl    = { t_Xonoticscripts_metaltechx=! }
+        metaltechx/wall-alu02.wl    = { t_Xonoticscripts_metaltechx=! }
+        metaltechx/wall-alu_base.wl    = { t_Xonoticscripts_metaltechx=! }
+        metaltechx/wall-alu_cap.wl    = { t_Xonoticscripts_metaltechx=! }
+        metaltechx/wall-aluyellow.wl    = { t_Xonoticscripts_metaltechx=! }
+      }
+      narmorx.txlist =
+      {
+        narmorx/base-concrete01.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete02.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete03.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete04.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete05.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete05_blue.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete05_red.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete06.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete07.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete07_blue.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-concrete07_red.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-dirt01.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-wood01.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/base-wood02.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/floor-asphalt01.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/floor-pavement.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/wall-brick01_blue.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/wall-brick01_red.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/wall-brick01_yellow.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/wall-brick02.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/wall-brick03.wl    = { t_Xonoticscripts_narmorx=! }
+        narmorx/wall-brick04.wl    = { t_Xonoticscripts_narmorx=! }
+      }
+      nexcompat-accident.txlist =
+      {
+        base/mgrate.wl    = { t_Xonoticscripts_nexcompat-accident=! }
+      }
+      nexcompat-aggressor.txlist =
+      {
+        aggressor/eX_floor_mtl_grate_01.wl    = { t_Xonoticscripts_nexcompat-aggressor=! }
+        aggressor/mlight.wl    = { t_Xonoticscripts_nexcompat-aggressor=! }
+      }
+      nexcompat-blacksky.txlist =
+      {
+        skies/blacksky.wl    = { t_Xonoticscripts_nexcompat-blacksky=! }
+      }
+      nexcompat-cel.txlist =
+      {
+        cel/black_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/blue_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/cyan_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/green_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/pink_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/red_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-0_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-1_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-2_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-3_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-4_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-5_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-6_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-7_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-8_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-9_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-a_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-b_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-c_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-d_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-e_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/vga-f_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/white_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+        cel/yellow_ink.wl    = { t_Xonoticscripts_nexcompat-cel=! }
+      }
+      nexcompat-cyberparcour01.txlist =
+      {
+        cyberparcour01_shaders/celshader.wl    = { t_Xonoticscripts_nexcompat-cyberparcour01=! }
+        cyberparcour01_shaders/sky.wl    = { t_Xonoticscripts_nexcompat-cyberparcour01=! }
+      }
+      nexcompat-desertfactory.txlist =
+      {
+        desertfactory_shaders/glass01.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/grass01.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/grass02.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/grates01.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/light02.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/lightemitter_200.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/lightemitter_400.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/metal01-metal02.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_above_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_above_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_explosion_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_explosion_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_ladder_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_ladder_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_radioactive_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_radioactive_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_shock_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_shock_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_toxic_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_toxic_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_warning_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_warning_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_wires_clean.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sign_wires_dirty.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/sky.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/vines01.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/writing01.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/writing02.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/writing03.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/writing04.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+        desertfactory_shaders/writing05.wl    = { t_Xonoticscripts_nexcompat-desertfactory=! }
+      }
+      nexcompat-domination.txlist =
+      {
+        domination/dom_blue.wl    = { t_Xonoticscripts_nexcompat-domination=! }
+        domination/dom_pink.wl    = { t_Xonoticscripts_nexcompat-domination=! }
+        domination/dom_red.wl    = { t_Xonoticscripts_nexcompat-domination=! }
+        domination/dom_unclaimed.wl    = { t_Xonoticscripts_nexcompat-domination=! }
+        domination/dom_yellow.wl    = { t_Xonoticscripts_nexcompat-domination=! }
+      }
+      nexcompat-dsi.txlist =
+      {
+        dsi/cmp1_logo.wl    = { t_Xonoticscripts_nexcompat-dsi=! }
+        dsi/dsiglass.wl    = { t_Xonoticscripts_nexcompat-dsi=! }
+        dsi/weapspawn01.wl    = { t_Xonoticscripts_nexcompat-dsi=! }
+      }
+      nexcompat-e7.txlist =
+      {
+        e7/e7brickfloor01jump.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7evilsky_1.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7mlight.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7rain.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7sbrickfloor_jump.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7sfx_lava.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7sky_01.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7slight.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7smgrate.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7trimlight.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+        e7/e7wgrate.wl    = { t_Xonoticscripts_nexcompat-e7=! }
+      }
+      nexcompat-eggandbacon.txlist =
+      {
+        eggandbacon/eggandbacon_sky.wl    = { t_Xonoticscripts_nexcompat-eggandbacon=! }
+        eggandbacon/light_bottom.wl    = { t_Xonoticscripts_nexcompat-eggandbacon=! }
+        eggandbacon/light_side.wl    = { t_Xonoticscripts_nexcompat-eggandbacon=! }
+        eggandbacon/upsign.wl    = { t_Xonoticscripts_nexcompat-eggandbacon=! }
+      }
+      nexcompat-egyptsoc.txlist =
+      {
+        egyptsoc_floor/grate1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate2a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate2b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate3a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate3b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate4a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_floor/grate4b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/jpblue_floor1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/jpblue_floor1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/jpgold_floor1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/jpgold_floor1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/jpred_floor1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/jpred_floor1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-01y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-02y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-03y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_032-04y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-01y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-02y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-04y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-05y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06b1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06b2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06r1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06r2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06w1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06w2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06y1-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_064-06y2-2k.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-01a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-01b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-01c.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-01d.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-01e.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-01f.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-02a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-02b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-02c.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-02d.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-02e.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-02f.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-03a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-03b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-03c.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-03d.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-03e.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_b064-03f.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_v192-01ba.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_v192-01bb.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_v192-01wa.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_v192-01wb.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_v192-01ya.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/lig_v192-01yb.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/s128-01wc.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/s128-01wcr.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/s128-01wd.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/s128-01wdr.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/s128-01we.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/wmblue_floor1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/wmblue_floor1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/wmgold_floor1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/wmgold_floor1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/wmred_floor1a.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+        egyptsoc_sfx/wmred_floor1b.wl    = { t_Xonoticscripts_nexcompat-egyptsoc=! }
+      }
+      nexcompat-el3dm1.txlist =
+      {
+        e8/ctf_e8stars.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/dm_e8stars.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/dm_e8stars2.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8_launchpad1.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8alphaspawn.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8beam_blue.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8evilspacetxt.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8lightblue_flicker.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8lighttrim_b_glow.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8lighttrim_b_static.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8lighttrim_glow.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8lighttrim_static.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8metal03c_shiney.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8metal_blue_shiney.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8metal_red_shiney.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8rail2.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8trimlight.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8trimlight2.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8xgirder.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8xgirder_small.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8xgirder_small2.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/e8yarrow.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+        e8/zap_e8.wl    = { t_Xonoticscripts_nexcompat-el3dm1=! }
+      }
+      nexcompat-evil1_grates.txlist =
+      {
+        evil1_grates/flrgrt_h.wl    = { t_Xonoticscripts_nexcompat-evil1_grates=! }
+      }
+      nexcompat-evil2.txlist =
+      {
+        evil2_misc/support_grate3.wl    = { t_Xonoticscripts_nexcompat-evil2=! }
+      }
+      nexcompat-evil3.txlist =
+      {
+        evil_floors/grtmtl_offt.wl    = { t_Xonoticscripts_nexcompat-evil3=! }
+        evil_floors/t-flr_oddtile_drty.wl    = { t_Xonoticscripts_nexcompat-evil3=! }
+        evil_lights/rlight_a.wl    = { t_Xonoticscripts_nexcompat-evil3=! }
+        evil_misc/rstbouncefan.wl    = { t_Xonoticscripts_nexcompat-evil3=! }
+      }
+      nexcompat-evil4_techtrims.txlist =
+      {
+        evil4_d_techwalls/d_drkmtl_dpanelwrnb2.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_d_techwalls/d_tech_dw2.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_d_techwalls/d_tech_dw2g.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_d_techwalls/d_tech_dw2gb.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_d_techwalls/d_tech_wall_dlight.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_d_techwalls/d_tech_window.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_fx/mtlportal_fx.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_fx/teleprtr.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/drkmtlsupport_light.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/l_light_b.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/l_light_g.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/l_light_r.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/l_light_w.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/mtl_l1.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/mtl_lightsmll.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/s_bluelight.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/s_light.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/steplight.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/t_mtllight.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_lights/trimtl_grlbtm_light.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_metals/flrgrate.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_metals/mtlbrushed.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_metals/mtlflrslots.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_metals/mtltekfloor.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_metals/wrnjumppad.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techfloors/tfloor3_huge.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techfloors/tfloor_rndholes.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techfloors/tfloor_rndholes_drty.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techwalls/tech_dw2.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techwalls/tech_dw2g.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techwalls/tech_dw2gb.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techwalls/tech_wall_dlight.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+        evil4_techwalls/tech_window.wl    = { t_Xonoticscripts_nexcompat-evil4_techtrims=! }
+      }
+      nexcompat-evil5.txlist =
+      {
+        evil5_floor/confllrtile2pad.wl    = { t_Xonoticscripts_nexcompat-evil5=! }
+        evil5_floor/tekconfllr_fx.wl    = { t_Xonoticscripts_nexcompat-evil5=! }
+      }
+      nexcompat-evil6_floors.txlist =
+      {
+        evil6_floors/e6bsegrtflr128_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6bsegrtflr256_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6grate2_flr_b_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6grate2_flr_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6grate_flr_b_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6grate_flr_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6grtfloorceil_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6launchcfloor.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6launchcfloor_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6launchengine.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6launchengine_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6launchlfloor.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6launchlfloor_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6tekmtlrflr_h_full_slow.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6tekmtlrflr_h_small_noisy_fast.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6xgratebasic_b_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+        evil6_floors/e6xgratebasic_s.wl    = { t_Xonoticscripts_nexcompat-evil6_floors=! }
+      }
+      nexcompat-evil6_lights.txlist =
+      {
+        evil6_lights/e6basicstrip_blue_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6basicstrip_green_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6basicstrip_orange_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6basicstrip_red_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6basicstrip_white_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6basicstrip_yellow_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6horzlight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6horzovallight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6platelight_burnt_500.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6platelight_burnt_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6platelight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6tinylight_s_1500.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6tinylight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6v_light_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+        evil6_lights/e6walllight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_lights=! }
+      }
+      nexcompat-evil6_support.txlist =
+      {
+        evil6_support/e6h_support_s.wl    = { t_Xonoticscripts_nexcompat-evil6_support=! }
+        evil6_support/e6holestrip_s.wl    = { t_Xonoticscripts_nexcompat-evil6_support=! }
+        evil6_support/e6vertgrt_supp_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_support=! }
+        evil6_support/e6vlight_supp_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_support=! }
+        evil6_support/e6x_supprt_s.wl    = { t_Xonoticscripts_nexcompat-evil6_support=! }
+        evil6_support/e6xrst_supprt_s.wl    = { t_Xonoticscripts_nexcompat-evil6_support=! }
+      }
+      nexcompat-evil6_trims.txlist =
+      {
+        evil6_trims/e6btrim_light_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_trims=! }
+        evil6_trims/e6metalfan_s.wl    = { t_Xonoticscripts_nexcompat-evil6_trims=! }
+        evil6_trims/e6strimlight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_trims=! }
+        evil6_trims/e6trim_bsrlight_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_trims=! }
+        evil6_trims/e6trim_light_s_nolight.wl    = { t_Xonoticscripts_nexcompat-evil6_trims=! }
+      }
+      nexcompat-evil6_walls.txlist =
+      {
+        evil6_walls/e6girdergrate2b_s.wl    = { t_Xonoticscripts_nexcompat-evil6_walls=! }
+        evil6_walls/e6girdergrate_s.wl    = { t_Xonoticscripts_nexcompat-evil6_walls=! }
+        evil6_walls/e6girdersupport_s.wl    = { t_Xonoticscripts_nexcompat-evil6_walls=! }
+        evil6_walls/e6indsdoor_s.wl    = { t_Xonoticscripts_nexcompat-evil6_walls=! }
+        evil6_walls/e6tdoor.wl    = { t_Xonoticscripts_nexcompat-evil6_walls=! }
+      }
+      nexcompat-evil8_base.txlist =
+      {
+        e8/e8_base1broke.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        e8/e8jumpspawn02b.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        e8/e8jumpspawn02c.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_base/e8metal03c_shiney.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_base/e8metal_blue_shiney.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_base/e8metal_red_shiney.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor01.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor03.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor04.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor04_blue.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor04_red.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor04b.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor04warn.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor04warn2.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor05.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor05b.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8clangfloor05c.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8minitrimlight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_floor/e8warn2steplight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8_jumppad02.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8_launchpad1.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8alphaspawn.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8beam.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8beam_blue.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8blue_dcl.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8circle_blue.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8circle_blue_fade.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8circle_red.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8circle_red_fade.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8evilspacetxt.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8icon_blue.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8icon_red.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8jumpspawn02.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8jumpspawn02b.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8jumpspawn02c.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8jumpspawn02grey.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8jumpspawn02red.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8rail.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8red_dcl.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8scuffs1.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8spawn01b.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_fx/e8yarrow.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_grate/e8bgrate01.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_grate/e8xgirder.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_grate/e8xgirder_small.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_grate/e8xgirder_small2.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8_rlightb.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8_rlightb2.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8btrimlight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8tinylight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8tinylightblue.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8tmtllight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8tmtllight2.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/e8tmtllight2b.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_lights/evil8_rlight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8lighttrim_b_glow.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8lighttrim_b_static.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8lighttrim_glow.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8lighttrim_static.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8mtltrim2.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8trim_bluefx.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8trim_redfx.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8trimlight.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8trimlight2_blue.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8trimlight2_red.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+        evil8_trim/e8wrntrim2.wl    = { t_Xonoticscripts_nexcompat-evil8_base=! }
+      }
+      nexcompat-eX.txlist =
+      {
+        eX/eX_clangfloor_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_clangfloor_01b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretebase_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretebase_02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretebase_03_dark.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretefloor_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretefloor_01b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretewall_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretewall_02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretewall_03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_cretewall_03b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_deswall_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_grate03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_grate_03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_grate_03_128.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_mtl_grate_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_mtl_wrn_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_simple_05.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_simplines.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_tile_03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floor_tread_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_floorpanel_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_light_u201.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_lightpanel_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_metalSupp01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_metalplate_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_metalwall02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_mtl_bigplate_04.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_mtl_bigplate_04b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_mtl_panel_02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_mtl_panel_03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_mtl_panel_04.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_q2_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_q2_01b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_q2_01c.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_q2_01d.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_q2_01e.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_rndfloor_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_rndfloor_02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_rplates_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_steptop_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_baseboard.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_baseboard_02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_baseboard_03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_psimple_04.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_psimple_05.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_simple03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_simple_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_support_03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_trim_vert_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_01b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_b01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_bigrib_02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_bplate_06.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_panel_05.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_panels_08.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_panels_08b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_pipe.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eX_wall_u207.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase03.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase04.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase05Rust.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase06rust.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalBase07rust.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalFloor02.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetal_plate01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetal_plate01B.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetal_plate01b.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetal_plate01c.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+        eX/eXmetalrib01.wl    = { t_Xonoticscripts_nexcompat-eX=! }
+      }
+      nexcompat-exosystem.txlist =
+      {
+        skies/exosystem.wl    = { t_Xonoticscripts_nexcompat-exosystem=! }
+        skies/exosystem2.wl    = { t_Xonoticscripts_nexcompat-exosystem=! }
+        skies/heaven.wl    = { t_Xonoticscripts_nexcompat-exosystem=! }
+      }
+      nexcompat-final_rage.txlist =
+      {
+        final_rage/gspawn1-1.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/gspawn1-2.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/lamp2-1.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/lamp2-2.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/lava.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/lt1.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/nodraw-lava.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/pspawn1-1.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+        final_rage/pspawn1-2.wl    = { t_Xonoticscripts_nexcompat-final_rage=! }
+      }
+      nexcompat-harlequin_sky.txlist =
+      {
+        harlequin_sky/jf-asteroid_sky.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-asteroid_sky_noglow.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-io_sky.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-io_sky_noglow.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-nebula_sky.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-nebula_sky2.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-nebula_sky_noglow.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-palace.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+        harlequin_sky/jf-palace_noglow.wl    = { t_Xonoticscripts_nexcompat-harlequin_sky=! }
+      }
+      nexcompat-hip_interstellar.txlist =
+      {
+        skies/hip_inter.wl    = { t_Xonoticscripts_nexcompat-hip_interstellar=! }
+      }
+      nexcompat-kaznexctf2.txlist =
+      {
+        kaznexctf2/grate.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/grate2.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/grate3.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/large_blue.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/large_red.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/long_light.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/small_blue.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/small_light.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+        kaznexctf2/small_red.wl    = { t_Xonoticscripts_nexcompat-kaznexctf2=! }
+      }
+      nexcompat-liquids.txlist =
+      {
+        liquids/clear_ripple3.wl    = { t_Xonoticscripts_nexcompat-liquids=! }
+      }
+      nexcompat-mandelbrotsky.txlist =
+      {
+        skies/mandelbrot.wl    = { t_Xonoticscripts_nexcompat-mandelbrotsky=! }
+      }
+      nexcompat-morphed.txlist =
+      {
+        morphed/gelslime.wl    = { t_Xonoticscripts_nexcompat-morphed=! }
+        morphed/gelslime_bright.wl    = { t_Xonoticscripts_nexcompat-morphed=! }
+        morphed/gelslime_bright_warp.wl    = { t_Xonoticscripts_nexcompat-morphed=! }
+        morphed/gelslime_warp.wl    = { t_Xonoticscripts_nexcompat-morphed=! }
+      }
+      nexcompat-newsky_asteroids.txlist =
+      {
+        newskies/asteroids.wl    = { t_Xonoticscripts_nexcompat-newsky_asteroids=! }
+      }
+      nexcompat-newsky_planets.txlist =
+      {
+        newskies/planets.wl    = { t_Xonoticscripts_nexcompat-newsky_planets=! }
+      }
+      nexcompat-nexdm18_rmx.txlist =
+      {
+        skies/nex18_rmx.wl    = { t_Xonoticscripts_nexcompat-nexdm18_rmx=! }
+        stralenex1/stralenex5_fakesky.wl    = { t_Xonoticscripts_nexcompat-nexdm18_rmx=! }
+      }
+      nexcompat-official_cmp1.txlist =
+      {
+        amethyst7/purplenebula-cmp1/purplenebula_skybox.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/ame7glass.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/ame7glass_reflect.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/ame7jp.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/e8circle_pur.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/e8clangfloor.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/e8lighttrim_b_pur.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/e8lighttrim_pur.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/e8tinylightpur.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/e8trimlight2_pur.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+        cmp1-dm8/logo.wl    = { t_Xonoticscripts_nexcompat-official_cmp1=! }
+      }
+      nexcompat-racetrack.txlist =
+      {
+        race/nicesky.wl    = { t_Xonoticscripts_nexcompat-racetrack=! }
+        race/track02.wl    = { t_Xonoticscripts_nexcompat-racetrack=! }
+        race/tunel01.wl    = { t_Xonoticscripts_nexcompat-racetrack=! }
+      }
+      nexcompat-reaper.txlist =
+      {
+        Reaptxt/HRBlackBoxSky.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/HRSky.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/HRglow01.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/HRglow02.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/HRglow03.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/HRsun01.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/HSglow01.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/fog_restdusk.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/fog_restnormal.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/lud_Corona.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/rnorm.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/sun.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        Reaptxt/yellowgrad.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        liquids/protolava.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        liquids/slime1.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        shad/shad.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+        water/pool3d_5e.wl    = { t_Xonoticscripts_nexcompat-reaper=! }
+      }
+      nexcompat-ruiner.txlist =
+      {
+        evil3_support/mtlsupgrt2_light.wl    = { t_Xonoticscripts_nexcompat-ruiner=! }
+        liquids/ruiner_water1.wl    = { t_Xonoticscripts_nexcompat-ruiner=! }
+        liquids/ruiner_water2.wl    = { t_Xonoticscripts_nexcompat-ruiner=! }
+        skies/green_storm.wl    = { t_Xonoticscripts_nexcompat-ruiner=! }
+      }
+      nexcompat-sav-graysky1.txlist =
+      {
+        sav-graysky1/sav-graysky1_skybox.wl    = { t_Xonoticscripts_nexcompat-sav-graysky1=! }
+        sav-graysky1/sav-graysky2_skybox.wl    = { t_Xonoticscripts_nexcompat-sav-graysky1=! }
+        sav-graysky1/sav-graysky3lowerlight_skybox.wl    = { t_Xonoticscripts_nexcompat-sav-graysky1=! }
+      }
+      nexcompat-sav-liquids.txlist =
+      {
+        sav-liquids/glass_tube.wl    = { t_Xonoticscripts_nexcompat-sav-liquids=! }
+        sav-liquids/slime1.wl    = { t_Xonoticscripts_nexcompat-sav-liquids=! }
+      }
+      nexcompat-savdm6ish.txlist =
+      {
+        savdm6ish/floor01_5.wl    = { t_Xonoticscripts_nexcompat-savdm6ish=! }
+        savdm6ish/wall14_5.wl    = { t_Xonoticscripts_nexcompat-savdm6ish=! }
+        savdm6ish/wiz1_4.wl    = { t_Xonoticscripts_nexcompat-savdm6ish=! }
+      }
+      nexcompat-sfx.txlist =
+      {
+        sfx/forcefield.wl    = { t_Xonoticscripts_nexcompat-sfx=! }
+      }
+      nexcompat-stormkeep.txlist =
+      {
+        stormkeep/eX_light_u201.wl    = { t_Xonoticscripts_nexcompat-stormkeep=! }
+        stormkeep/lava.wl    = { t_Xonoticscripts_nexcompat-stormkeep=! }
+        stormkeep/lava_flow.wl    = { t_Xonoticscripts_nexcompat-stormkeep=! }
+        stormkeep/rlight.wl    = { t_Xonoticscripts_nexcompat-stormkeep=! }
+      }
+      nexcompat-stralenex1.txlist =
+      {
+        evil8_lights/e8minitrimlight.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        evil8_lights/e8tinylight2k.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        evil8_lights/e8tinylightblue2k.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        evil8_lights/e8trimlight.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        harlequin_sky/strale_jf-nebula_sky.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/e6xrst_supprt.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/greennebula.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/light_tube_green.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/slime_rev.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/slimepit_ad-1.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/strale_brown_box.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/strale_grey_box.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/stralenex5.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/stralenex5_1.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/stralenex5_2.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/stralenex5_water.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/stralenex_roundlight.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+        stralenex1/stralenex_trimlight.wl    = { t_Xonoticscripts_nexcompat-stralenex1=! }
+      }
+      nexcompat-stralenex8.txlist =
+      {
+        stralenex8/darkblue_sky.wl    = { t_Xonoticscripts_nexcompat-stralenex8=! }
+      }
+      nexcompat-strength.txlist =
+      {
+        evil6_lights/e6v_light_s_2k.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        evil6_walls/e6girdergrate2b-trans.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        skies/desert.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        skies/strength-sky.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/e6redmtl_light.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/e8beam_yellow.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/e8circle_yellow.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/eX_cretefloor_01glow.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light-liney-1.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light-liney-2.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light-liney-3.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-1.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-10.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-2.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-3.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-4.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-5.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-6.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-7.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-8.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/light_slots-9.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/sand.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/strength_jp.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/strength_rlight.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/strength_yglow.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/strength_ylight.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+        strength/whitelight.wl    = { t_Xonoticscripts_nexcompat-strength=! }
+      }
+      nexcompat-swamp.txlist =
+      {
+        swamp/ndslime.wl    = { t_Xonoticscripts_nexcompat-swamp=! }
+      }
+      nexcompat-terrain_alphafade.txlist =
+      {
+        terrain_alphafade/alpha_000.wl    = { t_Xonoticscripts_nexcompat-terrain_alphafade=! }
+        terrain_alphafade/alpha_025.wl    = { t_Xonoticscripts_nexcompat-terrain_alphafade=! }
+        terrain_alphafade/alpha_050.wl    = { t_Xonoticscripts_nexcompat-terrain_alphafade=! }
+        terrain_alphafade/alpha_075.wl    = { t_Xonoticscripts_nexcompat-terrain_alphafade=! }
+        terrain_alphafade/alpha_085.wl    = { t_Xonoticscripts_nexcompat-terrain_alphafade=! }
+        terrain_alphafade/alpha_100.wl    = { t_Xonoticscripts_nexcompat-terrain_alphafade=! }
+      }
+      nexcompat-terrain_dotproduct2.txlist =
+      {
+        terrain_dotproduct2/grass01-rock05.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+        terrain_dotproduct2/leafs01-rock02.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+        terrain_dotproduct2/mossrock02-mudground04.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+        terrain_dotproduct2/mudground01_rock01.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+        terrain_dotproduct2/mudground02-rock06.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+        terrain_dotproduct2/sand-rock07.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+        terrain_dotproduct2/snow-rock05.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2=! }
+      }
+      nexcompat-terrain_dotproduct2projected.txlist =
+      {
+        terrain_dotproduct2projected/grass01-rock05.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+        terrain_dotproduct2projected/leafs01-rock02.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+        terrain_dotproduct2projected/mossrock02-mudground04.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+        terrain_dotproduct2projected/mudground01_rock01.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+        terrain_dotproduct2projected/mudground02-rock06.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+        terrain_dotproduct2projected/sand-rock07.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+        terrain_dotproduct2projected/snow-rock05.wl    = { t_Xonoticscripts_nexcompat-terrain_dotproduct2projected=! }
+      }
+      nexcompat-test3.txlist =
+      {
+        test3/terrain_0.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_0to1.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_0to2.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_0to3.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_0to4.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_0to5.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_1.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_1to2.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_1to3.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_1to4.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_1to5.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_2.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_2to3.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_2to4.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_2to5.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_3.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_3to4.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_3to5.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_4.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_4to5.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+        test3/terrain_5.wl    = { t_Xonoticscripts_nexcompat-test3=! }
+      }
+      nexcompat-toxic.txlist =
+      {
+        toxic/toxic_grate.wl    = { t_Xonoticscripts_nexcompat-toxic=! }
+        toxic/toxic_sky.wl    = { t_Xonoticscripts_nexcompat-toxic=! }
+        toxic/toxic_slime.wl    = { t_Xonoticscripts_nexcompat-toxic=! }
+        toxic/toxic_slime_tube.wl    = { t_Xonoticscripts_nexcompat-toxic=! }
+      }
+      nexcompat-trak4.txlist =
+      {
+        trak4/brick1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/brick2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/brick2a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/brick2b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete1a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete1b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete2a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete3.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete4a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete4b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete5a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete5b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/concrete6.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door1a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door1b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door1c.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door1d.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/door1e.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/exit.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/grate1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/grate2a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/help.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/iso1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/iso2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/iso3.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/northwing.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_blue.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_dblue.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_green.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_pink.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_purp.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_red.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paint_yellow.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/painted2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/paperdecal.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/pills.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3-2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3a-2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3a-3.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3b-2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3c.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3c-2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3c-3.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3d.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/plaster3d-2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/rust1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/rust1a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/rust1b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/rust1c.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/rust2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/rust2b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/southwing.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/theater1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/theater2.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/tile1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/tile2a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/tile2b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/tile3a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/tile3b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/tile3c.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1a.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1b.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1c.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1d.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1e.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/trim1f.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/wallpainting.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/wood1c.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+        trak4/wood1d.wl    = { t_Xonoticscripts_nexcompat-trak4=! }
+      }
+      nexcompat-trak5.txlist =
+      {
+        trak5/base1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/base1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/base1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/basictrim1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/basictrim1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/ceil1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/comp1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/comp1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/comp1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/comp1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/comp1e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/crate1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/crate1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/crate1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/crate1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/crate1e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/floor2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/floor2b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/floor2c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/floor2d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/floor2e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/floor2f.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/glass.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/grate1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/grate2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/graypanel1.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/graypanel2.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/graypanel3.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/holes1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/holes1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/light1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/light2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/light3a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/panel1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/panel2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/pipe1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/pipe1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/pipe1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/pipe1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/pipez1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/pits1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/ribs1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/stair1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/thingy1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile1e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile2b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile2c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile2d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile3a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile3b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile3c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile3d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile3e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile4a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile4b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile4c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile4d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile4e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile5a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile5b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile5c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile5d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/tile5e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim2b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim3a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim3b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim3c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim3d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim3e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim4a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim4b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim4c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim4d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim4e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim5a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim5b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim5c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim5d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim5e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim6a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim6b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim6c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim6d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim6e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim7a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim7b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim7c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim7d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim7e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim8a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim8b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim8c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim8d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim8e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim9a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim9b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim9c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim9d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trim9e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trisec1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trisec1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trisec1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/trisec1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel1e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel2b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel2c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel2d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/vertpanel2e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall1a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall1b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall1c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall1d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall1e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall2a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall2b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall2c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall2d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall2e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall3a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall3b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall3c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall3d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall3e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall4a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall4b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall4c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall4d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall4e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall5a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall5b.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall5c.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall5d.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall5e.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall6a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+        trak5/wall7a.wl    = { t_Xonoticscripts_nexcompat-trak5=! }
+      }
+      nexcompat-tree.txlist =
+      {
+        morph/leaves3.wl    = { t_Xonoticscripts_nexcompat-tree=! }
+        morphed/flagblue.wl    = { t_Xonoticscripts_nexcompat-tree=! }
+        morphed/flagred.wl    = { t_Xonoticscripts_nexcompat-tree=! }
+        morphed/skyhigh.wl    = { t_Xonoticscripts_nexcompat-tree=! }
+      }
+      nexcompat-tutorial.txlist =
+      {
+        tutorial/1.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/10.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/11.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/2.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/3.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/4.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/5.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/6.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/7.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/8.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/9.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+        tutorial/nonsolidglass.wl    = { t_Xonoticscripts_nexcompat-tutorial=! }
+      }
+      nexcompat-tznex01.txlist =
+      {
+        tznex01/stained_glass_nexlogo_blue.wl    = { t_Xonoticscripts_nexcompat-tznex01=! }
+        tznex01/stained_glass_nexlogo_red.wl    = { t_Xonoticscripts_nexcompat-tznex01=! }
+      }
+      nexcompat-water.txlist =
+      {
+        water/slime1.wl    = { t_Xonoticscripts_nexcompat-water=! }
+        water/slime2.wl    = { t_Xonoticscripts_nexcompat-water=! }
+        water/water0.wl    = { t_Xonoticscripts_nexcompat-water=! }
+        water/water1.wl    = { t_Xonoticscripts_nexcompat-water=! }
+        water/water2.wl    = { t_Xonoticscripts_nexcompat-water=! }
+      }
+      phillipk1x.txlist =
+      {
+        phillipk1x/floors-pk01_floor01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_floor01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_floor02a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_floor02b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_gra_floor01.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_gra_floor02.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_pan_floor01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_pan_floor01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_pan_floor02a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_pan_floor02b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_tile_floor01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/floors-pk01_tile_floor01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel01c.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel02a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel02b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel03a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel03b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel_small01.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/panel-pk01_panel_small02.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/roof-pk01_roof01.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_door01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_door01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_door01c.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_pan_trim01.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_pan_trim01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall01b2.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall01b3.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall02a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall02b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall02c.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_thin_wall02d.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_trims01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/trim-pk01_trims01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/vent-pk01_vent_wall01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/vent-pk01_vent_wall01b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/vent-pk01_vent_wall02.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/vent-pk01_vent_wall03.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall01.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall01a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall02a1.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall02a2.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall02a3.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall02b1.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall02b2.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_pan_wall02b3.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall01.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall02a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall02b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall02c.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall03a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall03a2.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall03b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall03b2.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall04a.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall04a2.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall04b.wl    = { t_Xonoticscripts_phillipk1x=! }
+        phillipk1x/walls-pk01_wall04b2.wl    = { t_Xonoticscripts_phillipk1x=! }
+      }
+      phillipk2x.txlist =
+      {
+        phillipk2x/base-pk02_generic01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/base-pk02_generic01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/ceiling-pk02_ceiling02.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/ceiling-pk02_ceiling03.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/computer-pk02_computer01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/computer-pk02_computer01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/computer-pk02_computer01c.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/computer-pk02_switches01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/computer-pk02_switches01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/computer-pk02_switches01c.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num00.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num02.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num03.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num04.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num05.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num06.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num07.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num08.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_num09.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_numa.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_numb.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/decals-pk02_dec_numc.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor02.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor03.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor04.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor05.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor06a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor06b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor07.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor08a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor08b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor09a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor09b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor10.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor11.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor12a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor12b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor13a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor13b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor_cyl01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/floor-pk02_floor_cyl02.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light01a-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light01b-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02a-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02b-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02c.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02c-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02d.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light02d-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light03.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/lights-pk02_light03-surfacelight.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/natural-pk02_rock01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/natural-pk02_sand01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_door01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_door02.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_door03.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_panels01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_panels01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_panels01c.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_plates01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/panels-pk02_plates01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/pipes-pk02_pipes01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim02.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim03.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim04a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim04b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim_set01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim_set01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim_set02a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/trims-pk02_trim_set02b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall01.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall02a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall02b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall02c.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall03a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall03b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall04a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall04b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall05a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall05b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall05c.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall06a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall06b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall07a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall07b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall08a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall08b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall_big01a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall_big01b.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall_big02a.wl    = { t_Xonoticscripts_phillipk2x=! }
+        phillipk2x/walls-pk02_wall_big02b.wl    = { t_Xonoticscripts_phillipk2x=! }
+      }
+      proceduralx.txlist =
+      {
+        proceduralx/pattern-tiles01.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/pattern-tiles02.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/pattern-tiles03.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/pattern-tiles04.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/pattern-tiles05.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/wall-fruitconcrete.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/wall-fruitconcrete_blue.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/wall-fruitconcrete_purple.wl    = { t_Xonoticscripts_proceduralx=! }
+        proceduralx/wall-fruitconcrete_red.wl    = { t_Xonoticscripts_proceduralx=! }
+      }
+      screens.txlist =
+      {
+        screens/screen_airlock0.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_airlock1.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_door0.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_door1.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_elevator0.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_elevator1.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_error.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_toggle0.wl    = { t_Xonoticscripts_screens=! }
+        screens/screen_toggle1.wl    = { t_Xonoticscripts_screens=! }
+      }
+      skies_calm_sea.txlist =
+      {
+        skies/calm_sea.wl    = { t_Xonoticscripts_skies_calm_sea=! }
+      }
+      skies_distant_sunset.txlist =
+      {
+        skies/distant_sunset.wl    = { t_Xonoticscripts_skies_distant_sunset=! }
+      }
+      skies_exosystem.txlist =
+      {
+        skies/exosystem.wl    = { t_Xonoticscripts_skies_exosystem=! }
+      }
+      skies_exosystem2.txlist =
+      {
+        skies/exosystem2.wl    = { t_Xonoticscripts_skies_exosystem2=! }
+        skies/exosystem2_high_elevation.wl    = { t_Xonoticscripts_skies_exosystem2=! }
+      }
+      skies_extragalactic.txlist =
+      {
+        skies/extragalactic_asteroids.wl    = { t_Xonoticscripts_skies_extragalactic=! }
+        skies/extragalactic_nebulae.wl    = { t_Xonoticscripts_skies_extragalactic=! }
+        skies/extragalactic_planets.wl    = { t_Xonoticscripts_skies_extragalactic=! }
+        skies/extragalactic_planets_intensity_196.wl    = { t_Xonoticscripts_skies_extragalactic=! }
+        skies/extragalactic_planets_intensity_256.wl    = { t_Xonoticscripts_skies_extragalactic=! }
+      }
+      skies_heaven.txlist =
+      {
+        skies/heaven.wl    = { t_Xonoticscripts_skies_heaven=! }
+      }
+      skies_polluted_earth.txlist =
+      {
+        skies/polluted_earth.wl    = { t_Xonoticscripts_skies_polluted_earth=! }
+      }
+      stein1x.txlist =
+      {
+        stein1x/base-cement01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/base-cracks.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/base-crete01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/base-crete02.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/base-marble.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/base-misc01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/floor-tile01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/misc-fan01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/terrain-mossystone01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/terrain-mossystone02.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/terrain-mossystone03.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/trim-cement01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/trim-peeling01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/wall-cement01.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/wall-cement02.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/wall-cement03.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/wall-cement04.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/wall-cement05.wl    = { t_Xonoticscripts_stein1x=! }
+        stein1x/wall-cement06.wl    = { t_Xonoticscripts_stein1x=! }
+      }
+      techpanelx.txlist =
+      {
+        techpanelx/base-diamondplate.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/floor-panel1.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/floor-panel2.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech1b.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech1g.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech1r.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech1y.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech2b.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech2g.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech2r.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech2y.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-tech4.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel-techcrate.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/panel_tech3.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/trim-section1b.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/trim-section1g.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/trim-section1r.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/trim-section1y.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/wall-section2r.wl    = { t_Xonoticscripts_techpanelx=! }
+        techpanelx/wall-section3.wl    = { t_Xonoticscripts_techpanelx=! }
+      }
+      terrain01x.txlist =
+      {
+        terrain01x/blends-mars-rock01-ground01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/blends-mars-rock01-ground01-projected.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/blends-mars-rock01-sand04.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/blends-mars-rock01-sand04-projected.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/blends-mars-rock02-ground01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/blends-mars-rock02-ground01-projected.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-barren01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-barren02.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-drylake01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-drylake02.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-goopit.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-gravel01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-ice01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-mars01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-mud01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-mud02.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-sand01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-sand02.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-sand03.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/ground-sand04.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/rock-mars01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/rock-mars02.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/rock-rock01.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/rock-rock02.wl    = { t_Xonoticscripts_terrain01x=! }
+        terrain01x/rock-rock03.wl    = { t_Xonoticscripts_terrain01x=! }
+      }
+      trak4x.txlist =
+      {
+        trak4x/base-concrete1a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete1b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete2a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete3.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete4a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete4b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete5a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete5b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-concrete6.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_blue.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_dblue.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_green.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_pink.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_purp.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_red.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-paint_yellow.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-painted2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-rust1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-rust1a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-rust1b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-rust1c.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-rust2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/base-rust2b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-door.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-exit.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-help.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-iso1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-iso2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-iso3.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-northwing.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-paperdecal.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-pills.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-southwing.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-theater1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-theater2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/decal-wallpainting.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/floor-tile1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/floor-tile2a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/floor-tile2b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/floor-tile3a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/floor-tile3b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/floor-tile3c.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-grate1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-grate2a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1c.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1d.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1e.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/trim-trim1f.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-brick1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-brick2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-brick2a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-brick2b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-door1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-door1a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-door1b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-door1c.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-door1d.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-door1e.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster1.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3-2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3a.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3a-2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3a-3.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3b.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3b-2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3c.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3c-2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3c-3.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3d.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wall-plaster3d-2.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wood1c.wl    = { t_Xonoticscripts_trak4x=! }
+        trak4x/wood1d.wl    = { t_Xonoticscripts_trak4x=! }
+      }
+      trak5x.txlist =
+      {
+        trak5x/base-base1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-base1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-base1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-holes1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-holes1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-pipe1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-pipe1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-pipe1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-pipe1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-pipe1e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-pits1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-ribs1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/base-thread1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor2b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor2c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor2d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor2e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-floor2f.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-hex1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile1e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile2b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile2c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile2d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile3a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile3b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile3c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile3d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile3e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile4a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile4b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile4c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile4d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile4e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile5a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile5b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile5c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile5d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/floor-tile5e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light1a-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light1b-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light1c-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2a-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2b-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2c-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light2d-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light3a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light3a-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light3b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/light-light3b-surfacelight.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/misc-button1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/misc-glass.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/misc-pipez1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/misc-thingy1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-block1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-ceil1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-comp1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-comp1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-comp1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-comp1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-comp1e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-crate1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-crate1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-crate1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-crate1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-crate1e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-grate1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-grate2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-graypanel1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-graypanel2.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-graypanel3.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-panel1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-panel1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-panel2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-thinpanel1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-trisec1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-trisec1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel1e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel2b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel2c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel2d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/panel-vertpanel2e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-basictrim1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-basictrim1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-stair1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim1ca.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim1cb.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim2.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim2b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim3a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim3b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim3c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim3d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim3e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim4a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim4b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim4c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim4d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim4e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim5a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim5b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim5c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim5d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim5e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim6a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim6b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim6c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim6d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim6e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim7a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim7b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim7c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim7d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim7e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim8a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim8b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim8c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim8d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim8e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim9a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim9b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim9c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim9d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trim9e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trisec1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-trisec1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/trim-vert1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall1.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall1a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall1b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall1c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall1d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall1e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall2.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall2a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall2b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall2c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall2d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall2e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall3a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall3b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall3c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall3d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall3e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall4a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall4b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall4c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall4d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall4e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall5a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall5b.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall5c.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall5d.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall5e.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall6a.wl    = { t_Xonoticscripts_trak5x=! }
+        trak5x/wall-wall7a.wl    = { t_Xonoticscripts_trak5x=! }
+      }
+      trak6x.txlist =
+      {
+        trak6x/base-base1a.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/base-base1b.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/base-base1b_dirty.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/base-base1c.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/base-pipe2.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/base-pitted1.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/base-pitted1a.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/floor-tile2.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/floor-tile3.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/floor-tile4a.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/light-light1.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/light-light1-surfacelight.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/misc-greeble.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/panel-crate1.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/panel-grate2.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/panel-panel1.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/trim-trim1.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/trim-trim2.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/trim-trim3a.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/trim-trim3b.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/trim-trim4.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/wall-wall2.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/wall-wall3.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/wall-wall5.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/wall-wall6.wl    = { t_Xonoticscripts_trak6x=! }
+        trak6x/wall-wall6a.wl    = { t_Xonoticscripts_trak6x=! }
+      }
+      trak7x.txlist =
+      {
+        trak7x/base-pipe1.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/floor-tile1.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/floor-tile1a.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/panel-vent1.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/panel-vpanel1.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/wall-wall1.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/wall-wall1b.wl    = { t_Xonoticscripts_trak7x=! }
+        trak7x/wall-wallplain1.wl    = { t_Xonoticscripts_trak7x=! }
+      }
+    }
+  }
+}
