@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 6
 ============
+* [cdunde]: Added full game support for Xonotic including .md3 model displaying.
+
 * [DanielPharos]: Fully fixed HL1 BSP MipTex saving.
 
 * [DanielPharos]: Try to save everything in a texturelist. Helps HL1 BSP MipTex saving.
