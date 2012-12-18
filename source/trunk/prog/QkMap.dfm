@@ -1,6 +1,6 @@
 inherited FQMap: TFQMap
-  Left = 711
-  Top = 535
+  Left = 717
+  Top = 541
   PixelsPerInch = 96
   TextHeight = 13
   inherited leftdock: TDock97

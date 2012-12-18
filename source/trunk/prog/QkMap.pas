@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.105  2012/12/18 02:19:23  cdunde
+Setup a new game support for Xonotic with .md3 model displaying.
+
 Revision 1.104  2012/09/05 18:18:59  danielpharos
 Moved some map options around to make them more findable, and to make them work again.
 
@@ -2718,7 +2721,7 @@ begin
      else if CharModeJeu=mjRTCWET then
        Result:=CharModeJeu
      else if CharModeJeu=mjNEXUIZ then
-       Result:=CharModeJeu
+       Result:=CharModeJeu  
      else if CharModeJeu=mjXonotic then
        Result:=CharModeJeu
      else if CharModeJeu=mjWarsow then
