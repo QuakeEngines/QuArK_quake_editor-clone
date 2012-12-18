@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.104  2012/09/05 18:18:59  danielpharos
+Moved some map options around to make them more findable, and to make them work again.
+
 Revision 1.103  2012/07/01 12:11:08  danielpharos
 Made the .map importer more resilient against bad brushes.
 
@@ -2715,6 +2718,8 @@ begin
      else if CharModeJeu=mjRTCWET then
        Result:=CharModeJeu
      else if CharModeJeu=mjNEXUIZ then
+       Result:=CharModeJeu
+     else if CharModeJeu=mjXonotic then
        Result:=CharModeJeu
      else if CharModeJeu=mjWarsow then
        Result:=CharModeJeu;

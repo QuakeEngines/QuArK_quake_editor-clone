@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2010/06/15 18:04:49  danielpharos
+Attempt to fix .qkl files being saved with the wrong extension.
+
 Revision 1.47  2009/09/23 20:37:16  danielpharos
 Fix tags of models not loading outside of pak-files.
 
@@ -874,6 +877,8 @@ begin
         ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (CharModeJeu=mjNEXUIZ) then
         ObjectGameCode := mjNEXUIZ;
+      if (head.id='IDP3') and (CharModeJeu=mjXonotic) then
+        ObjectGameCode := mjXonotic;
       if (head.id='IDP3') and (CharModeJeu=mjWarsow) then
         ObjectGameCode := mjWarsow;
       if (head.id='IDP3') and (head.version=15) then

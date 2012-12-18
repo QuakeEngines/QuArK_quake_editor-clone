@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.73  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -621,7 +624,7 @@ const
  cSignatureBspQ2 = $50534249; {"IBSP" 4-letter header}
 
  cVersionBspQ2   = $00000026; {Quake-2 .BSP}
- cVersionBspQ3   = $0000002E; {Quake-3 or STVEF or Nexuiz .BSP}
+ cVersionBspQ3   = $0000002E; {Quake-3 or STVEF or Nexuiz or Xonotic .BSP}
  cVersionBspDK   = $00000029; {Daikatana .BSP}
  cVersionBspRTCW = $0000002F; {RTCW .BSP}
   

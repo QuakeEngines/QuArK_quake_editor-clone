@@ -1,19 +1,21 @@
 inherited FQMap: TFQMap
+  Left = 711
+  Top = 535
   PixelsPerInch = 96
   TextHeight = 13
   inherited leftdock: TDock97
     Top = 51
-    Height = 201
+    Height = 208
   end
   inherited rightdock: TDock97
     Top = 51
-    Height = 201
+    Height = 208
   end
   object Panel2: TPanel
     Left = 9
     Top = 51
     Width = 409
-    Height = 201
+    Height = 208
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 1

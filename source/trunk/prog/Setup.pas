@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2012/03/22 13:12:24  danielpharos
+Removed unnecessary functions, and moved MipTex flag into Defaults.qrk.
+
 Revision 1.88  2011/07/31 11:00:11  danielpharos
 Moved a 'use' down.
 
@@ -378,6 +381,7 @@ between gamemodes.}
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }   
  mjModelEditor  = 'x';  { QuArK Model editor }
+ mjXonotic      = 'y';  { Xonotic }
  mjNEXUIZ       = 'z';  { NEXUIZ }
 
  mjAny          = #1;

@@ -1,4 +1,6 @@
 inherited FQBsp: TFQBsp
+  Left = 312
+  Top = 343
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
