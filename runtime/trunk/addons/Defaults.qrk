@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.543  2012/12/18 05:52:22  cdunde
+//Setup a new game support for Xonotic with .md3 model displaying.
+//
 //Revision 1.542  2012/10/07 17:57:35  danielpharos
 //Workaround for SOF1 tools needing the wrong slashes.
 //
@@ -4295,7 +4298,7 @@ QQRKSRC1
       {
         CheckAddonInstalled = "1"
         Game = "Xonotic"
-        Code = "z" // Hardcoded value in Setup.PAS
+        Code = "y" // Hardcoded value in Setup.PAS
 
         Program = "xonotic-sdl.exe +map %filename% +seta sv_pure 0"
         Directory = "C:\Program Files\Xonotic"
@@ -4333,7 +4336,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
 
-        TexturesPath = "textures"
+        TexturesPath = ""
         ShadersPath = "scripts"
         Q2TexFlags = "1"
         ShadersType = "a"                       // This game has Quake 3-type shaders
@@ -4343,8 +4346,8 @@ QQRKSRC1
 
         TextureFormat = ".dds"             // primary texture fileextension
         TextureFileExtensions = ".dds,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".dds"
-        TextureWriteFormatA = ".jpg"
+        TextureWriteFormat = ".jpg"
+        TextureWriteFormatA = ".dds"
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "data"
