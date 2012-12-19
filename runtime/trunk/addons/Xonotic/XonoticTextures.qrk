@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2012/12/18 05:52:22  cdunde
+//Setup a new game support for Xonotic with .md3 model displaying.
+//
 //
 
 {
@@ -15,7 +18,7 @@ QQRKSRC1
     Toolbox = "Texture Browser..."
     Root = "Xonotic Textures.qtxfolder"
 
-    t_Xonotic:incl =      { a = "Xonotic" }
+    t_Xonotic:incl =      { a = "data/dds/" }
 
     Xonotic Textures.qtxfolder =
     {

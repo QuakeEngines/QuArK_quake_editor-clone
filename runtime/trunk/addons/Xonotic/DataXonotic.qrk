@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2012/12/18 05:52:22  cdunde
+//Setup a new game support for Xonotic with .md3 model displaying.
+//
 //
 
 {
@@ -113,19 +116,19 @@ QQRKSRC1
   }
   walltex:incl =
   {
-    tex = "textures/egyptsoc_wall/stone01a"
+    tex = "dds/textures/egyptsoc_wall/stone01a"
   }
   floortex:incl =
   {
-    tex = "textures/evil1_floors/asphalt"
+    tex = "dds/textures/evil1_floors/asphalt"
   }
   ceiltex:incl =
   {
-    tex = "textures/desertfactory_wood/wood01"
+    tex = "dds/textures/desertfactory_wood/wood01"
   }
   caulktex:incl =
   {
-    tex = "textures/common/caulk"
+    tex = "dds/textures/common/caulk"
   }
   NewMap:incl =
   {
