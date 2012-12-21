@@ -193,7 +193,7 @@ handling for the Typ="EP" above</b>.
 <pre>
 1) <b>Typ="EP"</b> opens the file browser window.
 2) <b>Txt="Path to QBSP"</b> gives the title at the top of the window.
-3) <b>DefExt="md2; map; pcx"</b> sets the type of file/files to accept.
+3) <b>DefExt="md2; *.map; *.pcx"</b> sets the type of file/files to accept.
                           Set it to "*" if file type does't matter.
 4) <b>BasePath="$Game"</b> sets the Directory that the browser window
                            will start with.
