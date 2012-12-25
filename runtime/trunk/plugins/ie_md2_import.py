@@ -374,8 +374,15 @@ def load_textures(md2):
                 tobj.logcon (md2.skins[i].name)
             skinname = md2.skins[i].name.split('/')
             skin = quarkx.newobj(md2.skins[i].name)
-            image = quarkx.openfileobj(os.getcwd() + "\\" + skinname[len(skinname)-1])
-            skin['Image1'] = image.dictspec['Image1']
+            try:
+                image = quarkx.openfileobj(os.getcwd() + "\\" + skinname[len(skinname)-1])
+                skin['Image1'] = image.dictspec['Image1']
+            except:
+                try:
+                    skinsize = (md2.skin_width, md2.skin_height) # Used for QuArK.
+                    continue
+                except:
+                    continue
             try:
                 skin['Pal'] = image.dictspec['Pal']
             except:
@@ -608,6 +615,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2011/03/13 00:41:47  cdunde
+# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 # Revision 1.13  2011/03/10 20:56:39  cdunde
 # Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 # and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
