@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2010/05/23 15:56:46  danielpharos
+Added some logging during loading and unloading of some external libraries.
+
 Revision 1.29  2010/04/16 19:07:57  danielpharos
 Added default value for ForceUnload argument.
 
@@ -604,43 +607,50 @@ begin
 end;
 
 procedure CheckDevILError(DevILError: DevILError);
+var
+  S, S1: String;
 begin
   while DevILError<>IL_NO_ERROR do
   begin
     case DevILError of
-    IL_INVALID_ENUM: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_ENUM']);
-    IL_OUT_OF_MEMORY: Raise EErrorFmt(5731, ['DevIL library', 'IL_OUT_OF_MEMORY']);
-    IL_FORMAT_NOT_SUPPORTED: Raise EErrorFmt(5731, ['DevIL library', 'IL_FORMAT_NOT_SUPPORTED']);
-    IL_INTERNAL_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_INTERNAL_ERROR']);
-    IL_INVALID_VALUE: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_VALUE']);
-    IL_ILLEGAL_OPERATION: Raise EErrorFmt(5731, ['DevIL library', 'IL_ILLEGAL_OPERATION']);
-    IL_ILLEGAL_FILE_VALUE: Raise EErrorFmt(5731, ['DevIL library', 'IL_ILLEGAL_FILE_VALUE']);
-    IL_INVALID_FILE_HEADER: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_FILE_HEADER']);
-    IL_INVALID_PARAM: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_PARAM']);
-    IL_COULD_NOT_OPEN_FILE: Raise EErrorFmt(5731, ['DevIL library', 'IL_COULD_NOT_OPEN_FILE']);
-    IL_INVALID_EXTENSION: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_EXTENSION']);
-    IL_FILE_ALREADY_EXISTS: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_ALREADY_EXISTS']);
-    IL_OUT_FORMAT_SAME: Raise EErrorFmt(5731, ['DevIL library', 'IL_OUT_FORMAT_SAME']);
-    IL_STACK_OVERFLOW: Raise EErrorFmt(5731, ['DevIL library', 'IL_STACK_OVERFLOW']);
-    IL_STACK_UNDERFLOW: Raise EErrorFmt(5731, ['DevIL library', 'IL_STACK_UNDERFLOW']);
-    IL_INVALID_CONVERSION: Raise EErrorFmt(5731, ['DevIL library', 'IL_INVALID_CONVERSION']);
-    IL_BAD_DIMENSIONS: Raise EErrorFmt(5731, ['DevIL library', 'IL_BAD_DIMENSIONS']);
-    IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_READ_ERROR or IL_FILE_WRITE_ERROR']);
-//    IL_FILE_READ_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_READ_ERROR']);
-//    IL_FILE_WRITE_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_FILE_WRITE_ERROR']);
-    IL_LIB_GIF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_GIF_ERROR']);
-    IL_LIB_JPEG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_JPEG_ERROR']);
-    IL_LIB_PNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_PNG_ERROR']);
-    IL_LIB_TIFF_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_TIFF_ERROR']);
-    IL_LIB_MNG_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_MNG_ERROR']);
-    IL_LIB_JP2_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_JP2_ERROR']);
-    IL_LIB_EXR_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_LIB_EXR_ERROR']);
-    IL_UNKNOWN_ERROR: Raise EErrorFmt(5731, ['DevIL library', 'IL_UNKNOWN_ERROR']);
+    IL_INVALID_ENUM: S1 := 'IL_INVALID_ENUM';
+    IL_OUT_OF_MEMORY: S1 := 'IL_OUT_OF_MEMORY';
+    IL_FORMAT_NOT_SUPPORTED: S1 := 'IL_FORMAT_NOT_SUPPORTED';
+    IL_INTERNAL_ERROR: S1 := 'IL_INTERNAL_ERROR';
+    IL_INVALID_VALUE: S1 := 'IL_INVALID_VALUE';
+    IL_ILLEGAL_OPERATION: S1 := 'IL_ILLEGAL_OPERATION';
+    IL_ILLEGAL_FILE_VALUE: S1 := 'IL_ILLEGAL_FILE_VALUE';
+    IL_INVALID_FILE_HEADER: S1 := 'IL_INVALID_FILE_HEADER';
+    IL_INVALID_PARAM: S1 := 'IL_INVALID_PARAM';
+    IL_COULD_NOT_OPEN_FILE: S1 := 'IL_COULD_NOT_OPEN_FILE';
+    IL_INVALID_EXTENSION: S1 := 'IL_INVALID_EXTENSION';
+    IL_FILE_ALREADY_EXISTS: S1 := 'IL_FILE_ALREADY_EXISTS';
+    IL_OUT_FORMAT_SAME: S1 := 'IL_OUT_FORMAT_SAME';
+    IL_STACK_OVERFLOW: S1 := 'IL_STACK_OVERFLOW';
+    IL_STACK_UNDERFLOW: S1 := 'IL_STACK_UNDERFLOW';
+    IL_INVALID_CONVERSION: S1 := 'IL_INVALID_CONVERSION';
+    IL_BAD_DIMENSIONS: S1 := 'IL_BAD_DIMENSIONS';
+    IL_FILE_READ_ERROR: S1 := 'IL_FILE_READ_ERROR or IL_FILE_WRITE_ERROR';
+//    IL_FILE_READ_ERROR: S1 := 'IL_FILE_READ_ERROR';
+//    IL_FILE_WRITE_ERROR: S1 := 'IL_FILE_WRITE_ERROR';
+    IL_LIB_GIF_ERROR: S1 := 'IL_LIB_GIF_ERROR';
+    IL_LIB_JPEG_ERROR: S1 := 'IL_LIB_JPEG_ERROR';
+    IL_LIB_PNG_ERROR: S1 := 'IL_LIB_PNG_ERROR';
+    IL_LIB_TIFF_ERROR: S1 := 'IL_LIB_TIFF_ERROR';
+    IL_LIB_MNG_ERROR: S1 := 'IL_LIB_MNG_ERROR';
+    IL_LIB_JP2_ERROR: S1 := 'IL_LIB_JP2_ERROR';
+    IL_LIB_EXR_ERROR: S1 := 'IL_LIB_EXR_ERROR';
+    IL_UNKNOWN_ERROR: S1 := 'IL_UNKNOWN_ERROR';
     else
-      Raise EErrorFmt(5731, ['DevIL library', 'Unknown error code']);
+      S1 := 'Unknown error code';
     end;
+    if S <> '' then
+      S := S + ',';
+    S := S + S1;
     DevILError:=ilGetError;
   end;
+  if S <> '' then
+    Raise EErrorFmt(5731, ['DevIL library', S]);
 end;
 
 {-------------------}

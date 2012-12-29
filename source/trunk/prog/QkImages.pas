@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2010/04/16 19:07:57  danielpharos
+Added default value for ForceUnload argument.
+
 Revision 1.33  2010/04/04 13:37:18  danielpharos
 Added additional logging.
 
@@ -394,7 +397,10 @@ begin
     CheckDevILError(ilGetError);
 
     if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), FSize)=IL_FALSE then
+    begin
+      CheckDevILError(ilGetError);
       LogAndRaiseError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
+    end;
     CheckDevILError(ilGetError);
 
     Width:=ilGetInteger(IL_IMAGE_WIDTH);
