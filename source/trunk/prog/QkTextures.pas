@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2011/08/13 22:17:19  danielpharos
+Simplified Steam file path handling. Should be much more uniform.
+
 Revision 1.77  2010/10/16 18:12:21  danielpharos
 Const-ed a few Pal-constants.
 
@@ -531,7 +534,7 @@ begin
   Result:=SetupGameSet.Specifics.Values['ShadersPath'];
   if Result='' then
   begin
-    Log(LOG_WARNING, FmtLoadStr(4460, ['ShadersPath', 'TexturesPath']));
+    Log(LOG_WARNING, FmtLoadStr1(4460, ['ShadersPath', 'TexturesPath']));
     Result:=GameTexturesPath;
   end;
   //FIXME: Other code depends on the trailing slash... Bad!
@@ -543,7 +546,7 @@ begin
   Result:=SetupGameSet.Specifics.Values['MaterialsPath'];
   if Result='' then
   begin
-    Log(LOG_WARNING, FmtLoadStr(4460, ['MaterialsPath', 'ShadersPath']));
+    Log(LOG_WARNING, FmtLoadStr1(4460, ['MaterialsPath', 'ShadersPath']));
     Result:=GameShadersPath;
   end;
   //FIXME: Other code depends on the trailing slash... Bad!
@@ -692,7 +695,7 @@ var
               if Tex1=Nil then
               begin   { texture not found }
                 if Warning then
-                  GlobalWarning(FmtLoadStr(5588, [TexName]))
+                  GlobalWarning(FmtLoadStr1(5588, [TexName]))
               end
               else
               begin
