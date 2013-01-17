@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2012/12/18 02:19:23  cdunde
+Setup a new game support for Xonotic with .md3 model displaying.
+
 Revision 1.48  2010/06/15 18:04:49  danielpharos
 Attempt to fix .qkl files being saved with the wrong extension.
 
@@ -877,8 +880,6 @@ begin
         ObjectGameCode := mjRTCWET;
       if (head.id='IDP3') and (CharModeJeu=mjNEXUIZ) then
         ObjectGameCode := mjNEXUIZ;
-      if (head.id='IDP3') and (CharModeJeu=mjXonotic) then
-        ObjectGameCode := mjXonotic;
       if (head.id='IDP3') and (CharModeJeu=mjWarsow) then
         ObjectGameCode := mjWarsow;
       if (head.id='IDP3') and (head.version=15) then

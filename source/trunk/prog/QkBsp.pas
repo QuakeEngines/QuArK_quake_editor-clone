@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2012/12/18 02:19:23  cdunde
+Setup a new game support for Xonotic with .md3 model displaying.
+
 Revision 1.74  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -624,7 +627,7 @@ const
  cSignatureBspQ2 = $50534249; {"IBSP" 4-letter header}
 
  cVersionBspQ2   = $00000026; {Quake-2 .BSP}
- cVersionBspQ3   = $0000002E; {Quake-3 or STVEF or Nexuiz or Xonotic .BSP}
+ cVersionBspQ3   = $0000002E; {Quake-3 or STVEF or Nexuiz .BSP}
  cVersionBspDK   = $00000029; {Daikatana .BSP}
  cVersionBspRTCW = $0000002F; {RTCW .BSP}
   

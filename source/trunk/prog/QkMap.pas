@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.106  2012/12/18 05:59:43  cdunde
+Setup a new game support for Xonotic with .md3 model displaying.
+
 Revision 1.105  2012/12/18 02:19:23  cdunde
 Setup a new game support for Xonotic with .md3 model displaying.
 
@@ -2721,8 +2724,6 @@ begin
      else if CharModeJeu=mjRTCWET then
        Result:=CharModeJeu
      else if CharModeJeu=mjNEXUIZ then
-       Result:=CharModeJeu  
-     else if CharModeJeu=mjXonotic then
        Result:=CharModeJeu
      else if CharModeJeu=mjWarsow then
        Result:=CharModeJeu;

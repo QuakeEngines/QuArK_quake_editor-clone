@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2012/12/18 02:19:23  cdunde
+Setup a new game support for Xonotic with .md3 model displaying.
+
 Revision 1.89  2012/03/22 13:12:24  danielpharos
 Removed unnecessary functions, and moved MipTex flag into Defaults.qrk.
 
@@ -381,7 +384,6 @@ between gamemodes.}
  mjWarsow       = 'v';  { Warsow }
  mjWildWest     = 'w';  { WildWest }   
  mjModelEditor  = 'x';  { QuArK Model editor }
- mjXonotic      = 'y';  { Xonotic }
  mjNEXUIZ       = 'z';  { NEXUIZ }
 
  mjAny          = #1;
