@@ -218,6 +218,7 @@ class ModelEditor(BaseEditor):
         self.Root = Root
 
         if self.Root.name.endswith(":mr"):
+            # Fills the ModelComponentList.
             if self.Root.dictitems.has_key("ModelComponentList:sd"):
                 datastream = self.Root.dictitems['ModelComponentList:sd']['data'].replace('"$0A"', '\r\n')
                 UnflattenModelComponentList(self, datastream)
@@ -230,7 +231,7 @@ class ModelEditor(BaseEditor):
                 if item.endswith(":mc"):
                     comp = self.Root.dictitems[item]
                     componentnames.append(item)
-                    if not self.Root.dictitems.has_key("ModelComponentList:sd"):
+                    if not self.Root.dictitems.has_key("ModelComponentList:sd") or not self.SkinViewList['tristodraw'].has_key(comp):
                         ### Creates the editor.ModelComponentList 'tristodraw' dictionary list for the "component" sent to this function.
                         make_tristodraw_dict(self, comp)
                         if not self.ModelComponentList.has_key(comp.name):
@@ -1867,6 +1868,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.164  2011/05/30 20:46:32  cdunde
+#Added frame name change to complete updatings and AutoFrameRenaming function.
+#
 #Revision 1.163  2011/03/15 08:25:46  cdunde
 #Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #

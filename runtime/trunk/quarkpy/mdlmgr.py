@@ -88,7 +88,6 @@ class ModelLayout(BaseLayout):
             newsd = quarkx.newobj('ModelComponentList:sd')
             newsd['data'] = FlattenModelComponentList(self.editor)
             self.editor.Root.appenditem(newsd)
-        
 
     def getskin(self):
         "Use currentskin or find new selected skin."
@@ -1449,6 +1448,16 @@ class ModelLayout(BaseLayout):
                     del self.editor.ModelComponentList[changednames[0][0]]
                     self.editor.ModelComponentList[changednames[0][1]] = tempdata
 
+                # This section preserves, and passes on, data in the SkinViewList (if any) when a component is renamed.
+                tempdata = self.editor.SkinViewList['tristodraw'][changednames[0][0]]
+                del self.editor.SkinViewList['tristodraw'][changednames[0][0]]
+                self.editor.SkinViewList['tristodraw'][changednames[0][1]] = tempdata
+
+                if self.editor.SkinViewList['handlepos'].has_key(changednames[0][0]):
+                    tempdata = self.editor.SkinViewList['handlepos'][changednames[0][0]]
+                    del self.editor.SkinViewList['handlepos'][changednames[0][0]]
+                    self.editor.SkinViewList['handlepos'][changednames[0][1]] = tempdata
+
                 # This section preserves, and passes on, data to the Bones (if any) when a component is renamed.
                 if len(self.editor.Root.dictitems['Skeleton:bg'].subitems) != 0:
                     oldskelgroup = self.editor.Root.dictitems['Skeleton:bg']
@@ -2021,6 +2030,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.137  2012/10/09 05:31:55  cdunde
+#To add dictspec items for Model Root that apply to Quake1 and HexenII models.
+#
 #Revision 1.136  2011/11/13 03:15:10  cdunde
 #To allow the changing of bonecontrol indexes.
 #
