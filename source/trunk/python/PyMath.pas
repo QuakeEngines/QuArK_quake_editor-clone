@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2009/07/30 09:38:57  danielpharos
+Updated website link.
+
 Revision 1.23  2008/09/06 15:57:34  danielpharos
 Moved exception code into separate file.
 
@@ -286,7 +289,7 @@ function MakePyVectv(const v3: vec3_t) : PyVect;
 function PyVect_AsPP(V: PyVect) : TPointProj;
 
 function GetVectAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-{function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;}
+function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 function CompareVect(v1, v2: PyObject) : Integer; cdecl;
 function PrintVect(self: PyObject) : PyObject; cdecl;
 function VectToStr(self: PyObject) : PyObject; cdecl;
@@ -322,7 +325,7 @@ var
    tp_basicsize:   SizeOf(TyVect);
    tp_dealloc:     SimpleDestructor;
    tp_getattr:     GetVectAttr;
-  {tp_setattr:     SetVectAttr;}
+   tp_setattr:     SetVectAttr;
    tp_compare:     CompareVect;
    tp_repr:        PrintVect;
    tp_as_number:   @VectNumbers;
@@ -1726,10 +1729,10 @@ end;*)
 
 function GetVectAttr(self: PyObject; attr: PChar) : PyObject;
 {var
- I, N: Integer;
- o: PyObject;}
+ I, N: Integer;}
 var
  V1: TVect;
+ o: PyObject;
 begin
  try
  {for I:=Low(MethodTable) to High(MethodTable) do
@@ -1739,6 +1742,16 @@ begin
      Exit;
     end;}
   case attr[0] of
+   '_': if StrComp(attr, '__getstate__')=0 then
+         begin
+          Result:=PyDict_New();
+          o:=PyTuple_New(3);
+          PyTuple_SetItem(o, 0, PyFloat_FromDouble(PyVect(self)^.V.x));
+          PyTuple_SetItem(o, 1, PyFloat_FromDouble(PyVect(self)^.V.y));
+          PyTuple_SetItem(o, 2, PyFloat_FromDouble(PyVect(self)^.V.z));
+          PyDict_SetItemString(Result, 'v', o);
+          Exit;
+         end;
    'c': if StrComp(attr, 'copy')=0 then
          begin
           Result:=MakePyVect(PyVect(self)^.V);
@@ -1844,12 +1857,24 @@ begin
  end;
 end;
 
-(*function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer;
+function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer;
+var
+ o: PyObject;
 begin
  try
   Result:=-1;
   case attr[0] of
-   'n': if StrComp(attr, 'name') = 0 then
+   '_': if StrComp(attr, '__setstate__') = 0 then
+         begin
+          o:=PyDict_GetItemString(value, 'v');
+          if o=Nil then Exit;
+          PyVect(self)^.V.x:=PyFloat_AsDouble(PyTuple_GetItem(o, 0));
+          PyVect(self)^.V.y:=PyFloat_AsDouble(PyTuple_GetItem(o, 1));
+          PyVect(self)^.V.z:=PyFloat_AsDouble(PyTuple_GetItem(o, 2));
+          Result:=0;
+          Exit;
+         end;
+ (*'n': if StrComp(attr, 'name') = 0 then
          begin
           P:=PyString_AsString(value);
           if P=Nil then Exit;
@@ -1857,7 +1882,7 @@ begin
            Name:=P;
           Result:=0;
           Exit;
-         end;
+         end;*)
   end;
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=-1;
@@ -1865,7 +1890,7 @@ begin
   EBackToPython;
   Result:=-1;
  end;
-end;*)
+end;
 
 function CompareVect(v1, v2: PyObject) : Integer;
 var
