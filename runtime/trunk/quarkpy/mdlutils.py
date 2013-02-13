@@ -2545,9 +2545,9 @@ def ConvertEditorFaceObject(editor, newobjectslist, flags, view, undomsg, option
             VertToMove = []
             tuplename = tuple(str(s) for s in face.shortname.split(','))
             compname, tri_index, ver_index0, ver_index1, ver_index2 = tuplename
-            VertToCheck0 = [int(ver_index0), quarkx.vect(face["v"][0], face["v"][1], face["v"][2]) - quarkx.vect(0.0,0.0,0.0)/view.info["scale"]*2]
-            VertToCheck1 = [int(ver_index1), quarkx.vect(face["v"][3], face["v"][4], face["v"][5]) - quarkx.vect(0.0,0.0,0.0)/view.info["scale"]*2]
-            VertToCheck2 = [int(ver_index2), quarkx.vect(face["v"][6], face["v"][7], face["v"][8]) - quarkx.vect(0.0,0.0,0.0)/view.info["scale"]*2]
+            VertToCheck0 = [int(ver_index0), quarkx.vect(face["v"][0], face["v"][1], face["v"][2])]
+            VertToCheck1 = [int(ver_index1), quarkx.vect(face["v"][3], face["v"][4], face["v"][5])]
+            VertToCheck2 = [int(ver_index2), quarkx.vect(face["v"][6], face["v"][7], face["v"][8])]
             if not (VertToCheck0 in VertToMove):
                 VertToMove = VertToMove + [VertToCheck0]
             if not (VertToCheck1 in VertToMove):
@@ -4938,6 +4938,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.172  2013/02/11 21:05:44  cdunde
+#To remove 1 unit hard coded offset causing misplacement of dragged faces.
+#
 #Revision 1.171  2012/10/09 05:27:44  cdunde
 #To stop console error.
 #
