@@ -292,6 +292,9 @@ class TAN_Surface:
 
         # Fill the Triangles data and Tex UVs Coords data.
         Tris = Component.triangles
+        user_skins_list = Component.dictitems['Skins:sg']
+        if str(Component.dictspec['skinsize']) != str(user_skins_list.subitems[0].dictspec['Size']):
+            Component['skinsize'] = user_skins_list.subitems[0].dictspec['Size']
         size = Component.dictspec['skinsize']
         for i in xrange(0, self.numTriangles):
             tri = TAN_Triangle()
@@ -656,6 +659,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".tan Alice\EF2\FAKK2 Exporter", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.3  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #

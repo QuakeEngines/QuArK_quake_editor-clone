@@ -572,6 +572,8 @@ def fill_mdx(mdx, component):
     # Get the skin information.
     user_skins_list = component[0].dictitems['Skins:sg']
     try:
+        if str(component[0].dictspec['skinsize']) != str(user_skins_list.subitems[0].dictspec['Size']):
+            component[0]['skinsize'] = user_skins_list.subitems[0].dictspec['Size']
         size = component[0].dictspec['skinsize']
         mdx.skin_width = size[0]
         mdx.skin_height = size[1]
@@ -1082,6 +1084,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".mdx Kingpin Exporter", ".mdx file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2011/10/21 06:23:26  cdunde
+# Final update to handle multiple component models.
+#
 # Revision 1.1  2011/10/16 20:57:11  cdunde
 # Added export support for Kingpin static and animation models .mdx file type.
 #

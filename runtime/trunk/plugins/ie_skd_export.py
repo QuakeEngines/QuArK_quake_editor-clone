@@ -291,6 +291,9 @@ class SKD_Surface:
         vertices = baseframe.vertices
         comp_name = Component.name
         Tris = Component.triangles
+        user_skins_list = Component.dictitems['Skins:sg']
+        if str(Component.dictspec['skinsize']) != str(user_skins_list.subitems[0].dictspec['Size']):
+            Component['skinsize'] = user_skins_list.subitems[0].dictspec['Size']
         skinsize = Component.dictspec['skinsize']
 
         UVs_of_vert = {}
@@ -1498,6 +1501,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2012/01/13 07:50:21  cdunde
+# Change to get away from relying on ModelFolder for exporting models.
+#
 # Revision 1.12  2012/01/09 07:29:37  cdunde
 # To get MoHAA skd_exporter to work with Half-Life 1 HL1_importer models.
 #

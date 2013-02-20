@@ -655,6 +655,8 @@ def fill_fm(fm, component):
     # Get the skin information.
     user_skins_list = component.dictitems['Skins:sg']
     try:
+        if str(component.dictspec['skinsize']) != str(user_skins_list.subitems[0].dictspec['Size']):
+            component['skinsize'] = user_skins_list.subitems[0].dictspec['Size']
         size = component.dictspec['skinsize']
         fm.skin_width = size[0]
         fm.skin_height = size[1]
@@ -1096,6 +1098,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.f
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2011/10/21 19:29:11  cdunde
+# Update for proper GLcommands code processing.
+#
 # Revision 1.6  2011/10/14 05:27:10  cdunde
 # Final, fixed the GLcommands properly.
 #

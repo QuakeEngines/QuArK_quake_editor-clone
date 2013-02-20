@@ -167,6 +167,9 @@ class SKB_Surface:
         vertices = baseframe.vertices
         comp_name = Component.name
         Tris = Component.triangles
+        user_skins_list = Component.dictitems['Skins:sg']
+        if str(Component.dictspec['skinsize']) != str(user_skins_list.subitems[0].dictspec['Size']):
+            Component['skinsize'] = user_skins_list.subitems[0].dictspec['Size']
         skinsize = Component.dictspec['skinsize']
 
         UVs_of_vert = {}
@@ -1250,6 +1253,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2012/01/13 07:50:21  cdunde
+# Change to get away from relying on ModelFolder for exporting models.
+#
 # Revision 1.20  2012/01/09 23:09:54  cdunde
 # Not all model formats process their vtx_offset the same.
 #
