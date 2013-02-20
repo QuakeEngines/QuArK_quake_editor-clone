@@ -37,6 +37,7 @@ textlog = "md2_ie_log.txt"
 progressbar = None
 user_frame_list=[]
 g_scale = 1.0
+editor = None
 
 
 ######################################################
@@ -467,7 +468,10 @@ def fill_md2(md2, component):
     # Get the skin information.
     user_skins_list = component.dictitems['Skins:sg']
     try:
+        if str(component.dictspec['skinsize']) != str(user_skins_list.subitems[0].dictspec['Size']):
+            component['skinsize'] = user_skins_list.subitems[0].dictspec['Size']
         size = component.dictspec['skinsize']
+        size = editor.Root.currentcomponent.currentskin.dictspec['Size']
         md2.skin_width = size[0]
         md2.skin_height = size[1]
         # Use line below as option, embeds skin names into model, none if left out.
@@ -876,7 +880,7 @@ def build_GL_commands(md2):
 # Save MD2 Format
 ######################################################
 def save_md2(filename):
-    global tobj, logging, exportername, textlog, Strings
+    global tobj, logging, exportername, textlog, Strings, editor
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
         return
@@ -943,6 +947,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".md2 Quake 2 Exporter", ".md2 file", "*.md
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2011/10/21 19:29:11  cdunde
+# Update for proper GLcommands code processing.
+#
 # Revision 1.5  2011/09/25 05:59:56  cdunde
 # Minor description correction.
 #
