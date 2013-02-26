@@ -4443,7 +4443,7 @@ class LinearHandle(qhandles.GenericHandle):
 class LinRedHandle(LinearHandle): # for LinRedHandle, the center handle.
     "Linear Circle: handle at the center."
 
-    hint = "           move selection on grid (Ctrl key = free floating)"
+    hint = "           move selection free floating (Ctrl key = on grid)"
 
     def __init__(self, pos, mgr):
         LinearHandle.__init__(self, pos, mgr)
@@ -6604,6 +6604,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.236  2012/04/01 07:50:58  cdunde
+#Additional changes to previous changes.
+#
 #Revision 1.235  2012/03/31 22:28:34  cdunde
 #Fixed rotation values for YZ view not working in Model Editor.
 #
