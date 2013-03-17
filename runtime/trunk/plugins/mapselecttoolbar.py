@@ -33,7 +33,7 @@ def parentclick(m):
         except (AttributeError):
             sides = editor.layout.explorer.sellist
         if (len(sides) > 1):
-            quarkx.msgbox("You have made\na multipal selection.\n\nYou need to select a single face\nor side for this function to work.", MT_ERROR, MB_OK)
+            quarkx.msgbox("You have made\na multiple selection.\n\nYou need to select a single face\nor side for this function to work.", MT_ERROR, MB_OK)
             return
         uniquesel = editor.layout.explorer.uniquesel
         if  uniquesel is not None:
@@ -53,7 +53,7 @@ def childclick(m):
         except (AttributeError):
             sides = editor.layout.explorer.sellist
         if (len(sides) > 1):
-            quarkx.msgbox("You have made\na multipal selection.\n\nYou need to select a single group\nor face for this function to work.", MT_ERROR, MB_OK)
+            quarkx.msgbox("You have made\na multiple selection.\n\nYou need to select a single group\nor face for this function to work.", MT_ERROR, MB_OK)
             return
         uniquesel = editor.layout.explorer.uniquesel
         if  uniquesel is not None:
@@ -74,7 +74,7 @@ def getnext(m):
         except (AttributeError):
             sides = editor.layout.explorer.sellist
         if (len(sides) > 1):
-            quarkx.msgbox("You have made\na multipal selection.\n\nYou need to select a single group, face\nor side for this function to work.", MT_ERROR, MB_OK)
+            quarkx.msgbox("You have made\na multiple selection.\n\nYou need to select a single group, face\nor side for this function to work.", MT_ERROR, MB_OK)
             return
         uniquesel = editor.layout.explorer.uniquesel
         if  uniquesel is not None:
@@ -296,6 +296,9 @@ quarkpy.maptools.toolbars["tb_selectmodes"] = SelectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2005/10/15 00:51:24  cdunde
+# To reinstate headers and history
+#
 # Revision 1.5  2005/08/16 04:03:12  cdunde
 # Fix toolbar arraignment
 #

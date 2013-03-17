@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.16  2010/09/01 08:11:22  cdunde
+#Added entity extraction from game map .bsp files for .qrk file creation of Conversion Tool system.
+#
 #Revision 1.15  2010/08/21 03:17:41  cdunde
 #Additional small fix for the Conversion Tool system.
 #
@@ -1193,7 +1196,7 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                    "Select any one of these files with the '...' button"$0D
                    "or enter this file's type suffix here by hand."$0D
                    "A single file example: tga"$0D
-                   "A multipal file example: tga; *.png"$0D
+                   "A multiple file example: tga; *.png"$0D
                    "The ( ; *.png ) can be added at the end of a seleced file as well."
             }
 
@@ -1251,7 +1254,7 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                    "Select any one of these files with the '...' button"$0D
                    "or enter the GAME SOUND file(s) here by hand."$0D
                    "A single file example: wav"$0D
-                   "A multipal file example: wav; *.mp3"$0D
+                   "A multiple file example: wav; *.mp3"$0D
                    "The ( ; *.mp3 ) can be added at the end of a seleced file as well."
             }
 
@@ -1283,7 +1286,7 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                    "Select any one of these files with the '...' button"$0D
                    "or enter the GAME MUSIC file(s) here by hand."$0D
                    "A single file example: mus"$0D
-                   "A multipal file example: mus; *.mp3"$0D
+                   "A multiple file example: mus; *.mp3"$0D
                    "The ( ; *.mp3 ) can be added at the end of a seleced file as well."
             }
 

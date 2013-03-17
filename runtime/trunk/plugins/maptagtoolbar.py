@@ -40,7 +40,7 @@ def addtoTaggedClick(m):
         return
     for side in sides:
         if (side.type != ":f"):
-            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multipal brushes\n\nYou need to select a single face or vertex point\nof a single brush to be able to add it", MT_ERROR, MB_OK)
+            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multiple brushes\n\nYou need to select a single face or vertex point\nof a single brush to be able to add it", MT_ERROR, MB_OK)
             return
     else:
         taglist = gettaggedlist(editor)
@@ -64,7 +64,7 @@ def removefromTaggedClick(m):
         return
     for side in sides:
         if (side.type != ":f"):
-            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multipal brushes\n\nYou need to select a single face or vertex point\nof a single brush to be able to remove it", MT_ERROR, MB_OK)
+            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multiple brushes\n\nYou need to select a single face or vertex point\nof a single brush to be able to remove it", MT_ERROR, MB_OK)
             return
     else:
         side = editor.layout.explorer.uniquesel
@@ -95,7 +95,7 @@ def linkFaceClick(m):
   tagged = gettagged(editor)
   m.side = editor.layout.explorer.uniquesel
   if gettagged(editor) is None:
-    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multipal selections,\nor not tagged the face\nyou want to link to\nand selected one beside it\nto link.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
+    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multiple selections,\nor not tagged the face\nyou want to link to\nand selected one beside it\nto link.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
     return
   if m.side == tagged:
     quarkx.msgbox("Nothing done\n\nYou have selected the tagged face\nSelect a face beside it to link to.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
@@ -111,7 +111,7 @@ def glueLinkedClick(m):
   side = o
   tagged = gettagged(editor)
   if tagged is None:
-    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multipal selections,\nselected a single brush,\nor not tagged a side.\n\nSee this buttons F1 help for use info.", MT_ERROR, MB_OK)
+    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multiple selections,\nselected a single brush,\nor not tagged a side.\n\nSee this buttons F1 help for use info.", MT_ERROR, MB_OK)
     return
   if side == tagged:
     quarkx.msgbox("Nothing done\n\nYou have selected the tagged face\nSelect another face to link and glue to this one.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
@@ -200,7 +200,7 @@ def taggedWrapClick(m):
   m = qmenu.item("Dummy", None, "") 
   m.side = o 
   if gettaggedlist(editor) is None:
-    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multipal selections,\nor not tagged your sides and\nselected the tagged face\nyou want to (copy) wrap from.", MT_ERROR, MB_OK)
+    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multiple selections,\nor not tagged your sides and\nselected the tagged face\nyou want to (copy) wrap from.", MT_ERROR, MB_OK)
     return
   maptagside.wraptaggedstate(m, o)
   taggedfaces = gettaggedfaces(editor) 
@@ -217,7 +217,7 @@ def pillarWrapClick(m):
   tagged = gettagged(editor)
   side = o
   if gettagged(editor) is None:
-    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multipal selections,\nor not tagged the face\nyou want to (copy) wrap from\nand selected one beside it\nto wrap to.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
+    quarkx.msgbox("Nothing done\n\nEither you have not selected anything,\nmade multiple selections,\nor not tagged the face\nyou want to (copy) wrap from\nand selected one beside it\nto wrap to.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
     return
   if side == tagged:
     quarkx.msgbox("Nothing done\n\nYou have selected the tagged face\nSelect a face beside it to wrap to.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
@@ -264,7 +264,7 @@ def posTexClick(m):
         return
     for side in sides:
         if (side.type != ":f"):
-            quarkx.msgbox("You have selected a brush or multipal brushes\n\nYou need to select a single face of a\nsingle brush to be able to activate\nthis tool and position its texture", MT_ERROR, MB_OK)
+            quarkx.msgbox("You have selected a brush or multiple brushes\n\nYou need to select a single face of a\nsingle brush to be able to activate\nthis tool and position its texture", MT_ERROR, MB_OK)
             return
     o = editor.layout.explorer.uniquesel
     m = qmenu.item("Dummy", None, "")
@@ -279,7 +279,7 @@ def texflagsClick(m):
         quarkx.msgbox("The 'Texture Flags' function is inoperable in this game mode\nbecause this game does not support texture flags or\nthe form has not been setup in the addons Data.qrk file", MT_INFORMATION, MB_OK)
         return
     if editor.layout.explorer.uniquesel is None:
-        quarkx.msgbox("No selection has been made\nor you have selected multipal brushes\n\nYou must first select a brush or single face\nto activate this tool to set its texture flags", MT_ERROR, MB_OK)
+        quarkx.msgbox("No selection has been made\nor you have selected multiple brushes\n\nYou must first select a brush or single face\nto activate this tool to set its texture flags", MT_ERROR, MB_OK)
         return
     try:
         sides = [m.side]
@@ -400,6 +400,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.12  2007/12/28 23:22:41  cdunde
+# Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
+#
 # Revision 1.11  2005/10/15 00:51:56  cdunde
 # To reinstate headers and history
 #

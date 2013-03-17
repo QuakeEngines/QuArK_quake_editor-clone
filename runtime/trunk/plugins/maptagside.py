@@ -692,7 +692,7 @@ def TagSideClick (m):
         return
     for side in sides:
         if (side.type != ":f"):
-            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multipal brushes\n\nYou need to select the face or vertex point\nof a single brush to be able to tag it", MT_ERROR, MB_OK)
+            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multiple brushes\n\nYou need to select the face or vertex point\nof a single brush to be able to tag it", MT_ERROR, MB_OK)
             return
     tagface(sideof(m, editor), editor)
 
@@ -893,7 +893,7 @@ def MirrorFlipTexClick(m):
         return
     for side in sides:
         if (side.type != ":f"):
-            quarkx.msgbox("You have selected a brush or multipal brushes\n\nYou need to select a single face of a\nsingle brush to be able to flip its texture", MT_ERROR, MB_OK)
+            quarkx.msgbox("You have selected a brush or multiple brushes\n\nYou need to select a single face of a\nsingle brush to be able to flip its texture", MT_ERROR, MB_OK)
             return
     #
     # this seems like an awkward technique, & I'd sort of
@@ -1936,6 +1936,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.43  2008/08/21 12:40:38  danielpharos
+#Fixed cut poly menu item disappearing from menu when having a face tagged that can't be cut.
+#
 #Revision 1.42  2008/08/18 20:36:25  danielpharos
 #Removed redundant variable
 #
