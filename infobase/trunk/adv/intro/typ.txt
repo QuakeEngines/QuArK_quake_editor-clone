@@ -96,6 +96,9 @@ EF[0..0]<br>
 <b>Entry field containing Float(s)</b>.<br>
 The last "R" (at third position) means Read/Only.<br>
 EF is special in the way that you can choose how many values you have to enter and how many digits they should have. To set the number of digits after the decimal dot add zeros after EF. To make the field accept more than one value add the number of values at the end.
+<br><br>
+<b><u>NOTE:</u></b><br>
+Do <b>NOT</b> use this for entities, it will not be exported to the .map file. Use Typ="E" above instead.
 </td><td>
 <pre>
 three: = {
