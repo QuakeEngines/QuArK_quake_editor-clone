@@ -1,0 +1,29 @@
+title: Python Notes
+author: Tiglari
+
+Since Python is interpreted, its class system is far more
+flexible than C++ or Delphi, and you can do stuff that you
+can't even dream of in these languages (some of which is
+very useful for GUI-building).  The downside of being
+interpreted is that it's relatively slow.
+
+So things that need to be fast are coded in Delphi, and made available
+to be called as functions in the Python.  These are both
+functions and procedures called as part of the module
+<strong>quarkx</strong>, and also attributes and methods
+of map objects such as faces, poly's etc. that are defined
+in the Delphi code, but need to be accessed from the Python
+code as well.
+
+All of the Delphi-defined stuff is all documented in
+<ref>src/quarkx</ref> which is a fine reference manual.  The Delphi-defined
+stuff integrates very smoothly into Python, and looks native.
+So if you can't find a method-name in the Python code,
+check the Delphi, starting with the quarkx module.
+
+Although your first Python project will probably be a plugin,
+you'll need to use not only quarkx, but also perhaps some of
+the facilities in the module <strong>quarkpy</strong>, where
+many basic facilities are also defined.  Unfortunately the
+contents of quarkpy aren't very well cataloged. Info about
+this, such as it is, is in <ref> adv/quarkpy </ref>.

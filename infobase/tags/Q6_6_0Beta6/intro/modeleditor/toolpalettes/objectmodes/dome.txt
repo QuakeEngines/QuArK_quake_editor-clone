@@ -1,0 +1,15 @@
+title: Dome
+author: cdunde
+
+<img border=1 align=middle>objects5a.png</img>
+<I><u>Quick dome maker</u></I>:  Clicking this button allows you to draw domes in the editor with the <g>LMB</g>
+and each dome will be turned into an actual model object.
+
+Move the mouse forward to add more faces, backwards for fewer faces, right to make it larger and left to make
+it smaller.<br>NOTE: Less than 3 faces will not draw anything.
+
+The amount of its
+<a href="intro.mapeditor.toolpalettes.objectmodes.html#dialogboxes"><i>Object Distortion Dialog</i></a>
+will be the number of sections to create the top, dome, curved part.<br>
+This can make angled sides or a more curved style dome by adding more sections.<br>
+As the mouse is dragged more downward, the sides become more flared outwards.

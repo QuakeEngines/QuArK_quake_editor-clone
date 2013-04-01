@@ -1,0 +1,8 @@
+title: QkObjects.pas
+desc: delay copy typeinfo specadd
+
+This file is the core of the object management of QuArK.
+
+For a general introduction about object management, see
+<ref> src/struct </ref>. This document discusses specific aspects only of the
+code in QkObjects.pas.

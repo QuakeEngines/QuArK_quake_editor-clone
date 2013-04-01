@@ -1,0 +1,40 @@
+title: Suggestions
+author: tiglari, etc.
+
+Suggestions for implementation (proposer parenthesized).  Ideally these
+should be sorted into <ref>plans/q65</ref>, <ref>plans/unlikely</ref>
+or <ref>plans/bigideas</ref>, but for some reason or other I can't make up
+my mind today.
+
+<UL>
+<LI>Path info for file links, so that the files can be anywhere (Seth)
+
+<LI>Rescale textures on vertex drag (rd, currently in exp. plugin).
+
+<LI>Selected groups colored rather than dotted outline (option perhaps?). (rd)
+
+<li>Patch-based terrain builder: (tiglari)
+
+<li>New projection option, 
+'project from nearest plane', emulating classic qe texture
+alignment: the projection of the texture scale on the closest
+axis plane to the tagged face normal is found, then that is
+projected onto the tagged face. (tiglari)
+
+<li>Optional plugins:
+<br>Some plugins wouldn't load unless they were 'registered'
+like addons; this would make it easier to try things out
+<br>Alternative: plugins with 'expmap', etc. prefixes which
+would only load when a 'load experimental plugins' option was
+checked.
+
+<li>Red-hot keys:
+<br>'T', 'W' etc in 3d view would select & tag/wrap etc the
+visible face they were over. (tiglari, quantum red)
+
+<li>Intersection finder:
+<br>A ripoff of the one in bobtoolz
+
+<li>Autocaulker:
+<br>Ditto
+</UL>

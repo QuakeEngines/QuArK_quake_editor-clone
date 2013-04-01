@@ -1,0 +1,19 @@
+title: FPS (frames per second)
+author: cdunde
+
+<img border=1 align=right>fps1.png</img>
+<img border=1 align=right>fps2.png</img>
+FPS or frames per second is the setting as to how fast or slow the selected model component
+animation frames will be drawn in the <ref> ./viewselector </ref> of the editor.
+
+You can select a preset menu fps speed, use the arrows to the right of the menu
+or click on <g>Other...</g> to get the <g>Custom FPS</g> dialog box to pop-up
+to set your own speed.
+
+The up arrow will increase the fps by one and the down arrow will decrease the fps by one on each click.
+
+For the <g>Custom FPS</g> dialog you must press the <g>Enter key</g> for the fps amount
+to become active.<br>
+Clicking the X button will only close the dialog box without changing the setting.
+
+Any of these methods can be used while the frames are being animated and will change that animation rate.

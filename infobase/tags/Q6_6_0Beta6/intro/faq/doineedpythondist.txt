@@ -1,0 +1,6 @@
+title: Do I need a Python distribution installed to run QuArK?
+author: Peter Brett
+
+If you're using a Windows binary snapshot or distribution of QuArK more recent than the beginning of June 2003, QuArK comes with the Python interpreter and all the libraries you need included.
+
+If you're compiling from source, you have the option to compile for a version of Python you have installed on your system.  Please see <ref>src/topics/pyversions</ref> for more information.

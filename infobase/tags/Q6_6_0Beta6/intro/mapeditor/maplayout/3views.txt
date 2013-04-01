@@ -1,0 +1,7 @@
+title: 3 views layout
+author: Decker
+
+<img border=0 align=right>3views.png</img>
+Upper left area is side-view (X,Z)<br>
+Upper right area is full 3D-view (X,Y,Z)<br>
+Lower area is top/down-view (X,Y)

@@ -1,0 +1,20 @@
+title: The default room
+author: Decker
+
+<img width=218 height=161 align=right> image2.png </img>
+When you start the map-editor using the icon described, a default room will be
+presented for you. This you can use to test to see if the build-programs works,
+by issuing a <tt>QuickGO!</tt> from the game menu; which is either Quake-1,
+Hexen-II, Quake-2, Heretic-II, Half-Life, etc., depending on what you have
+selected in the QuArK-explorer games menu.
+
+If you have any problems calling the build-programs, first check the
+<ref> intro/basicknowledge </ref>, next the <ref> intro/configuration/games \ Configuration </ref>
+then the <ref> maped/games </ref> and lastly if you simply can't get it to work,
+mail your problem to the <link forums>QuArK-forum</link>; stating
+for what game you are developing, and a good description of your problem.
+
+There are different views and panels in the map-editor, each with their
+function, which you will be presented to, through this tutorial. You can also
+check the <ref> intro/mapeditor \ map-editor reference pages </ref>, if
+you can't wait.

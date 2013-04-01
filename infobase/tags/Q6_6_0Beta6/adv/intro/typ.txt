@@ -1,0 +1,561 @@
+title: Guide to Typ's
+author: cdunde
+
+Typ's are used in all kinds of forms but the most common are <a href="adv.quarkpy.gui.html#dialogs">Dialog Boxes</a>.
+These are placed within tripple double quotes <g>"""</g> and ends with them also, because it's a multi-line string.<br>
+A <b>very important</b> thing to know and remember about this is how to use a Python defined variable within this
+tripple double quotes area.
+
+First the variable, which can also be a stored setting, must be defind before and outside of the above area like this:
+<code>
+    NbrOfLines = "10"
+</code>
+Then that variable can be used within the tripple double quotes area like this:
+
+<code>
+    mesh_shader: = {Typ="M"
+                    Rows = """ + chr(34) + NbrOfLines + chr(34) + """
+                    Scrollbars="1"
+                    Txt = "mesh shader"
+                    Hint="Contains the full text of this skin texture's shader, if any."$0D
+                         "This can be copied to a text file, changed and saved."
+                   }
+</code>
+The <g>chr(34)</g> items, which is for a single double quote, must be used like this to avoid confusion with the tripple double quotes.
+
+Here is a list of the most common used Typ's in .QRK :form definitions.
+
+Almost all components have some standard specifics you can use:
+
+<u>Hint</u> - displays a help message when the cursor hovers over the item. You can have spread it on several lines.<br>A valid text can look like this:
+
+<code>
+Hint = "Help text"$ODOD"How to spr"
+       "ead text on several lines."
+</code>
+
+The dollar sign is used to enter one or more special/invisible characters. In this case two new-line characters.<br>It is also valid to cut the text off and begin a new line if it becomes too long.<br>The above Hint will display:
+
+<b>Help text
+
+How to spread text on several lines.</b>
+
+<u>Txt</u> - defines the lable. Labels are special in QuArK. If you set their value to "&" they will display the name of the component.<br>So if you have defined a component like this:
+
+<code>
+name: = { Typ="E" Txt="&" } 
+</code>
+
+you will get 'name' as caption for this entry field. This is often used for the labels of entity specifics.
+
+<u>SelectMe</u> - set this to one and the component will become selected when its window/dialog is displayed.<br>This should be used on the first
+component on a dialog only, as it may be confusing to have input directed<br>to a component in the middle from the beginning. 
+
+<b>Note:</b> The first character of Typ works as a flag. If you use a lower-case character the button/entry field will fill<br>all available space
+its caption (Txt) does not occupy.
+
+<table border=1 cellpadding=2 cellspacing=0>
+
+<tr><td align=center>----</td>
+<td align=center><b>Entry fields</b></td>
+<td align=center><b>----</b></td></tr>
+
+<tr><th width=10%>Typ's</th><th width=40%>Description</th><th width=50%>Examples and Comments</th></tr>
+
+<tr><td align=center>
+E<br>
+
+E R
+</td><td valign=top>
+<b>Entry field</b>.<br>
+This is the default type, if Typ="..." is not given.<br>
+Hint: Use "ER" to make it read-only. Use it for simple text entries for read-only text displays.
+</td><td>
+<pre>
+targetname: = { Typ="E" Txt="&" }
+target: = { Txt="&" }
+readonly: = {
+    Typ="ER"
+    Txt="Output:"
+    Hint="Displays the current memory usage."
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+only common specifics (see above)
+</td></tr>
+
+<tr><td align=center>
+EF<br>
+
+EFR<br>
+
+EF[0..0]<br>
+
+[x]
+</td><td valign=top>
+<b>Entry field containing Float(s)</b>.<br>
+The last "R" (at third position) means Read/Only.<br>
+EF is special in the way that you can choose how many values you have to enter and how many digits they should have. To set the number of digits after the decimal dot add zeros after EF. To make the field accept more than one value add the number of values at the end.
+<br><br>
+<b><u>NOTE:</u></b><br>
+Do <b>NOT</b> use this for entities, it will not be exported to the .map file. Use Typ="E" above instead.
+</td><td>
+<pre>
+three: = {
+    Typ="EF003" 
+    Txt="The three values:"
+    Hint="You must enter three values here. They have"
+         "an accuracy of two digits."
+    }<br>
+greater_than_zero: = {
+    Typ="EF00" 
+    Txt="Value:"
+    Min="0.01"
+    Hint="Enter positive value here."
+    }
+</pre>
+<u><i>Important:</i></u>
+To have a dialog round values to the desired accuracy you have to use the LiveEditDlg class. Look at some Python scripts to find out how it works.<br>
+
+<u><i>Specifics:</i></u> 
+Min/Max - set minimum or maximum values with this.<br> 
+</td></tr>
+
+<tr><td align=center>
+ED<br>
+
+EDL
+</td><td valign=top>
+<b>Entry field containing Directory-path (with browse button)</b>.<br>
+The last "L" (at third position) means only the last foldername of the path is to be used.<br>
+</td><td>
+<pre>
+SourceDir: = {
+    Typ="ED"
+    Hint="Full directory-path"
+    CheckFile="Game.exe"
+    }
+
+GameMod: = {
+    Typ="EDL"
+    Hint="Modification folder"
+    }
+</pre>
+<u><i>Specifics:</i></u> 
+CheckFile - set this and the dialog will only enable the Ok button if it finds this<br>file in the chosen directory. 
+</td></tr>
+
+<tr><td align=center>
+ET<br>
+</td><td valign=top>
+<b>Entry field containing Texture-name (with browse button)</b>.<br>
+Opens the texture-browser, if the browse button is pressed.<br>
+</td><td>
+<pre>
+Texture: = {
+    Typ="ET"
+    Hint="Choose texture"
+    }<br>
+QuakeTexture: = {
+    Typ="ET"
+    Hint="Choose a Quake texture"
+    GameCfg="Quake 1"
+    }
+</pre>
+<u><i>Specifics:</i></u> 
+GameCfg - set one of the short game names here to make QuArK switch to this game when the browse button is pressed. You can find these names in the Defaults.qrk 
+</td></tr>
+
+<tr><td align=center>
+EP<br>
+</td><td valign=top>
+<b>Entry field containing Path and File-name (with browse button)</b>.<br>
+Opens a file-dialog, so the user can choose a filename.
+</td><td>
+<pre>
+QBSP1: = { Typ="EP" Txt="Path to QBSP" DefExt="exe" }
+LIGHT1: = { Typ="EP" Txt="Path to QRAD3" DefExt="exe" }
+soundfile: = {
+    Typ=&quot;EP&quot;
+    Txt=&quot;Select a file&quot;
+    DefExt=&quot;WAV&quot;
+    BasePath=&quot;$Game\basedata\sound&quot;
+    CutPath=&quot;$Game\?\sound&quot;
+    AugPath=&quot;sound&quot;
+    }
+</pre>
+</td></tr>
+
+<tr><td align=center>
+EP<br>
+specifics<br>
+</td><td valign=top>
+<b>This is a list of specifics that effect the path<br>
+handling for the Typ="EP" above</b>.
+</td><td>
+<pre>
+1) <b>Typ="EP"</b> opens the file browser window.
+2) <b>Txt="Path to QBSP"</b> gives the title at the top of the window.
+3) <b>DefExt="md2; *.map; *.pcx"</b> sets the type of file/files to accept.
+                          Set it to "*" if file type does't matter.
+4) <b>BasePath="$Game"</b> sets the Directory that the browser window
+                           will start with.
+                      $Game will be converted to the game
+                           directory... for example "C:\Quake2".
+5) <b>CutPath="$Game\?\"</b> will be cut off the beginning of the
+                           full path string.
+                      $Game is the same as above.
+                      ? means that there HAS to be a directory.
+                      * means that there may or may not be a
+                           directory and only stands for ONE
+                           directory. For example
+               "$Game\?\sprites\*\" accepts all of the following:
+                           C:\Quake2\baseq2\sprites\abc.spr
+                           C:\Quake2\xyz\sprites\xyz\abc.spr
+                      but not:
+                           C:\Quake2\baseq2\sprites\a\b\c\abc.spr
+6) <b>DirSep="/"</b> Quake games use '/' as path separator. Using this
+                   specific will convert all the "\" to "/".
+                   Many games don't use the Windows directory
+                   separator '\'. Instead they use '/'.
+7) <b>AugPath="../ "</b>  will augment the modified path and add ../ to
+                           it at the beginning. The DirSep specific
+                           above does not effect this specific,
+                           so proper coding should be used.
+</pre>
+</td></tr>
+
+<tr><td align=center>
+EQ<br>
+</td><td valign=top>
+<b>Entry field with direction button</b>.<br>
+Displays entry field for two floating point entries and 
+4-way directional button as pressed gives floating point entries.<br>
+</td><td>
+<pre><br>
+<img align=left>EQ_btn.png</img>
+</br>
+<br>
+offset: = { Txt = "Offset" Typ="EQ" Hint="x, y offsets" }
+</br>
+</pre>
+</td></tr>
+
+<tr><td align=center>
+EU<br>
+</td><td valign=top>
+<b>Entry field with increase/decrease button</b>.<br>
+Displays entry field for single digit entry and 
+increase/decrease button as pressed gives single digit entry.<br>
+</td><td>
+<pre><br>
+<img align=left>EU_btn.png</img>
+</br>
+<br>
+tilt: = { Txt = "Tilt" Typ="EU" Hint="`tilt' angle, in degrees." }
+</br>
+</pre>
+</td></tr>
+
+<tr><td align=center>
+K<br>
+</td><td valign=top>
+<b>Key entry field</b>.<br>
+Use this if you want to define keyboard shortcuts 
+or otherwise need info in form of a key.<br>
+</td><td>
+<pre><br>
+KeyLeft: = {Typ="K" Txt=" turn left"}
+</br>
+</pre>
+</td></tr>
+
+<tr><td align=center>
+T<br>
+
+TF
+</td><td valign=top>
+<b>Slider bar with sliding button</b>. (only top portions shown)<br>
+T returns integer, TF returns float value when slider released.<br>
+
+<b><u>Continuous</u></b> values can be applied by example code below:
+
+def macro_slider(self, value):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;editor.Root.currentcomponent['control_slider'] = str(value)<br>
+def macro_slider2(self, value):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;editor.Root.currentcomponent['control_slider2'] = str(value)<br>
+
+quarkpy.qmacro.MACRO_slider = macro_slider<br>
+quarkpy.qmacro.MACRO_slider2 = macro_slider2<br>
+</td><td valign=top>
+<img align=right>slider.png</img>
+&nbsp;<u><i>Specifics:</i></u><br>
+&nbsp;Txt = "control slider"<br>
+&nbsp;Hint = "Contains text" # optional.<br>
+&nbsp;Min = "-1000" # shown if 'Labels' below is used.<br>
+&nbsp;Max = "1000" # shown if 'Labels' below is used.<br>
+&nbsp;Steps = "50" # increment of values between Min & Max.<br>
+&nbsp;TickFreq = "5" # number of 'Steps' between tick marks.<br>
+&nbsp;Labels = "1" # To display Min & Max settings above.<br>
+&nbsp;ShowValue = "1" # To display value below slider bar.<br>
+&nbsp;Macro="slider" # To use macro code (shown on left) for continuous value use as slider is moved.<br>
+<P>
+</td></tr>
+
+<tr><td align=center>----</td>
+<td align=center><b>Choices</b></td>
+<td align=center><b>Examples and Comments</b></td></tr>
+
+<tr><td align=center>
+X<br>
+[value]
+</td><td valign=top>
+<b>Checkbox</b>,<br>which sets the bits according to &lt;value&gt;.<br>
+The same specificname may appear, with different &lt;values&gt;, so each bit in the specific can be controlled individually.<br>
+Usually used together with a Cap="...", to tell what the bit controls.
+</td><td>
+<pre>
+spawnflags: = { Typ="X1" Cap="Ambush" Txt="&" }
+spawnflags: = { Typ="X2" Cap="On Trigger" Txt="&" }
+spawnflags: = { Typ="X128" Cap="X Axis" Txt="&" }
+option: = { Typ="X" Cap="on/off" Txt="An option:" }
+</pre><br>
+
+<u><i>Specifics:</i></u>
+Cap - Like Txt, but to the right of the checkbox. Clicking on the text will toggle the option. 
+</td></tr>
+
+<tr><td align=center>
+C<br>
+
+CL
+</td><td valign=top>
+<b>Combo box</b>.<br>
+A predefined list of choices and their values. To use this type, the <i>items</i> and <i>values</i> must also be set, as can be seen in the example.<br>
+Each choice in the list will be indicated by a newline ($0D), except for the last choice!<br>
+
+"CL" will create a list only without an entry field. You have to set items  here and you should also use values. 
+</td><td>
+<pre>
+mylist: = { Typ="C" Txt="&"
+    items =
+        "Choice 1" $0D
+        "Choice 2" $0D
+        "Choice 3"
+    values =
+        "1" $0D
+        "2" $0D
+        "3"
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+<u>items</u> - The list will be filled with these items. Separate them with a new line character ($0D).<br>
+<u>values</u> - In many cases a program can not work with the displayed items. To have a more 'computer friendly' version you can set this specific. This list must be as long as the items list. Most used are numbers or names of variables.<br>
+<u>Rows</u> - This specifies the maximum number of items to show in the dropdown list.
+</td></tr>
+
+<tr><td align=center>----</td>
+<td align=center><b>Buttons & misc.</b></td>
+<td align=center><b>Examples and Comments</b></td></tr>
+
+<tr><td align=center>
+B
+</td><td valign=top>
+<b>Pushbutton</b>.<br>
+Usually used to activate a second spec/arg view (a :form), which contains other spec/args thats more specialized for some purpose.
+</td><td>
+<pre>
+more: = { Typ="B" Txt="Specialize"
+    Cap = "Push..."
+    Form = "specialize_this:form"
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+The Cap="..." controls the text in the pushbutton.
+</td></tr>
+
+<tr><td align=center>
+L<br>
+[4]<br>
+
+LI<br>
+[4]<br>
+
+LN<br>
+[4]<br>
+
+LP<br>
+[4]
+</td><td valign=top>
+<b>Color-picker pushbutton</b>.<br>
+A pushbutton which shows the choosen color, and when activated, will bring up a color dialog.<br>
+If only Typ="L" is given, the resulting RGB values will be in range 0 - 255.<br>
+If Typ="LI" is given, the resulting RGB values will be in range 0 - 255 and will be packed into a single integer.<br>
+If Typ="LN" is given, the RGB values will be normalized to range 0.0 - 1.0.<br>
+If Typ="LP" is given, you will only be able to pick from the game's palette (i.e. Quake palette)
+</td><td>
+<pre>
+_color: = { Typ="L" Txt="&" }
+_light: = { Typ="LN" Txt="&" }
+light: = { Typ="L4" Txt="&" }
+_lightbright: = { Typ="LN4" Txt="&" }
+
+//To view the exact values, create a
+//second spec/arg pair
+color: = { Txt="&" Typ="L" } //Pushbutton
+color: = { Txt="&" } //Entryfield
+</pre><br>
+
+<u><i>Typ = "LI"</i></u><br>
+The "LI" type works like "L", except that the values are stored in a single integer that can be directly used for canvas.pencolor functions and similars.
+
+<u><i>Specifics:</i></u><br>
+If the additional 4 is given, for example Typ="LN4" or Typ="L 4", there will be created a fourth value, which controls the brightness of the light. This however, must be changed using a second spec/arg pair, with Typ="E".
+</td></tr>
+
+<tr><td align=center>
+M
+</td><td valign=top>
+<b>Message button</b>.
+</td><td>
+<pre>
+extedit:tbbtn = {
+    Typ = "M"
+    Hint = "call external editor"
+    Msg = "EXTE"
+    Icon = $6677777777777776600000000000007660FFFFFFFFFFF07660
+               FFFFFFFFFFF07660F7
+         $F33FFFFFF07660FFF3333FF7F07660F7F333118FF07660FFFF
+             331118807660FFFF91
+         $1111807760FF7FF91111107760FFFFFF9111117660FF877FF9
+             11111660FFFFFFFF91
+         $111160F777787F79111660FFFFFFFF7F911660FFFFFFFF7069
+             666000000000066666
+    Rows = "10"
+    Scrollbars = "V"
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+<u>Msg</u> - Message to send.<br> 
+<u>Cap</u> - Caption of the button/menu.<br>
+<u>Icon</u> - Hex raw-data of a 16*16 pixel 16 colors icon (same as for Typ "I").<br>
+<u>Rows</u> - Set this to the string number value of rows of text to display at once (max:35, default: 3).<br>
+<u>Scrollbars</u> - Set this to add scrollbars to the control.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Three values are available: (default: No scrollbars)
+<pre>
+    -"H": The control will have a horizontal scrollbar.
+    -"V": The control will have a vertical scrollbar.
+    -"1": The control will have both a horizontal AND a vertical scrollbar.
+Any other setting will result in no scrollbars.
+</pre>
+</td></tr>
+
+<tr><td align=center>
+P
+</td><td valign=top>
+<b>Python macro button</b>.
+</td><td>
+generates a button to fire a python-macro.
+<pre>
+centering: = {
+    Txt = "&"
+    Typ = "P"
+    Macro = "usercenter"
+    Cap = "push"
+    Hint = "Push to add a user center"
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+<u>Cap</u> - button caption<br>
+<u>Macro</u> - macro to be fired. Most of the items called in the macro are pre-coded in the source code.<br>
+But using the <ref>src/quarkx/qmacro_py \ quarkx.externaledit(obj)</ref> function, any object, such as text or a texture image,<br>
+can be passed to it causing that object to be opened in an external editor.
+</td></tr>
+
+<tr><td align=center>
+PM
+</td><td valign=top>
+<b>Button array</b>,<br>
+same as above, for multiple buttons. Each button gets one character out of Cap as it's caption.<br>
+
+While all buttons will fire the same script they will also send their index so the script can identify the exact button.
+</td><td>
+<pre>
+buttons: = {
+    Typ = "PM"
+    Num = "2"
+    Macro = "fixview"
+    Caps = "IF"
+    Txt = "Actions:"
+    Hint1 = "Inspect the chosen one"
+    Hint2 = "Fix the chosen one"
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+<u>Macro</u> - macro to be fired<br>
+<u>Count</u> - number of buttons<br>
+<u>Caps</u> - enter on character for each button here<br>
+<u>Hint1</u> - What button 1 does<br>
+<u>Hint2</u> - What button 2 does etc... 
+</td></tr>
+
+<tr><td align=center>
+F
+</td><td valign=top>
+<b>Font dialog button<br>with preview</b>.
+</td><td>
+<pre>
+Font: = {
+    Typ = "F"
+    Txt = "Plain text"
+    Cap = "Plain text sample"
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+<u>Cap</u> - button caption (will be displayed with the selected font)
+</td></tr>
+
+<tr><td align=center>
+I
+</td><td valign=top>
+<b>Icon display</b>.<br>
+Displays an icon.
+</td><td>
+<pre>
+planes: = {
+    Txt = &quot;Brush icon&quot;
+    Typ = "I"
+    Icon = $66000000000000066687777777775506668FFFFFFFFFF
+               506668FF557FFFFF706
+           $668FFF55577FF706668FFFF500F77706668FFFFF00FFF
+               706668FF002200FF706
+           $668F5990AA00F706668F5F90AA000706668FF55AAA200
+               506668FFF2BAA270006
+           $6685FF222227000666855FFFFFF7860066888888888866
+               056666666666666666
+    }
+</pre>
+<u><i>Specifics:</i></u><br>
+<u>Icon</u> - 16x16 pixel icon. As in the example each character represents the hex. code of a pixel (16 colors). This is raw data, don't include any file header! 
+</td></tr>
+
+<tr><td align=center>
+S
+</td><td valign=top>
+<b>Seperator</b>.
+</td><td>
+<pre>
+sep: = { Typ="S" }
+</pre>
+</td></tr>
+
+<!--
+<tr><td align=center>
+</td><td valign=top>
+</td><td>
+<pre>
+</pre>
+</td></tr>
+-->
+
+</table>

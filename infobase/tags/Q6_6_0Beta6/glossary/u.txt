@@ -1,0 +1,8 @@
+title: U...
+author: Decker
+
+<dl>
+<dt><a name="unreal">           </a>Unreal              <dd>(game) A <a href="#fps">FPS-game</a> made by <a href="http://www.epicgames.com/">Epic MegaGames, Inc.</a>. Unreal uses a different method of making/storing maps, which is not compatible with the Quake-engine series. QuArK does not support making maps for Unreal.
+<dt><a name="unrealtournament"> </a>Unreal Tournament   <dd>[UT] (game)
+<dt><a name="unwrapped">        </a>Unwrapped           <dd>(model editor item) A term used in model editing meaning to spread out the shape of a <a href="#model mesh">model mesh</a> on to a flat 2D view.
+</dl>

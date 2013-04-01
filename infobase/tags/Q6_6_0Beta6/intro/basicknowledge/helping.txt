@@ -1,0 +1,72 @@
+title: Helping in QuArK's development (adding games, features...)
+author: Armin Rigo, Decker, tiglari
+
+If you want to help with QuArK's development, here is how you can do various things. You don't have to be a programmer to
+give some help! If you need help about these ways of helping, see the
+<link forums>QuArK forum</link> on the web site.
+
+<ul>
+<li><strong>Testing</strong>:<br>
+   QuArK's development team is rather small, and have other responsibilities
+   to attend to, so systematic testing of new features by users can be quite
+   helpful, and of course requires no knowledge of programming, only mapping
+   (and is not at all a trivial thing to do, and can be quite time-consuming).
+   In the same vein, intelligent comparisons of QuArK's features with those
+   of other editors can be quite useful; it may or may not be easy or even
+   possible to implement your favorite feature from Editor X, but if we know
+   about it, we can at least think about trying.
+
+<li><strong>Support for a mod</strong>:<br>
+  If you want to write support for a game mod (e.g. a Mission Pack or any smaller mod), you have to write a small
+  add-on file which lists the new entities available and their attributes, as well as the new textures, if any. This
+  process is relatively easy. Try opening with any text editor one of the add-on files included in the QuArK
+  distribution, e.g. "CTFq2.qrk" (Capture-The-Flag for Quake 2.) This is the kind of file you have to write. This is
+  described in detail in <ref> adv </ref>.
+
+<li><strong>Fixes and enhancements in the existing game data</strong>:<br>
+  If you want to enhance the existing game-specific data (e.g. the entity lists, the available entity settings, and
+  on-line help for all this), you can do so by editing the files "DataXXX.qrk" -- "DataQ1.qrk" for Quake 1,
+  "DataQ2.qrk" for Quake 2, etc. The format of these files is the same as for the add-ons for the support of a mod,
+  with a single difference: For performance, these large files are not directly editable with a text editor; instead,
+  they are stored in a binary format. You can get the original full-text files from <ref> src/sf </ref>
+  in the directory <a target="_blank" href="http://quark.cvs.sourceforge.net/viewvc/quark/runtime/addons/">runtime/addons</a>.
+
+<li><strong>A Python plug-in</strong>:<br>
+  A large part of the map editor is written in a scripting language called <g>Python</g>.
+  This code is distributed with QuArK -- you already have it in the <tt>.PY</tt> files
+  of the directories "quarkpy" and "plugins". If you want to program an enhancement to
+  the map editor, you can probably do it in Python, just by modifying these files or
+  adding a new file in "plugins". No other tool is needed.  For a first project, a
+  new plugin is best; it can be uploaded for testing to the files section of the quark
+  or quark-python egroups, and if it is generally accepted as useful, somebody can commit
+  it to the main code body at SourceForge. Plugins will usually work with quite a wide
+  range of QuArK versions, so that people don't have to have the latest bleeding edge
+  snapshot to test them, and if a plugin causes a problem, this problem can be fixed
+  by deleting the plugin's <tt>.PY</tt> and <tt>.PYC</tt> files.
+
+  More ambitious projects might involve changes to the quarkpy
+  Python modules, or even the Delphi source code, but it's best to do a simple
+  plugin first.  For more information about Python, you can refer to the
+  <a target="_blank" href="http://www.python.org">Python home page</a>, and for Python in the
+  context of QuArK, <ref> adv </ref>.
+
+<li><strong>Direct changes in the source code</strong>:<br>
+  The source code of QuArK is freely available, by various forms of access from
+  <link project>project QuArK</link> on SourceForge (anonymous
+  CVS/WinCVS is probably the most convenient, once you can get it working).
+
+  The main programming language is Borland Delphi, either 5 or 6 will do.  Personal Version 6
+  is quite adequate, and is available as a free download from
+  <a target="_blank" href="http://www.borland.com">Borland</a>.  If you want to program a new interface feature (such as
+  a dialog box to hunt for things in the map having some properties, or maybe a new map layout
+  such as perhaps something that works like the XY view in Radiant, with the vertical Z window,
+  etc.), most or very likely all of the coding would be in Python.  Reading and
+  writing map or model formats for new
+  games on the other hand will typically involve some Delphi coding.
+</ul>
+
+As stated above, you can find more help about this subject in the
+<link forums>QuArK forum</link> on the web site.
+
+The <ref>src</ref> section of the infobase is gradually coming to contain more information
+about how the Delphi code works and how it relates to the Python.

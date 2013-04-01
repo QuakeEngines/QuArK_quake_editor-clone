@@ -1,0 +1,28 @@
+title: Bounding Boxes
+author: cdunde
+
+<img border=1 align=right>bboxes1.png</img>
+
+<g>Bounding boxes</g>, or bboxes, are fairly simple and straight forward.
+They are a box area that surrounds the entire model, or sections of it, for each animation frame of that model.
+Something like <a href="intro.modeleditor.editelements.html#boundframes">Bound Frames</a>
+which is an old QuArK system that is not really used any more.
+
+The existence of <g>bboxes</g> can be use for determining the collision or hit area of a model.
+
+Method 1) can be done in a number of different ways in QuArK, the most basic is by giving just two vectors,
+each consisting of three values representing an x,y,z point in 3D space.
+One vector gives the minimum point and the other the maximum point.
+Using these two vectors a 3D box can be created that encloses the model for that frame.
+This is the method used by models with and without bones.
+
+Two other methods, for models without bones, but may consist of one or more components, or sections, are:<br>
+Method 2) creating a list of vertexes for each bbox that will be used to surround them from frame to frame<br>
+Method 3) or creating a list of two distinct minimum and maximum vectors, as described above, for each individual frame.
+
+Which ever method is used, the data is stored in the
+<a href="intro.modeleditor.importexport.html#bones2">editor.ModelComponentList['bboxlist']</a>
+using different key names.<br>
+Method 1) uses editor.ModelComponentList['bboxlist'][bbox.name]['size']<br>
+Method 2) uses editor.ModelComponentList['bboxlist'][bbox.name]['vtx_list']<br>
+Method 3) uses editor.ModelComponentList['bboxlist'][bbox.name]['frames']

@@ -1,0 +1,8 @@
+title: InternalE
+author: DanielPharos
+
+<code>
+function InternalE(const Hint: String) : Exception;
+</code>
+
+This function takes the hint and constructs a 'this program is buggy' message. Use this if the error can only happen if the program somehow managed to do something that *should* be impossible.

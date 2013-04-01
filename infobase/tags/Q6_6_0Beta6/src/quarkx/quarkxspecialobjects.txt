@@ -1,0 +1,129 @@
+title: Functions of the module quarkx that build special objects
+author: Armin Rigo
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+loadtexture(name)<br>
+loadtexture(name, altsrc)
+</td><td>
+Loads the texture name from the texture browser. Returns None if the texture is not found. altsrc is an optional parameter specifying an alternate place to look for textures first (for .bsp files, it is the .bsp’s own texture list). Note that the returned texture is often just a link to the actual texture in the Quake directory; see the textures' disktexture attribute.
+</td></tr>
+
+<tr><td class="doccode">
+maptextures(list, op)<br>
+maptextures(list, op, altsrc)
+</td><td>
+Loads a list of textures given by name. If the list contains animated textures, and some animation sequence are not complete, they are completed. Returns a list of all loaded textures, as loaded with loadtexture. If op is 1, this function writes all the textures to the tmpQuArK directory. If op is 2, extra files are written, too, as specified by ExtraFiles in Defaults.qrk. If op is 0, no file is written to the disk.
+</td></tr>
+
+<tr><td class="doccode">
+vect(x,y,z)<br>
+vect(x,y,z,s,t)<br>
+vect((x,y,z))<br>
+vect((x,y,z,s,t))<br>
+vect(string)
+</td><td>
+Returns a 3D (resp. 5D) vector object with coordinates x,y,z (resp. x,y,z,s,t) specified either as three (resp. five) parameters, as a single tuple parameter, or textually in a string as three (not 5, not supported, sorry) numbers separated with whitespaces.
+</td></tr>
+
+<tr><td class="doccode">
+matrix(v1,v2,v3)<br>
+matrix((a,b,c), (d,e,f), (g,h,i))<br>
+matrix(string)
+</td><td>
+Returns a matrix object. v1,v2,v3 are 3D vectors that are used as columns of the matrix. (a,b,c),(d,e,f),(g,h,i) is the line-by- line description of the 9 floats to put into the matrix. string textually contains 9 numbers separated with whitespaces (no parenthesis). As with vect above, instead of calling matrix with three arguments, you can call it with a single tuple argument.
+</td></tr>
+
+<tr><td class="doccode">
+newobj(name)
+</td><td>
+Creates a new Internal QuArK object called name. <a href="src.quarkx.html#objectsinternal">See below for a description of Internal QuArK objects.</a>
+</td></tr>
+
+<tr><td class="doccode">
+newfileobj(name)
+</td><td>
+Idem, but builds an Internal QuArK file object.
+</td></tr>
+
+<tr><td class="doccode">
+openfileobj(filename)
+</td><td>
+Opens an existing file and returns an Internal QuArK file object.
+</td></tr>
+
+<tr><td class="doccode">
+savefileobj(obj,FM_SaveAsFile,0,None,0)
+</td><td>
+Opens a 'Save File' window and saves any selected fileobject such as a texture image (Internal QuArK file object) or md2 file to any location.<br>
+<b>obj</b> the selected object in QuArK, <b>FM_SaveAsFile</b> enter as shown here (see others below), <b>0</b> to specify type of file to save as (see others below),
+<b>None</b> (default setting) specifies as dialog form, will not save the file until dialog closed, <b>0</b>
+this setting stops the saved file from showing up on the <g>Recent files</g> menu list, setting the argument to <b>1</b>
+will place the name on the list.<br>
+<b><i>other settings available</i></b> :<br>
+2nd argument:
+<code>
+FM_Save           = 1
+FM_SaveAsFile     = 2
+FM_SaveIfModif    = 3
+FM_SaveTagOnly    = 4
+</code>
+3rd argument
+<code>
+0       = (default setting), any file type *.*
+1 - 8   = as shown in source code (Pcx, Tga, DDS, Bmp, JPeg, Png, M32, VTF)
+</code>
+</td></tr>
+
+<tr><td class="doccode">
+setupsubset()<br>
+setupsubset(i)<br>
+setupsubset(i,subset)
+</td><td>
+Returns an Internal object from the Configuration dialog box. i is one of the SS_xxx constants, and subset is the name of the subset. If unspecified, returns the set SS_xxx. If i is unspecified, too, returns the subset corresponding to the current game.
+</td></tr>
+
+<tr><td class="doccode">
+copyobj(list)
+</td><td>
+Copy all QuArK objects in the list into the clipboard. The previous clipboard content is cleared.
+</td></tr>
+
+<tr><td class="doccode">
+pasteobj()<br>
+pasteobj(1)
+</td><td>
+With no argument, or with a False argument, returns 1 if there is one or several Internal object in the clipboard ready to be pasted, and 0 otherwise. With a True argument, returns a list of all objects from the clipboard, which will be empty if there is no such object.
+</td></tr>
+
+<tr><td class="doccode">
+getqctxlist()<br>
+getqctxlist(type)<br>
+getqctxlist(type, name)
+</td><td>
+Builds a list of objects from all .qctx objects found in Defaults.qrk and in the currently registered add-ons. If parameters are given, returns a list of objects within .qctx objects that match the specified criteria: they must have the correct type and, if specified, the correct name.
+</td></tr>
+
+<tr><td class="doccode">
+loadimages(filename)<br>
+loadimages(fn, width)<br>
+loadimages(fn, width, (x,y))
+</td><td>
+Loads an image list from a .bmp file. Each image in the list has the given width (default 16), and all pixels of the same color as the one at coordinates (x,y), if specified, are considered to be transparent. See Image List objects below. If width is a floating-point number, it represents the ratio width/height instead of a pixel count.
+</td></tr>
+
+<tr><td class="doccode">
+newfaceex(vertices)
+</td><td>
+Makes a new polyhedron face with the given vertices list. Not for building polyhedrons!! Only for special uses!! The resulting face should only be used to check for intersection with other polyhedrons or to be displayed (with a "broken face" cyan border).
+</td></tr>
+
+<tr><td class="doccode">
+needgamefile(file)<br>
+needgamefile(file, base)
+</td><td>
+Loads a file from the current game's datas. The file path should be specified in a .pak-style fashion, e.g. "maps/base1.bsp". If base is present, QuArK only looks in this base directory; otherwise, it looks in all configured base directories, just like the game itself. Returns an Internal File Object. Raises quarkx.error if not found.
+</td></tr>
+
+</table>

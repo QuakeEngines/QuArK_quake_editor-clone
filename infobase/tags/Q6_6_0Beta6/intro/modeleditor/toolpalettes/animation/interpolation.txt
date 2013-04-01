@@ -1,0 +1,11 @@
+title: Interpolation on\off
+author: cdunde
+
+<img border=1 align=right>interpolation.png</img>
+This button will activate or de-activate the interpolation (give smooth animation)
+of the selected model component animation frames.
+
+Interpolation calculates additional movement positions between two frames
+and draws them to smooth out the movement between those two frames.
+
+To return to regular animation mode you must click this button to turn 'Off' the interpolation function.

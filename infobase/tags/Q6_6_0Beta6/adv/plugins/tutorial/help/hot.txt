@@ -1,0 +1,29 @@
+title: Hot Keys
+author: tiglari
+
+Our last topic is something that's easy for us, but was very
+hard for Armin to implement, he says, `hot keys'.  These are
+keys you can press to get an action instead of going thru the
+tedium of finding the relevant menu & the item on it.  Here's
+how to set up a hot key:
+<code>
+quarkpy.mapcommands.shortcuts["Ctrl+T"] = mentagside
+quarkpy.mapcommands.shortcuts["Ctrl+G"] = menglueside
+</code>
+If you've been reading up on Python, you'll perceive that
+`shortcuts' is just a `dictionary' (hash table, for techos)
+attached to the mapcommands object, and we're just sticking
+the menu items into it, indexed by string
+codes for their hotkeys.  Then some code in quarkpy, of which
+we will all hopefully be able to remain
+blissfully ignorant, gathers up all of the shortcuts that have been
+defined at various places & sticks them up on the menu, and makes
+them work from the keyboard.
+
+Note however that each shortcut key combo can only activiate one menu
+item, so a certain amount of cooperative behavior is desirable for
+plugin writers.  I think it would be a cool and possibly feasable
+(but pretty hard)
+project to allow users to set up shortcuts the way they want them.
+
+Working example of stuff so far in <tt>maptagside2.py</tt>, as usual.

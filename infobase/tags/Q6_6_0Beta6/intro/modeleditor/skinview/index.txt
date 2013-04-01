@@ -1,0 +1,15 @@
+title: Skin-view page
+desc: overview
+desc: selection
+desc: funcsnmenus
+desc: importskins
+
+QuArK's Model Skin-view page is quite different then its 
+<a href="intro.mapeditor.dataforms.html#faceview">Map Editor's Face-view page.</a>
+This is where all of the 'skinning' (texturing) functions of the model take place and therefore
+requires its own section for explanation and reference during the model editing process.
+This section is also linked to that pages buttons and <g>RMB</g> menu items for quick access.
+
+Unfortunately, like the <a href="intro.mapeditor.dataforms.html#faceview">Map Editor's Face-view page</a>,
+one unfavorable characteristics it has at this time is that when the page is pulled out of its normal
+position in the Model Editor the help hint and F1 Infobase links will no longer work until it is returned.

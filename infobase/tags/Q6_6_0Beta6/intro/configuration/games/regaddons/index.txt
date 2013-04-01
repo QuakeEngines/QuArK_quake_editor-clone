@@ -1,0 +1,62 @@
+title: Registering Add-ons...
+author: cdunde
+
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<img align=right>regaddons1.png</img>
+
+Addons are QuArK .qrk data storing files.
+
+These files can be found in various locations of the QuArK folders
+and most do not need to be registered, that is done automatically by QuArK when the program is started.
+
+But there are times that the registration process for an addon needs to be done by hand, such in the case
+of a particular games mod.qrk file or a newly created
+<a href="intro.mapeditor.misctools.html#templates">Templates list .qrk file</a>.
+
+The process starts by clicking on QuArK's main
+<a href="intro.mapeditor.menu.html">Options menu</a> and selecting
+<a href="intro.mapeditor.menu.html#optionsmenu">Configuration...</a>
+
+This will bring up the <g>Configuration</g> dialog window that you see, in part, to the right.
+
+Using its scroll bar move down to the <b>Games</b> section and click on the game you wish to add the
+addon to. In this case we are selecting <b>Quake 2</b>.
+
+Near the top of the Quake 2 <b>Game Settings</b> section you will see the <b>Add-ons...</b> icon button.
+
+Click on that button to open the next dialog window called <b>Game Configuration</b>.
+
+Near the bottom of that window you will see the text button <b>Add...</b> click on that button.
+</td></tr>
+<tr><td valign=top align=left>
+<img align=right>regaddons2.png</img>
+
+This will cause a third dialog window to open entitled <b>Add...</b> which will load and display all of the
+.qrk files that are available for that game, some of which may already be registered and in use.
+
+Now click on the .qrk addon file that you wish to select and that file name will become highlighted as
+shown to the right for the <b>Quake 2Templates.qrk</b> file.
+
+At the bottom of the <b>Add...</b> window, click the <b>Ok</b> button to accept your selection and
+register it with QuArK.
+
+The process is now complete as you can now see the addon displayed in the <b>Game Configuration</b>
+dialog window shown in the last image below.
+
+As a final step, click all of the <b>Ok</b> buttons on the remaining opened windows to close them
+and return to the editor.
+</td></tr>
+<tr><td valign=top align=left>
+<img align=right>regaddons3.png</img>
+
+Just as a final note, you might have noticed the <b>Output directories...</b> icon button,<br>
+just under the <b>Add-ons...</b> button, in the top screen shot.
+
+Click on that button to see the settings for that games <b>Current output configuration</b> which
+is where all of the files that QuArK produces during a map <g>build</g> will be located.
+
+There are also other options and information on that page relating to the creation of .<g>pak</g> files,
+which is another way of storing the game file so that they may be shared with others that have that game.
+</td></tr></table>

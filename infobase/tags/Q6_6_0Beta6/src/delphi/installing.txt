@@ -1,0 +1,10 @@
+title: Installing Delphi
+author: Rowdy
+
+Installing Delphi is a simple matter of running the executable which you downloaded or copied off a magazine cover CD.  Or, if you have obtained a zipped version, unzip it first, and then run the setup program.
+
+Installing the necessary components is covered in the Configuration section, below.
+
+Delphi 6 Personal Edition takes a tad over 100MB to install, Delphi 7 Personal Edition is probably a bit larger.  You should also allow at least 20MB for all the QuArK source (which can be obtained from the SourceForge CVS repository).
+
+If you are lucky enough to have access to a better copy of Delphi (e.g. one of the Professional or Enterprise editions), great!  But you can fully compile QuArK with the Personal Editions.

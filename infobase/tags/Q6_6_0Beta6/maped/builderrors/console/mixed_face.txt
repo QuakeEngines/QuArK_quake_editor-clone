@@ -1,0 +1,23 @@
+title: Mixed face contents
+author: cdunde
+
+
+<table><tr><td align=middle><br>Below is an example of the Python-console displaying three warnings of 'Mixed face contents'.
+
+<img border=0>pythonconsole.png</img><br>
+<code>
+Entity 0, Brush 7: mixed face contents
+</code>
+</td></tr></table>
+<b>Reason:</b><br>
+Getting an error similar to the above, usually means that the .MAP file has a brush with different types of flag settings, for its individual faces, that are conflicting for the game and causing the warning.
+
+These type of errors will normally not cause a problem for the game to run. But it is usually advisable to 'clean up the map' when ever possible to avoid potential problems with the way the game does run.
+
+<b>Correction Steps:</b><br>
+1)   Using the <a href="intro.mapeditor.menu.html#gamemenu">Select Brush Number</a> function on the game menu (for example Quake3 menu),
+
+2)   enter the Entity and Brush numbers (separated with a space) shown in the Python console that you wish to work on and press your 'Enter' key. This will select (highlight) the problem brush in both the tree and editor views. If you do not see the highlighted brush in the editor views, go to the Selection menu and pick the <a href="intro.mapeditor.menu.html#selectionmenu">Zoom to selection</a> item to bring it into view.
+
+<img border=0 align=right>faceflagserror.png</img>
+3)   Now bring up the <a href="intro.mapeditor.dataforms.html#polyhedronview">Face Flags</a> window for that brush. Notice the question mark in the 'water' flag check box. This is telling you that some of the faces are set with this flag and some are not. Just click on the box with the question mark and it will go away. Click on the box again and it will show a 'check mark' like the mist flag has. Now all the faces for this brush have the same flag settings and will eliminate the Python-console warning for your next compile. Repeat the process for each brush shown in the console.

@@ -1,0 +1,7 @@
+title: Bound Frames
+author: cdunde
+
+<g>Bound frames</g> are like <a href="intro.modeleditor.editelements.html#boundingboxes">Bounding Boxes</a>
+but is an old QuArK system that is not really used any more. We only mention it here because sometimes
+you may see them when you open a Quake 3 .md3 model directly using QuArK. There is now a Model Importer
+that handles those much better.

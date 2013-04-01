@@ -1,0 +1,10 @@
+title: Editing Elements
+desc: bones
+desc: boundingboxes
+desc: boundframes
+desc: tags
+
+There are a number of different types of <g>Editing Elements</g> or systems that are available
+and even specific to certain model types that are used to aid in the creation of models.
+The ones listed below are currently supported or in the works for future support by the
+<ref>intro/modeleditor</ref>. This section covers them and their use in detail.

@@ -1,0 +1,7 @@
+title: Bones
+author: cdunde
+
+<img border=0 align=right>bones.png</img>
+You can put in a bone with all of its sub-bones included.
+Which means you can rig an entire default Skeletons and use one of those
+to drop into the Skeleton folder of a new model ready for vertex assignments.

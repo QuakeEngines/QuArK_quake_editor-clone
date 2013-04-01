@@ -1,0 +1,17 @@
+title: External editors
+author: Decker
+
+<img align=right>externaleditors.png</img>
+Here you can select your preferred program for editing various file types that
+QuArK itself won't let you edit.
+
+Each box can be empty (no program), or <b>&lt;open&gt;</b> to call Windows'
+default programs for this file type, or a complete program path to call a
+specific program. Other commands in square quotes like <b>&lt;edit&gt;</b> may
+be available depending on the program.
+
+If a box is left empty but QuArK knows how to convert to another data type, the
+conversions are done automatically (e.g. if you leave the .wal box empty but
+fill the .bmp box, when you want to edit a Quake 2 texture (.wal), QuArK will
+convert it to .bmp, call your program, and convert it back to .wal after you
+edited the image).

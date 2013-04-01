@@ -1,0 +1,43 @@
+title: Vertex Coloring
+author: cdunde
+
+<img border=1 align=right>vertexcoloring2.png</img>
+<img border=1 align=right>vertexcoloring1.png</img>
+<g>Vertex Coloring</g> uses actual colors to give a model different lighting effects.
+These colors are applied directly to the models mesh vertexes as demonstrated in the first screen shot to the right.
+
+When the proper graphics displaying is used those vertex colors are spread between each other, from vertex to vertex,
+of the models mesh triangles to give a hew effect of the colors as shown in the second screen shot to the right.
+Unfortunately, at this time, QuArK's Model Editor does not have that graphics displaying capabilities.
+
+When the model is used in the proper game engine, this hewing will effect various lighting features of that
+game engine and produce the desired results.
+
+QuArK's Model Editor does however supports the color selection, changing, application and removal of the
+Vertex Coloring system for those kinds of models and game engines.
+
+The functions that handle Vertex Coloring are located on the
+<a href="intro.modeleditor.dataforms.html#specsargsview">frame Specifics/ Args</a> page
+and is accessible by selecting a single frame or the <g>Frames folder</g> of a model component and nothing else.
+
+<img border=1 align=right>vertexcoloring3.png</img>
+
+<g><i><b><u>UV Vertex Colors</u></b></i></g>&nbsp;:<br>
+To the right we show a screen shot of that portion of the
+<a href="intro.modeleditor.dataforms.html#specsargsview">frame Specifics/ Args</a> page that deals with Vertex Coloring.<br>
+To be valid, all vertexes must have a color applied to them or the model will not be accepted by the game engine.
+
+<u><i>vertex color </i></u>&nbsp;: This specific has two lines and methods to select the color you wish to use.<br>
+The first line displays the actual three <g>RGB</g> values of the color. Each one ranges from 0 to 1.0 and can be hand entered.<br>
+The second line displays the actual color on the <g>color selector button</g>. By clicking on that button a
+<g>Color Selector window</g> will appear that you can visually pick a color from. This will also change
+its <g>RGB</g> values in the line above.
+
+<u><i>show vertex color </i></u>&nbsp;: When this is checked and if the model has Vertex Coloring,
+those colors will be displayed, If not the default colors of a vertex will be drawn.
+
+<u><i>apply color </i></u>&nbsp;: Once you have selected some vertexes by doing a <g>LMB</g> drag
+click the gray <g>apply color</g> button to give the above chosen color to those vertexes.
+
+<u><i>remove color </i></u>&nbsp;: Once you have selected some vertexes by doing a <g>LMB</g> drag
+click the gray <g>remove color</g> button to remove all vertex coloring from those vertexes.

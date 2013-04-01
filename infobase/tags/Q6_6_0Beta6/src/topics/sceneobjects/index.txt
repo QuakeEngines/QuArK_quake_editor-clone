@@ -1,0 +1,7 @@
+title: Sceneobjects
+author: tiglari
+desc: addto3dscene
+desc: tsceneobject
+desc: buildscene
+
+This document tries to describe the inner workings of the 3D scene objects.

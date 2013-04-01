@@ -1,0 +1,8 @@
+title: RedrawDisclaimer
+author: DanielPharos
+
+<code>
+var RedrawDisclaimer: Boolean;
+</code>
+
+RedrawDisclaimer is a boolean variable that, when set, indicates that the currently running <tt>DisclaimerThread</tt> should redraw the flashing disclaimer text. <tt>DisclaimerThread</tt> periodically polls this value, and redraws when needed (unsetting this variable in the process, of course).

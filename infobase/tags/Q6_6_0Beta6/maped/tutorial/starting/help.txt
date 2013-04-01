@@ -1,0 +1,9 @@
+title: Help in the map-editor
+author: Decker
+
+Before you proceed, you should be aware of the help you can get in QuArK. Where
+ever you point your mouse-cursor in QuArK's map-editor, you might get a
+<tt>"Press <b>F1</b> for help"</tt> message in the bottom leftcorner of the
+screen, like this: <img width=177 height=17 align=absmiddle> image1b.png </img>.
+If you don't know about the item you are pointing at, then press the F1 key and
+you will get a help-box up, explaining a little about the item.

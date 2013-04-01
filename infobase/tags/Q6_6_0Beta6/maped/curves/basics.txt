@@ -1,0 +1,56 @@
+title: Patch Basics
+author: tiglari
+
+A basic patch (there are also composite patches that we call 'quilts') can
+be thought of as a squarish sheet of material stretched out by a 3x3 grid
+of 9 'control points'.  To make one, start a basic map and click on the
+patch icon in the user panel (labelled 'bezier'). You will then see a grid
+of colored control points drop into the overhead view of the map:
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr><td align=middle>
+<pic> bez1.png </pic>
+</td><td align=middle>
+<pic> bez2.png </pic>
+</td></tr>
+</table>
+
+The (here horizontal) lines of control points of the same hue are the rows,
+the vertical ones are the columns.  The points get darker as you move along
+the rows up from index zero.  If you leave the cursor
+sitting over a control point for a while, a rather large
+flyover hint appears, beginning with the control point's row
+and column indexes, and giving rather extensive information about
+stuff you can do.
+
+The black dot is a handle which can be used to move the whole patch, and
+also has a few RMB (Right Menu Button) commands.
+
+Now the patch is 'anchored' at the corners, in the
+sense that if you drag a corner point, the patch is pulled out
+with it, but it is only 'attracted' by the non-corner points;
+if one of them is dragged, the patch pulls out towards it,
+but does not stay attached.  This effect also appears with
+3-dimensional movement, as you can see by opening a 3d view
+and playing around with it:
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr><td align=middle>
+<pic> bez3.png </pic>
+</td><td align=middle>
+<pic> bez4.png </pic>
+</td></tr>
+</table>
+
+If you play around with the patch and then run the map
+in Quake3, you'll find that the patch displays a texture
+on only one side, and also only blocks movement on that
+side, an fact which could be used to make some rather
+annoying effects in maps.
+
+There is quite a bit more to patches, as we will see
+more of below, but direct patch
+editing is slow and difficult, and not a good way to approach
+basic tasks such as making archways and rounded corners.
+For these purposes we instead use
+<ref> maped/builders </ref>.

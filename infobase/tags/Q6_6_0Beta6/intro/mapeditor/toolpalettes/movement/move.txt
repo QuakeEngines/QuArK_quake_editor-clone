@@ -1,0 +1,6 @@
+title: Move selection
+author: Decker
+
+<img border=0 align=right>move.png</img>
+Pressing this button, will move the selected objects, the distance in units
+specified in the <ref> ./configuration </ref>.

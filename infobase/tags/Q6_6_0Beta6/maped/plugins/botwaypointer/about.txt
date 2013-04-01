@@ -1,0 +1,13 @@
+title: About this bot edit addon
+author: Fredrick
+
+<img align=right>install.png</img>
+This addon was made , to easily edit and customize your waypoints in a friendly way. So far, this editor has been tested for the Quake 2 bot LTK and the HPB half-life bot. The other supports are on their way but with Half-life 1 in mind, most bots are based on it. Podbot etc. 
+
+Further improvements will be introduced and the amount of waypoint support will follow.
+
+<b>How to set this up:</b>
+
+First of all, this is a plugin and it needs to be activated for the game you want to use it for. Either Quake 2 or Half-life 1. I used Quake 2 as an example here. Choose Add-ons as shown in picture 1, then click add which is illustrated on picture 2. Find the bot waypointer and add it. It should look like bellow.
+
+<img align=top>addon.png</img>

@@ -1,0 +1,37 @@
+title: Tree-view (hierarchy-view)
+author: cdunde
+
+<img border=1 align=right>treeview.png</img>
+This view actually contains your model which is broken down in different elements
+within what are called <g>Component</g> folders, or groups. Each model consist of
+various categories and some have sub-categories which in turn may have their own sub-items.
+
+The categories and items in a models Tree-view are:
+<ul>
+<li><i>Model</i> : The main <g>editor Root</g> of the model that is loaded.
+<li><i>Misc</i> : Setup for future <g>Bound Frames</g>, <g>tags</g> and <g>Tag Frames</g> of a model.
+<li><i>Skeleton</i> : Contains the <a href="intro.modeleditor.editelements.html#bones">bones</a> to be used for one or more components.
+<li><i>Component</i> : The elements of a model's structure folder which can be more then one.
+<li><i>Skins</i> : Contains the image file, or files, that can be used for that component.
+<li><i>Frames</i> : Contains the <g>animation</g> frames for movement of that component.
+</ul>
+
+One important point here is about the <g>Frames</g>. Each component must contain the same number
+of frames, arraigned in the same order. They can be moved around to rearrange their order but
+remember to keep that the same for each one, this is not done automatically by the editor.
+As new components are added they will be created with the same number and arraignment of frames
+as the others.
+
+You can right-mouse-click on every tree-view object, to get a context-menu,
+from where you can select different actions.
+
+If you wish to enlarge or reduce the Tree-view height, there is a hidden 'drag line' at the very top
+of the Tree-view, just below the compass. When your curser changes to two bars, with arrows above
+and below them, you can then hold the left mouse button down and drag the Tree-view to the height
+you desire.
+
+Just below the Tree-view is the <a href="intro.modeleditor.overview.html#hintbox">Hintbox</a>
+which displays various information and informs you by displaying <b>Press F1 for help</b>,
+which you should do, when there is information about a functions use and
+which in turn usually provides a link to these <g>InfoBase</g> docs section for a more detailed
+description and information.

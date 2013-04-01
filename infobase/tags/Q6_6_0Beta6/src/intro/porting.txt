@@ -1,0 +1,48 @@
+title: Porting QuArK to C++ and/or Linux
+author: Armin Rigo, DanielPharos
+
+A lot of attention has been given recently about the possibility of translating QuArK to the C/C++ language and/or porting it
+to another OS like Linux.
+
+The current state of the Linux port idea is that, unless we need for a C++ version that new programmers could handle without
+having to learn Delphi first, the Linux port will wait until Borland releases its Delphi-for-Linux project (Kylix). However,
+that was scheduled for mid-2000 and is now cancelled.
+
+Another posibility is Free Pascal, which is an alternative Pascal (and also Delphi) compiler. However, as this doesn't support
+Delphi packages (yet), this isn't an option at this time.
+
+But the C++ translation could be needed just because it would let many new programmers with C++ knowledge enter the project. In
+this case we will have to be very careful about which OS-dependent the translated code uses and at which point the development
+of the Delphi version of the source has to be halted (because it is clear that we cannot indefinitely maintain concurrent C++
+and a Delphi versions).
+
+The 3rd reason we might want to translate to C++ is performance. Raw C++ code can run a bit faster than raw Delphi code (mainly
+because Borland's Delphi compiler is not good enough at optimizing...). This is however a relatively minor issue, as the
+performance bottleneck are found in the Python code emulation (mainly noticeable when you open the map editor and have to wait
+a little bit), and in the speed of the 2D drivers and hardware (for drawing the wireframe maps). The latter could be addressed
+by using complex bitmap caches techniques but not by translating the code to another language.
+
+Another reason for a porting: it gives the opportunity to give the code a close look. Much of the code was not written with
+multiple game support in mind, and the codebase has become quite messy over the years. A complete clean-up would also add the
+opportunity to make the code more flexible, for instance related to different file formats.
+
+If we decide that the C++ translation is not done for portability reasons then the easiest solution is to switch to BCB
+(Borland C++ Builder), which can compile both Delphi and C++ source code and shares Delphi's VCL (Visual Component Library).
+This would let us translate QuArK module-by-module as needed. Before we do so however we must make sure that BCB will be
+available in a Linux version nearly as soon as Delphi.
+
+If on the other hand we decide we should make QuArK a real Free Software project, we have to see what solutions we have to
+translate it in such a way that it can be compiled by free compilers (GCC). This solution has the big advantage that QuArK
+would then be available on numerous platforms (e.g. the Mac) with little effort. Before we do so we must decide which
+widely-available GUI library we will target : Tk, Qt, others ?
+
+In any case, keep in mind that most parts of QuArK are tightly integrated with each other... I mean, if you want to make, say,
+first an independant C++ version of QuArK where the model editor would be developed, and hope to translate the map editor from
+the "official" QuArK later as a block when everything works well, then forget about it. If you wanted even just to reproduce
+the current model viewer, you would have to port so many things from the current QuArK that you will end up with something that
+can already run the map editor's Python code... This means that you will have ported the map editor just by trying to port the
+model viewer ;-)
+
+In conclusion, porting/translating has to be carefully prepared and it has to be done as fast as possible while the Delphi
+development is frozen. It cannot easily be done piece-by-piece. This would mean we need quite a big team of people working more
+or less nonstop, porting code from Delphi to C++, and at the moment (begin 2007) the development team is way too small.

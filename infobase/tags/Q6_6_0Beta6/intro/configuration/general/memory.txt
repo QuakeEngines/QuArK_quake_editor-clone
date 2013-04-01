@@ -1,0 +1,26 @@
+title: Memory
+author: DanielPharos
+
+<img align=right>memory.png</img>
+Values in this settings-folder, controls how much memory QuArK are allowed to
+consume, and the number of undo-levels that it should store.
+
+<i>Max. undo levels</i>. This is the maximum number of undo's QuArK will store.
+
+<i>Min. undo levels</i>. This is the minimum number of undo's QuArK will store.
+QuArK will warn if not enough memory for this number of undo's.
+
+<i>Size of undo buffer (MB)</i>. Deletes older undo levels if it would take
+more memory than this.
+
+<i>Number of game files</i>. Number of game files to keep in memory. Game files
+are files loaded from games, and thus includes textures, maps, models and
+sounds.
+
+<i>Size of game buffer (MB)</i>. Size of the memory buffer to allocate while
+loading game files.
+
+<i>Compression Level</i>. Level of Compression to use for zip files (0 .. 9)
+
+<i>Size of compression buffer (KB)</i>. Size of memory buffer to allocate when
+compressing files.

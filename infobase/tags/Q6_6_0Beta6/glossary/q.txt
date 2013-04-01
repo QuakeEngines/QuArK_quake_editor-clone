@@ -1,0 +1,11 @@
+title: Q...
+author: Decker
+
+<dl>
+<dt><a name="quake1">   </a>Quake-1             <dd>[Q1] (game) A <a href="#fps">FPS-game</a> by <a href="#idsoftware">id Software</a>.
+<dt><a name="quake2">   </a>Quake-2             <dd>[Q2] (game) A <a href="#fps">FPS-game</a> by <a href="#idsoftware">id Software</a>.
+<dt><a name="quake3">   </a>Quake-3:Arena       <dd>[Q3A] (game) A <a href="#fps">FPS-game</a> by <a href="#idsoftware">id Software</a>.
+<dt><a name="quake4">   </a>Quake-4             <dd>[Q4] (game) A <a href="#fps">FPS-game</a> by <a href="#idsoftware">id Software</a>.
+<dt><a name="quakec">   </a>QuakeC              <dd>[.QC] (language) A program-language which <a href="#quake1">Quake-1</a> introduced. It controls the flow of the game, its rules. <a href="#mod">MODs</a>/<a href="#tc">TCs</a>/<a href="#pc">PCs</a> for Quake-1 are coded in QuakeC.
+<dt><a name="quark">    </a>QuArK               <dd>(abbreviation) <b>Qu</b>ake <b>Ar</b>my <b>K</b>nife.
+</dl>

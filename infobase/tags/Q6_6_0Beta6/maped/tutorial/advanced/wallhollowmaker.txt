@@ -1,0 +1,44 @@
+title: Wall maker and Hollow maker
+author: Decker
+
+<table border=0 cellpadding=0 cellspacing=0>
+<tr><td>
+
+<img width=181 height=166 align=right>image30.png</img>
+If you don't want to waste time, making rooms by the brick-by-brick method
+(e.q. create a brush per wall/floor/ceiling), you should try out the two
+macro-objects; Wall Maker and Hollow Maker.
+
+Both objects can be found in the 'Duplicators & Misc.' folder.
+
+Once created, a default brush is assigned to the object, but you can of cause
+put more brushes into the Wall Maker-/Hollow Maker-object, like any other
+brush-entity or group.
+
+</td></tr>
+<tr><td>
+
+<img width=237 height=237 align=right>image31.png</img>
+Both the Wall maker and Hollow maker, consists of solid-cube(s) and
+negative-cube(s), but you only have to think about moving one.
+
+Depending on which of the two objects you have created; Wall maker or Hollow
+maker, the size of the room they make, are whats matters:
+
+<ul>
+<li>A Hollow maker, will take the brush(es) which are assigned to it, and create
+a smaller room inside it.
+<li>The Wall maker, takes the size of the brush(es) for given as the room size,
+and then surrounds it with walls.
+</ul>
+
+</td></tr>
+<tr><td>
+
+<img width=181 height=145 align=right>image32.png</img>
+The size of the walls are determined by the specific <tt>depth</tt>, which can
+be found in both objects. To increase the thickness of the walls, increase the
+value of depth.
+
+</td></tr>
+</table>

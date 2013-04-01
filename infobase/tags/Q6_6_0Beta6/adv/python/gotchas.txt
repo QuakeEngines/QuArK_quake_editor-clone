@@ -1,0 +1,66 @@
+title: Gotchas
+author: tiglari
+
+<strong>QuarkX functions & None</strong>:
+If you write something like:
+<code>
+    if quarkx.function():
+      blah
+      blah
+</code>
+
+expecting blah blah to not execute when function()
+returns None as a value, you'll probably get a bizarre
+run-time error.  Instead write:
+
+<code>
+    if quarkx.function() is not None:
+      blah
+      blah
+</code>
+
+This is because most of the Python objects implemented in
+Delphi do not explicitely support 'truth' evaluation.
+Armin thought the Python core would detect it but it
+seems it just tries to do the evaluation anyway, thus
+calling a Nil function. Everything in Python can be true
+or false, including the Delphi-defined objects -- at least
+the Python core expects it so, and the Delphi code doesn't
+do it right :-(  So always explicitely compare with None.
+
+<strong>Vector equality</strong>:
+Don't try to compare QuarkX vectors with equality,
+rather test their difference for being zero.  Armin discusses
+this in the <ref> src/quarkx </ref> document.
+
+<strong>Tuples & assigment</strong>:
+Python has a concept of `tuple', which is a sequence of numbers whose members can't
+be changed (they're `immutable').  1-element tuples are
+written with a comma after them, which leads to wierd
+looking things like:
+<code>
+  mytuple = mynumber,
+</code>
+and
+<code>
+  mynumber, = mytuple
+</code>
+
+This latter is an example of `tuple assignment', if the right
+hand side of an assignemt is a tuple, then on the left hand side
+you can put a tuple-expression, and the appropriate assignments
+will get made to its variables.
+
+These commas are a bit unusual and easy to miss at first, and
+since many of the most useful specifics in dialog boxes
+are of tuple-type, missing them can lead to a lot of frustration.
+
+<strong>Tabs & whitespace</strong>:
+One of Python's distinctive features is `whitespace structuring', whereby all members of
+the same block have to be indented the same distance, and
+sub-blocks are indented more.  This saves hunting around for
+matching curlies, but can lead to at least one kind of
+serious screwup, involving tabs:  if Python's idea of what
+a tab is different from your editors, you can screw up
+functioning code just by saving it.  I have my text editor
+set to convert all tabs to 4 spaces.

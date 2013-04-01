@@ -1,0 +1,6 @@
+title: Who uses QuArK?
+author: Gryphon, tiglari
+
+Any and everyone who wants to create cool TC, or edit resources for their
+favorite game. QuArK has become an all-around flexible tool for helping
+development for any game or development project.

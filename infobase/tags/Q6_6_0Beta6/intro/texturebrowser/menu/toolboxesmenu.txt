@@ -1,0 +1,17 @@
+title: Toolboxes menu
+author: Rowdy
+
+<img border=0 align=right>toolboxes.png</img>
+<i>New files...</i> Displays the New files toolbox.
+
+<i>New map items...</i> Displays the New map items toolbox.
+
+<i>Texture Browser...</i> Displays the texture-browser toolbox, except
+that you are already here ;-)
+
+<i>Main window</i> Display the main QuArK window.
+
+<i>New map</i> This refers to any maps which you are currently editing.
+There may be one or more entries here.
+
+<i>Minimize window</i> Minimises the texture-browser window.

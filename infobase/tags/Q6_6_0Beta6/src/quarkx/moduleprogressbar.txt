@@ -1,0 +1,33 @@
+title: The progressbar module
+author: Armin Rigo
+
+You create a progress bar by calling quarkx.progressbar(txt,count), which returns a copy of the module described in the
+following table.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+progress()
+</td><td>
+Makes the bar go one step forward. When you called this function count time, the bar is at 100%. If the user clicked on the “ cancel ” button, progress() will raise an exception quarkx.aborted.
+</td></tr>
+
+<tr><td class="doccode">
+close()
+</td><td>
+Closes the progressbar module. This is very important! You should always use try...finally to make sure that close() is called.
+</td></tr>
+
+<tr><td class="doccode">
+count()
+</td><td>
+Returns the value of count given to quarkx.progressbar.
+</td></tr>
+
+<tr><td class="doccode">
+changecount(new)
+</td><td>
+Changes the value of count. Do this only if you really can’t compute the exact value at the beginning, because calling changecount can make the bar jump forward or backward!
+</td></tr>
+
+</table>

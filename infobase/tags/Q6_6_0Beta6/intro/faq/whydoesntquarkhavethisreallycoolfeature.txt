@@ -1,0 +1,12 @@
+title: Why doesn't QuArK have this really cool feature?
+author: tiglari, DanielPharos
+
+Very likely some combination of laziness, stupidity, or pressure; or
+perhaps nobody has asked for it.  So if you think it would be cool,
+ask for it.  If nothing happens after six months or so, bring it up
+again; QuArK was developed by a different person then the present
+maintainers, and we are gradually learning how to do more thing with
+it.
+
+Also, you could try to make it yourself. The sourcecode to QuArK is
+freely available, and we will always welcome a new developer :-)

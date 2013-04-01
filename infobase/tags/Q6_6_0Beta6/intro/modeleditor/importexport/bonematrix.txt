@@ -1,0 +1,43 @@
+title: Bones & Their Matrixes
+author: cdunde
+
+The under lying engine of the bones are their <a href="#bones3">Matrixes</a> which are primarily used in their rotation
+movements but can also be used for their linier movements as well.
+
+This is exactly why they are stored in the <a href="intro.modeleditor.importexport.html#bones2">editor.ModelComponentList</a>
+when they are read in from an imported model file that has bones. Without these, the model could not be properly exported.
+But simply having their matrixes is not enough, they also need to be <g>inverted</g> to give the opposite values that the importer brings in,
+because that is what happens when they are used to import them, the bone handle's positions are changed around by the matrixes for the editor's uses.
+So that needs to be reversed on export.
+
+Unfortunately, I am not a Mathematician, but I was lucky enough to stumble across a page on
+<a href="http://www.maths.surrey.ac.uk/explore/emmaspages/option1.html">Matrices and Determinants</a>.
+After many hours of extreme hair pulling, I was able to decipher what it was trying to explain.
+And that is why I made up the <g>Layman's Chart</g> on Inverse Matrix below, to help others to understand
+how it works and how to use it.
+
+<a name="bones3"></a>
+<img border=1 align=right>bonematrix1.png</img>
+There's not a lot to explain here, hopefully the colored steps will do the job much better.
+
+Just one basic point. For a 3x3 matrix, each row has three values stored in it as a small list,
+and those are in position 0, 1 and 2 of their list. Three of this lists make up the matrix.
+
+It also has three columns, which starts from the left hand side, of all the values in that position
+running from top to bottom.
+
+One very important thing to remember in working to invert a matrix is that you do <b>not</b> want
+to change to original values as you invert the matrix. You need to make a copy of it and change
+the copy. Other wise this method will not work and you'll wind up with a mess on your hands.
+
+To see this applied in <g>Python code</g> take a look at the <g>plugins\ie_md5_export.py</g> file's
+<g>def inverse_matrix</g> function near the top. Then use the name of that function for a word search
+to backtrack it in the file to see the preparation of <g>self.bones</g> for it to work with.
+
+This function creates a new list of these inverted matrixes, one for each bone, called <g>self.bone_matrix_list</g>
+and that list is called on later in the file for their use. So use that list name in another word search
+to see how they are used to define ( <b><g>=</g></b> ) another variable and just keep following those names to the end results.
+
+In the last step of the chart it shows <g>1/6.0</g> as though it is multiplying the matrix by that value.
+I have no idea if it is or not, or what that is used for. I did <b>not</b> use it in the md5 export file,
+but it works great without it.

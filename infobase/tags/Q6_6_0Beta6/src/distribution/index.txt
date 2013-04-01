@@ -1,0 +1,5 @@
+title: Snapshots & Distributions
+desc: policy snapshot dist
+
+This section describes QuArK distribution policy, tools and
+methodology.

@@ -1,0 +1,9 @@
+title: Display tool-palette
+desc: grid
+desc: zoom
+desc: 3dwindows
+desc: linear
+desc: lockviews
+desc: helpbook
+
+<img border=1 align=middle>display.png</img>

@@ -1,0 +1,36 @@
+title: BBox RMB menu
+author: cdunde
+
+This menu will change depending on if the bbox has been assigned to a bone or component or
+if it is not assigned to anything at the moment.
+
+<img align=right>bbox2.png</img>
+
+<i>Assign BBox To </i>&nbsp;: You need to select a single BBox to use this function.
+This will assign a selected bounding box to the component (if NOT Hidden) you select
+by means of a menu that will appear listing all available components to choose from, if any.
+
+<i>Assign Vtxs To BBox </i>&nbsp;: You need to have some vertexes and a single BBox selected
+to use this function. This will assign a selected bounding box to the selected vertexes of
+a component (if NOT Hidden) you must first select the vertexes then Ctrl select a bbox.
+
+<img align=right>bbox3.png</img>
+
+<i>Release BBox </i>&nbsp;: This will release the selected bounding box assigned to the component
+(if NOT Hidden) you select by means of a menu that will appear listing the component it is assigned to.
+
+<i>Select BBoxes </i>&nbsp;: This will select all the bounding boxes assigned to the component
+(if NOT Hidden) you select by means of a menu that will appear listing all available components
+to choose from, if any.
+
+<i>Release BBoxes </i>&nbsp;: This will release all the bounding boxes assigned to the component
+(if NOT Hidden) you select by means of a menu that will appear listing all available components
+to choose from, if any.
+
+<i>Hide this bbox </i>&nbsp;: This will hide the bbox from view. To make the bbox reappear you must
+do a <g>RMB</g> click on it in the tree-view to get a menu and click on <g>Show this bbox</g>.
+
+<i>Force to grid </i>&nbsp;: This will cause the center of the bbox to snap to the grid, if the grid is active.
+
+<i>Coordinates... </i>&nbsp;: This will bring up a dialog box displaying the bbox coordinates and
+which you can change to relocate the bbox, if it is not assigned to a bone or component.

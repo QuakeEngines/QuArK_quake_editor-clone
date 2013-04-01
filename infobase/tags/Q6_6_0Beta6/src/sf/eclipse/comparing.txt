@@ -1,0 +1,8 @@
+title: Comparing Files
+author: DanielPharos
+
+When there is a conflict between files, you'll need to compare them and import changes from the remote files into your local files. You can compare them in Eclipse from the resource perspective (right-click the item and from the submenu select "Synchronize with Repository...") or in the team synchronizing perspective (right-click the item and select "Open In Compare Editor").
+
+That will compare your files with those in the repository, and show you any changes you have made that are outgoing, changes other people have committed that are incoming, and any conflicts (where someone has committed a file that you have also modified).
+
+However, I suggest you do it differently. If you keep your work-copy of the files separated from the Eclipse-workspace (as in, you work in a copy of those files), you can first update your workspace-files and then use your favorite compare-program to import your new changes, and merge the files. <b>Don't forget to check if the newly imported changes don't break yours!</b> If you then refresh your workspace in Eclipse, there should be no conflict between files whatsoever, and you can upload your files.

@@ -1,0 +1,23 @@
+title: Advanced customization
+subdir: intro
+subdir: conversion
+subdir: newgame
+subdir: addons
+subdir: python
+subdir: plugins
+subdir: quarkpy
+subdir: duplicators
+subdir: doc
+
+This section discusses the features of QuArK that can be customized without modifying the source code.
+This mainly includes:
+
+<table>
+<tr><td valign=top><strong>Add-Ons</strong>:
+<td>lists describing new entity types, new textures, etc. This is what you need to have QuArK support new Mods of the game or new games altogether.<br>Use of the <ref> adv/conversion \ QuArK Conversion Tools </ref> (see its section below) can help to create the needed addon .qrk files without having to copy files and write code.
+<tr><td valign=top>&nbsp;<td>&nbsp;
+<tr><td valign=top><strong>Python</strong>:
+<td>The language which much of the map-editor is written, and the major components of the Python portion of the editor, <ref> adv/quarkpy \ quarkpy </ref> and <ref> adv/plugins \ plugins </ref>.
+</table>
+
+See the section <ref> maped </ref> for more information about how to use the map editor.

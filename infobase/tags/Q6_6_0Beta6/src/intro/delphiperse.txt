@@ -1,0 +1,19 @@
+title: Delphi Per Se
+author: Tiglari
+
+The basic idea of Delphi is 'components'.  These are modules
+that are installed into the IDE (by a command like
+Component|Install), where they appear as icons on as
+'component palette'.  Installed components can be clicked on
+and dropped into forms, or they can be invoked 'texturally'
+just by naming them in the declarings of a module.
+
+There are squillions of components available on the internet,
+free, share & commercial.  It seems to work well (about
+as smooth as PERL modules, modulo the advantages of the
+visual IDE).
+
+As Delphi versions increment, the IDE gets more sophisticated,
+but if you start with Delphi v2 (occasionally available for free
+from various sources), the shift to v5 (current) is not
+daunting.

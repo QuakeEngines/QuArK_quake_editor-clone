@@ -1,0 +1,8 @@
+title: Medal of Honor: Allied Assault
+author: tiglari
+
+The Mohaa support is limited, due to the fact that much important information about
+entities, such as about their models, is unavailable, and most importantly,
+lod terrain is not supported.  I'm not sure when these issues will be resolved,
+if ever, but some people seem to find QuArK useful as a prefab &
+building-making tool.

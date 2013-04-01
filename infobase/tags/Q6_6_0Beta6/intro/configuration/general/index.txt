@@ -1,0 +1,15 @@
+title: General
+desc: display
+desc: 3dview
+desc: software3d
+desc: glide
+desc: opengl
+desc: directx
+desc: memory
+desc: update
+desc: quakec
+desc: fileassociations
+desc: externaleditors
+desc: hotkeys
+desc: auxkeys
+desc: multimon

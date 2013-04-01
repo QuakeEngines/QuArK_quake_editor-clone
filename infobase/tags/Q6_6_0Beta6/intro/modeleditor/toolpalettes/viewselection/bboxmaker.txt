@@ -1,0 +1,22 @@
+title: Bbox Maker
+author: cdunde
+
+<img border=0 align=right valign=top>bboxmaker.png</img>
+When this button is active, it allows the <g>LMB</g> drag creation of a bounding box in any 2D view.
+Normally it would be used when a single bone is selected for the bbox to be linked to.
+However, they can also be used with models that may or may not have bones for different
+elements that a particular model format specifies.
+
+Bboxes are <g>polyhedrons</g> just like in the map editor. Bbox stands for bounding box which can also be used for a collision box depending on the model format's needs.
+If a bbox is associated with a bone then its name should match that bone's name, for example
+<img border=1 align=right valign=top>bboxmaker1.png</img>
+<code>upperleg:bone -> upperleg:p</code>
+
+They can be placed in the <a href="intro.modeleditor.dataforms.html#treeview">tree-view</a> individually or in a
+<a href="intro.modeleditor.misctools.html">BboxGroupFolder:bbg</a>,
+which is usually done to keep them identified with one particular imported model.
+
+The technical part of how they are handled in the editor is covered in the section entitled
+<a href="intro.modeleditor.importexport.html#bones">Adding Bones & Their Structure</a>.
+Look under its sub-section for
+<a href="intro.modeleditor.importexport.html#ModelComponentList"><i>What's in ModelComponentList</i></a>.

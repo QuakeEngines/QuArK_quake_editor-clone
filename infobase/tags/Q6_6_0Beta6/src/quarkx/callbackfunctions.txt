@@ -1,0 +1,18 @@
+title: Callback functions in Python and Warning about circular references
+author: Armin Rigo
+
+At a lot of places, QuArK expects to find a callable Python object. For example, each menu item must have an attribute onclick
+that, if not <tt>None</tt>, will be called by QuArK. The arguments that the function should accept varies from case to case; for
+example, the menu item’s onclick is called with a single argument, which is the menu item itself. The call is made by
+simulating the Python command apply(onclick, args). This means that onclick doesn’t need to be a function; it can be anything
+that is valid to call with the arguments args. In the current Python code, it is often a method instead of a function: if you
+give onclick the value someobject.mymethod, that method will be called with one additionnal argument (often called self) before
+the normal ones given by QuArK: the object someobject itself.
+
+This is pretty useful in all cases where the arguments given by QuArK are not enough to really know what occured. Typically,
+onclick will point to a method of the MapEditor object, so that we immediately know in which MapEditor instance we are.
+However, be careful about circular references: this technique makes a reference from the menu item’s onclick member to the
+given MapEditor instance, which in turn is likely to somehow reference the menu item through a pointer to the whole menu. In
+this kind of situation, neither the MapEditor instance nor the menu item will ever be freed from memory. This situation is
+allowed if you take care of breaking them: that’s why, when the MapEditor window is closed, a lot of its attributes are reset
+to <tt>None</tt>. This would free the menu, which in turn would let the MapEditor be freed.

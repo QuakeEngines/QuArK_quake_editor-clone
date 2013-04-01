@@ -1,0 +1,9 @@
+title: Standard Duplicators
+desc: basics more combinations linear increment
+
+Standard duplicators make copies of the brushes of the
+group they're in, arranged in patterns depending on which
+duplicator is used and what its specifics are.  The most
+often used ones put the copies in a row, although
+there are also ones that arrange them in various kinds of
+symmetrical patterns.

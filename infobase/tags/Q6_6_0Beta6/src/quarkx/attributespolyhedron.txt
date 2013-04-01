@@ -1,0 +1,58 @@
+title: Attributes of Internal objects of class "Polyhedron"
+author: Armin Rigo
+
+Note: the class name "Polyhedron" is new in 5.0.c3. In version 5.0.c2, the name was in french, "Polyedre".
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+error
+</td><td>
+A string describing the error, if the polyhedron is invalid (e.g. no interior).
+</td></tr>
+
+<tr><td class="doccode">
+faces
+</td><td>
+A list of all faces really used by the polyhedron. This can include faces outside the polyhedron (see the section about faces below). The list is empty if the polyhedron is invalid.
+</td></tr>
+
+<tr><td class="doccode">
+vertices
+</td><td>
+List of vertices (3D points). The list is empty if the polyhedron is invalid.
+</td></tr>
+
+<tr><td class="doccode">
+subtractfrom(list)
+</td><td>
+Subtracts the polyhedron from all polyhedrons in the given list. Returns a list with the resulting polyhedrons. Polyhedrons that don’t intersect the subtracting one are returned unchanged; other polyhedrons are replaced by zero or more pieces. New pieces are not attached to any parent, but it is invalid to read their parent attribute, which may return a wrong non-None value.
+</td></tr>
+
+<tr><td class="doccode">
+pieceof
+</td><td>
+Right after a subtraction, new pieces have this attribute set to the polyhedron they are a piece of. This is reset to None as soon as the piece is inserted into a group. Note that this attribute does not count for a reference, so it could become invalid if the original polyhedron is freed too early. A way to avoid that is to keep the original list of polyhedrons given to subtractfrom in a local variable until all pieceof attributes have been checked. If you give in the list of subtractfrom a polyhedron whose pieceof attribute is not None, and if the polyhedron is itself broken into pieces, the value of pieceof will be set as the new pieces’ pieceof, too. This lets you call subtractfrom several times with various subtracters and check the pieceof attributes only once.
+</td></tr>
+
+<tr><td class="doccode">
+broken
+</td><td>
+True or False depending on whether the polyhedron is broken or not.
+</td></tr>
+
+<tr><td class="doccode">
+intersects(poly)<br>
+intersects(face)<br>
+intersects(poly, face)
+</td><td>
+True or False depending on whether the polyhedron intersects or not the given polyhedron poly or the given face. If two arguments are given, face must be a face of poly and the intersection with this face of the polyhedron only is computed.
+</td></tr>
+
+<tr><td class="doccode">
+changedfaces()
+</td><td>
+Makes the Delphi code add + sign to poly in the tree-view without going through undo code.
+</td></tr>
+
+</table>

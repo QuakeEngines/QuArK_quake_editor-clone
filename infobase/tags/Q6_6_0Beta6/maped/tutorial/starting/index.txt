@@ -1,0 +1,14 @@
+title: Starting the map-editor
+author: Decker
+desc: entering
+desc: help
+desc: defaultroom
+desc: deleting
+desc: undoredo
+desc: saving
+desc: nextpart
+
+This is the first part of four, which guides you through the methods and
+functions of creating a map in QuArK's map-editor.
+
+Once you've completed this section, proceed to <ref> ../polyhedrons </ref>.

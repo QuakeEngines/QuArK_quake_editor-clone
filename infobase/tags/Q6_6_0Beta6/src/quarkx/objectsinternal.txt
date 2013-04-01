@@ -1,0 +1,12 @@
+title: Internal QuArK objects
+author: Armin Rigo
+
+Internal Objects are all the objects that QuArK works with, stores in files, and displays in tree views. Each Internal object
+has a name, which usually contains an extension like files. The extension is called the type of the object, and the part of the
+name before the extension is the shortname. Internal File Objects are the Internal Objects that correspond directly to a file,
+e.g. BSP or QRK files. Such objects have the file extension as type, e.g. "<tt>.bsp</tt>" or "<tt>.qrk</tt>". Non-File Objects are internals
+to a file, and cannot be stored into their own file. For example, polyhedrons and entities are Non-File. Such objects have a
+type that starts with "<tt>:</tt>" instead of "<tt>.</tt>", e.g. "<tt>:p</tt>" for polyhedrons.
+
+Besides this, all Internal Objects have a list of Specifics/Arg, much like Quake entities, as well as sub-items, as displayed
+in tree views. See <ref>src/struct/objects</ref> for more information.

@@ -1,0 +1,11 @@
+title: E...
+author: Decker
+
+<dl>
+<dt><a name="edge">     </a>Edge        <dd>The line where two <a href="#face">faces</a> meet, or the line between two <a href="#vertex">vertexes</a>. A dice has 12 edges.<br>
+                                            <pic>dice.gif</pic>
+<dt><a name="Editing-newsgroups"> </a>Editing-newsgroups    <dd><a href="#Editing-newsgroups">Editing-newsgroups</a> and Forums can be located through links on QuArK's web site. You can quickly reach this site by going to the question mark '<b>?</b>' help menu of your QuArK Editor.
+<dt><a name="Elimination"> </a>Elimination    <dd>A game-type in which players who have been killed, do not return till the next round. The last player to survive a round wins that round.
+<dt><a name="entities"> </a>Entities    <dd>Plural of <a href="#entity">entity</a>.
+<dt><a name="entity">   </a>Entity      <dd>An <a href="#fps">FPS-game</a> entity, is an object which the player can interact with. Most entities are monsters, weapons and moving doors. Some entities are used to light the level as if you placed an invisible light-bulb in a spot. Other entities, like doors, require that it has some <a href="#polyhedrons">polyhedrons</a> connected to it.
+</dl>

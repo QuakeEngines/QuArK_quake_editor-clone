@@ -1,0 +1,10 @@
+title: LogAndRaiseError
+author: DanielPharos
+
+<code>
+procedure LogAndRaiseError(const ErrMessage : String);
+</code>
+
+Logs the error message given by <tt>ErrMessage</tt> to the log with LOG_CRITICAL priority, and then raises a Delphi exception with <tt>ErrMessage</tt> as the message.
+
+Note: Since this raises an error, the code will NOT return!

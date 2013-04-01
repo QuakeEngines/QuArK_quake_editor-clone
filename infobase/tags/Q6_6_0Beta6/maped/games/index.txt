@@ -1,0 +1,24 @@
+title: FAQs for each supported game
+subdir: generic
+subdir: quake1
+subdir: hexen2
+subdir: quake2
+subdir: heretic2
+subdir: half-life
+subdir: sin
+subdir: kingpin
+subdir: sof
+subdir: quake3
+subdir: stvef
+subdir: ef2
+subdir: rtcw
+subdir: jk2
+subdir: mohaa
+subdir: sof2
+subdir: wildwest
+subdir: fakk2
+subdir: crystalspace
+
+Here you will find information and frequently asked questions about the QuArK-supported games.
+
+Don't forget to also check <ref> intro/configuration/games/specificgames </ref> if you have a question about the configuration of a game.

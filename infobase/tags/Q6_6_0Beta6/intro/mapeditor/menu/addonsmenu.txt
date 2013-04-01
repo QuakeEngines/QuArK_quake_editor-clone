@@ -1,0 +1,20 @@
+title: Addons menu
+author: cdunde
+
+<img border=0 align=right>addons.png</img>
+
+<i>Addons:</i> This Main menu category was added for 3rd party, outside programs that can be ran from within QuArK. Each item through out this menu has its own help dialog. Just high light the menu item and press F1 for further help and a link to the infobase for further details if an 'InfoBase' link button exist in the help window.
+
+<i>Add \ Delete menu items:</i> These functions allow you to add and delete 3rd party programs to this menu, that save or export their output to a map file which can then be imported to the QuArK editor and used in the file you are editing. You can use any .map file that the program outputs to, at any location, or a default map file as your input file. The default import file should be created and saved to YourGame\tmpQuArK\maps folder and named <a href="zips">'1SaveImport.map'</a> . If this file is damaged or lost it can be recreated by simply making a basic map file in QuArK (with world_spawn ONLY) and saved with the default file name above.
+
+<i>Add menu item:</i> This will add a 3rd party program to the menu. Using the 'Add Item Dialog' window, select a category to place your menu items under and then find the program you want to add with the 'select program' file browser '...' button to the right of the input box. You can either leave the output/input default file at its current setting and point the programs output to it or use the 'File Browser' button ... to select another map file and location to use. Once the program items are added, you will be given a notice as such and to restart QuArK to complete the process of adding the items to your menu. You can add as many items to your menu as you like before restarting QuArK. Each program added will have two items (with the programs name) and a separation line to isolate them for easy recognition, as well as F1 popup windows to remind you where the program and import files are located on your hard drive. The first item starts the program. Once you have exported its finished product to the default map file, then use the second item to import the map file into the QuArK editor. The entire product will be added to the map you are currently working on as a separate group item. Although the 'worldspawn' entity will NOT be imported, other entities can be and may require you to delete them, like another 'info_player_start' for example. Because these ARE 3rd party programs, QuArK does not provide any documentation on their use and makes no warranty for them.
+
+<i>Remove menu items:</i> Use this function to remove the desired custom menu items that have been added.
+
+<i>Shape programs:</i>  These are programs that can make different shapes to use in your maps. One that I recommend is 'MGS-object builder' and can be downloaded from the  <a href="http://groups.yahoo.com/group/quark/files/">Yahoo QuArK group site</a>. If you find any programs that may help others, please let us know by making a posting to the <a href="http://groups.yahoo.com/group/quark/">QuArK groups site</a>.
+
+<i>Terrain programs:</i>  This category is for your terrain programs for making landscape layouts in your maps. One that I recommend is <a href="http://nemesis.thewavelength.net/index.php?p=8"> 'Terrain Generator'</a> and can be downloaded from its own site.
+
+<i>Other programs:</i>  This category is for all other types of programs that can export to a map file for your use in QuArK.
+
+<i>Import any map file:</i> This item function allows you to load any map file into the existing editor to be added to the map you are working on. Because it also may import entities, you may half to delete some of them like its info_player_start. This function is created by the plugins/map1loadanymap.py file.

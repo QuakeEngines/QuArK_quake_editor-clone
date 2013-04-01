@@ -1,0 +1,41 @@
+title: Misc. Info.
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top align=left>
+<b>Installing the q3map_2.5.16_win32_x86 build tool</b>
+
+When you install this program you will need to direct it to the
+<a href="intro.configuration.games.specificgames.stvef.html#config">QuArK files</a> folder as shown
+earlier in the <a href="intro.configuration.games.specificgames.stvef.html#config">Configuration section</a>.
+That is really all you need to verify.
+
+<b>Changing and re-running a map</b>
+
+Normally, I run STVEF in a separate window (800 x 600), instead of its "Full Screen" mode when working on
+a map, for a couple of reasons.<br>
+First it's a lot easer to see around to view something in the
+editor that you might be concentrating on with your work.<br>
+The other is being able to jump back
+and forth between the editor and the game running by simply pressing the <b>~</b> Tilde key.
+This will release you from the game and back into QuArK or any other program you want to use.
+Then just click on the game window to go back into it and the Tilde key again to cancel the console.
+It seems less confusing that way.
+
+Unfortunately it does not have the ability to make changes in your map while the game is still running
+and then rebuild and reload the map.<br>
+To do this you will need to close the game and go through the normal process once again.<br>
+But basically all you need to do is just click the QuArK menu item and off you go.
+
+To close the game, press the Esc key and select "Exit Program" > "Yes" from its menu and
+press Esc again to stop the games "Log Off" recording from playing.
+
+<b>Other Comments</b>
+
+Some entities and\or models do not work properly or at all. These are erroneous items that were not
+done correctly by other parties and is not a bug with QuArK. However, other entities may not have
+been fully understood as to their proper needs and settings which could be an item to bring to our
+attention for correction.
+</td></tr>
+</table>
+

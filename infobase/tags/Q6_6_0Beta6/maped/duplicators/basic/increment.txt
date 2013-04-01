@@ -1,0 +1,33 @@
+title: Incrementing Specifics
+author: tiglari
+
+Suppose you want to make a row of lights, each with its own switch.  The triggers
+will have 'target' specific, the targets a 'targetname' specific, but for the
+thing to work, they will need to be different in each copy.  This can be acheived
+by activating the incrementation facility for specifics.  The first step is to
+check the duplicator's 'increment' specific.  Then choose as target and targetname
+values something that ends in a digit, say 'light000'.  Now each copy will
+have the final digit incremented by 1, so each trigger will activate its own
+light.  This basic facility applies to 'target', 'targetname' and 'killtarget'
+specifics, and uses 1 as the increment, but there are extensive facilities
+for making things more flexible.
+<ul>
+<li>the 'incr. all target' checkbox specific will extend incrementation to
+every specific that contains the string 'target' (e.g. 'closetarget')
+<li>the 'incrementable' specific takes as its value a list of names of
+additional specifics that are to be incremented (e.g. 'lip damage').
+<li>'final_target' specifies a value that is to be used for target-value the last
+copy, including None if the specific is to be omitted (for example there might
+be a sequence of switches in which the last one activiated a door).  For any
+specific name, we can add a final_<name> specific, e.g. 'final_killtarget'
+which will work in the same way.
+<li>'increment by' specifies the size of increment.  This can be used to produce
+a grid of lights, each with its own switch; using say 10 as the increment for the
+outer duplicator and 1 for the innder.
+<li>'incre_lip' specifies a custom increment for the 'lip' specific; further
+specifics of this kind beginning with 'incre_' can be added freely.
+</ul>
+
+At time of writing, incrementation is implemented for the basic, linear, and
+(new) copy-one duplicators.  More will probably be added in the future.
+(Many of the ideas here, and some of the implementation, is due to subnoodle.)

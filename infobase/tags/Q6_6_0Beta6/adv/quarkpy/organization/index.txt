@@ -1,0 +1,13 @@
+title: Organization
+format: html
+
+QuArK was originally envisaged as having a map editor and
+a model editor.  The latter hasn't been quite finished yet,
+but originally Andy Vincent was working hard on it, and at
+the moment cdunde is.
+
+Files that are providing facilities for both editors are
+usually prefixed with q- (qdictionnary.py, qkeys.py, etc.),
+those for the map editor with map- (mapeditor.py, mapentities.py),
+and those for the mdel editor with mdl-.  These are however
+just conventions, and not always adhered to.

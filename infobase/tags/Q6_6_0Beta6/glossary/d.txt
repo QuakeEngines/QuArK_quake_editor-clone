@@ -1,0 +1,9 @@
+title: D...
+author: Decker
+
+<dl>
+<dt><a name="doom3">            </a>Doom-3              <dd>[D3] (game) A <a href="#fps">FPS-game</a> by <a href="#idsoftware">id Software</a>.
+<dt><a name="directx">          </a>DirectX             <dd>[DX] A 'tool' that allows developers to get the best out of computers running Windows. Developed by <a href="#microsoft">Microsoft</a>.
+<dt><a name="drag handle">      </a>Drag Handle         <dd>An object that can be used in the QuArK Editors to move something such as a <a href="#vertex">vertex</a> of a <a href="#poly">poly</a> or model <a href="#component">component</a>.
+<dt><a name="duplicator">       </a>Duplicator          <dd>An active (macro) function in QuArK's <a href="#treeview">tree-view</a>, which allow the map-designer to duplicate objects many times, and still be able to edit the <i>master-objects</i>, where the changes will instantaneously be reflected on the duplicates.
+</dl>

@@ -1,0 +1,77 @@
+title: Texture format
+author: DanielPharos
+
+Image data, or textures, are stored in specifics of objects,
+or Pixel Set Descriptors (PSD) QuArK's internal image format.
+
+There are three specifics:
+
+<g>Image#</g>  (Where # is a number)<br>
+<g>Pal</g><br>
+<g>Alpha</g><br>
+
+Usually, there's only one image per texture, so there is only an <g>Image1</g>.
+If the texture doesn't contain any alpha-color data, <g>Alpha</g> doesn't exist.
+If the picture isn't a paletted image, like a pcx file, <g>Pal</g> doesn't exist.
+
+There are two different formats that QuArK uses internally,
+and every loaded image is converted to those formats on load:
+<ul>
+<li>24-bit non-paletted, and
+<li>8-bit paletted with a 24-bit palette.
+</ul>
+
+The Image-specific is stored in a way Windows can understand directly.
+The details of it might seem a bit weird, but this is the way Windows works
+(this gave Windows extra speed back in the old 486-days).
+All the data in the Image-specific must be aligned on a 32-bit boundary per scanline.
+What does this mean?
+
+A scanline is simply a row of pixels as displayed on the screen.
+These are <g>picture-width</g> pixels in a single row.
+However, the amount of bytes used per row must be a multiple of 4 (32 bits = 4 bytes of 8 bits each).
+So there is a <g>padding</g> amount of <g>empty</g>, unused, erroneous bytes at the end of each row.
+You can set them to any value, since they won't be displayed, but making them zero's is probably nicest.
+How to calculate the amount of padding bytes, you ask?<br>
+The amount of bits used in a single row of pixels is:
+<g>picture-width</g> x <g>bits per pixel</g>.
+
+The reason for the 8 bits each is because RGB images have a <g>Decimal</g> numbering for each Red, Green,
+Blue channel, or color component, that ranges from 0 to 255, or 256 digits, where pure white would be
+255, 255, 255. Alpha would also be an additional component which we are skipping over for right now.
+
+But the point is, you can see how cumbersome that would be to store, as well as take more bits in memory.
+So to overcome this they use what is known as the <g>Hex</g> or <g>Hexadecimal</g> numbering system instead.
+This system has a total of 16 digits, 0 through 9 plus A, B, C, D, E AND F. Each pixel is an RGBA,
+Red, Green, Blue and Alpha (which may not be used) component. Each of those components gets 2 bits for their <g>Hex</g>
+number looking something like this, FFFFFF, which again is pure white, with Alpha being overlooked for now.
+If an image does have an Alpha component then its <g>Hex</g> number would look like this FFFFFFFF,<br>
+<g>2 bits per component x 4 RGBA components = 8 bits each per pixel</g>.<br>
+Pretty slick how that all works, isn't it?
+A good example is to look at this <a href="colorconverter/rgb.htm">Color Converter</a>.
+
+Bits per pixel is usually a number like 1, 2, 4, 8, 16, 24 or 32.
+This now gives the amount of bits per line. We need to round this up to the closest multiple of 32 bits.
+The simplest way is by adding an additional 31, then dividing by 32 and rounding down the result.
+This will give the amount of bytes per scanline.
+
+To find the amount of padding bytes, simply subtract the amount of bytes used in a single row of pixels:<br>
+<g>padding</g> = <g>picture-width</g> x <g>bits per pixel</g> - <g>amount-of-bits-per-scanline</g>
+
+But be careful: the scanlines are stored upside-down.
+This means that the first bytes you read in, are actually the first pixels of the LAST line to display!<br>
+(The picture is stored vertically mirrored, or flipped!)
+Just do a simple <g>picture-height</g> - <g>line-I-want</g> to get the correct number of the scanline.
+Since you know the amount of bytes per scanline (nicely aligned, so no half-byte locations here!),
+you can find the start of the scanline by a simple multiplication.
+
+Since QuArK uses only 8 bits or 24 bits internally, there are only two possibilities.
+Check for the existance of the <g>Pal</g>-specific: if it's there, you're looking at an 8-bit texture,
+if not, then it must be a 24-bit texture.
+
+If <g>Pal</g> does exists, then this is a list of 256, 24 bit colors, stored in a 32-bit format:
+RGB (Red, Green, Blue, no Alpha here). So each color is 4 bytes in size.
+Color 0 is the first color in the list, etc.
+
+<g>Alpha</g> contains any Alpha data there might be.
+This is just a list of alpha-color values, no padding involved.

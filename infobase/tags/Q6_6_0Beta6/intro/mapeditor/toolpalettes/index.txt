@@ -1,0 +1,6 @@
+title: Tool-palettes
+subdir: display
+subdir: mousemodes
+subdir: movement
+subdir: objectmodes
+

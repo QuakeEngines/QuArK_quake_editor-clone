@@ -1,0 +1,23 @@
+title: Adjacent Faces Selector
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+Another very nice <b>tool</b> is the <b>Adjacent Faces Selector</b> button. The function that it provides is that of selecting one particular face, either up , down or both, and then ,by clicking this button, having all of the adjoining faces that it touches added to your selection automatically.
+</td>
+<td valign=top align=middle>
+<img border=0>adjacentfaces1.png</img>
+</td></tr>
+</table>
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+This can create some very nice random and staggered effects to your terrain as illustrated below. Here, using just a slight amount of drag, we have created a rugged effect. Then by merely adding some grass and twig texturing to the flat area and fair size boulder texture to the random area, we have just given our surroundings a nice look with very little effort. Thank you Rowdy!
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0>
+<tr><td valign=top align=middle>
+<img border=1  align=middle>adjacentfaces2.png</img>
+</td></tr>
+</table>

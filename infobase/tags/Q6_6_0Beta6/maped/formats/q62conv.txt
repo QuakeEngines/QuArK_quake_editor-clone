@@ -1,0 +1,16 @@
+title: Conversion from QuArK 6.2
+author: tiglari
+
+Because the representation of texture scales in QuArK 6.3 is different from
+that of 6.2, some care should be taken with transferring projects.  First,
+make sure the project is backed up, then open it in 6.3 and make sure
+that the scales look correct, and that it builds correctly.  Then, as
+you further edit the map, faces that are operated on will shift their
+texture-representation to the new one, so keep an eye on things to make
+sure nothing is going wrong.  If problems occur, announce them to the
+<link forums>QuArK forum</link>, so we can figure out what has gone wrong.
+
+QuArK 6.2 will not correctly read .qrk's and .qkm's written by QuArK 6.3,
+so migration to 6.3 is basically a one-way street (we could probably
+come up with a retrogression tool if one was really wanted, but
+no guarantees; 6.3 is supposed to be better!)

@@ -1,0 +1,32 @@
+title: Airbrush Paint
+author: cdunde
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+<img border=0 align=right valign=top>airbrush1.png</img>
+Allows Multiple Color Painting of the selected model's skin texture.
+
+Like the <a href="intro.modeleditor.toolpalettes.paintmodes.html#solidcolor">Solid Color Paint</a>
+this also works in conjunction with the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#colorpicker">Color Picker</a> ,
+described in more detail below, as one method of setting the color of the paint brush
+and, with both active, it also effects the way different mouse buttons work.
+
+One difference is the <g>LMB</g>, which normally, with a quick single click, will cause the
+component the cursor is over in a view to be selected. Now it will select the color that the
+cursor is over as the primary, top or start, color setting for the <g>Airbrush Paint</g> brush.
+
+The other difference is the <g>MMB</g>, which normally, with a quick single click, will cause the
+view that the cursor is in to do an automatic zoom. Now it will select the color that the
+cursor is over as the second, lower or end, color setting for the <g>Airbrush Paint</g> brush.
+
+It also works in conjunction with the
+<a href="intro.modeleditor.toolpalettes.paintmodes.html#colorselector">Color Selector & Paint Settings</a>
+which not only changes the color to paint with, but gives settings for the paint brush size, shape and
+available <g>Airbrush effects</g> as well.
+It does not effect the normal mouse button functions.
+
+The ability to perform other editing functions will also remain in effect, such as dragging vertex handles,
+selecting faces, zooming, panning, rotating and so on.
+</td></tr>
+</table>

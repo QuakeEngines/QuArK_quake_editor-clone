@@ -1,0 +1,99 @@
+title: Techniques
+author: tiglari
+
+
+<TABLE>
+<TR><TD COLSPAN=2>I'll discuss two techniques here,
+the use of a 'thick'; arch to avoid texture
+misalignments between the front face and the inside edges,
+and how to do a round porthole with no texture seam
+around the curved opening.
+</TD></TR>
+<TR><TD>
+Start with something like the uninspiring archway to the
+right.  Basically what we're going to do is create
+a whole nother arch inside it, with the same dimensions,
+but with a 'thickness'; projecting inward, with a different
+texture and a curved 'seam' on the front and back.  Note that
+the bottom of the arch has been pulled off the floor.
+</TD><TD>
+<pic> arch7.jpg </pic>
+</TD></TR>
+<TR><TD>
+A way to do this is as follows.  First select the arch's
+guide-brush, and then Edit | Duplicate from the top menu.
+If you look inside the arch duplicator you'll see that there
+are two brushes.  Drag one of them out out from inside the duplicator
+so that it is sister the duplicator rather than inside it,
+select it, and finally
+RMB | Curves | Arch in a map view, looking at it from
+the front.  You'll now have two identical arches occupying
+the same space.
+Now select one of the arches and look at its specifics,
+and input a value such as say 8 into its 'thick' specific.
+
+You should now see an extra thickness protruding
+inward around the curved surface, onto which you can put
+some different texture.  Next you'll want to make two side
+brushes to put under the overhang, before
+doing the textures.  To the right is a wirefrom view of
+what things might look like now.
+</td><td>
+<pic>arch8.png</pic>
+</td></tr>
+<table>
+<tr><td>
+Now the idea is to put onto the front faces of the arch and the
+side-blocks the same texture as will go on the inside surface, so
+that there won't be a sharp texture-discrepancy around the edge
+of the opening.  Also, the fronts of the side-brushes and the arch
+can be pulled out a bit to make a protruding `lip'.  As a final
+elabortion, you should push the `details' button on entity specifics
+page, and suppress the creation of faces that can't be seen.
+</td></tr>
+<tr><td>
+There is also the problem of getting the textures aligned around
+the inside of the opening.  This is a bit tricky, but here's
+a procedure.  Put the texture you want on to top face of the
+thick arch's guide brush, tag that face, and then wrap it
+down onto the hidden (facing the wall) faces of the two
+side brushes.  Then tag this hidden face of one brush, and
+project the texture onto its opposite exposed 
+face (facing into the archway),
+and repeat for the second brush.
+</TD>
+<TD><!--<img src=images/curves/shapes/tech3.jpg WIDTH=213 HEIGHT=203
+  alt="arch shape">-->
+</TD></TR>
+<tr><td>
+This can be tricky and confusing because of all the mirror-image
+type reversals from wrapping and projecting textures onto
+faces pointing in opposite directions, but it can be made
+to work out.  One point to keep in mind is that the texture
+you put on the top face of the arch's guide brush is
+reflected (mirror-imaged once) when you see it on the
+inside surface of the arch; when you wrap it onto the hidden
+faces of the side-brushes it doesn't get reflected, only
+rotated, but finally gets reflected when you project it from
+the hidden face to the exposed one.
+(So it's confusing; figuring it out was worse).
+</td></tr>
+<tr><td>And finally, Alex Haarer's archlib plugins provides an
+assortment of complex prefab arch structures.
+</td></tr>
+<tr><td>
+Another technique I'll describe verbally without pikkies is
+a round porthole.  First make a square opening, fit a
+brush into it exactly, wrap a texture seamlessly around
+the brush (the faces that contact the opening), and project
+the top and bottom textures of the brush onto the
+top and bottom faces of the opening.  Then cut the brush in
+half so that you have two brushes, one on top of the other,
+exactly touching, filling the bottom and top half of the
+opening.
+Now make each brush into an arch, set the lower one to
+lower, and project the top and bottom textures of the
+opening to the top and bottom faces of the corresponding
+brush.  That should do it.
+</td></tr>
+</table>

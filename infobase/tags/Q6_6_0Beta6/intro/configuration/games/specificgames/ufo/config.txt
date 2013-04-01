@@ -1,0 +1,4 @@
+title: Configuration
+author: DanielPharos
+
+One important note: The UFO2MAP compiler needs several DLL files that are in the main directory of UFO. The compiler however can't reach those files from the 'tools' directory. So copy the UFO2MAP compiler from the 'tools' directory into the main directory, and run it from there.

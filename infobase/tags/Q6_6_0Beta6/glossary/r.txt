@@ -1,0 +1,11 @@
+title: R...
+author: Decker
+
+<dl>
+<dt><a name="r_drawflat">       </a>R_DrawFlat  <dd>(console command) Used in conjuction with <a href="#r_speeds">r_speeds</a>, to see which parts of the map can be seen from which other parts. It's actually a <i>draw everything in reverse</i>.
+<dt><a name="r_speeds">         </a>R_Speeds    <dd>(console command) Used in conjuction with <a href="#r_drawflat">r_drawflat</a>, when examining a newly build map for problems. R_speeds shows the number of polygons that the graphic engine draws every frame. A lower r_speed is better.
+<dt><a name="rgb">              </a>RGB         <dd>(-color) <b>R</b>ed-<b>G</b>reen-<b>B</b>lue. A pixel on a 24-bit bitmap is made up by the three color-components red, green and blue.
+<dt><a name="rgba">             </a>RGBA        <dd>(-color) <b>R</b>ed-<b>G</b>reen-<b>B</b>lue-<b>A</b>lpha. The Alpha is an transparency-value, to indicate how transparent this pixel is. Only found in 32-bit bitmaps. See also <a href="#rgb">RGB</a>.
+<dt><a name="rle">              </a>RLE         <dd><b>R</b>un <b>L</b>ength <b>E</b>ncoding. A simple compression algorithm, mainly used for image data.
+<dt><a name="rmb">              </a>RMB         <dd>(abbreviation) <b>R</b>ight <b>M</b>ouse <b>B</b>utton.
+</dl>

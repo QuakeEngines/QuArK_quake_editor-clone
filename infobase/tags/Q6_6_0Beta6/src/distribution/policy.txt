@@ -1,0 +1,59 @@
+title: QuArK Release Policy
+author: Peter Brett
+
+QuArK has two types of releases: distributions and snapshots.
+
+<ol>
+<li>Distributions are released through the SourceForge Release System.
+A distribution consists of the following files:
+<ul>
+<li><tt>quark-win32-*version*.exe</tt> - a Nullsoft Scriptable Install
+System executable containing the QuArK Windows binaries with a bundled
+Python micro-distribution and the Infobase.</li>
+<li><tt>quark-win32-*version*.zip</tt> - a zip archive containing the
+QuArK Windows binaries with a bundled Python micro-distribution and
+the Infobase.</li>
+<li><tt>quark-src-*version*.zip</tt> - a zip archive containing full
+exports of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt> CVS modules.</li>
+<li><tt>quark-help-*version*.zip</tt> - a zip archive containing the
+compiled Infobase.</li>
+</ul>
+You will need to have "Release Technician" permissions on the QuArK
+SourceForge project to be able to release a distribution.
+
+N.B. that version numbers are in the format
+<tt>#.#.#state#</tt> where 'state' can be one of 'rel', 'beta', or
+'alpha'.  The numbers before the current state are the major and minor
+versions, and the number after the state is the release number at that
+version/state. Examples:<ul><li><tt>6.4.0alpha1</tt>. Note also that version numbers should be <strong>unique</strong>.</li>
+<li><tt>6.3.0rel4</tt></li></ul>
+</li>
+<li>Snapshots are released on <link project>QuArK's SourceForge webspace</link>.
+A snapshot consists of the following files:
+<ul>
+<li><tt>quark-win32-*date*.zip</tt> - a zip archive containing the QuArK
+Windows binaries with a bundled Python micro-distribution and the 
+Infobase.</li>
+<li><tt>quark-src-*date*.zip</tt> - a zip archive containing full
+exports of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt>
+CVS modules.</li>
+<li><tt>quark-help-*date*.zip</tt> - a zip archive containing the
+compiled Infobase.</li>
+</ul>
+You will need to have access to the QuArK project's SourceForge
+webspace (i.e. a SourceForge shell account is required) to be able to
+release a snapshot.
+
+N.B. that dates should be in the format <tt>YYYYMMDD</tt>.
+</li>
+</ol>
+
+Typically, QuArK snapshots are released every couple of weeks,
+although this may vary depending on how much work is being done.  If
+two weeks go by with very little CVS activity, there won't be much
+point in making a snapshot; equally, if things are frantic, it's
+likely we'll do snapshots more frequently.  Also, it depends how much
+time the release technicians have available.
+
+Distributions are done on a much less frequent basis, because they
+require much more work on the part of whoever's doing the releases.

@@ -1,0 +1,35 @@
+title: Folders menu
+author: Rowdy
+
+<img border=0 align=right>folders.png</img>
+<i>New main folder...</i> Lets you create a new top level folder.  You
+would then typically create texture lists under this folder, or create
+subfolders which would then contain texture lists.  This folder can be stored
+in the opened <g>.QRK</g> file (and the textures will only be available for
+maps also stored in this .QRK file), in a registered add-on (a list of add-ons
+is presented so you can select one), or in a new add-on.  Storing the folder in
+a new add-on is generally recommended, then the textures will always be
+available, and you can easily send the add-on to other QuArK users.
+
+<i>New sub-folder</i> Permits the creation of a sub-folder to contain
+groups of related textures and <ref> ./newtexturelist </ref>
+folders.  You need to select an existing folder first, then create a new folder
+under that one.  An example of the Dupes texture folder for Quake II.
+Sub-folders allows you to group your textures very specifically.
+
+<i>Delete folder</i> Deletes the selected folder, either a main folder or
+a sub-folder.  Note: it is a <b>bad idea</b> to delete the pre-defined folders
+unless you know what you are doing ;-)
+
+<i>Item Description...</i> Lets you type in a short description of the
+folder.  This description is displayed next to the folder name.
+
+<i>Reload folders</i> If you have copied or moved texture files on your
+disk, Reload folders will refresh the texture display so that it matches
+whatever your physical file structure is.  This is useful when you are
+regrouping textures into different sub-folders.
+
+<i>Add-ons...</i> Displays the list of registered add-ons and lets you
+add or remove them.
+
+<i>Close Toolbox</i> Closes the texture-browser window.

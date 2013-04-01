@@ -1,0 +1,30 @@
+title: Hintbox
+author: Decker
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+Whenever you see the text "<tt>Press <b>F1</b> for help</tt>" in the little
+hintbox under the <a href="#dataform">dataform-display</a>, you can press F1
+and get a Hint Pop-up window, which tells you a little more about the item
+you are pointing at.
+
+Some of the Hint Pop-up windows will have an InfoBase button that is linked
+directly to a page in the InfoBase and will give you further help for the
+item in question.
+
+If you are new to QuArK, these hints and InfoBase links come in handy if you
+do not know exactly what the item you are pointing at, does. So press <b>F1</b> to
+get the hint and information available, before asking about it in the
+<g>editing-newsgroups</g>.
+
+Once you move your mouse outside the larger hintbox, it will automatically
+disappear.
+
+</td><td valign=top>
+<center>
+<img border=0>hintbox_small.png</img><br><br>
+<img border=0>hintbox_large.png</img>
+</center>
+</td></tr>
+</table>

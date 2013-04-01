@@ -1,0 +1,39 @@
+title: Model-editor in QuArK
+subdir: overview
+subdir: model
+subdir: importexport
+subdir: menu
+subdir: rmbmenus
+subdir: toolpalettes
+subdir: userdata
+subdir: misctools
+subdir: dataforms
+subdir: skinview
+subdir: editelements
+subdir: vertexcolorandweights
+subdir: exportmodelformats
+
+The model editor is the secondary part of QuArK. A model can represent a number of things
+depending on the game it is being created for. It can be an object like a prop, a table or chair.
+It can be a structure such as a door or an entire building. It can even be the terrain in a map.
+But typically a model is a character used to play in the game itself. The model editor lets you view,
+change and manipulate these kind of game models for the formats that QuArK's Model Editor supports.
+
+Basically, a model is made out of a mathematical mesh consisting of individual triangular <g>faces</g> in 3D space.
+Each face of a model has three <g>vertexes</g> which can be moved, in 3D space, to form the shape of the models mesh.
+The entire mesh is then "Skinned" using a <g>texture</g> image file such as a .pcx, .jpg, .tga or some other
+format that the editor will support. The "Skin-view" page of the editor is used for this skinning process,
+where there is another set of <g>vertexes</g> of the "unwrapped" model mesh and their vertex handles that are used
+to move this flat mesh of the model over the texture image changing the projected image position of the texture on
+the model's 3D mesh and giving the model its final appearance.
+
+The <a href="intro.modeleditor.skinview.html">Skin-view page</a> works a bit differently then the editor's views do,
+based on the fact that it has no actual triangles. Only what is known as <g>view.handles</g>, view being the view
+displayed on the <a href="intro.modeleditor.skinview.html">Skin-view page</a> itself. Another big difference,
+at this time, is that unlike all of the other <g>views</g> of the editor which are in a <g>list</g> of its
+<g>editor.layout.view</g>, the <a href="intro.modeleditor.skinview.html">Skin-view page</a> view is never actually added
+(appended) to that list, on a permanent bases, making it pretty much isolated from the rest of the views of the editor.
+Because of this I needed to create a <g>global</g> in the <g>quarkpy\mdlhandles.py</g> file called <g>SkinView1</g>
+that can be used, when needed, to call that view when the <a href="intro.modeleditor.skinview.html">Skin-view page</a> is open.
+It does seem to be added periodically when the mouse cursor is actually somewhere within the
+<a href="intro.modeleditor.skinview.html">Skin-view page</a> view.

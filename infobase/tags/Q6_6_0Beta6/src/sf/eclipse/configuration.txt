@@ -1,0 +1,74 @@
+title: Configuration
+author: Rowdy / cdunde / DanielPharos
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+When you run Eclipse for the first time, it will prompt you for a repository location. This is where you want to keep your QuArK CVS files. The default c:\eclipse\workspace is fine. You might want to keep them in your 'My Documents'/'Documents and Settings'-folder if you prefer.
+
+<i>Step 1) Set the <b>Preferences</b>:</i>
+
+In the main menu of the program select <b>Window > Preferences</b>, expand the treeview to show <b>Team > File Content</b>, click the <b>Add...</b> button and add 'dfm', 'pas' and 'dpr' as ASCII files, add 'res' as Binary file (add it first as ASCII, the default, then select it and click the "Change" button). Finally, click the <b>OK</b> button to close the Preferences window.
+</td>
+<td align=right>
+<img border=0 align=right>preferences.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Step 2) Add a new <b>CVS Repository</b>:</i>
+
+Switch to <b>CVS Repository Exploring</b> -  By clicking the icon circled in red in the upper-right of Eclipse's window. (This is where you can change <b>Perspective</b> in Eclipse.)
+
+Now click the <b>Add CVS Repository</b> icon, circled in red in the next picture.
+</td>
+<td align=right>
+<img>switch_to_cvs.png</img>
+
+<img>module_list1.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Step 3) Set the <b>Add CVS Repository</b>:</i>
+
+Fill out the form with the information settings shown.
+
+<b>Host:</B> quark.cvs.sourceforge.net
+
+<b>Repository path:</b> /cvsroot/quark
+
+<b>User:</b> your registered sourceforge user name
+
+<b>Password:</b> your registered password
+
+<b>Connection type:</b> extssh
+
+<b>Use Default Port</b> (selected)
+
+<b>Validate Connection on Finish</b> (checked)
+
+<b>Save Password</b> (checked)
+
+Then click the <b>Finish</b> button to complete your connection to sourceforge. Make sure Eclipse is allowed access through your firewall(s) (if any).
+</td>
+<td align=right>
+<img>add_cvs_repository.png</img>
+</td></tr>
+</table>
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Step 4) Viewing the sourceforge CVS files:</i>
+
+After connecting, view the list of available modules by expanding the tree-view. The most current version files for QuArK are usually kept in the <b>HEAD</b> directory.
+</td>
+<td align=right>
+<img>module_list2.png</img>
+</td></tr>
+</table>
