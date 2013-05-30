@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 6
 ============
+* [cdunde/DanielPharos]: Started HL2 Exporter support but not completed yet.
+          - Open the plugins/ie_md0_HL2_export.py file with any text editor for details at top of file.
+
 * [cdunde/DanielPharos]: Removed game support for Xonotic due to improper texture paths.
 
 * [cdunde]: Added full game support for Xonotic including .md3 model displaying.
