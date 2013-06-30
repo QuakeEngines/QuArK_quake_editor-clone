@@ -1,0 +1,30 @@
+QQRKSRC1
+// Warsow textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2008/04/23 20:51:46  cdunde
+//Setup for Warsow with .md3 model support.
+//
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Warsow Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "Warsow Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
+    Warsow Textures.qtxfolder =
+    {
+      Dynamically Found.osfolder =
+      {
+        path = "basewsw"
+      }
+    }
+  }
+}
