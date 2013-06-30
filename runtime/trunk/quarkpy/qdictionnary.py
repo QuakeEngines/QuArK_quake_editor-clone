@@ -14,7 +14,7 @@ Dictionary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.6 Beta 5", #This is also used for version number checks between executable and Python scripts
+    0: "QuArK 6.6 Beta 6", #This is also used for version number checks between executable and Python scripts
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -1090,6 +1090,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.157  2012/07/01 12:24:12  danielpharos
+#Improved MapError error message.
+#
 #Revision 1.156  2011/07/29 15:19:31  danielpharos
 #Bumped version number to 6.6 Beta 5.
 #

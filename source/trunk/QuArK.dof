@@ -61,7 +61,7 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=6
 MinorVer=6
-Release=5
+Release=6
 Build=0
 Debug=0
 PreRelease=0
@@ -73,15 +73,15 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=QuArK Development Team
 FileDescription=Editor for Quake Style Games
-FileVersion=6.6.5.0
+FileVersion=6.6.6.0
 InternalName=QuArK
-LegalCopyright=Copyright (c) 2011
+LegalCopyright=Copyright (c) 2013
 LegalTrademarks=
 OriginalFilename=QuArK.EXE
 ProductName=Quake Army Knife
 ProductVersion=6.6 (Beta-Release)
 Comments=Original Coding by Armin Rigo
-Homepage=http://quark.sourceforge.net/
+Homepage=http://www.sourceforge.net/projects/quark
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\direct3d;.\components\zip;.\Prog;.\Prog\Model;.\Python;.\3dfx
