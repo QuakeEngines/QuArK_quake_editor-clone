@@ -352,7 +352,10 @@ def Import(basepath, filename):
     # and increase each following component by 1.
     CompNbr = "None"
     comparenbr = 0
+    CompNames = []
     for item in editor.Root.dictitems:
+        if editor.Root.dictitems[item].type == ":mc":
+            CompNames.append(editor.Root.dictitems[item].shortname)
         if editor.Root.dictitems[item].shortname.startswith('Import Component'):
             getnbr = editor.Root.dictitems[item].shortname
             getnbr = getnbr.replace('Import Component', '')
@@ -516,7 +519,7 @@ def Import(basepath, filename):
                                                 skinsize = skin['Size']
                                             break
                                     else:
-                                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder or the folder has not been extracted.\r\nLocate image file and place in that extracted folder.\r\n\r\n"
+                                        message = message + "Component: " + ModelFolder + "_" + surface.name + ' ' + str(CompNbr) + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder or the folder has not been extracted.\r\nLocate image file and place in that extracted folder.\r\n\r\n"
                     break
             # If they exist we load all others.
             for file in skinfiles:
@@ -557,7 +560,7 @@ def Import(basepath, filename):
                                                 skinsize = skin['Size']
                                             break
                                     else:
-                                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder.\r\nLocate image file and place in that folder.\r\n\r\n"
+                                        message = message + "Component: " + ModelFolder + "_" + surface.name + ' ' + str(CompNbr) + "\r\nuses the file:\r\n    " + FolderPath+"/"+file + "\r\nBut an image:\r\n    " + foundtexture + "\r\nit uses in that file does not exist in that folder.\r\nLocate image file and place in that folder.\r\n\r\n"
             imagefile = foundimage
 
             # Now we look for this component's texture directly if still no image but we have a "surface.shader.name".
@@ -696,7 +699,7 @@ def Import(basepath, filename):
                                                     if shader_keyword is not None and (not skingroup.dictitems[name].dictspec.has_key('shader_keyword') or not skingroup.dictitems[name].dictspec['shader_keyword'] == "None"):
                                                         skingroup.dictitems[name]['shader_keyword'] = shader_keyword
                                         if foundimage is None:
-                                            message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the shader:\r\n    " + shader_name + "\r\nin the file:\r\n    " + shaderspath+"/"+shaderfile + "\r\nBut the image it uses in that file:\r\n    " + foundtexture + "\r\ndoes not exist in that folder or the folder has not been extracted.\r\nLocate image file and place in that extracted folder.\r\n\r\n"
+                                            message = message + "Component: " + ModelFolder + "_" + surface.name + ' ' + str(CompNbr) + "\r\nuses the shader:\r\n    " + shader_name + "\r\nin the file:\r\n    " + shaderspath+"/"+shaderfile + "\r\nBut the image it uses in that file:\r\n    " + foundtexture + "\r\ndoes not exist in that folder or the folder has not been extracted.\r\nLocate image file and place in that extracted folder.\r\n\r\n"
                     else:
                         if foundshader is not None:
                             break
@@ -725,9 +728,9 @@ def Import(basepath, filename):
                                     skinsize = skin['Size']
                                 break
                         else:
-                            message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\nuses the texture:\r\n    " + surface.shaders[i].name + "\r\nBut the image does not exist in that folder\r\nand there are no shaders by that name.\r\nLocate image file and place in that folder.\r\n\r\n"
+                            message = message + "Component: " + ModelFolder + "_" + surface.name + ' ' + str(CompNbr) + "\r\nuses the texture:\r\n    " + surface.shaders[i].name + "\r\nBut the image does not exist in that folder\r\nand there are no shaders by that name.\r\nLocate image file and place in that folder.\r\n\r\n"
                     else:
-                        message = message + "Component: " + ModelFolder + "_" + surface.name + "\r\ndid not give any shader or texture to use in its folder:\r\n    " + FolderPath + "\r\nYou will need to locate an image file,\r\nplace in that folder and skin the model.\r\n\r\n"
+                        message = message + "Component: " + ModelFolder + "_" + surface.name + ' ' + str(CompNbr) + "\r\ndid not give any shader or texture to use in its folder:\r\n    " + FolderPath + "\r\nYou will need to locate an image file,\r\nplace in that folder and skin the model.\r\n\r\n"
                 shader_name = None
 
         if skinsize == (0, 0):
@@ -746,10 +749,15 @@ def Import(basepath, filename):
 
         # Now we start creating our Import Component and name it.
         if surface.name != "":
-            Component = quarkx.newobj(ModelFolder + '_' + surface.name + ':mc')
+            if surface.name in CompNames:
+                Component = quarkx.newobj(ModelFolder + '_' + surface.name + ':mc')
+            else:
+                Component = quarkx.newobj(ModelFolder + '_' + surface.name + ' ' + str(CompNbr) + ':mc')
+                CompNbr = CompNbr + 1
         else:
             Component = quarkx.newobj(ModelFolder + '_' + "Import Component " + str(CompNbr) + ':mc')
             CompNbr = CompNbr + 1
+        CompNames.append(Component.shortname)
         # Set it up in the ModelComponentList.
         editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
 
@@ -1402,6 +1410,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.27  2012/10/01 20:28:57  cdunde
+# Small update.
+#
 # Revision 1.26  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
