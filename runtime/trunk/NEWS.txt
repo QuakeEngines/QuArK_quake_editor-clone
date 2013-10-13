@@ -12,6 +12,10 @@ $Id$
        #####
         #####       Quake Army Knife 6.6 Changelog
 
+6.6.0 Beta 7
+============
+* [cdunde]: Fixed possible dupe component names from sneaking through.
+
 6.6.0 Beta 6
 ============
 * [cdunde/DanielPharos]: Started HL2 Exporter support but not completed yet.
