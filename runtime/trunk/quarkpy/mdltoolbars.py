@@ -40,7 +40,7 @@ class DisplayBar(qeditor.ToolBar):
 
         Btn3D = qtoolbar.button(layout.full3Dclick, "Full 3D view||Full 3D view will create a new floating 3D-window, which you can place anywhere on your desktop and resize as you wish.\n\nAdditional 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", ico_maped, 21, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
 
-        LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear Drag Handles||Linear Drag Handles:\n\nThis button is always active in one way or another and performs various ways in different modes in the Model Editor, depending on what is selected, and the Skin-view. When more then one item is selected it will display a 'Linear Drag Handle' circle around those selected objects for editing purposes.\n\nThis circle and its attached handles let you apply 'linear movement' to the objects. 'Linear movement' means any transformation such as group movement, rotation, enlarging/shrinking and distortion/shearing. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear movement on the selected objects.\n\nClick the 'InfoBase' button for more details on its uses.", ico_maped, 19,  infobaselink="intro.modeleditor.toolpalettes.display.html#linear")
+        LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Vertex/Face modes||Vertex/Face modes:\n\nThis button is always active in one way or another. If deactivated (off, default) your in Vertex mode, if activated (on) your in Face mode. It performs various ways in each mode in the Model Editor, depending on what is selected, and has no effect for the Skin-view. When more then one item is selected in any view it will display a 'Linear Drag Handle', a circle around those selected objects, for editing purposes.\n\nThis circle and its attached handles let you apply 'linear movement' to the objects. 'Linear movement' means any transformation such as group movement, rotation, enlarging/shrinking and distortion/shearing. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear movement on the selected objects.\n\n.\Some Toolbar functions require you to be in the Face mode to operate such as Reverse face direction, Subdivide faces, Face Cut tool and the Keep Dupe Vertexes buttons.n\nClick the 'InfoBase' button for more details on its uses.", ico_maped, 19,  infobaselink="intro.modeleditor.toolpalettes.display.html#linear")
 
         LockViewsBtn = qtoolbar.button(layout.editor.lockviewsclick, "Lock views||Lock views:\n\nThis will cause all of the 2D views to move and zoom together.\n\nWhen this is in the unlocked mode, the 2d views can then be moved and zoomed on individually.\n\nIf the lock is reset then the 2D views will realign themselves.", ico_maped, 28, infobaselink="intro.modeleditor.toolpalettes.display.html#lockviews")
 
@@ -1020,6 +1020,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.18  2011/11/17 01:19:02  cdunde
+#Setup BBox drag toolbar button to work correctly with other toolbar buttons.
+#
 #Revision 1.17  2011/03/04 06:50:28  cdunde
 #Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
 #
