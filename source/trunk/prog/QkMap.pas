@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.109  2014/01/18 15:00:54  danielpharos
+Fix to patchDef3 handling, and small internal changes.
+
 Revision 1.108  2014/01/18 14:55:47  danielpharos
 Fixed a typo in a comment.
 
@@ -2916,10 +2919,10 @@ begin
 
   with F do
    begin
+    //FIXME: Wrong!
     SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
 
-    //FIXME: WRONG!
-    S:=S+' ';
+    (*S:=S+' ';
     S:=S+FloatToStrF(PT[1].X, ffFixed, 20, DecimalPlaces);
     S:=S+' ';
     S:=S+FloatToStrF(PT[1].Y, ffFixed, 20, DecimalPlaces);
@@ -2930,9 +2933,10 @@ begin
     S:=S+' ';
     S:=S+FloatToStrF(PT[3].X, ffFixed, 20, DecimalPlaces);
     S:=S+' ';
-    S:=S+FloatToStrF(PT[3].Y, ffFixed, 20, DecimalPlaces);
+    S:=S+FloatToStrF(PT[3].Y, ffFixed, 20, DecimalPlaces);*)
+
+    S:=S+' 256 256 0 0 0 0'; //Texture scales?
    end;
-  //FIXME: ...
 end;
 
 
