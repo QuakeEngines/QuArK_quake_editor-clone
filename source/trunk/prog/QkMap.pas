@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.107  2013/01/17 03:22:32  cdunde
+Removed game support for Xonotic due to improper texture paths.
+
 Revision 1.106  2012/12/18 05:59:43  cdunde
 Setup a new game support for Xonotic with .md3 model displaying.
 
@@ -1443,7 +1446,7 @@ expected one.
 
   U/V Axis/Shift are straight from the 4-vectors, param[3]
   is rot which is ignored (implicit from the axes), while
-  param[4,5] are UV scales.  Diferent from the bsp-format
+  param[4,5] are UV scales.  Different from the bsp-format
   is that the axes are normalized to length 1, and you
   divide by the scale to get the .bsp-version of the axis.
   (Zoner's HL tools source, textures.cpp) *)
