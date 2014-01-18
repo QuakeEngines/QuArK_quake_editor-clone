@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.110  2014/01/18 15:04:48  danielpharos
+Small update to CoD2 map params writing.
+
 Revision 1.109  2014/01/18 15:00:54  danielpharos
 Fix to patchDef3 handling, and small internal changes.
 
@@ -1540,7 +1543,7 @@ expected one.
    if MapVersion>1 then
    begin
      TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+     if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
        S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
@@ -1641,7 +1644,7 @@ expected one.
    if MapVersion>1 then
    begin
      TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+     if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
        S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
@@ -1728,7 +1731,7 @@ expected one.
    if MapVersion>1 then
    begin
      TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+     if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
        S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
@@ -1816,7 +1819,7 @@ expected one.
    if MapVersion>1 then
    begin
      TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-     if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+     if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
        S:=RightStr(S,Length(S)-Length(TexPath));
    end;
 
@@ -2079,7 +2082,7 @@ expected one.
     if MapVersion>1 then
     begin
       TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-      if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+      if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
         S:=RightStr(S,Length(S)-Length(TexPath));
     end;
 
@@ -2111,7 +2114,6 @@ expected one.
  var
    R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
    Denom : Double;
-   texname : String;
    Plane : TVect4;
    normal : TVect;
    dist : double;
@@ -2142,7 +2144,6 @@ expected one.
 
     ReadSymbolForceToText:=true;
     ReadSymbol(sBracketRight);
-    texname := S;
     ReadSymbolForceToText:=false;
 
     ReadSymbol(sTokenForcedToString);
@@ -2195,15 +2196,15 @@ expected one.
     if MapVersion>1 then
     begin
       TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-      if LowerCase(LeftStr(S,Length(TexPath)))=TexPath then
+      if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
         S:=RightStr(S,Length(S)-Length(TexPath));
     end;
 
     if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
-      texname:=LowerCase(texname);
-    Q2Tex:=Q2Tex or (Pos('/',texname)<>0);
+      S:=LowerCase(S);
+    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
-    Surface.NomTex:=texname;   { here we get the texture-name }
+    Surface.NomTex:=S;   { here we get the texture-name }
     Surface.SetThreePointsUserTex(P0,P1,P2,nil);
   end;
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef3 }

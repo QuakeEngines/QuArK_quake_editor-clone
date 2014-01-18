@@ -16,6 +16,8 @@ $Id$
 ============
 * [cdunde]: Fixed possible dupe component names from sneaking through.
 
+* [DanielPharos]: Fixes for brushDef2 and brushDef3 texture loading.
+
 6.6.0 Beta 6
 ============
 * [cdunde/DanielPharos]: Started HL2 Exporter support but not completed yet.
