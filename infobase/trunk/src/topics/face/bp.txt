@@ -9,7 +9,7 @@ numbers that come after the texture name in the old
 representation.
 
 In BP format, you get something that looks like this coming
-after the threeponts info, and before the texture name:
+after the threepoints info, and before the texture name:
 <code>
 ( ( 0.007813 0 0 ) ( 0 0.007813 0 ) )
 </code>
