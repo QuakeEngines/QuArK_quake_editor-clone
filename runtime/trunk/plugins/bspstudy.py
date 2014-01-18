@@ -594,7 +594,7 @@ def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
 #        debug('plane')
         dist, = sel["dist"]
         norm = quarkx.vect(sel["norm"])
-        pos = dist*norm         
+        pos = dist*norm
         p1 = view.proj(pos)
         p2 = view.proj(pos+96*norm)
         drawsquare(cv,p1,10)
@@ -604,4 +604,7 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = bspfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2005/11/27 05:55:12  cdunde
+#To start header and history log
+#
 #
