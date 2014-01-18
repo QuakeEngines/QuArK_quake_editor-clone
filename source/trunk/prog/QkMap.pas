@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.108  2014/01/18 14:55:47  danielpharos
+Fixed a typo in a comment.
+
 Revision 1.107  2013/01/17 03:22:32  cdunde
 Removed game support for Xonotic due to improper texture paths.
 
@@ -1577,9 +1580,9 @@ expected one.
    ReadSymbol(sBracketRight);
    // Nr 1: Width (many lines of control points there are)
    // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (?)
-   // Nr 4: VertSubdivisions (?)
-   // Nr 5: ?
+   // Nr 3: contents/flags (?)
+   // Nr 4: contents/flags (?)
+   // Nr 5: contents/flags (?)
 
    MeshBuf1.W := Round(V5.X);
    MeshBuf1.H := Round(V5.Y);
@@ -1622,6 +1625,7 @@ expected one.
    V5: TVect5;
    V7: TVect7;
    TexPath: String;
+   SubDivisions: array[0..1] of Single;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1657,11 +1661,15 @@ expected one.
    V7:=ReadVect7(False);
    // Nr 1: Width (many lines of control points there are)
    // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (?)
-   // Nr 4: VertSubdivisions (?)
-   // Nr 5: ?
-   // Nr 6: ?
-   // Nr 7: ?
+   // Nr 3: HorzSubdivisions (tesselation?)
+   // Nr 4: VertSubdivisions (tesselation?)
+   // Nr 5: contents/flags (?)
+   // Nr 6: contents/flags (?)
+   // Nr 7: contents/flags (?)
+
+   SubDivisions[0]:=V7.X3;
+   SubDivisions[1]:=V7.X4;
+   B.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
 
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
@@ -1704,6 +1712,7 @@ expected one.
    V7: TVect7;
    V10: TVect10;
    TexPath: String;
+   SubDivisions: array[0..1] of Single;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchTerrainDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1739,11 +1748,15 @@ expected one.
    V7:=ReadVect7(False);
    // Nr 1: Width (many lines of control points there are)
    // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (?)
-   // Nr 4: VertSubdivisions (?)
-   // Nr 5: ?
-   // Nr 6: ?
-   // Nr 7: ?
+   // Nr 3: HorzSubdivisions (tesselation?)
+   // Nr 4: VertSubdivisions (tesselation?)
+   // Nr 5: contents/flags (?)
+   // Nr 6: contents/flags (?)
+   // Nr 7: contents/flags (?)
+
+   SubDivisions[0]:=V7.X3;
+   SubDivisions[1]:=V7.X4;
+//   B.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
 
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
@@ -1787,6 +1800,7 @@ expected one.
    V7: TVect7;
    V10: TVect10;
    TexPath: String;
+   SubDivisions: array[0..1] of Single;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef5"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1822,12 +1836,15 @@ expected one.
    V7:=ReadVect7(False);
    // Nr 1: Width (many lines of control points there are)
    // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (?)
-   // Nr 4: VertSubdivisions (?)
-   // Nr 5: ?
-   // Nr 6: ?
-   // Nr 7: ?
+   // Nr 3: HorzSubdivisions (tesselation?)
+   // Nr 4: VertSubdivisions (tesselation?)
+   // Nr 5: contents/flags (?)
+   // Nr 6: contents/flags (?)
+   // Nr 7: contents/flags (?)
 
+   SubDivisions[0]:=V7.X3;
+   SubDivisions[1]:=V7.X4;
+//   B.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
 
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
@@ -2087,7 +2104,7 @@ expected one.
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
  end;
 
- procedure ReadBrushDef3;
+ procedure ReadBrushDef2or3;
  var
    R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
    Denom : Double;
@@ -2095,12 +2112,11 @@ expected one.
    Plane : TVect4;
    normal : TVect;
    dist : double;
-   texparm : TFaceParams;
    Matrix : TMatrixTransformation;
    Surface: TFace;
    TexPath: String;
  begin
-  ReadSymbol(sStringToken); // lbrace follows "brushDef3"
+  ReadSymbol(sStringToken); // lbrace follows "brushDef2" or "brushDef3"
   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
   P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
   EntitePoly.SubElements.Add(P);
@@ -2121,9 +2137,6 @@ expected one.
     R1 := ReadVect(False);
     R2 := ReadVect(False);
 
-    V[1] := R1;
-    V[2] := R2;
-
     ReadSymbolForceToText:=true;
     ReadSymbol(sBracketRight);
     texname := S;
@@ -2133,30 +2146,16 @@ expected one.
 
     if MapVersion<3 then
     begin
-      v[3].x := NumericValue;
+      //These numbers are ignored (and they're always set to zero).
       ReadSymbol(sNumValueToken);
-      v[3].y := NumericValue;
       ReadSymbol(sNumValueToken);
-      v[3].z := NumericValue;
       ReadSymbol(sNumValueToken);
-    end
-    else
-    begin
-      v[3].x := 0;
-      v[3].y := 0;
-      v[3].z := 0;
     end;
 
     Surface:=TFace.Create(LoadStr1(139), P);
     P.SubElements.Add(Surface);
-    Surface.SetThreePoints(V[1], V[3], V[2]);
 
-    texparm[1] := 0;
-    texparm[2] := 0;
-    texparm[3] := 0;
-    texparm[4] := 0;
-    texparm[5] := 0;
-    Surface.SetFaceFromParams(normal, dist, texparm);
+    Surface.SetFaceFromParams(normal, dist, StandardFaceParams); //DanielPharos: Using default texture params...
     if not Surface.LoadData then
       ShowMessage('LoadData failure');
 
@@ -2579,7 +2578,7 @@ begin
                // A brushDef2 means it is at least a Doom 3 map (not sure about this)
                if Result=mjQuake then
                  Result:=mjDoom3;
-               ReadBrushDef3();
+               ReadBrushDef2or3();
                // The difference between brushdef2 and brushdef3 is minimal...
              end
              else if LowerCase(s)='brushdef3' then
@@ -2587,7 +2586,7 @@ begin
                // A brushDef3 means it is at least a Doom 3 map
                if Result=mjQuake then
                  Result:=mjDoom3;
-               ReadBrushDef3();
+               ReadBrushDef2or3();
              end
              else if LowerCase(s)='curve' then
              begin
@@ -4157,6 +4156,8 @@ var
  S: String;
  Value: PSingle;
  TextureName: String;
+ SubDivisions: Array of Single;
+ HorzSubDiv, VertSubDiv: Integer;
  DecimalPlaces: Integer;
 begin
  ResolveMapSaveSettings(MapSaveSettings);
@@ -4196,16 +4197,36 @@ begin
    begin
      case MapSaveSettings.PatchDefVersion of
      2: S:=Format('   ( %d %d 0 0 0', [cp.W, cp.H]);
-     3: S:=Format('   ( %d %d 0 0 0 0 0', [cp.W, cp.H]);
+     3: S:=Format('   ( %d %d 0 0 0 0 0', [cp.W, cp.H]); //FIXME: SubDivisions?
      end;
      MohaaSurfaceParms(TBezier(ObjectToSave), S);
      S:=S+' )';
      Target.Add(S);
    end
    else
+     if not ObjectToSave.GetFloatsSpec('patchsubdivisions', SubDivisions) then
+     begin
+       HorzSubDiv:=1;
+       VertSubDiv:=1;
+     end
+     else
+     begin
+       if (Length(SubDivisions) <> 2) then
+       begin
+         HorzSubDiv:=1;
+         VertSubDiv:=1;
+       end
+       else
+       begin
+         HorzSubDiv:=Round(SubDivisions[0]);
+         if (HorzSubDiv < 1) then HorzSubDiv:=1;
+         VertSubDiv:=Round(SubDivisions[1]);
+         if (VertSubDiv < 1) then VertSubDiv:=1;
+       end;
+     end;
      case MapSaveSettings.PatchDefVersion of
      2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
-     3: Target.Add(Format('   ( %d %d 0 0 0 0 0 )', [cp.W, cp.H]));
+     3: Target.Add(Format('   ( %d %d %d %d 0 0 0 )', [cp.W, cp.H, HorzSubDiv, VertSubDiv]));
      end;
    Target.Add('   (');
    for J:=0 to cp.W-1 do
