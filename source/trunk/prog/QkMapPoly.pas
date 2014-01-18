@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.101  2012/09/05 18:18:58  danielpharos
+Moved some map options around to make them more findable, and to make them work again.
+
 Revision 1.100  2011/06/03 19:35:35  danielpharos
 Fixed long-standing pointer corruption bug when loading poly faces.
 
@@ -507,7 +510,8 @@ type
                function GetThreePointsT(var V1, V2, V3: TVect) : Boolean;
                function GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
                procedure SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
-               function GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;             function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
+               function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                function SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                function SetFlipTex(var TexV: array of Single) : boolean;
                procedure RevertToEnhTex;
