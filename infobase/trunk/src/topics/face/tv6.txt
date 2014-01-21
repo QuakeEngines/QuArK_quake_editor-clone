@@ -11,7 +11,7 @@ the six number representation to the nine number representation that's
 expected by other parts of QuArK.  So if you look more closely
 at TFace.GetThreePointsT, you'll see that if the tv specific is found,
 then the 2-number point specifications in the face coordinate system
-are transformed intto 3-number specifications in the map coordinate
+are transformed into 3-number specifications in the map coordinate
 system, whereas if no tv specific is found then the threepoints and
 mirror bit are used (old representation).  TFace.GetThreePointsUserTex
 (which is what Python .threepoints(2) calls) then just uses whatever
@@ -20,11 +20,11 @@ GetThreePointsUserTex also has an option to either keep the origin of the
 texture coordinates roughly in the middle of the face, or not do this.
 
 So much for reading; setting the texture is done by SetThreePointsUserTex,
-which handles the scaling.  this calls SetThreePointsEx, which checks
-whether the texture threeoints actually manage to define a plane (taking
+which handles the scaling.  This calls SetThreePointsEx, which checks
+whether the texture threepoints actually manage to define a plane (taking
 a cross-product, see below), returning true if they do and false if
 they don't (I don't think we need this check anymore, but am leaving it in
-for now, and then calls SetThreePointsT which now sets the tv spec,
+for now), and then calls SetThreePointsT which now sets the tv spec,
 coincidentally erasing the 'm' specific if this is present, since
 we don't need it any more.  Unless of course we're writing the Quark etp
 format, in which case TFace.SimulateEnhTex generates old-style
@@ -59,4 +59,4 @@ in the TFace.Deplacement method. which applies linear transformations to
 faces, where the code setting the mirror bit is removed, since it is no
 longer necessary.  The first version of the new scheme had a problem in
 that I didn't check for the InverseOrientation property (the linear mapping
-mirror-flips things), so that the brushes all got turned inside out).
+mirror-flips things), so that the brushes all got turned inside out.
