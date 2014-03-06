@@ -16,11 +16,10 @@ author: tiglari
   2.  scan the map objects and build the TexNames list, which gives
         information about surfaces indexed by the TexNames, and
         also add this information to the FlistSurfaces list.
-        
-      Problem: the info specifyies how much info is needed to store
+
+      Problem: the info specifies how much info is needed to store
       the vertexes of the faces using the texture, but no info about
       those vertexes seems to be recorded.
-
 
   3.  rebuild the old textures, note how many new ones needed.
         Q: what does building do?

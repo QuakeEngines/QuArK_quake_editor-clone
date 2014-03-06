@@ -12,7 +12,7 @@ TSceneObject defined in 3dfx/EdSceneObject.pas, with subclasses:
 
 The first is the class for the software, the second for Glide (3dfx) 3d
 textured views, the third for the OpenGL one, and the last is the start of
-an unfinished projet to produce a Direct3D view; the appropriate
+an unfinished project to produce a Direct3D view; the appropriate
 constructors are called by python/PyMapView:TPyMapView.NeedScene.
 
 There also are several files that are used by the renderers:
@@ -50,7 +50,7 @@ used to get info about the texture-name, etc., Source isn't used by
 this module.  The PSurfaces are rebuilt by code in QkMapPoly.pas.
 
 The AddSurfaceRef sub-procedure of BuildScene adds a surface to a master-list
-of surfaces, TSceneObject.FListSurfaces, accesible also as read-property
+of surfaces, TSceneObject.FListSurfaces, accessible also as read-property
 ListSurfaces. Need to understand BuildScene to see what this does.
 
 Questions about TSceneObject:

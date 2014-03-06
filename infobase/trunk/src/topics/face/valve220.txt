@@ -21,6 +21,3 @@ expect).  I.e.
 Reading is done by WC33Params in QkMap.pas (a sub-procedure
 of ReadEntityList), Writing by Valve220MapParams in QkMapPoly.pas.
 The writing code draws very heavily on Zoner's.
-
-
-

@@ -8,7 +8,7 @@ menu item/dialog (TQForm1.Save), both in QkMapObjects. there
 is duplication of the code involved in reading the map
 saving config options; the build menu code does it in
 Python (quarkpy.mapquakemenu.writemapfile), the file-menu
-code in delphi (QMap/QMapFile.SaveFile).
+code in Delphi (QMap/QMapFile.SaveFile).
 
 
 

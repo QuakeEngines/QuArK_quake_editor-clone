@@ -2,7 +2,7 @@ title: The 'TSceneObject' class
 author: Decker, DanielPharos
 
 Let me see, if I can explain what this class is all about. Mind you, I have not
-understanded it completly, so parts of this look-through explanation may be
+understood it completely, so parts of this look-through explanation may be
 wrong. It's also very incomplete, but when you're working with the code, most
 of it will explain itself.
 

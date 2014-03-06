@@ -24,7 +24,3 @@ In QkBsphulls.pas there is code for converting both the Q1/2 and Q3 .bsp
 representations to QuArK's.  A call of <strong>SolveForThreePoints</strong>
 does the job for Q3; Q1/2 are handled by some equation-solving code
 directly above that.
-
-
-
-

@@ -5,7 +5,7 @@ author: tiglari
 
 Q1/2/3-engine games represent faces by specifying three points
 that lie on the plane of the face (the initial three three-tuples
-in the representation of a vace in the map-format).
+in the representation of a face in the map-format).
 QuArK's 'enhanced texture positioning' also uses these points
 to represent the texture positioning information, but there
 are several twists and turns in the way.
@@ -40,7 +40,7 @@ In the enhanced texture positioning output (written into
 a comment at the end of each face), TX1 means that
 Mirror is false, TX2 that it's true.
 
-In the Python, the numerical (second) arguments to the face methord
+In the Python, the numerical (second) arguments to the face method
 <tt>(set)threepoints</tt> specify whether this
 three-point swap is to take place; if this argument is 0 or 2,
 it doesn't; if it's 1 or 3, it does.
@@ -59,7 +59,7 @@ to 1 or 3 in Python.
 So wrapping all this up, the threepoints info as gotten by
 <tt>GetThreePointsUserTex</tt> will have
 V3, V2 giving the map space locations of texture (1,0) and
-(0,-1), respctively, if Mirror is false, vice versa if it's true.
+(0,-1), respectively, if Mirror is false, vice versa if it's true.
 So what we've got is a pretty direct specification of a
 linear mapping from the 'texture plane' (an infinite plane
 tiled by the texture) into map space.
@@ -74,7 +74,7 @@ numbers that come after the texture name in the old
 representation.
 
 In BP format, you get something that looks like this coming
-after the threeponts info, and before the texture name:
+after the threepoints info, and before the texture name:
 <code>
 ( ( 0.007813 0 0 ) ( 0 0.007813 0 ) )
 </code>
@@ -104,7 +104,7 @@ this is gotten by scaling the face's normal vector by its
 Dist (-ance from the origin).
 
 So what goes on in GetPXPY is that the (texture-scaled,
-etc.) threepoints are converted to the Axis Base coordiante
+etc.) threepoints are converted to the Axis Base coordinate
 system, and then these equations are solved for the
 coefficients aij making up the matrix (I used Maple V
 to get the solution):

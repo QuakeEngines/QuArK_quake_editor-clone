@@ -33,7 +33,7 @@ if cji (i=0,1,2; j=0,1,2) are the 9 control points then
 </code>
 
 The formula can be seen as operating on each coordinate independently,
-or on all 5 cordinates at the same time (with vector sum and multiply
+or on all 5 coordinates at the same time (with vector sum and multiply
 in the real 5-dimensional vector space). In TBezier.BuildMeshCache
 the computations are done on the first 3 coordinates only because the
 texture coordinates are not cached.
