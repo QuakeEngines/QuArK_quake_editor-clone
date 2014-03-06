@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2010/10/17 18:12:01  danielpharos
+Fixed an access violation in Direct3D mode.
+
 Revision 1.52  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -327,6 +330,7 @@ type
    DisplayMode: TDisplayMode;
    DisplayType: TDisplayType;
    RenderMode: TRenderMode;
+   FInitialized: Boolean;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -376,6 +380,7 @@ type
    procedure AddBezier(const a_Bezier: TBezier);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
    property ListSurfaces: PSurfaces read FListSurfaces;
+   property Initialized: Boolean read FInitialized write FInitialized;
  end;
 
  {------------------------}
@@ -452,6 +457,7 @@ begin
  TemporaryStuff:=TQList.Create;
  ViewWnd:=0;
  ViewDC:=0;
+ FInitialized:=false;
 end;
 
 destructor TSceneObject.Destroy;

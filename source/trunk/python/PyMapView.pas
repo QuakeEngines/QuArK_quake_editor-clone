@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2009/07/30 09:41:51  danielpharos
+Added additional logging.
+
 Revision 1.57  2009/07/30 09:39:58  danielpharos
 Updated website link.
 
@@ -718,6 +721,7 @@ begin
        Drawing:=Drawing and not dfNoGDI
       else
        Drawing:=Drawing or dfNoGDI;
+      Scene.Initialized:=true;
      except
       on E: Exception do
        begin
@@ -899,8 +903,8 @@ begin
    Drawing:=Drawing or dfRebuildScene;
   end
   else
-   if NeedSetup then
-    ReadSetupInformation(True);
+   if NeedSetup or not Scene.Initialized then
+    ReadSetupInformation(Scene.Initialized);
 end;
 
 procedure TPyMapView.PaintBackground;
