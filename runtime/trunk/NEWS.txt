@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fix for the long-standing bug where float-specifics were not working
+          - in Wine, and on non-Latin-alphabet Windows (for example, Chinese Windows).
+
 * [cdunde]: Fixed possible dupe component names from sneaking through.
 
 * [DanielPharos]: Fixes for brushDef2 and brushDef3 texture loading.

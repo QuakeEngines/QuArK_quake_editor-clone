@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2011/01/11 18:29:14  cdunde
+To reverse last change, causes tree-view folder jump a rounds in Model Editor.
+
 Revision 1.10  2010/12/11 22:33:34  danielpharos
 Correct wrong nil.
 
@@ -62,7 +65,7 @@ function GetUndoModule(DoDebutAction: Boolean = True) : PyObject;
 
 implementation
 
-uses Quarkx, QkExceptions, PyObjects;
+uses Quarkx, QkExceptions, PyObjects, WorkaroundStringCompare;
 
  {-------------------}
 
@@ -172,9 +175,13 @@ begin
   if obj2=Py_None then
    begin
     nArg:='';
-    if (Q.Specifics.IndexOfName(nSpec)<0)
-    and (Q.Specifics.IndexOfName(FloatSpecNameOf(nSpec))>0) then
-     nSpec:=FloatSpecNameOf(nSpec);
+    if (Strict_IndexOfName(Q.Specifics, nSpec)<0) then //Q.Specifics.IndexOfName(nSpec)
+     begin
+      if (Strict_IndexOfName(Q.Specifics, FloatSpecNameOf(nSpec))>0) then //Q.Specifics.IndexOfName(FloatSpecNameOf(nSpec))
+       nSpec:=FloatSpecNameOf(nSpec);
+      (*if (Strict_IndexOfName(Q.Specifics, IntSpecNameOf(nSpec))>0) then //Q.Specifics.IndexOfName(IntSpecNameOf(nSpec))
+       nSpec:=IntSpecNameOf(nSpec);*)
+     end;
     nPosition:=sp_Supprime;
    end
   else

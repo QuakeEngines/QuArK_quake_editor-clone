@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2010/11/30 20:31:15  danielpharos
+Added BBoxGroup object.
+
 Revision 1.73  2010/10/16 22:50:16  danielpharos
 Added experimental RMF file loading support; poly's only, no UV's or textures.
 
@@ -383,6 +386,7 @@ uses
   Travail in 'prog\Travail.pas' {FormTravail},
   Undo in 'prog\Undo.pas',
   UNZIP in 'prog\UNZIP.pas',
+  WorkaroundStringCompare in 'prog\WorkaroundStringCompare.pas',
   ZIP in 'prog\ZIP.pas',
   PyCanvas in 'python\PyCanvas.pas',
   PyControls in 'python\PyControls.pas',

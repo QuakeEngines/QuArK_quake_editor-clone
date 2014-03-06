@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/03/05 23:44:15  danielpharos
+Fixed an ancient bug: String specifics would not be properly overwritten by float specifics!
+
 Revision 1.28  2009/07/15 10:38:10  danielpharos
 Updated website link.
 
@@ -105,7 +108,7 @@ unit PyObjects;
 
 interface
 
-uses SysUtils, Classes, Python, QkObjects;
+uses SysUtils, Classes, Python, QkObjects, Dialogs;
 
 {$IFDEF DEBUG}
 {$DEFINE PyObjDEBUG}
@@ -192,7 +195,7 @@ const
 
 implementation
 
-uses Quarkx, QkExceptions, QkFileObjects, QkObjectClassList, QkExplorer;
+uses Quarkx, QkExceptions, QkFileObjects, QkObjectClassList, QkExplorer, WorkaroundStringCompare;
 
  {-------------------}
 
@@ -857,13 +860,13 @@ begin
   with QkObjFromPyObj(self) do
    begin
     Acces;
-    I:=Specifics.IndexOfName(Spec);
+    I:=Strict_IndexOfName(Specifics, Spec); //I:=Specifics.IndexOfName(Spec);
     if I<0 then
      begin
-      I:=Specifics.IndexOfName(FloatSpecNameOf(Spec));
+      I:=Strict_IndexOfName(Specifics, FloatSpecNameOf(Spec)); //I:=Specifics.IndexOfName(FloatSpecNameOf(Spec));
       if I<0 then
        begin
-(*        I:=Specifics.IndexOfName(IntSpecNameOf(Spec));
+(*        I:=Strict_IndexOfName(Specifics, IntSpecNameOf(Spec)); //I:=Specifics.IndexOfName(IntSpecNameOf(Spec));
         if I<0 then
          begin*)
           Result:=PyNoResult;
