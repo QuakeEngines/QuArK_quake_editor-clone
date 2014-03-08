@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.21  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -575,29 +578,35 @@ begin
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
-    SetIntelPrecision;
-    grGlideInit;
-    if not grSstQueryHardware(hwconfig) then
-     Raise EErrorFmt(6200, ['grSstQueryHardware']);
-    grSstSelect(0);
-    if GlideTimesLoaded=1 then
-      //Glide only only supports 1 window at a time. So we can't use ViewWnd here!
-      if not grSstWinOpen(GetGlideDummyHwnd,
-                        Resolution,
-                        GR_REFRESH_60HZ,
-                        GR_COLORFORMAT_ARGB,
-                        Origin,
-                        2, 1) then
-       Raise EErrorFmt(6200, ['grSstWinOpen']);
+    try
+     SetIntelPrecision;
+     grGlideInit;
+     if not grSstQueryHardware(hwconfig) then
+      Raise EErrorFmt(6200, ['grSstQueryHardware']);
+     grSstSelect(0);
+     if GlideTimesLoaded=1 then
+       //Glide only only supports 1 window at a time. So we can't use ViewWnd here!
+       if not grSstWinOpen(GetGlideDummyHwnd,
+                         Resolution,
+                         GR_REFRESH_60HZ,
+                         GR_COLORFORMAT_ARGB,
+                         Origin,
+                         2, 1) then
+        Raise EErrorFmt(6200, ['grSstWinOpen']);
+    finally
+     RestoreIntelPrecision;
+    end;
+     // grSstControl(GR_CONTROL_DEACTIVATE);
+    grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+    grDepthMask(FXTRUE);
+    ClearBuffers(0);
+    qrkGlideState:=TGlideState.Create;
+    GlideLoaded:=true;
    finally
-    RestoreIntelPrecision;
+    //If something went wrong, unload Glide because the set-up was incomplete
+    if not GlideLoaded then
+     UnloadGlide();
    end;
-    // grSstControl(GR_CONTROL_DEACTIVATE);
-   grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-   grDepthMask(FXTRUE);
-   ClearBuffers(0);
-   qrkGlideState:=TGlideState.Create;
-   GlideLoaded:=true;
   end;
  if (DisplayMode=dmFullScreen) then
    Raise InternalE(LoadStr1(6220));

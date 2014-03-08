@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.20  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -483,33 +486,39 @@ begin
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
-    RendererVersion:=softgQuArK;
-    SetIntelPrecision;
-    grGlideInit;
-    if Assigned(grSstQueryHardware) then
-     if not grSstQueryHardware(hwconfig) then
-      Raise EErrorFmt(6100, ['grSstQueryHardware']);
-    if Assigned(grSstSelect) then
-     grSstSelect(0);
-    if Assigned(grSstWinOpen) and (GlideTimesLoaded=1) then
-      if not grSstWinOpen(0,
-                        GR_RESOLUTION_640x480,
-                        GR_REFRESH_60HZ,
-                        GR_COLORFORMAT_ARGB,
-                        GR_ORIGIN_UPPER_LEFT,
-                        2, 1) then
-       Raise EErrorFmt(6100, ['grSstWinOpen']);
+    try
+     RendererVersion:=softgQuArK;
+     SetIntelPrecision;
+     grGlideInit;
+     if Assigned(grSstQueryHardware) then
+      if not grSstQueryHardware(hwconfig) then
+       Raise EErrorFmt(6100, ['grSstQueryHardware']);
+     if Assigned(grSstSelect) then
+      grSstSelect(0);
+     if Assigned(grSstWinOpen) and (GlideTimesLoaded=1) then
+       if not grSstWinOpen(0,
+                         GR_RESOLUTION_640x480,
+                         GR_REFRESH_60HZ,
+                         GR_COLORFORMAT_ARGB,
+                         GR_ORIGIN_UPPER_LEFT,
+                         2, 1) then
+        Raise EErrorFmt(6100, ['grSstWinOpen']);
+    finally
+     RestoreIntelPrecision;
+    end;
+     // grSstControl(GR_CONTROL_DEACTIVATE);
+    if Assigned(grDepthBufferMode) then
+     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+    if Assigned(grDepthMask) then
+     grDepthMask(FXTRUE);
+    ClearBuffers(0);
+    qrkGlideState:=TGlideState.Create;
+    RendererLoaded:=true;
    finally
-    RestoreIntelPrecision;
+    //If something went wrong, unload Glide because the set-up was incomplete
+    if not RendererLoaded then
+     UnloadGlide();
    end;
-    // grSstControl(GR_CONTROL_DEACTIVATE);
-   if Assigned(grDepthBufferMode) then
-    grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-   if Assigned(grDepthMask) then
-    grDepthMask(FXTRUE);
-   ClearBuffers(0);
-   qrkGlideState:=TGlideState.Create;
-   RendererLoaded:=true;
   end;
  if (DisplayMode=dmFullScreen) then
  begin

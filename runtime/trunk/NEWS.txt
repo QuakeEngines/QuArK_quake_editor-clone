@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Stop access violation and other weird errors if Glide library wasn't
+          - initialized properly.
+
 * [DanielPharos]: Fix for texture scales when importing brushDef2 and brushDef3.
 
 * [DanielPharos]: Fix console error for texture-flags RMB menu if game paths are not configured.
