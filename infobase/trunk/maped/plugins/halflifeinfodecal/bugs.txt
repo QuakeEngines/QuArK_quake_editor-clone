@@ -5,6 +5,6 @@ If you should experience any bugs, by using this Half-Life Infodecal Helper, ple
 <a href="mailto:decker@planetquake.com">Decker</a>.
 
 <b>Notice:</b>
-Its not a bug if the text appears mirrored, unreadable, every single letter rotated or upside-down.
+It's not a bug if the text appears mirrored, unreadable, every single letter rotated or upside-down.
 This is because you haven't corrected the wall-texture rotation, upon which the infodecals will be
 attached to. Please read a tutorial on infodecals first!

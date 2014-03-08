@@ -1,7 +1,7 @@
 title: Usage
 author: Decker
 
-To explain the idea of the 'Arg Replacer', it is properly best to show an example.
+To explain the idea of the 'Arg Replacer', it is probably best to show an example.
 
 Say you have two <b>func_door</b>s and a <b>trigger_multiple</b> which
 should activate the two doors. Normally you would have to assign the same
