@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.111  2014/01/18 15:49:51  danielpharos
+Fixes for brushDef2 and brushDef3 texture loading.
+
 Revision 1.110  2014/01/18 15:04:48  danielpharos
 Small update to CoD2 map params writing.
 
@@ -2205,7 +2208,7 @@ expected one.
     Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
     Surface.NomTex:=S;   { here we get the texture-name }
-    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
+    Surface.SetThreePointsUserTex(P0,P1,P2, GlobalFindTexture(S, Nil));
   end;
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef3 }
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }

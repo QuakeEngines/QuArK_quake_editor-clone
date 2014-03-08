@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fix for texture scales when importing brushDef2 and brushDef3.
+
 * [DanielPharos]: Fix console error for texture-flags RMB menu if game paths are not configured.
 
 * [DanielPharos]: Stop a failed initialization of a viewport causing access violations.
