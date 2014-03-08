@@ -1,6 +1,8 @@
 title: SpecificsAdd
 author: Armin Rigo
 
+Note: This code has been disabled for stability reasons.
+
 Normally, Specifics are read and written through the Specifics property of
 objects, which is a Delphi string list, meaning you can do things such as
 <tt>Specifics['x']:='yz';</tt> to assign the value 'yz' to the specific called
