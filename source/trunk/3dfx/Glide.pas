@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2010/04/16 19:05:07  danielpharos
+Corrected variable type.
+
 Revision 1.22  2009/07/17 10:52:09  danielpharos
 Moved PPointer to ExtraFunctionality.
 
@@ -1293,7 +1296,7 @@ end;
 
 function LoadGlide(const LibName, SearchDir: String) : Boolean;
 const
-  softgQuArK_Identifier_FuncName = '_softgQuArK@0'; { Function-name which identifices that it is the QRKSOFTG.DLL thats loaded }
+  softgQuArK_Identifier_FuncName = '_softgQuArK@0'; { Function-name which identifies that it is the QRKSOFTG.DLL that's loaded }
 var
   I: Integer;
   P: Pointer;
