@@ -856,7 +856,7 @@ class MapLayout(BaseLayout):
             try:
                 texobj = txdict[f.texturename]
             except KeyError:
-                continue
+                texobj = None
             flist[i] = (f, texobj)
         return flist
 
@@ -902,6 +902,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.27  2008/12/19 23:36:01  danielpharos
+#Oops
+#
 #Revision 1.26  2008/12/19 23:15:53  danielpharos
 #Minor adjustment for recent fix of item over lapping.
 #
