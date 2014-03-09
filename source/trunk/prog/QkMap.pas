@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.112  2014/03/08 14:13:20  danielpharos
+Fix for texture scales when importing brushDef2 and brushDef3.
+
 Revision 1.111  2014/01/18 15:49:51  danielpharos
 Fixes for brushDef2 and brushDef3 texture loading.
 
@@ -2123,6 +2126,7 @@ expected one.
    Matrix : TMatrixTransformation;
    Surface: TFace;
    TexPath: String;
+   QTmp: QPixelSet;
  begin
   ReadSymbol(sStringToken); // lbrace follows "brushDef2" or "brushDef3"
   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -2208,7 +2212,10 @@ expected one.
     Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
     Surface.NomTex:=S;   { here we get the texture-name }
-    Surface.SetThreePointsUserTex(P0,P1,P2, GlobalFindTexture(S, Nil));
+    QTmp:=GlobalFindTexture(S, Nil);
+    if QTmp = nil then
+      Log(LOG_WARNING,LoadStr1(5771),[S]);
+    Surface.SetThreePointsUserTex(P0,P1,P2, QTmp);
   end;
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brushDef3 }
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }

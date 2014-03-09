@@ -1007,8 +1007,9 @@ Strings = {
     # 5767: reserved
     # 5768: reserved
     # 5769: reserved
-	
-	5770: "There were errors reading the map; please check the console.",
+
+    5770: "There were errors reading the map; please check the console.",
+    5771: "Couldn't load texture '%s'; brushDef2 or brushDef3 texture scales may be incorrect!",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1090,6 +1091,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.158  2013/06/30 15:18:29  danielpharos
+#Updated for 6.6 Beta 6 release.
+#
 #Revision 1.157  2012/07/01 12:24:12  danielpharos
 #Improved MapError error message.
 #
