@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2014/03/06 15:33:39  danielpharos
+Stop a failed initialization of a viewport causing access violations.
+
 Revision 1.53  2010/10/17 18:12:01  danielpharos
 Fixed an access violation in Direct3D mode.
 
@@ -2024,9 +2027,12 @@ begin
    if Q<>Nil then
    begin
      PSD:=Q.Description;
-     PTex^.ColorBits:=Q.Description.Format;
-     PTex^.AlphaBits:=Q.Description.AlphaBits;
-     PSD.Done;
+     try
+      PTex^.ColorBits:=PSD.Format;
+      PTex^.AlphaBits:=PSD.AlphaBits;
+     finally
+      PSD.Done;
+     end;
    end;
  (*MemSize:=w*h;
 
