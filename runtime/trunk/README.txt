@@ -122,7 +122,7 @@ or you can simply press F1 a second time to go to that page.
 The Help menu also has links you can click on that will take you directly
 to the 'QuArK web site' where you will find other links to assist you
 and the 'QuArK Forums site' for a wealth of information on the use of QuArK,
-specific game it supports, tutorials and the opportunity to join the forums
+specific games it supports, tutorials and the opportunity to join the forums
 and post questions and get answers to suit your particular needs.
 
 
@@ -147,10 +147,10 @@ same directory as this file, which is the folder that QuArK was installed in.
 
 A list of past and present developers of QuArK can be found in the 'AUTHORS.txt'
 file in the same directory as this file, which is the folder that QuArK was
-installed in. This file also tries to give their last known e-mail address.
+installed in.  This file also tries to give their last known e-mail address.
 However, because some have moved on they may not always still be active, and
-might not want to be contacted about QuArK. Please don't bother people this way
-is you need help: see section 5.
+might not want to be contacted about QuArK.  Please don't bother people this way
+if you need help: see section 5.
 
 
 9. What is the GameCodeList.txt file?
@@ -158,5 +158,5 @@ is you need help: see section 5.
 
 When ever a new game is introduced and supported by QuArK a 'Game Code' must be
 assigned to it for various reasons of organization and control as to how that
-game support is handled by QuArK. This file, located in the QuArK install folder,
+game support is handled by QuArK.  This file, located in the QuArK install folder,
 gives further detail of how that structure is set up and used as games are added.
