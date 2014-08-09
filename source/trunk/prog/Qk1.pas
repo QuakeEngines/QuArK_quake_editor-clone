@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2011/12/04 11:22:32  danielpharos
+Added a verbose log message to help debugging startup problems.
+
 Revision 1.91  2011/07/31 16:30:23  danielpharos
 Massive moving around of QuArK SAS stuff and SteamFS things.
 
@@ -746,7 +749,7 @@ begin
  begin
    if MutexError = ERROR_ALREADY_EXISTS then
      begin
-       S:='An instance of QuArK is already running. This can cause serious problems.';
+       S:='An instance of QuArK is already running. This can cause serious problems. ';
        S:=S+'For example, changed configuration settings might not be saved, and QuArK might not update correctly.'#13#10;
        S:=S+'This check can be disabled (at own risk!) in the configuration settings.'#13#10#13#10;
        S:=S+'Are you sure you want to start a new instance of QuArK?';
