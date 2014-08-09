@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2010/11/06 17:10:15  danielpharos
+Consted a bunch of strings.
+
 Revision 1.16  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -254,7 +257,7 @@ procedure ListeActionsCopie(Source, Dest: QObject; Efface: Boolean);
 
 implementation
 
-uses Travail, Setup, QkForm, TbUndoMenu, Qk1, Quarkx, QkExceptions;
+uses Travail, Setup, QkForm, TbUndoMenu, Qk1, Quarkx, QkExceptions, Logging;
 
 var
  UndoRoots: PUndoRoot = Nil;
@@ -314,7 +317,10 @@ begin  { searches the root object over Q }
   begin
    Q:=Q.FParent;
    if Q=Nil then
-    Raise EError(5530);
+   begin
+     Log(LOG_VERBOSE, 'GetUndoRoot: Unable to find parent of object ' + Q.Name);
+     Raise EError(5530);
+   end;
   end;
  Result:=UndoRoots;   { searches the TUndoRoot structure in the list }
  while (Result<>Nil) and (Result^.Root<>Q) do
