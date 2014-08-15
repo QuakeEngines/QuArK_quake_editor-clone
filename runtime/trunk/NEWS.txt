@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added FastMove and FastCode for better performance.
+
 * [DanielPharos]: Stop access violation and other weird errors if Glide library wasn't
           - initialized properly.
 

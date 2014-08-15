@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2014/03/06 15:32:46  danielpharos
+Workaround for the long-standing bug where float-specifics were not working in Wine, and on non-Latin-alphabet Windows (for example, Chinese Windows).
+
 Revision 1.74  2010/11/30 20:31:15  danielpharos
 Added BBoxGroup object.
 
@@ -226,6 +229,8 @@ uses
 {$IFDEF MemCheck}
   MemCheck in 'prog\MemCheck.pas',
 {$ENDIF}
+  FastMove in 'prog\FastMove.pas',
+  FastCode in 'prog\FastCode\FastCode.pas',
   Forms,
 
   //Init the logging module FIRST, otherwise we'll miss log-calls from other init's!
