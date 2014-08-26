@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.88  2012/11/20 18:52:20  danielpharos
+Use PosEx, and let's not try and create the root drive as a folder, shall we?
+
 Revision 1.87  2012/10/07 17:57:40  danielpharos
 Workaround for SOF1 tools needing the wrong slashes.
 
@@ -1714,20 +1717,24 @@ var
  SousRep: TStringList;
  I: Integer;
  Remove: String;
+ rc: Integer;
 begin
   SousRep:=TStringList.Create;
   try
-    if FindFirst(ConcatPaths([Rep, '*.*']), faAnyFile, S) = 0 then
-    begin
-      repeat
+    rc:=FindFirst(ConcatPaths([Rep, '*.*']), faAnyFile, S);
+    try
+      while rc=0 do
+      begin
         if S.Attr and faDirectory = 0 then
           DeleteFile(ConcatPaths([Rep, S.Name]))
         else
           if (S.Name<>'.') and (S.Name<>'..') then
             SousRep.Add(S.Name);
-      until FindNext(S)<>0;
+        rc:=FindNext(S);
+      end;
+    finally
+      FindClose(S);
     end;
-    FindClose(S);
     for I:=0 to SousRep.Count-1 do
       ClearAllFilesRec(ConcatPaths([Rep, SousRep[I]]));
   finally
