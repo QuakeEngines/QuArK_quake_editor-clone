@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.13  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -381,8 +384,11 @@ begin
  if PatternBrush=0 then
   begin
    Bmp:=LoadBitmap(HInstance, MakeIntResource(110));
-   PatternBrush:=CreatePatternBrush(Bmp);
-   DeleteObject(Bmp);
+   try
+     PatternBrush:=CreatePatternBrush(Bmp);
+   finally
+     DeleteObject(Bmp);
+   end;
   end;
  CDC.B:=SelectObject(g_DrawInfo.DC, PatternBrush);
  CDC.TC:=SetTextColor(g_DrawInfo.DC, $000000);
