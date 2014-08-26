@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2010/04/16 20:16:15  danielpharos
+Added more OS version info to log.
+
 Revision 1.48  2010/04/16 18:44:59  danielpharos
 Reduced missing init-logging entries to a single problematic line. Also, logging now uses const strings (faster).
 
@@ -1139,7 +1142,7 @@ begin
         if MajorVersion>6 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWinVista;
+          WindowsPlatform:=osWin7;
           WindowsPlatformCompatibility:=osWinNTComp;
         end
         else
@@ -2141,19 +2144,22 @@ begin
   if WindowsPlatformCompatibility=osWin95Comp then
   begin
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
-    ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
-    while ContinueLoop <> false do
-    begin
-      if (ExtractFileName(FProcessEntry32.szExeFile) = ExeFileName)
-        or (FProcessEntry32.szExeFile = ExeFileName) then
+    try
+      FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+      ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+      while ContinueLoop <> false do
       begin
-        Result := True;
-        break;
+        if (ExtractFileName(FProcessEntry32.szExeFile) = ExeFileName)
+          or (FProcessEntry32.szExeFile = ExeFileName) then
+        begin
+          Result := True;
+          break;
+        end;
+        ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
       end;
-      ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+    finally
+      CloseHandle(FSnapshotHandle);
     end;
-    CloseHandle(FSnapshotHandle);
   end
   else
   begin
@@ -2175,31 +2181,34 @@ begin
         ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, ProcessList2^);
         if ProcessHandle <> 0 then
         begin
-          if EnumProcessModules(ProcessHandle, @ProcessModule, SizeOf(ProcessModule), SizeNeeded) <> false then
-          begin
-            ProcessNameBufferSize := 128;
-            GetMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
-            try
-              repeat
-                ProcessNameBufferSize := ProcessNameBufferSize * 2;
-                ReallocMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
-                RealProcessNameSize := GetModuleBaseName(ProcessHandle, ProcessModule, ProcessNameBuffer, ProcessNameBufferSize);
-              until RealProcessNameSize < ProcessNameBufferSize;
-              if RealProcessNameSize > 0 then
-              begin
-                SetLength(ProcessName, RealProcessNameSize);
-                ProcessName := PChar(ProcessNameBuffer);
-                if CompareStr(ProcessName, exeFileName) = 0 then
+          try
+            if EnumProcessModules(ProcessHandle, @ProcessModule, SizeOf(ProcessModule), SizeNeeded) <> false then
+            begin
+              ProcessNameBufferSize := 128;
+              GetMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
+              try
+                repeat
+                  ProcessNameBufferSize := ProcessNameBufferSize * 2;
+                  ReallocMem(ProcessNameBuffer, ProcessNameBufferSize * SizeOf(Char));
+                  RealProcessNameSize := GetModuleBaseName(ProcessHandle, ProcessModule, ProcessNameBuffer, ProcessNameBufferSize);
+                until RealProcessNameSize < ProcessNameBufferSize;
+                if RealProcessNameSize > 0 then
                 begin
-                  Result:=True;
-                  break;
+                  SetLength(ProcessName, RealProcessNameSize);
+                  ProcessName := PChar(ProcessNameBuffer);
+                  if CompareStr(ProcessName, exeFileName) = 0 then
+                  begin
+                    Result:=True;
+                    break;
+                  end;
                 end;
+              finally
+                FreeMem(ProcessNameBuffer);
               end;
-            finally
-              FreeMem(ProcessNameBuffer);
             end;
+          finally
+            CloseHandle(ProcessHandle);
           end;
-          CloseHandle(ProcessHandle);
         end;
         Inc(ProcessList2);
       end;
