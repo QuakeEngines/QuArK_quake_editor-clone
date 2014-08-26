@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2009/11/22 21:44:33  danielpharos
+Added an ExpandAll feature to the treeview, callable from Python.
+
 Revision 1.25  2009/11/17 20:54:58  danielpharos
 Fixed horrible multiple redrawing of treeview.
 
@@ -626,11 +629,14 @@ var
            if Odd(Item.SelMult) then
             begin
              Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, SelBkColor));
-             Brush1:=SelectObject(DC, GetStockObject(Null_brush));
-             Rectangle(DC, X+18, R.Top, X+TextSize.cx+(18+4), R.Bottom);
-             UpdateMaxPixelWidth(X+TextSize.cx+18+4);
-             SelectObject(DC, Brush1);
-             DeleteObject(SelectObject(DC, Pen1));
+             try
+               Brush1:=SelectObject(DC, GetStockObject(Null_brush));
+               Rectangle(DC, X+18, R.Top, X+TextSize.cx+(18+4), R.Bottom);
+               UpdateMaxPixelWidth(X+TextSize.cx+18+4);
+               SelectObject(DC, Brush1);
+             finally
+               DeleteObject(SelectObject(DC, Pen1));
+             end;
             end;
           end;
          if FocusItem=Item then
@@ -649,9 +655,12 @@ var
               NumberOfColorsDrawn:=NumberOfColorsDrawn+1;
               R.Left:=X+6+TextSize.cx+(16*NumberOfColorsDrawn);
               Brush1:=SelectObject(DC, CreateSolidBrush(C[M])); // Brush1 is the OLD object, while CreateSolidBrush() makes a NEW object
-              UpdateMaxPixelWidth(R.Left+16);
-              Rectangle(DC, R.Left+4, R.Top+3, R.Left+16, R.Bottom-3);
-              DeleteObject(SelectObject(DC, Brush1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
+              try
+                UpdateMaxPixelWidth(R.Left+16);
+                Rectangle(DC, R.Left+4, R.Top+3, R.Left+16, R.Bottom-3);
+              finally
+                DeleteObject(SelectObject(DC, Brush1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
+              end;
             end;
           finally
            DeleteObject(SelectObject(DC, Pen1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
@@ -701,23 +710,31 @@ var
    Pen: HPen;
   begin
    Result:=CreateCompatibleBitmap(DC, 9,9);
-   MemDC:=CreateCompatibleDC(DC);
-   Bmp:=SelectObject(MemDC, Result);
-   Brush1:=SelectObject(MemDC, Brush);
-   Pen:=SelectObject(MemDC, CreatePen(ps_Solid, 1, GrayColor));
-   Rectangle(MemDC, 0,0,9,9);
-   DeleteObject(SelectObject(MemDC, CreatePen(ps_Solid, 1, TextColor)));
-   MoveToEx(MemDC, 2, 4, Nil);
-   LineTo(MemDC, 7, 4);
-   if Sign='+' then
-    begin
-     MoveToEx(MemDC, 4, 2, Nil);
-     LineTo(MemDC, 4, 7);
-    end;
-   DeleteObject(SelectObject(MemDC, Pen));
-   SelectObject(MemDC, Brush1);
-   SelectObject(MemDC, Bmp);
-   DeleteDC(MemDC);
+   try
+     MemDC:=CreateCompatibleDC(DC);
+     try
+       Bmp:=SelectObject(MemDC, Result); try
+       Brush1:=SelectObject(MemDC, Brush); try
+       Pen:=SelectObject(MemDC, CreatePen(ps_Solid, 1, GrayColor)); try
+       Rectangle(MemDC, 0,0,9,9);
+       DeleteObject(SelectObject(MemDC, CreatePen(ps_Solid, 1, TextColor)));
+       MoveToEx(MemDC, 2, 4, Nil);
+       LineTo(MemDC, 7, 4);
+       if Sign='+' then
+        begin
+         MoveToEx(MemDC, 4, 2, Nil);
+         LineTo(MemDC, 4, 7);
+        end;
+       finally DeleteObject(SelectObject(MemDC, Pen)); end;
+       finally SelectObject(MemDC, Brush1); end;
+       finally SelectObject(MemDC, Bmp); end;
+     finally
+       DeleteDC(MemDC);
+     end;
+   except
+     DeleteObject(Result);
+     raise;
+   end;
   end;
 
 begin
@@ -1749,10 +1766,16 @@ begin
     else
      BoldFace:=0;
     DC:=GetDC(Handle);
-    Font:=SelectObject(DC, GetFontHandle(BoldFace));
-    GetTextExtentPoint32(DC, PChar(Item.Name), Length(Item.Name), TextSize);
-    DeleteObject(SelectObject(DC, Font));
-    ReleaseDC(Handle, DC);
+    try
+      Font:=SelectObject(DC, GetFontHandle(BoldFace));
+      try
+        GetTextExtentPoint32(DC, PChar(Item.Name), Length(Item.Name), TextSize);
+      finally
+        DeleteObject(SelectObject(DC, Font));
+      end;
+    finally
+      ReleaseDC(Handle, DC);
+    end;
     Result:=Bounds(1+Level*MyTVIndent, Index*MyTVLineStep,
      TextSize.cx+(18+4), MyTVLineStep);
     Exit;
