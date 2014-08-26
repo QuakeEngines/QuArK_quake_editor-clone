@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2014/08/26 10:12:21  danielpharos
+Added fixed a possible buffer overflow in file version check.
+
 Revision 1.73  2012/09/05 18:06:10  danielpharos
 Move implementation of FloatSpec internally to QkObjects.
 
@@ -420,7 +423,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkExceptions, QkInclude, PyObjects,
-  QkModel, QkMap, QkQkl, QkConsts,
+  QkModel, QkMap, QkQkl, QkConsts, Logging,
   PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
@@ -1266,7 +1269,7 @@ var
 begin
  Update:=AlternateFile='';
  if Update then
-  Log(LOG_VERBOSE, 'Saving file: ' + Filename);
+  Log(LOG_VERBOSE, 'Saving file: ' + Filename)
  else
   Log(LOG_VERBOSE, 'Saving file: ' + Filename + ' under new name: ' + AlternateFile);
 
@@ -1609,6 +1612,7 @@ end;
 function CheckFileSignature(var P: PChar) : Boolean;
 begin
  if StrLen(P) < c_FileSignatureSize then
+ begin
   Result:=false;
   exit;
  end;
