@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2013/01/17 03:22:32  cdunde
+Removed game support for Xonotic due to improper texture paths.
+
 Revision 1.90  2012/12/18 02:19:23  cdunde
 Setup a new game support for Xonotic with .md3 model displaying.
 
@@ -546,19 +549,24 @@ var
  SubStr : String;
 begin
   Result:=TStringList.Create;
-  Idx := 1;
-  while (Idx <= Length(S)) do
-  begin
-    SubStr := '';
-    C := #0;
-    while ((C <> ' ') and (C <> ',') and (Idx <= Length(S))) do
+  try
+    Idx := 1;
+    while (Idx <= Length(S)) do
     begin
-      C := S[Idx];
-      if ((C <> ' ') and (C <> ',')) then
-        SubStr := SubStr + C;
-      Inc(Idx);
+      SubStr := '';
+      C := #0;
+      while ((C <> ' ') and (C <> ',') and (Idx <= Length(S))) do
+      begin
+        C := S[Idx];
+        if ((C <> ' ') and (C <> ',')) then
+          SubStr := SubStr + C;
+        Inc(Idx);
+      end;
+      Result.Add(SubStr);
     end;
-    Result.Add(SubStr);
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -766,7 +774,7 @@ begin
    SetupQrk.AddRef(-1);
   end;
  except
-  { could not load Setup.qrk - this is not an error, continue execution }
+  { could not load Setup.qrk - this is not a fatal error, continue execution }
   Log(LOG_WARNING, 'Unable to load Setup.qrk!');
  end;
 
