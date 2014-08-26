@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.17  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -234,12 +237,15 @@ begin
     end;
    BmpInfo.bmiColors:=Colors16;
    DC:=GetDC(GetDesktopWindow);
-   Result:=CreateToDC(DC, BitmapInfo, PChar(S));
-  {Result:=CreateBitmap(W, BitmapInfo.bmiHeader.biHeight, 1, 4, Nil);
-   if Result<>0 then
-    SetDIBits(DC, Result, 0, BitmapInfo.bmiHeader.biHeight, PChar(S),
-     BitmapInfo, dib_Pal_Colors);}
-   ReleaseDC(GetDesktopWindow, DC);
+   try
+    Result:=CreateToDC(DC, BitmapInfo, PChar(S));
+   {Result:=CreateBitmap(W, BitmapInfo.bmiHeader.biHeight, 1, 4, Nil);
+    if Result<>0 then
+     SetDIBits(DC, Result, 0, BitmapInfo.bmiHeader.biHeight, PChar(S),
+      BitmapInfo, dib_Pal_Colors);}
+   finally
+    ReleaseDC(GetDesktopWindow, DC);
+   end;
   end;
 end;
 
