@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.3  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -165,18 +168,23 @@ begin
  S:=S+#0+CheckFile;
  BrowseInfo.lParam:=LongInt(PChar(S));
  pidlFolder:=SHBrowseForFolder( {$IFDEF CompiledWithDelphi2} @ {$ENDIF} BrowseInfo);
- S:='';
- if pidlFolder<>Nil then
-  begin
-   SetLength(S, MAX_PATH+1);
-   if SHGetPathFromIDList(pidlFolder, PChar(S)) then
-    SetLength(S, StrLen(PChar(S)))
-   else
-    S:='';
-   { Free the PIDL for the Programs folder. }
+ try
+  S:='';
+  if pidlFolder<>Nil then
+   begin
+    SetLength(S, MAX_PATH+1);
+    if SHGetPathFromIDList(pidlFolder, PChar(S)) then
+     SetLength(S, StrLen(PChar(S)))
+    else
+     S:='';
+   end;
+ finally
+  { Free the PIDL for the Programs folder. }
+  if pidlFolder<>Nil then
    g_pMalloc.Free(pidlFolder);
-  end;
-  { Release the shell's allocator. }
+ end;
+
+ { Release the shell's allocator. }
  // g_pMalloc.Release;   DONE AUTOMATICALLY BY DELPHI 4 (I hope)
 
  Result:=S<>'';
