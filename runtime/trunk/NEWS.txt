@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed several leaks on error code paths, and a wrong Win32 API call
+          - when starting external processes.
+
 * [DanielPharos]: Added FastMove and FastCode for better performance.
 
 * [DanielPharos]: Stop access violation and other weird errors if Glide library wasn't
