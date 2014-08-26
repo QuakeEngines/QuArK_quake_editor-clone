@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2012/03/08 20:38:49  danielpharos
+Fixed an access violation if no texture-folder was found in a bsp-file, and fixed some memory leaks in crash code-flow.
+
 Revision 1.34  2010/05/05 19:43:26  danielpharos
 Switch to InternalE.
 
@@ -123,7 +126,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects, Logging;
+  QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects;
 
 type
  QQuakeCtx = class(QFormObject)
@@ -154,7 +157,7 @@ implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
      ToolBoxGroup, Game, QkMapObjects, FormCfg, QkExplorer, QkApplPaths,
-     QkForm, Travail, QkFormCfg, QkExceptions, ExtraFunctionality;
+     QkForm, Travail, QkFormCfg, QkExceptions, Logging, ExtraFunctionality;
 
  {------------------------}
 
@@ -359,9 +362,14 @@ var
   i: Integer;
 begin
   Result:=TQList.Create;
-  For i:=0 to l.count-1 do
-  begin
-    Result.Add(ExactFileLink(ConcatPaths([dir, l.strings[i]]), nil, false));
+  try
+    for i:=0 to l.count-1 do
+    begin
+      Result.Add(ExactFileLink(ConcatPaths([dir, l.strings[i]]), nil, false));
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -371,13 +379,21 @@ var
   f_e: Integer;
 begin
   Result:=TQList.Create;
-  f_e:=FindFirst(filter, faAnyFile, F);
-  while f_e=0 do
-  begin
-    Result.add(ExactFileLink(ConcatPaths([dir, f.name]), nil, false));
-    f_e:=FindNext(F);
+  try
+    f_e:=FindFirst(filter, faAnyFile, F);
+    try
+      while f_e=0 do
+      begin
+        Result.add(ExactFileLink(ConcatPaths([dir, f.name]), nil, false));
+        f_e:=FindNext(F);
+      end;
+    finally
+      FindClose(f);
+    end;
+  except
+    Result.Free;
+    raise;
   end;
-  FindClose(f);
 end;
 
 function qMakeAddonFromQctx(self, args: PyObject) : PyObject; cdecl;
@@ -540,7 +556,7 @@ begin
   ExplorerFromObject(FParent).Refresh;
 end;
 
-function IsAllNumbers(arg: string): Boolean;
+function IsAllNumbers(const arg: string): Boolean;
 const
   Numbers = '0123456789-.';
 var
@@ -551,7 +567,7 @@ begin
     result:=result and (System.pos(arg[i], Numbers)<>0);
 end;
 
-function IsNumbersSeperated(arg: string): Integer;
+function IsNumbersSeperated(const arg: string): Integer;
 const
   Numbers = '0123456789-. ';
 var
@@ -619,23 +635,26 @@ var
   begin
     BSPs:=GetAllBSPsFiles;
     try
-      ProgressIndicatorStart(5458,bsps.count);
-      e_lump:='';
-      while bsps.count<>0 do
-      begin
-//        if not (bsps[0] is QBsp) then
-  //        raise InternalE('Error: bsp list contains non QBSP object!');
-        bsp := QBsp( bsps[0] );
-        bsp.Acces;
-        e_lump:=e_lump + bsp.GetEntityLump();
-        bsps.Delete(0);
-        ProgressIndicatorIncrement;
-        Application.ProcessMessages;
+      ProgressIndicatorStart(5458, bsps.count);
+      try
+        e_lump:='';
+        while bsps.count<>0 do
+        begin
+//          if not (bsps[0] is QBsp) then
+  //          raise InternalE('Error: bsp list contains non QBSP object!');
+          bsp := QBsp( bsps[0] );
+          bsp.Acces;
+          e_lump:=e_lump + bsp.GetEntityLump();
+          bsps.Delete(0);
+          ProgressIndicatorIncrement;
+          Application.ProcessMessages;
+        end;
+      finally
+        ProgressIndicatorStop;
       end;
     finally
       bsps.free;
     end;
-    ProgressIndicatorStop;
   end;
 
   (*
