@@ -1010,6 +1010,7 @@ Strings = {
 
     5770: "There were errors reading the map; please check the console.",
     5771: "Couldn't load texture '%s'; brushDef2 or brushDef3 texture scales may be incorrect!",
+    5772: "Could not load shaderlist file '%s', even though it exists.",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1091,6 +1092,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.159  2014/03/09 17:33:50  danielpharos
+#Added some logging if brushDef2or3 couldn't load texture.
+#
 #Revision 1.158  2013/06/30 15:18:29  danielpharos
 #Updated for 6.6 Beta 6 release.
 #

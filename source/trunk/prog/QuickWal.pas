@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2012/04/21 19:13:46  danielpharos
+Consted a string parameter.
+
 Revision 1.54  2010/05/05 20:49:16  danielpharos
 Fixed copy-paste bug in VTF file linking.
 
@@ -239,7 +242,7 @@ uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
 
 {$R *.DFM}
 
-function FileNameOnly(Name: String) : String;
+function FileNameOnly(const Name: String) : String;
 begin
   Result:=Copy(Name,0,Length(Name)-Length(ExtractFileExt(Name)))
 end;
@@ -248,35 +251,39 @@ end;
 
 function ListPakFiles(const Path: String) : TStringList;
 var
-  List, List2 : TStringList;
+  List : TStringList;
   FindError: Integer;
   F: TSearchRec;
   I: Integer;
 begin
-  List:=TStringList.Create;
-  List.Sorted:=true;
-  List2:=TStringList.Create;
+  Result:=TStringList.Create;
   try
-    List2.Sorted:=true;
-    FindError:=FindFirst(ConcatPaths([Path, '*'+SetupGameSet.Specifics.Values['PakExt']]), faAnyFile, F);
+    Result.Sorted:=true;
+    List:=TStringList.Create;
     try
-      while FindError=0 do
-      begin
-        if Copy(F.Name,1,3)='pak' then
-          List.Add(F.Name)
-        else
-          List2.Add(F.Name);
-        FindError:=FindNext(F);
+      List.Sorted:=true;
+      FindError:=FindFirst(ConcatPaths([Path, '*'+SetupGameSet.Specifics.Values['PakExt']]), faAnyFile, F);
+      try
+        while FindError=0 do
+        begin
+          if Copy(F.Name,1,3)='pak' then
+            Result.Add(F.Name)
+          else
+            List.Add(F.Name);
+          FindError:=FindNext(F);
+        end;
+      finally
+         FindClose(F);
       end;
+      Result.Sorted:=false;
+      for I:=0 to List.Count-1 do
+        Result.Add(List[I]);
     finally
-       FindClose(F);
+      List.Free;
     end;
-    List.Sorted:=false;
-    for I:=0 to List2.Count-1 do
-      List.Add(List2[I]);
-    Result:=List;
-  finally
-    List2.Free;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -804,7 +811,7 @@ begin
           Loaded:=Nil;
           try
             Previous:=DestFolder.LocateSubElement(F.Name,Index);
-            if  Previous=Nil then
+            if Previous=Nil then
               while TryToLink1(Result, F.Name, FolderName, Base, Loaded, Index) do
               begin
                 Loaded:=ExactFileLink(ConcatPaths([Path, F.Name]), Nil, False);
@@ -921,7 +928,7 @@ begin
       BuildStaticFolders(Base, Q, merged, allshaders, Filter);
     if Q=Nil then
      Raise EErrorFmt(5660, [S]);
-     try
+    try
      Gr:=ClipboardGroup;
      Gr.AddRef(+1);
      try
@@ -947,9 +954,9 @@ end;
 
 procedure MakeFolder(var Folder, Parental: QObject; Name: String);
 begin
-    Folder:=QToolBoxGroup.Create(Name, Nil);
-    Folder.FParent:=Parental;
-    Parental.SubElements.Add(Folder);
+  Folder:=QToolBoxGroup.Create(Name, Nil);
+  Folder.FParent:=Parental;
+  Parental.SubElements.Add(Folder);
 end;
 
 procedure BuildDynamicFolders(const Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
@@ -1081,21 +1088,24 @@ begin
   if not FileExists(FileName) then
     Exit;
   try
-  AssignFile(F,FileName);
-  Reset(F);
-  while not Eof(F) do
-  begin
-    Readln(F,S);
-    P:=Pos('//',S);
-    if P=0 then
-      P:=Length(S)+1;
-    S:=Trim(Copy(S,1,P-1));
-    if Length(S)>0 then
-      List.Add(S);
-  end;
-  CloseFile(F);
+    AssignFile(F,FileName);
+    try
+      Reset(F);
+      while not Eof(F) do
+      begin
+        Readln(F,S);
+        P:=Pos('//',S);
+        if P=0 then
+          P:=Length(S)+1;
+        S:=Trim(Copy(S,1,P-1));
+        if Length(S)>0 then
+          List.Add(S);
+      end;
+    finally
+      CloseFile(F);
+    end;
   except
-   ShowMessage('For some unknown reason, '+FileName+' wont open, even though it exists');
+   Raise EErrorFmt(5772, [FileName]);
   end;
 end;
 
@@ -1236,6 +1246,7 @@ begin
     end;
   end;
 
+  //FIXME: These will leak if something went wrong!
   PakList.Free;
   ShaderList.Free;
   FoundShaders.Free;
