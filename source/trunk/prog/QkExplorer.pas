@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2010/10/14 20:03:30  danielpharos
+Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
+
 Revision 1.29  2010/04/17 20:54:44  danielpharos
 Added some might-be-useful logging.
 
@@ -551,7 +554,7 @@ end;
 
 destructor TQkExplorer.Destroy;
 begin
- Log(LOG_VERBOSE, 'Destroying QuArK Explorer... ('+Self.Name+')');   
+ Log(LOG_VERBOSE, 'Destroying QuArK Explorer... ('+Self.Owner.Name+')');
  ClearView;
 {Roots.Free;}
  FAllExplorers.Remove(Self);
