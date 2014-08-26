@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2012/09/05 18:06:10  danielpharos
+Move implementation of FloatSpec internally to QkObjects.
+
 Revision 1.72  2011/07/31 16:30:23  danielpharos
 Massive moving around of QuArK SAS stuff and SteamFS things.
 
@@ -1261,8 +1264,13 @@ var
 {FileOp: TSHFILEOPSTRUCT;}
  Info1: TFileSibling;
 begin
- Filename:=QuickResolveFilename(Filename);
  Update:=AlternateFile='';
+ if Update then
+  Log(LOG_VERBOSE, 'Saving file: ' + Filename);
+ else
+  Log(LOG_VERBOSE, 'Saving file: ' + Filename + ' under new name: ' + AlternateFile);
+
+ Filename:=QuickResolveFilename(Filename);
  try
   Info1:=TFileSibling.Create; try
   Info1.Format:=rf_Siblings;
@@ -1600,6 +1608,10 @@ end;
 
 function CheckFileSignature(var P: PChar) : Boolean;
 begin
+ if StrLen(P) < c_FileSignatureSize then
+  Result:=false;
+  exit;
+ end;
  Result:=(PInteger(P)^=c_FileSignatureQQRK) and (PInteger(P+SizeOf(LongInt))^=c_FileVersionText);
  Inc(P, 2*SizeOf(LongInt));
 end;
