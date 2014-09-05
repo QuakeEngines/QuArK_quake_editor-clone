@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2014/08/26 10:21:25  danielpharos
+Changed two wrong DeleteObject calls into correct CloseHandle calls.
+
 Revision 1.14  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -364,14 +367,16 @@ begin
      Exit;
     end;
    if not Verb then
-    try
-     Waiter:=TWaiter.Create(True);
-     TWaiter(Waiter).WaitForHandle:=PI.hProcess;
-     TWaiter(Waiter).TriggerForm:=Self;
+    begin
+     try
+      Waiter:=TWaiter.Create(True);
+      TWaiter(Waiter).WaitForHandle:=PI.hProcess;
+      TWaiter(Waiter).TriggerForm:=Self;
+     except
+      CloseHandle(PI.hProcess);
+      Raise;
+     end;
      Waiter.Resume;
-    except
-     CloseHandle(PI.hProcess);
-     Raise;
     end;
    finally ChDir(CurDir); end;
   except
