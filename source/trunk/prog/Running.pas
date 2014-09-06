@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2014/09/05 18:39:10  danielpharos
+Fixed a race condition in an error path where CloseHandle could be called twice on a process handle.
+
 Revision 1.15  2014/08/26 10:21:25  danielpharos
 Changed two wrong DeleteObject calls into correct CloseHandle calls.
 
@@ -98,7 +101,7 @@ procedure ExternalEdit(Q: QObject);
 
 implementation
 
-uses qmath, Config, Undo, Setup, Quarkx, QkExceptions;
+uses qmath, Config, Undo, Setup, Quarkx, QkExceptions, Logging;
 
 {$R *.DFM}
 
@@ -117,10 +120,13 @@ type
 
 procedure TWaiter.Execute;
 begin
- while (WaitForSingleObject(WaitForHandle, 2000) = WAIT_TIMEOUT)
- and (TriggerForm<>Nil) do
-  ;
- CloseHandle(WaitForHandle);
+ try
+  while (WaitForSingleObject(WaitForHandle, 2000) = WAIT_TIMEOUT)
+  and (TriggerForm<>Nil) do
+   ;
+ finally
+  CloseHandle(WaitForHandle);
+ end;
  Synchronize(TriggerNow);
  FreeOnTerminate:=True;
 end;
@@ -344,6 +350,8 @@ begin
    SI.dwFlags:=STARTF_USECOUNTCHARS;
    FillChar(PI, SizeOf(PI), 0);
 
+   Log(LOG_INFO, 'Now starting external program "%s" from path "%s"...', [S, StartDir]);
+
    I:=Pos('>', S);
    Verb:=(I>0) and (Copy(S,1,1)='<');
    if Verb then
@@ -377,6 +385,7 @@ begin
       Raise;
      end;
      Waiter.Resume;
+     //FIXME: Log the exit code?
     end;
    finally ChDir(CurDir); end;
   except
