@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/09/22 18:12:40  danielpharos
+TList --> TQList
+
 Revision 1.21  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -536,75 +539,35 @@ end;
 
 procedure TConfigDlg.ResetBtnClick(Sender: TObject);
 var
- I, J: Integer;
- Defaults: QObject;
+ I: Integer;
  ParentNameChain: TStringList;
- Q, Q2, Q3: QObject;
- T: TSetupSet;
+ Q: QObject;
 begin
+ //DanielPharos: Even though this messagebox has no icon, Delphi doesn't have a way to set a default button,
+ //even though it internally does. We *must* have the no-button set as default, because this is a destructive action,
+ //so we *have* to call this instead of Dialogs.MessageDlg.
  if Application.MessageBox(PChar(LoadStr1(4625)), 'QuArK', MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2 or MB_SYSTEMMODAL) <> IDYES then
    Exit;
- Defaults:=GetFreshDefaultsFile;
- Defaults.AddRef(+1);
- try
-  for I:=0 to FormCfg1.LinkedObjects.Count div 2 - 1 do
-   begin
-    Q:=FormCfg1.LinkedObjects[I*2];
-    //Walk through the parents of Q, making a list of their names.
-    ParentNameChain:=TStringList.Create;
-    try
-     ParentNameChain.Add(Q.Name);
-     while Q.FParent<>nil do
-      begin
-       ParentNameChain.Add(Q.FParent.Name);
-       Q:=Q.FParent;
-      end;
-     //The first item is the setup root. We need a special way to find that.
-     Q:=nil;
-     for T:=Low(T) to High(T) do
-      begin
-       if Explorer.Roots[Ord(T)].Name = ParentNameChain[ParentNameChain.Count-1] then
-        begin
-         Q:=Explorer.Roots[Ord(T)];
-         break;
-        end;
-      end;
-     if Q = nil then
-      continue;
-     Q2:=Defaults.FindSubObject(ParentNameChain[ParentNameChain.Count-1], QConfig, nil);
-     if Q2 = nil then
-      continue;
-     //The rest is just standard setup QObjects. So trace those normally.
-     for J:=ParentNameChain.Count-2 downto 0 do
-      begin
-       Q:=Q.FindSubObject(ParentNameChain[J], QObject, nil);
-       if Q = nil then
-        break;
-       Q2:=Q2.FindSubObject(ParentNameChain[J], QObject, nil);
-       if Q2 = nil then
-        break;
-      end;
-     if Q = nil then
-      continue;
-     if Q2 = nil then
-      continue;
-     //Found the corresponding item. Let's exchange...
-     Q3:=Q.FParent;
-     J:=Q3.SubElements.IndexOf(Q);
-     Q3.SubElements.Delete(J);
-     Q:=Q2.Clone(Q3, False);
-     Q3.SubElements.Insert(J, Q);
-     Q.TvParent:=Q3;
-     Explorer.TMSelUnique:=Q;
-     FillExplorer(False);
-     CancelOff;
-    finally
-     ParentNameChain.Free;
-    end;
+ for I:=0 to FormCfg1.LinkedObjects.Count div 2 - 1 do
+  begin
+   Q:=FormCfg1.LinkedObjects[I*2];
+   //Walk through the parents of Q, making a list of their names.
+   ParentNameChain:=TStringList.Create;
+   try
+    ParentNameChain.Add(Q.Name);
+    while Q.FParent<>nil do
+     begin
+      ParentNameChain.Add(Q.FParent.Name);
+      Q:=Q.FParent;
+     end;
+    //The first item is the setup root. We need a special way to find that.
+    ResetSetting(ParentNameChain);
+   finally
+    ParentNameChain.Free;
    end;
- finally
-  Defaults.AddRef(-1);
- end;
+  end;
+ FillExplorer(False);
+ CancelOff;
 end;
 
 procedure TConfigDlg.Button1Click(Sender: TObject);

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2014/08/26 10:46:53  danielpharos
+Fixed possible TStringList leak on error code path.
+
 Revision 1.91  2013/01/17 03:22:32  cdunde
 Removed game support for Xonotic due to improper texture paths.
 
@@ -447,7 +450,7 @@ function SetupSubSetEx(Root: TSetupSet; const SubSet: String; Create: Boolean) :
 function SetupGameSet : QObject;
 procedure UpdateSetup(Level: Integer);
 procedure SaveSetupNow;
-function GetFreshDefaultsFile : QObject;
+procedure ResetSetting(const ParentNameChain : TStringList);
 function MakeAddOnsList : QFileObject;  { includes the file loaded in g_Form1 }
 procedure UpdateForm1Root;
 procedure UpdateAddOnsContent;
@@ -724,7 +727,7 @@ begin
 
   { loads Defaults.qrk }
  try
-  SetupQrk:=BindFileQObject(GetQPath(pQuArKAddon)+DefaultsFileName, Nil, False);
+  SetupQrk:=ExactFileLink(GetQPath(pQuArKAddon)+DefaultsFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
    LoadedDefaultsFileName:=SetupQrk.Filename;
@@ -736,6 +739,7 @@ begin
   on E: Exception do
    begin
     //FIXME: We shouldn't call this like this... MessageException should be private IMHO (DanielPharos)
+    Log(LOG_CRITICAL, LoadStr1(5204), [GetExceptionMessage(E)]);
     g_Form1.MessageException(E, LoadStr1(5204), [mbOk]);
     Halt(1);   { cannot load Defaults.qrk - fatal error }
     Exit;
@@ -749,6 +753,7 @@ begin
    V2:=g_SetupSet[ssGeneral].Specifics.Values['Version'];
    if V1 <> V2 then
     begin
+     Log(LOG_CRITICAL, LoadStr1(5206), [V1, V2]);
      MessageDlg(FmtLoadStr1(5206, [V1, V2]), mtError, [mbOk], 0);
      Halt(1);   { wrong version of Defaults.qrk }
     end;
@@ -756,6 +761,7 @@ begin
  for T:=Low(T) to High(T) do
   if g_SetupSet[T]=Nil then  { checks ":config" objects }
    begin
+    Log(LOG_CRITICAL, LoadStr1(5205), [SetupSetName[T]]);
     MessageDlg(FmtLoadStr1(5205, [SetupSetName[T]]), mtError, [mbOk], 0);
     Halt(1);   { missing ":config" object }
    end;
@@ -765,7 +771,7 @@ begin
  LoadedSetupFileName:='';
  try
   //FIXME: In the future, this should be changed to GetQPath(pUserData)!
-  SetupQrk:=BindFileQObject(GetQPath(pQuArK)+SetupFileName, Nil, False);
+  SetupQrk:=ExactFileLink(GetQPath(pQuArK)+SetupFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
    LoadedSetupFileName:=SetupQrk.Filename;
@@ -775,7 +781,7 @@ begin
   end;
  except
   { could not load Setup.qrk - this is not a fatal error, continue execution }
-  Log(LOG_WARNING, 'Unable to load Setup.qrk!');
+  Log(LOG_WARNING, 'Unable to load config file %s!', [SetupFileName]);
  end;
 
  if g_SetupSet[ssGeneral].GetFloatSpec('RunVersion', 5.901)<5.9005 then
@@ -799,7 +805,7 @@ begin
  //If not, find an installed one
  if SetupGameSet.Specifics.Values['NotInstalled'] <> '' then
   begin
-   Log(LOG_INFO, 'Not installed gamecode (%s) in Setup.qrk. Trying to find an installed one...', [ g_SetupSet[ssGames].Specifics.Values['GameCfg']]);
+   Log(LOG_INFO, LoadStr1(4626), [g_SetupSet[ssGames].Specifics.Values['GameCfg'], SetupFileName]);
    with g_SetupSet[ssGames] do
     begin
      Specifics.Values['GameCfg']:='';
@@ -818,7 +824,7 @@ begin
        MessageDlg(LoadStr1(4624), mtError, [mbOk], 0);
        Halt(1);   { missing ":config" object }
       end;
-     Log(LOG_INFO, 'Found gamemode: %s', [Specifics.Values['GameCfg']]);
+     Log(LOG_INFO, LoadStr1(4627), [Specifics.Values['GameCfg']]);
     end;
   end;
  SetupChanged({scMaximal} {scMinimal} scInit);
@@ -954,7 +960,7 @@ begin
    else
      try
        { opens the old setup file }
-      SetupQrk:=BindFileQObject(LoadedSetupFileName, Nil, False);
+      SetupQrk:=ExactFileLink(LoadedSetupFileName, Nil, False);
      except
       on EQObjectFileNotFound do  { creates a new setup file if not found }
        //FIXME: In the future, this should be changed to GetQPath(pUserData)!
@@ -1000,12 +1006,52 @@ begin
  SaveSetup(rf_AsText);   { save as text }
 end;
 
-function GetFreshDefaultsFile : QObject;
+procedure ResetSetting(const ParentNameChain : TStringList);
+var
+ I: Integer;
+ Q, QRoot, QSetup: QObject;
+ T: TSetupSet;
 begin
- Result:=Nil;
+ if ParentNameChain.Count < 1 then
+  raise InternalE('ParentNameChain is empty!');
+ Q:=nil;
+ for T:=Low(T) to High(T) do
+  if CompareText(ParentNameChain[ParentNameChain.Count-1], SetupSetName[T]) = 0 then
+   begin
+    Q:=g_SetupSet[T];
+    break;
+   end;
+ if Q = nil then
+  raise InternalE('Could not find root of ParentNameChain!');
+ for I:=ParentNameChain.Count-2 downto 0 do
+  begin
+   Q:=Q.FindSubObject(ParentNameChain[I], QObject, nil);
+   if Q = nil then
+    raise InternalE('Could not find named subelement in ParentNameChain');
+  end;
+
  if LoadedDefaultsFileName='' then
   Exit;
- Result:=BindFileQObject(LoadedDefaultsFileName, Nil, False);
+ QRoot:=ExactFileLink(LoadedDefaultsFileName, Nil, False);
+ QRoot.AddRef(+1);
+ try
+  QSetup:=QRoot;
+  for I:=ParentNameChain.Count-1 downto 0 do
+   begin
+    QSetup:=QSetup.FindSubObject(ParentNameChain[I], QObject, nil);
+    if QSetup=Nil then
+     //Item not found in Defaults file
+     break;
+   end;
+
+  if QSetup<>Nil then
+   begin
+    //Found the corresponding item. Let's exchange...
+    Mix(Q, QSetup);
+   end;
+ finally
+  QRoot.AddRef(-1);
+ end;
 end;
 
 procedure UpdateForm1Root;

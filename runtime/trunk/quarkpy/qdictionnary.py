@@ -554,7 +554,9 @@ Strings = {
     4622: "QuArK could not switch to '%s' game mode : this game support is currently not installed",
     4623: "QuArK could not switch to '%s' game mode : this game cannot be switched to",
     4624: "No installed game supports found. QuArK cannot start.",
-    4625: "Restoring default setting will overwrite all changes made. Are you sure?",
+    4625: "Restoring default settings will overwrite all the current settings. Are you sure?",
+    4626: "Not installed gamecode (%s) in %s. Trying to find an installed one...",
+    4627: "Found gamemode: %s",
 
     5119: "(new)",
     5120: "Explorer Group",
@@ -1092,6 +1094,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.160  2014/08/26 10:59:26  danielpharos
+#Fixed several leaks on error code paths, and moved an error message string to qdictionnary.
+#
 #Revision 1.159  2014/03/09 17:33:50  danielpharos
 #Added some logging if brushDef2or3 couldn't load texture.
 #
