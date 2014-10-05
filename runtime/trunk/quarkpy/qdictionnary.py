@@ -555,7 +555,7 @@ Strings = {
     4623: "QuArK could not switch to '%s' game mode : this game cannot be switched to",
     4624: "No installed game supports found. QuArK cannot start.",
     4625: "Restoring default settings will overwrite all the current settings. Are you sure?",
-    4626: "Not installed gamecode (%s) in %s. Trying to find an installed one...",
+    4626: "Not installed gamemode (%s) in %s. Trying to find an installed one...",
     4627: "Found gamemode: %s",
 
     5119: "(new)",
@@ -1094,6 +1094,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.161  2014/09/27 14:28:59  danielpharos
+#Fixed the Reset-button in the Configuration to do what people expected it to do.
+#
 #Revision 1.160  2014/08/26 10:59:26  danielpharos
 #Fixed several leaks on error code paths, and moved an error message string to qdictionnary.
 #
