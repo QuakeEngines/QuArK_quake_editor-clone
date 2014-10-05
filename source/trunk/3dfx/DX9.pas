@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2010/10/17 15:39:14  danielpharos
+Added high precision float option to DirectX renderer.
+
 Revision 1.14  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -53,7 +56,7 @@ function GetDirect3DDummyHwnd: HWND;
 
 implementation
 
-uses QkDummyWindow, Logging, QkObjects, Setup, Quarkx, QkExceptions, DXErr9;
+uses QkDummyWindow, D3Dx9, Logging, QkObjects, Setup, Quarkx, QkExceptions, DXErr9;
 
 var
   TimesLoaded : Integer;
@@ -80,6 +83,12 @@ begin
     Result := False;
     try
       if LoadDirect3D9=false then
+      begin
+        Log(LOG_WARNING, LoadStr1(6411));
+        Exit;
+      end;
+
+      if LoadD3D9_31=false then
       begin
         Log(LOG_WARNING, LoadStr1(6411));
         Exit;
@@ -254,6 +263,7 @@ begin
     if not (D3D=nil) then
       D3D:=nil;
 
+    UnloadD3D9_31;
     UnLoadDirect3D9;
     //Ignoring failure here
 

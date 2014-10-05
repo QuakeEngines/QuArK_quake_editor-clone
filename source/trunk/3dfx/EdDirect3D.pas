@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2009/09/24 18:45:19  danielpharos
+Added some DirectX settings.
+
 Revision 1.38  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -170,12 +173,13 @@ type
     Fog: Boolean;
     Transparency: Boolean;
     Lighting: Boolean;
+    VCorrection2: Single;
     Culling: Boolean;
     Dithering: Boolean;
     Direct3DLoaded: Boolean;
     DWMLoaded: Boolean;
     MapLimit: TVect;
-    MapLimitSmallest: Double;
+    MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
     pPresParm: D3DPRESENT_PARAMETERS;
     DXFogColor: D3DColor;
     LightingQuality: Integer;
@@ -239,7 +243,16 @@ uses Logging, Quarkx, QkExceptions, Setup, SysUtils, DWM, SystemDetails,
 
 type
  PVertex3D = ^TVertex3D;
- TVertex3D = PD3DLVertex;
+ TVertex3D = packed record
+      x: TD3DValue;
+      y: TD3DValue;
+      z: TD3DValue;
+      color: TD3DColor;
+      //tu: TD3DValue;
+      //tv: TD3DValue;
+ end;
+
+const FVFType: DWORD = D3DFVF_XYZ or D3DFVF_DIFFUSE; // or D3DFVF_TEX1
 
  {------------------------}
 
@@ -318,7 +331,7 @@ end;
 
 procedure TDirect3DSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 begin
-{  if HiRes then
+  if HiRes then
   begin
     PVertex3D(PV)^.x := PVect(Source)^.X;
     PVertex3D(PV)^.y := PVect(Source)^.Y;
@@ -331,10 +344,10 @@ begin
     PVertex3D(PV)^.z := vec3_p(Source)^[2];
   end;
 
-  PVertex3D(PV)^.tu := ns;
-  PVertex3D(PV)^.tv := nt;}
+  //PVertex3D(PV)^.tu := ns;
+  //PVertex3D(PV)^.tv := nt;
 
-
+  PVertex3D(PV)^.color := D3DCOLOR_XRGB(255, 255, 0); //@
   {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
 
 end;
@@ -468,6 +481,7 @@ begin
     Lighting:=False;
     Culling:=False;
   end;
+  VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   Dithering:=Setup.Specifics.Values['Dither']<>'';
 
   if (ScreenX = 0) or (ScreenY = 0) then
@@ -505,12 +519,17 @@ begin
 
   //These calls are for the SwapChain!!!
 
+  //FIXME: Check for errors everywhere...!
   DXFogColor:=D3DXColorToDWord(D3DXColor(nFogColor[0],nFogColor[1],nFogColor[2],nFogColor[3]));
-  D3DDevice.SetRenderState(D3DRS_ZENABLE, 1);  //D3DZB_TRUE := 1
+  //D3DDevice.SetRenderState(D3DRS_ZENABLE, Cardinal(D3DZB_TRUE));
+
+  D3DDevice.SetRenderState(D3DRS_ZENABLE, 0); //@@@
+
+
   if Fog then
   begin
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 1);  //True := 1
-    D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, 2);  //D3DFOG_EXP2 := 2
+    D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, Cardinal(D3DFOG_EXP2));
    {D3DDevice.SetRenderState(D3DRS_FOGSTART, FarDistance * kDistFarToShort);
     D3DDevice.SetRenderState(D3DRS_FOGEND, FarDistance);}
 //DanielPharos: Got to find a conversion...
@@ -535,14 +554,14 @@ begin
     D3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, 0); //FIXME!
 
   if Culling then
-    D3DDevice.SetRenderState(D3DRS_CULLMODE, 1) //FIXME!
+    D3DDevice.SetRenderState(D3DRS_CULLMODE, Cardinal(D3DCULL_CW))
   else
-    D3DDevice.SetRenderState(D3DRS_CULLMODE, 0); //FIXME!
+    D3DDevice.SetRenderState(D3DRS_CULLMODE, Cardinal(D3DCULL_NONE));
 
   if Dithering then
     D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 1) //FIXME!
   else
-    D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 0) //FIXME!
+    D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 0); //FIXME!
 
 {  // Create material
   FillChar(l_Material, SizeOf(l_Material), 0);
@@ -551,7 +570,6 @@ begin
   l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
   l_Material.dvPower     := 100.0;
   D3DDevice.SetMaterial(l_Material);   }
-
 end;
 
 function TDirect3DSceneObject.CheckDeviceState : Boolean;
@@ -625,6 +643,10 @@ begin
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
 
+  l_Res:=D3DDevice.SetFVF(FVFType);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetFVF', DXGetErrorString9(l_Res)]);
+
   Result:=True;
 end;
 
@@ -646,11 +668,17 @@ procedure TDirect3DSceneObject.Render3DView;
 var
   l_Res: HResult;
   pBackBuffer: IDirect3DSurface9;
-{  l_VCenter: D3DVector;
-  l_Projection: TD3DXMatrix;
+  DX, DY, DZ: Double;
+  VX, VY, VZ: TVect;
+  Scaling: TDouble;
+  LocX, LocY: D3DValue;
+  TransX, TransY, TransZ: D3DValue;
   l_CameraEye: TD3DXMatrix;
-  l_matRotation: TD3DXMatrix;
-  l_quaRotation: TD3DXQuaternion;}
+  l_Rotation: TD3DXMatrix;
+  l_RotationCorrection: TD3DXMatrix;
+  l_Eye, l_At, l_Up: TD3DXVector3;
+  l_AtTMP: TD3DXVector4;
+  m_World, m_View, m_Projection: TD3DXMatrix;
   PList: PSurfaces;
 begin
   if not Direct3DLoaded then
@@ -687,30 +715,142 @@ begin
     raise EErrorFmt(6403, ['Clear', DXGetErrorString9(l_Res)]);
 
     { set camera }
-  {with TCameraCoordinates(Coord) do
+  if Coord.FlatDisplay then
   begin
-    D3DXMatrixTranslation(l_CameraEye, Camera.X, Camera.Y, Camera.Z);
+    if DisplayType=dtXY then
+    begin
+      with TXYCoordinates(Coord) do
+      begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+      end;
+    end
+    else if DisplayType=dtXZ then
+    begin
+      with TXZCoordinates(Coord) do
+      begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+      end;
+    end
+    else {if (DisplayType=dtYZ) or (DisplayType=dt2D) then}
+    begin
+      with T2DCoordinates(Coord) do
+      begin
+        Scaling:=ScalingFactor(Nil);
+        LocX:=pDeltaX-ScrCenter.X;
+        LocY:=-(pDeltaY-ScrCenter.Y);
+        VX:=VectorX;
+        VY:=VectorY;
+        VZ:=VectorZ;
+      end;
+    end;
 
-    D3DXQuaternionRotationYawPitchRoll(l_quaRotation, HorzAngle * (180/pi), PitchAngle * (180/pi), 0);
-    l_VCenter := D3DXVector3(Camera.X, Camera.Y, Camera.Z);
-    D3DXMatrixAffineTransformation(l_matRotation,
-                                   1,
-                                   @l_VCenter,
-                                   @l_quaRotation,
-                                   nil);
+    DX:=(ScreenX/2)/(Scaling);
+    DY:=(ScreenY/2)/(Scaling);
+    //DZ:=(MapLimitSmallest*2)/(Scaling);
+    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
 
-    D3DXMatrixMultiply(l_CameraEye, l_CameraEye, l_matRotation);
+    TransX:=LocX/(Scaling);
+    TransY:=LocY/(Scaling);
+    TransZ:=-MapLimitSmallest;
+    l_Rotation._11:=VX.X*Scaling;
+    l_Rotation._12:=-VY.X*Scaling;
+    l_Rotation._13:=-VZ.X*Scaling;
+    l_Rotation._14:=0;
+    l_Rotation._21:=VX.Y*Scaling;
+    l_Rotation._22:=-VY.Y*Scaling;
+    l_Rotation._23:=-VZ.Y*Scaling;
+    l_Rotation._24:=0;
+    l_Rotation._31:=VX.Z*Scaling;
+    l_Rotation._32:=-VY.Z*Scaling;
+    l_Rotation._33:=-VZ.Z*Scaling;
+    l_Rotation._34:=0;
+    l_Rotation._41:=0;
+    l_Rotation._42:=0;
+    l_Rotation._43:=0;
+    l_Rotation._44:=1;
 
-    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_VIEW, TD3DMatrix(l_CameraEye));
-  end;}
-  //    D3DXMatrixPerspectiveFov(l_Projection, D3DXToRadian(60.0), ScreenY/ScreenX, 1.0, 1000.0);
-//    m_pD3DDevice.SetTransform(D3DTRANSFORMSTATE_PROJECTION, TD3DMatrix(l_Projection));
+    D3DXMatrixIdentity(m_World);
+
+    D3DXMatrixTranslation(l_CameraEye, TransX, TransY, TransZ);
+    D3DXMatrixMultiply(m_View, l_Rotation, l_CameraEye);
+
+    D3DXMatrixOrthoOffCenterRH(m_Projection, -DX, DX, -DY, DY, -DZ, DZ);
+  end
+  else
+  begin
+    with TCameraCoordinates(Coord) do
+    begin
+      D3DXMatrixIdentity(m_World);
+
+      D3DXMatrixRotationYawPitchRoll(l_Rotation, HorzAngle, -PitchAngle, 0);
+      l_RotationCorrection._22:=l_Rotation._11;
+      l_RotationCorrection._21:=l_Rotation._13;
+      l_RotationCorrection._23:=l_Rotation._12;
+      l_RotationCorrection._24:=l_Rotation._14;
+      l_RotationCorrection._12:=l_Rotation._31;
+      l_RotationCorrection._11:=l_Rotation._33;
+      l_RotationCorrection._13:=l_Rotation._32;
+      l_RotationCorrection._14:=l_Rotation._34;
+      l_RotationCorrection._32:=l_Rotation._21;
+      l_RotationCorrection._31:=l_Rotation._23;
+      l_RotationCorrection._33:=l_Rotation._22;
+      l_RotationCorrection._34:=l_Rotation._24;
+      l_RotationCorrection._42:=l_Rotation._41;
+      l_RotationCorrection._41:=l_Rotation._43;
+      l_RotationCorrection._43:=l_Rotation._42;
+      l_RotationCorrection._44:=l_Rotation._44;
+
+      l_Eye.X := Camera.X;
+      l_Eye.Y := Camera.Y;
+      l_Eye.Z := Camera.Z;
+      l_At.X := 1.0;
+      l_At.Y := 0.0;
+      l_At.Z := 0.0;
+      D3DXVec3Transform(l_AtTMP, l_At, l_RotationCorrection);
+      l_At.X := l_AtTMP.X + l_Eye.X;
+      l_At.Y := l_AtTMP.Y + l_Eye.Y;
+      l_At.Z := l_AtTMP.Z + l_Eye.Z;
+      l_Up.X := 0.0;
+      l_Up.Y := 0.0;
+      l_Up.Z := 1.0;
+      D3DXVec3Transform(l_AtTMP, l_Up, l_RotationCorrection);
+      l_Up.X := l_AtTMP.X;
+      l_Up.Y := l_AtTMP.Y;
+      l_Up.Z := l_AtTMP.Z;
+      D3DXMatrixLookAtRH(m_View, l_Eye, l_At, l_Up);
+
+      //FIXME: OpenGL needed a VCorrection here; Direct3D too?
+      D3DXMatrixPerspectiveFovRH(m_Projection, VCorrection2*D3DXToRadian(VAngleDegrees), ScreenX/ScreenY, FarDistance / 65535.0, FarDistance); //FIXME: Assuming a 16bit depth buffer here
+    end;
+  end;
 
   l_Res := D3DDevice.BeginScene;
   if (l_Res <> 0) then
     raise EErrorFmt(6403, ['BeginScene', DXGetErrorString9(l_Res)]);
 
   try
+    l_Res := D3DDevice.SetTransform(Direct3D9.D3DTS_WORLD, m_World);
+    if (l_Res <> 0) then
+      raise EErrorFmt(6403, ['SetTransform', DXGetErrorString9(l_Res)]);
+
+    l_Res := D3DDevice.SetTransform(Direct3D9.D3DTS_VIEW, m_View);
+    if (l_Res <> 0) then
+      raise EErrorFmt(6403, ['SetTransform', DXGetErrorString9(l_Res)]);
+
+    l_Res := D3DDevice.SetTransform(Direct3D9.D3DTS_PROJECTION, m_Projection);
+    if (l_Res <> 0) then
+      raise EErrorFmt(6403, ['SetTransform', DXGetErrorString9(l_Res)]);
+
 //    m_CurrentAlpha  :=0;
 //    m_CurrentColor:=0;
 
@@ -730,14 +870,13 @@ begin
       end;
       PList:=PList^.Next;
     end;
-
   finally
-    l_Res:=D3DDevice.EndScene;
+    l_Res:=D3DDevice.EndScene();
     if (l_Res <> 0) then
       raise EErrorFmt(6403, ['EndScene', DXGetErrorString9(l_Res)]);
   end;
 
-{  l_Res := m_pD3DX.UpdateFrame(0);
+  {l_Res := D3DX.UpdateFrame(0);
   if (l_Res <> 0) then
     raise EErrorFmt(6403, ['UpdateFrame', D3DXGetErrorMsg(l_Res)]);}
 
@@ -762,6 +901,13 @@ procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: B
 var
   Surf: PSurface3D;
   SurfEnd: PChar;
+  l_Res: HResult;
+  PV, PVBase, PV1, PV2, PV3: PVertex3D;
+  I: Integer;
+  NTriangles: Cardinal;
+  VertexBuffer: IDirect3DVertexBuffer9;
+  IndexBuffer: IDirect3DIndexBuffer9;
+  pBuffer: PVertex3D;
 begin
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
@@ -786,14 +932,113 @@ begin
           l_NeedTex:=False;
         end;
 *)
-        begin
+
+        PV:=PVertex3D(Surf);
+
+        if VertexCount>=0 then
+        begin  { normal polygon }
+          l_Res:=D3DDevice.CreateVertexBuffer(VertexCount*SizeOf(TVertex3D), D3DUSAGE_WRITEONLY, FVFType, D3DPOOL_DEFAULT, VertexBuffer, nil);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_CreateVertexBuffer', DXGetErrorString9(l_Res)]);
+          l_Res:=VertexBuffer.Lock(0, 0, Pointer(pBuffer), 0);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_Lock', DXGetErrorString9(l_Res)]);
+          try
+            //FIXME: Do this more efficiently; can we pre-generate the VertexBuffer?
+            CopyMemory(pBuffer, PV, VertexCount*SizeOf(TVertex3D));
+          finally
+            l_Res:=VertexBuffer.Unlock();
+            if (l_Res <> D3D_OK) then
+              raise EErrorFmt(6403, ['RenderPList_Unlock', DXGetErrorString9(l_Res)]);
+           end;
+
+          l_Res:=D3DDevice.SetStreamSource(0, VertexBuffer, 0, SizeOf(TVertex3D));
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_SetStreamSource', DXGetErrorString9(l_Res)]);
+
+          NTriangles:=VertexCount - 2;
+
+          l_Res:=D3DDevice.CreateIndexBuffer(NTriangles*3*SizeOf(Cardinal), D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, IndexBuffer, nil); //FIXME: D3DFMT_INDEX32, so SizeOf(Cardinal) == 4 !
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_CreateIndexBuffer', DXGetErrorString9(l_Res)]);
+
+          l_Res:=IndexBuffer.Lock(0, 0, Pointer(pBuffer), 0);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_Lock', DXGetErrorString9(l_Res)]);
+          try
+            //FIXME: This is probably wrong!
+            PVBase:=PV;
+            for I:=0 to NTriangles-1 do
+            begin
+              PV1:=PV;
+              Inc(PV);
+              PV2:=PV;
+              Inc(PV);
+              PV3:=PV;
+              //Inc(PV);
+
+              if Odd(I) then
+              begin
+                //Decrease PV1 to fix second triangle
+                Dec(PV1);
+              end;
+
+              PCardinal(pBuffer)^ := (Cardinal(PV1) - Cardinal(PVBase)) div SizeOf(TVertex3D);
+              Inc(PCardinal(pBuffer));
+              PCardinal(pBuffer)^ := (Cardinal(PV2) - Cardinal(PVBase)) div SizeOf(TVertex3D);
+              Inc(PCardinal(pBuffer));
+              PCardinal(pBuffer)^ := (Cardinal(PV3) - Cardinal(PVBase)) div SizeOf(TVertex3D);
+              Inc(PCardinal(pBuffer));
+              //Dec(PV);
+              Dec(PV);
+            end;
+          finally
+            l_Res:=IndexBuffer.Unlock();
+            if (l_Res <> D3D_OK) then
+              raise EErrorFmt(6403, ['RenderPList_Unlock', DXGetErrorString9(l_Res)]);
+          end;
+
+          l_Res:=D3DDevice.SetIndices(IndexBuffer);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_SetIndices', DXGetErrorString9(l_Res)]);
+
+          l_Res:=D3DDevice.DrawIndexedPrimitive(Direct3D9.D3DPT_TRIANGLELIST, 0, 0, VertexCount, 0, NTriangles);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_DrawIndexedPrimitive', DXGetErrorString9(l_Res)]);
+        end
+        else
+        begin { strip }
 (*
-          for I:=1 to Abs(VertexCount) do
+          for I:=1 to -VertexCount do
           begin
             l_TriangleStrip[i].color := m_CurrentColor;
           end;
 *)
-          {m_pD3DDevice.DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, PD3DLVERTEX(Surf)^, Abs(VertexCount), D3DDP_WAIT);}
+
+          l_Res:=D3DDevice.CreateVertexBuffer((-VertexCount)*SizeOf(TVertex3D), D3DUSAGE_WRITEONLY, FVFType, D3DPOOL_DEFAULT, VertexBuffer, nil);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_CreateVertexBuffer', DXGetErrorString9(l_Res)]);
+          l_Res:=VertexBuffer.Lock(0, 0, Pointer(pBuffer), 0);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_Lock', DXGetErrorString9(l_Res)]);
+          try
+            //FIXME: Do this more efficiently; can we pre-generate the VertexBuffer?
+            CopyMemory(pBuffer, PV, (-VertexCount)*SizeOf(TVertex3D));
+          finally
+            l_Res:=VertexBuffer.Unlock();
+            if (l_Res <> D3D_OK) then
+              raise EErrorFmt(6403, ['RenderPList_Unlock', DXGetErrorString9(l_Res)]);
+           end;
+
+          NTriangles:=(-VertexCount) - 2;
+
+          l_Res:=D3DDevice.SetStreamSource(0, VertexBuffer, 0, SizeOf(TVertex3D));
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_SetStreamSource', DXGetErrorString9(l_Res)]);
+
+          l_Res:=D3DDevice.DrawPrimitive(Direct3D9.D3DPT_TRIANGLESTRIP, 0, NTriangles);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['RenderPList_DrawPrimitive', DXGetErrorString9(l_Res)]);
         end;
       end;
 
@@ -806,9 +1051,52 @@ begin
 end;
 
 procedure TDirect3DSceneObject.BuildTexture(Texture: PTexture3);
+var
+ W, H: Integer;
+ l_Res: HResult;
+ X: IDirect3DTexture9;
+ TextureRect: D3DLOCKED_RECT;
+ TextureBuffer: PByte;
+ I: Integer;
 begin
-  //D3DDevice.CreateTexture(@);
+  //@if Texture^.OpenGLName=0 then
+  //FIXME: Okay, here's the plan. I don't want Direct3D COM object in the TSurface structure,
+  //so let's set-up an indexing scheme (0 = invalid),
+  //and have the TextureManager store a TList or something.
 
+  W:=Texture^.LoadedTexW;
+  H:=Texture^.LoadedTexH;
+
+  //FIXME: Format hardcoded right now...
+  //FIXME: MUST check the CAPS2 for dynamic texture!!!
+  //FIXME: Set the autogen for mipmaps...?
+  l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, X, nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
+
+  l_Res:=X.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
+  try
+    TextureBuffer:=TextureRect.pBits;
+    //@ Fill with some crap data:
+    for I:=0 to W-1 do
+    begin
+      PCardinal(TextureBuffer)^ := $7FFFFFFF;
+      Inc(PCardinal(TextureBuffer));
+    end;
+    //@
+  finally
+    l_Res:=X.UnlockRect(0);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
+  end;
+
+  //@
+  l_Res:=D3DDevice.SetTexture(0, X);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetTexture', DXGetErrorString9(l_Res)]);
+  //@
 end;
 
  {------------------------}

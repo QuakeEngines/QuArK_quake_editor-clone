@@ -74,6 +74,9 @@ uses
   Windows, ActiveX,
   SysUtils, Direct3D9, DXTypes;
 
+function LoadD3D9_31: Boolean;
+function UnloadD3D9_31: Boolean;
+
 const
   //////////// DLL export definitions ///////////////////////////////////////
   d3dx9MicrosoftDLL = 'd3dx9_31.dll';
