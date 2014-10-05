@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2014/10/05 16:26:26  danielpharos
+Texture rendering and face culling now working.
+
 Revision 1.40  2014/10/05 15:25:14  danielpharos
 Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
 
@@ -242,7 +245,7 @@ var
 implementation
 
 uses Logging, Quarkx, QkExceptions, Setup, SysUtils, DWM, SystemDetails,
-     QkObjects, QkMapPoly, DXTypes, D3DX9, Direct3D, DXErr9;
+     QkObjects, QkMapPoly, QkPixelSet, DXTypes, D3DX9, Direct3D, DXErr9;
 
 type
  PVertex3D = ^TVertex3D;
@@ -350,7 +353,7 @@ begin
   PVertex3D(PV)^.tu := ns;
   PVertex3D(PV)^.tv := nt;
 
-  PVertex3D(PV)^.color := D3DCOLOR_XRGB(255, 255, 0); //@
+  PVertex3D(PV)^.color := D3DCOLOR_XRGB(255, 255, 255); //@
   {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
 
 end;
@@ -1052,12 +1055,15 @@ end;
 
 procedure TDirect3DSceneObject.BuildTexture(Texture: PTexture3);
 var
- W, H: Integer;
+ TexData: PChar;
+ MemSize, W, H, J, I: Integer;
+ Alphasource, Source, Dest: PChar;
  l_Res: HResult;
+ PSD, PSD2: TPixelSetDescription;
  X: IDirect3DTexture9;
  TextureRect: D3DLOCKED_RECT;
- TextureBuffer: PByte;
- I: Integer;
+
+ Source2: PChar;
 begin
   //@if Texture^.OpenGLName=0 then
   //FIXME: Okay, here's the plan. I don't want Direct3D COM object in the TSurface structure,
@@ -1067,29 +1073,69 @@ begin
   W:=Texture^.LoadedTexW;
   H:=Texture^.LoadedTexH;
 
-  //FIXME: Format hardcoded right now...
-  //FIXME: MUST check the CAPS2 for dynamic texture!!!
-  //FIXME: Set the autogen for mipmaps...?
-  l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, X, nil);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
-
-  l_Res:=X.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
+  MemSize:=W*H*4;
+  GetMem(TexData, MemSize);
   try
-    TextureBuffer:=TextureRect.pBits;
-    //@ Fill with some crap data:
-    for I:=0 to W-1 do
-    begin
-      PCardinal(TextureBuffer)^ := $7FFFFFFF;
-      Inc(PCardinal(TextureBuffer));
+    PSD:=GetTex3Description(Texture^);
+    PSD2.Init;
+    try
+      PSD2.Size.X:=W;
+      PSD2.Size.Y:=H;
+      PSD2.Format:=psf24bpp; //FIXME: Forced for now
+      PSDConvert(PSD2, PSD, ccTemporary);
+
+      Source:=PSD2.StartPointer;
+      Dest:=TexData;
+
+      //FIXME: Format hardcoded right now...
+      //FIXME: MUST check the CAPS2 for dynamic texture!!!
+      //FIXME: Set the autogen for mipmaps...?
+
+      //FIXME: Change to ASM, see OpenGL!
+      for J:=1 to H do
+      begin
+        Source2:=Source;
+        for I:=1 to W do
+        begin
+          Dest^:=Source2^;
+          Inc(Dest);
+          Inc(Source2);
+
+          Dest^:=Source2^;
+          Inc(Dest);
+          Inc(Source2);
+
+          Dest^:=Source2^;
+          Inc(Dest);
+          Inc(Source2);
+
+          //Alpha
+          PByte(Dest)^:=255;
+          Inc(Dest);
+        end;
+        Inc(Source, PSD2.ScanLine);
+      end;
+    finally
+      PSD2.Done;
+      PSD.Done;
     end;
-    //@
-  finally
-    l_Res:=X.UnlockRect(0);
+
+    l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, X, nil);
     if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
+      raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
+
+    l_Res:=X.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
+    try
+      CopyMemory(TextureRect.pBits, TexData, MemSize);
+    finally
+      l_Res:=X.UnlockRect(0);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
+    end;
+  finally
+    FreeMem(TexData);
   end;
 
   //@
