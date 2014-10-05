@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2014/10/05 15:25:14  danielpharos
+Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
+
 Revision 1.39  2009/09/24 18:45:19  danielpharos
 Added some DirectX settings.
 
@@ -248,11 +251,11 @@ type
       y: TD3DValue;
       z: TD3DValue;
       color: TD3DColor;
-      //tu: TD3DValue;
-      //tv: TD3DValue;
+      tu: TD3DValue;
+      tv: TD3DValue;
  end;
 
-const FVFType: DWORD = D3DFVF_XYZ or D3DFVF_DIFFUSE; // or D3DFVF_TEX1
+const FVFType: DWORD = D3DFVF_XYZ or D3DFVF_DIFFUSE or D3DFVF_TEX1;
 
  {------------------------}
 
@@ -344,8 +347,8 @@ begin
     PVertex3D(PV)^.z := vec3_p(Source)^[2];
   end;
 
-  //PVertex3D(PV)^.tu := ns;
-  //PVertex3D(PV)^.tv := nt;
+  PVertex3D(PV)^.tu := ns;
+  PVertex3D(PV)^.tv := nt;
 
   PVertex3D(PV)^.color := D3DCOLOR_XRGB(255, 255, 0); //@
   {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
@@ -521,10 +524,7 @@ begin
 
   //FIXME: Check for errors everywhere...!
   DXFogColor:=D3DXColorToDWord(D3DXColor(nFogColor[0],nFogColor[1],nFogColor[2],nFogColor[3]));
-  //D3DDevice.SetRenderState(D3DRS_ZENABLE, Cardinal(D3DZB_TRUE));
-
-  D3DDevice.SetRenderState(D3DRS_ZENABLE, 0); //@@@
-
+  D3DDevice.SetRenderState(D3DRS_ZENABLE, Cardinal(D3DZB_TRUE));
 
   if Fog then
   begin
@@ -554,7 +554,7 @@ begin
     D3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, 0); //FIXME!
 
   if Culling then
-    D3DDevice.SetRenderState(D3DRS_CULLMODE, Cardinal(D3DCULL_CW))
+    D3DDevice.SetRenderState(D3DRS_CULLMODE, Cardinal(D3DCULL_CCW))
   else
     D3DDevice.SetRenderState(D3DRS_CULLMODE, Cardinal(D3DCULL_NONE));
 
