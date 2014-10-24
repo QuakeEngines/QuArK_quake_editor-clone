@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2014/10/05 19:13:46  danielpharos
+Implemented experimental code convert textures.
+
 Revision 1.41  2014/10/05 16:26:26  danielpharos
 Texture rendering and face culling now working.
 
@@ -234,7 +237,6 @@ type  { this is the data shared by all existing TDirect3DSceneObjects }
   TDirect3DState = class
   public
     procedure ReleaseAllResources;
-    procedure ClearTexture(Tex: PTexture3);
   end;
 
 var
@@ -906,12 +908,31 @@ var
   SurfEnd: PChar;
   l_Res: HResult;
   PV, PVBase, PV1, PV2, PV3: PVertex3D;
+  NeedTex, NeedColor: Boolean;
   I: Integer;
   NTriangles: Cardinal;
   VertexBuffer: IDirect3DVertexBuffer9;
   IndexBuffer: IDirect3DIndexBuffer9;
   pBuffer: PVertex3D;
 begin
+  case RenderMode of
+  rmWireframe:
+    begin
+      NeedColor:=False;
+      NeedTex:=False;
+    end;
+  rmSolidcolor:
+    begin
+      NeedColor:=True;
+      NeedTex:=False;
+    end;
+  else //rmTextured:
+    begin
+      NeedColor:=False;
+      NeedTex:=True;
+    end;
+  end;
+
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
@@ -928,13 +949,13 @@ begin
           m_CurrentAlpha := AlphaColor;
           m_CurrentColor := m_CurrentAlpha;
         end;
-(*
-        if l_NeedTex then
+
+        if NeedTex then
         begin
-          LoadCurrentTexture(PList^.Texture);
-          l_NeedTex:=False;
+          l_Res:=D3DDevice.SetTexture(0, PList^.Texture^.Direct3DTexture);
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['SetTexture', DXGetErrorString9(l_Res)]);
         end;
-*)
 
         PV:=PVertex3D(Surf);
 
@@ -1060,7 +1081,6 @@ var
  Alphasource, Source, Dest: PChar;
  l_Res: HResult;
  PSD, PSD2: TPixelSetDescription;
- X: IDirect3DTexture9;
  TextureRect: D3DLOCKED_RECT;
 
  Source2: PChar;
@@ -1120,29 +1140,23 @@ begin
       PSD.Done;
     end;
 
-    l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, X, nil);
+    l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil);
     if (l_Res <> D3D_OK) then
       raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
 
-    l_Res:=X.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
+    l_Res:=Texture^.Direct3DTexture.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
     if (l_Res <> D3D_OK) then
       raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
     try
       CopyMemory(TextureRect.pBits, TexData, MemSize);
     finally
-      l_Res:=X.UnlockRect(0);
+      l_Res:=Texture^.Direct3DTexture.UnlockRect(0);
       if (l_Res <> D3D_OK) then
         raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
     end;
   finally
     FreeMem(TexData);
   end;
-
-  //@
-  l_Res:=D3DDevice.SetTexture(0, X);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetTexture', DXGetErrorString9(l_Res)]);
-  //@
 end;
 
  {------------------------}
@@ -1164,16 +1178,9 @@ begin
   //FIXME: Also, need to release all OTHER resources (like textures etc.)
 end;
 
-procedure TDirect3DState.ClearTexture(Tex: PTexture3);
-begin
-  //DanielPharos: How can you be sure Direct3D has been loaded?
-
-end;
-
  {------------------------}
 
 initialization
-  //FIXME: Is this really needed...?
   qrkDXState:=TDirect3DState.Create;
 finalization
   qrkDXState.Free;

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2014/04/28 00:09:05  danielpharos
+Fix possible leaking when texture problem occurs.
+
 Revision 1.54  2014/03/06 15:33:39  danielpharos
 Stop a failed initialization of a viewport causing access violations.
 
@@ -223,7 +226,7 @@ interface
 uses Windows, Classes,
      Game, PyMath, qmath, Bezier,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
-     Glide, GL1, Sprite;
+     Glide, GL1, Direct3D9, Sprite;
 
  {------------------------}
 
@@ -289,6 +292,7 @@ type
               MeanColor: TColorRef;
               startAddress, endAddress: FxU32;
               OpenGLName: GLuint;
+              Direct3DTexture: IDirect3DTexture9;
               {Scaled: Boolean;}
               Used: Boolean;
               DefaultAlpha: Byte;
