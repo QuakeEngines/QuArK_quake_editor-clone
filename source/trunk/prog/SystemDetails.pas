@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2014/08/26 12:16:19  danielpharos
+Fixed a leak on an error code path, and changed unknown modern OSes to use Windows 7 code paths, not merely Vista's.
+
 Revision 1.49  2010/04/16 20:16:15  danielpharos
 Added more OS version info to log.
 
@@ -905,7 +908,6 @@ begin
   inherited;
 end;
 
-
 procedure TOperatingSystem.GetEnvironment;
 var
   c,i :dword;
@@ -1472,7 +1474,7 @@ begin
   end;
 end;
 
-function GetClassDevices(AStartKey,AClassName,AValueName :string; var AResult :TStrings) :string;
+function GetClassDevices(const AStartKey,AClassName,AValueName :string; var AResult :TStrings) :string; //@CONST!
 var
   i,j :integer;
   sl :TStringList;
@@ -1483,51 +1485,54 @@ const
 begin
   Result:='';
   AResult.Clear;
-  with TRegistry.Create do
+  with TRegistry.Create(KEY_READ) do
   begin
     RootKey:=HKEY_LOCAL_MACHINE;
     if OpenKey(AStartKey,false) then
     begin
       sl:=TStringList.Create;
-      GetKeyNames(sl);
-      CloseKey;
-      for i:=0 to sl.Count-1 do
-      begin
-        if OpenKey(AStartKey+'\'+sl[i],false) then
+      try
+        GetKeyNames(sl);
+        CloseKey;
+        for i:=0 to sl.Count-1 do
         begin
-          if ValueExists(rvClass) then
+          if OpenKey(AStartKey+'\'+sl[i],false) then
           begin
-            rclass:=UpperCase(ReadString(rvClass));
-            if rclass=UpperCase(AClassName) then
+            if ValueExists(rvClass) then
             begin
-              if WindowsPlatformCompatibility=osWin95Comp then
+              rclass:=UpperCase(ReadString(rvClass));
+              if rclass=UpperCase(AClassName) then
               begin
-                s:=UpperCase(ReadString(rvLink));
-                CloseKey;
-                if not OpenKey(AStartKey+'\'+s,False) then
-                  Exit;
-              end
-              else
-                s:=sl[i];
-              Result:=AStartKey+'\'+s;
-              GetKeyNames(sl);
-              CloseKey;
-              for j:=0 to sl.count-1 do
-              begin
-                if OpenKey(AStartKey+'\'+s+'\'+sl[j],false) then
+                if WindowsPlatformCompatibility=osWin95Comp then
                 begin
-                  if ValueExists(AValueName) then
-                    AResult.Add(ReadString(AValueName));
+                  s:=UpperCase(ReadString(rvLink));
                   CloseKey;
+                  if not OpenKey(AStartKey+'\'+s,False) then
+                    Exit;
+                end
+                else
+                  s:=sl[i];
+                Result:=AStartKey+'\'+s;
+                GetKeyNames(sl);
+                CloseKey;
+                for j:=0 to sl.count-1 do
+                begin
+                  if OpenKey(AStartKey+'\'+s+'\'+sl[j],false) then
+                  begin
+                    if ValueExists(AValueName) then
+                      AResult.Add(ReadString(AValueName));
+                    CloseKey;
+                  end;
                 end;
+                Break;
               end;
-              Break;
             end;
+            CloseKey;
           end;
-          CloseKey;
         end;
+      finally
+        sl.free;
       end;
-      sl.free;
     end;
     free;
   end;
@@ -2260,6 +2265,7 @@ var
   s: TStringlist;
   i: integer;
 begin
+  Log(LOG_VERBOSE, 'Now logging system details...');
   s:=TStringList.Create;
   try
     s.add('CPU:');
@@ -2299,6 +2305,15 @@ begin
 end;
 
 initialization
-  LogSystemDetails;
+begin
+  //We should never allow an exception here, because then we'll exit with a vague runtime error!
+  //try
+    LogSystemDetails;
+  //except
+    //on E : Exception do
+      //Log(LOG_WARNING, 'Failed to get system information: '+E.Message); //Note: Do *NOT* put this through LoadStr; not loaded yet!
+  //end;
+end;
+
 end.
 
