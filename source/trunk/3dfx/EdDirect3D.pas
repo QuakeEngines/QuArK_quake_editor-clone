@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2014/10/24 20:40:57  danielpharos
+Changed to store Direct3D textures in the right place.
+
 Revision 1.42  2014/10/05 19:13:46  danielpharos
 Implemented experimental code convert textures.
 
@@ -1085,77 +1088,75 @@ var
 
  Source2: PChar;
 begin
-  //@if Texture^.OpenGLName=0 then
-  //FIXME: Okay, here's the plan. I don't want Direct3D COM object in the TSurface structure,
-  //so let's set-up an indexing scheme (0 = invalid),
-  //and have the TextureManager store a TList or something.
+  if Texture^.Direct3DTexture=nil then
+  begin
+    W:=Texture^.LoadedTexW;
+    H:=Texture^.LoadedTexH;
 
-  W:=Texture^.LoadedTexW;
-  H:=Texture^.LoadedTexH;
-
-  MemSize:=W*H*4;
-  GetMem(TexData, MemSize);
-  try
-    PSD:=GetTex3Description(Texture^);
-    PSD2.Init;
+    MemSize:=W*H*4;
+    GetMem(TexData, MemSize);
     try
-      PSD2.Size.X:=W;
-      PSD2.Size.Y:=H;
-      PSD2.Format:=psf24bpp; //FIXME: Forced for now
-      PSDConvert(PSD2, PSD, ccTemporary);
+      PSD:=GetTex3Description(Texture^);
+      PSD2.Init;
+      try
+        PSD2.Size.X:=W;
+        PSD2.Size.Y:=H;
+        PSD2.Format:=psf24bpp; //FIXME: Forced for now
+        PSDConvert(PSD2, PSD, ccTemporary);
 
-      Source:=PSD2.StartPointer;
-      Dest:=TexData;
+        Source:=PSD2.StartPointer;
+        Dest:=TexData;
 
-      //FIXME: Format hardcoded right now...
-      //FIXME: MUST check the CAPS2 for dynamic texture!!!
-      //FIXME: Set the autogen for mipmaps...?
+        //FIXME: Format hardcoded right now...
+        //FIXME: MUST check the CAPS2 for dynamic texture!!!
+        //FIXME: Set the autogen for mipmaps...?
 
-      //FIXME: Change to ASM, see OpenGL!
-      for J:=1 to H do
-      begin
-        Source2:=Source;
-        for I:=1 to W do
+        //FIXME: Change to ASM, see OpenGL!
+        for J:=1 to H do
         begin
-          Dest^:=Source2^;
-          Inc(Dest);
-          Inc(Source2);
+          Source2:=Source;
+          for I:=1 to W do
+          begin
+            Dest^:=Source2^;
+            Inc(Dest);
+            Inc(Source2);
 
-          Dest^:=Source2^;
-          Inc(Dest);
-          Inc(Source2);
+            Dest^:=Source2^;
+            Inc(Dest);
+            Inc(Source2);
 
-          Dest^:=Source2^;
-          Inc(Dest);
-          Inc(Source2);
+            Dest^:=Source2^;
+            Inc(Dest);
+            Inc(Source2);
 
-          //Alpha
-          PByte(Dest)^:=255;
-          Inc(Dest);
+            //Alpha
+            PByte(Dest)^:=255;
+            Inc(Dest);
+          end;
+          Inc(Source, PSD2.ScanLine);
         end;
-        Inc(Source, PSD2.ScanLine);
+      finally
+        PSD2.Done;
+        PSD.Done;
+      end;
+
+      l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
+
+      l_Res:=Texture^.Direct3DTexture.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
+      try
+        CopyMemory(TextureRect.pBits, TexData, MemSize);
+      finally
+        l_Res:=Texture^.Direct3DTexture.UnlockRect(0);
+        if (l_Res <> D3D_OK) then
+          raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
       end;
     finally
-      PSD2.Done;
-      PSD.Done;
+      FreeMem(TexData);
     end;
-
-    l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
-
-    l_Res:=Texture^.Direct3DTexture.LockRect(0, TextureRect, nil, D3DLOCK_DISCARD);
-    if (l_Res <> D3D_OK) then
-      raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
-    try
-      CopyMemory(TextureRect.pBits, TexData, MemSize);
-    finally
-      l_Res:=Texture^.Direct3DTexture.UnlockRect(0);
-      if (l_Res <> D3D_OK) then
-        raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
-    end;
-  finally
-    FreeMem(TexData);
   end;
 end;
 
@@ -1166,6 +1167,7 @@ var
  TextureManager: TTextureManager;
  I: Integer;
  Scene: TObject;
+ Tex: PTexture3;
 begin
  TextureManager:=TTextureManager.GetInstance;
  for I:=0 to TextureManager.Scenes.Count-1 do
@@ -1175,7 +1177,13 @@ begin
      TDirect3DSceneObject(Scene).ReleaseResources;
   end;
 
-  //FIXME: Also, need to release all OTHER resources (like textures etc.)
+  for I:=0 to TextureManager.Textures.Count-1 do
+  begin
+    Tex:=PTexture3(TextureManager.Textures.Objects[I]);
+    if Tex<>Nil then
+      if Tex^.Direct3DTexture<>nil then
+        Tex^.Direct3DTexture:=nil;
+  end;
 end;
 
  {------------------------}
