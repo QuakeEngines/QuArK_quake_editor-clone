@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2011/10/02 14:07:39  danielpharos
+Switched back to Python 2.4.4 for Windows 95/NT4 compatibility.
+
 Revision 1.53  2011/09/05 09:10:10  danielpharos
 Updated to Python 2.6.6.
 
@@ -859,6 +862,7 @@ begin
   begin
     PythonDll:='python.dll';
 
+    Log(LOG_VERBOSE, 'Now loading Python DLL...');
     PythonLib:=LoadLibrary(PChar(ConcatPaths([GetQPath(pQuArKDll), PythonDll])));
     if PythonLib=0 then
     begin

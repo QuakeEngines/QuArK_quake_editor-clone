@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2014/08/09 10:21:58  danielpharos
+Added a missing space.
+
 Revision 1.92  2011/12/04 11:22:32  danielpharos
 Added a verbose log message to help debugging startup problems.
 
@@ -695,6 +698,8 @@ var
  Disclaimer: THandle;
  MutexError: DWORD;
 begin
+ Log(LOG_VERBOSE, 'Loading main form...');
+
  // This next line is done so that the G_ standard carries through for all of
  // the global variables.
  g_Form1 := Self;
