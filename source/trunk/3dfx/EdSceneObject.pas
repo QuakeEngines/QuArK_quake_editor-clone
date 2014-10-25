@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2014/10/24 20:40:57  danielpharos
+Changed to store Direct3D textures in the right place.
+
 Revision 1.55  2014/04/28 00:09:05  danielpharos
 Fix possible leaking when texture problem occurs.
 
@@ -1656,10 +1659,12 @@ end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
- //DanielPharos: How can you be sure OpenGL has been loaded?
+ //The state object has to make sure OpenGL has actually been loaded
  if Tex^.OpenGLName<>0 then
    if qrkGLState<>nil then
      qrkGLState.ClearTexture(Tex);
+ if Tex^.Direct3DTexture<>nil then
+   Tex^.Direct3DTexture:=nil;
  FreeMem(Tex^.info.data);
  Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);
