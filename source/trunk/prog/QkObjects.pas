@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.128  2012/09/05 18:06:10  danielpharos
+Move implementation of FloatSpec internally to QkObjects.
+
 Revision 1.127  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -985,10 +988,10 @@ begin
     Result:=QObject(List^[I]);
     // SilverPaladin - 12/01/03 - Added an assigned check to bullet proof against
     // access violations.
-    if not(Assigned(Result))
-    then Break; // Quite the loop go on to Result := Nil;
-    if CompareText(Result.GetFullName, nName) = 0
-    then Exit; // Exit out at current selection, it is the one we want.
+    if not(Assigned(Result)) then
+      Break; // Quit the loop go on to Result := Nil;
+    if CompareText(Result.GetFullName, nName) = 0 then
+      Exit; // Exit out at current selection, it is the one we want.
   end;
   Result:=Nil;
 end;
