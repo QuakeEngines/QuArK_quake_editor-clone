@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed long-standing bug with character output (backslashes) in the console. Note:
+          - this changes the font used.
+
 * [DanielPharos]: Fixed the VIDEO enumeration for system details info.
 
 * [DanielPharos]: Fixed the Reset-button in the Configuration to do what people expected it to do.

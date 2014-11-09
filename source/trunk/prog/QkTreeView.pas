@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2014/08/26 11:12:37  danielpharos
+Fixed some GDI object leaks on error code paths.
+
 Revision 1.26  2009/11/22 21:44:33  danielpharos
 Added an ExpandAll feature to the treeview, callable from Python.
 
@@ -434,7 +437,7 @@ end;
 
 function TMyTreeView.GetFontHandle(BoldFace: Integer) : HFont;
 begin
- Result:=CreateFont(8,0,0,0,BoldFace,0,0,0,0,0,0,0,0, 'MS Sans Serif');
+ Result:=CreateFont(8, 0, 0, 0, BoldFace, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH or FF_DONTCARE, 'MS Sans Serif');
 end;
 
 procedure TMyTreeView.WMPaint(var Message: TMessage);

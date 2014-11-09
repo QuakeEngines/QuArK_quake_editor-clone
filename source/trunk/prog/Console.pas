@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2010/04/02 16:47:30  danielpharos
+Changed an exception.create to an InternalE.
+
 Revision 1.22  2010/02/23 18:44:22  danielpharos
 Added LOG_SUBDIRECTORY; not set right now.
 
@@ -521,7 +524,7 @@ begin
  if not ConsoleReady then Exit;
  if ConsoleFont=0 then
   begin
-   ConsoleFont:=CreateFont(15, 0, 0, 0, 0, 0, 0, 0, OEM_CHARSET, 0, 0, 0, FIXED_PITCH, Nil);
+   ConsoleFont:=CreateFont(15, 0, 0, 0, FW_DONTCARE, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH or FF_DONTCARE, Nil);
    Str:=StringOfChar('M', ConsoleWidth);
    Font:=SelectObject(DC, ConsoleFont); try
    if GetTextExtentPoint32(DC, PChar(Str), ConsoleWidth, Size) then

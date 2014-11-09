@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2010/05/28 18:58:52  danielpharos
+Fixed grammar mistake.
+
 Revision 1.40  2010/04/16 22:06:01  danielpharos
 Corrected Debug wording.
 
@@ -179,7 +182,7 @@ begin
     I := FW_BOLD
   else
     I := 0;
-  Font := CreateFont(Info^.TextSize, 0, 0, 0, I, 0, 0, 0, 0, 0, 0, 0, FF_SWISS, nil);
+  Font := CreateFont(Info^.TextSize, 0, 0, 0, I, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH or FF_SWISS, nil);
   DC := GetDC(Info^.H);
   try
     Font1 := SelectObject(DC, Font);
