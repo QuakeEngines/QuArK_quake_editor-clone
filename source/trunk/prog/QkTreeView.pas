@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2014/11/09 08:52:10  danielpharos
+Fixed long-standing bug with character output (backslashes) in the console.
+
 Revision 1.27  2014/08/26 11:12:37  danielpharos
 Fixed some GDI object leaks on error code paths.
 
@@ -175,6 +178,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure UpdateView;
     procedure CancelMouseClicking(PerformSelChanged: Boolean);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -269,6 +274,8 @@ var
 constructor TMyTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  OnMouseWheelDown:=MouseWheelDown;
+  OnMouseWheelUp:=MouseWheelUp;
   FRoots:=TQList.Create;
   FFocusList:=TList.Create;
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
@@ -1651,6 +1658,18 @@ begin
       Invalidate;
      end;
  end;
+end;
+
+procedure TMyTreeView.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  VertScrollBar.Position := VertScrollBar.Position + MyTVLineStep;
+  Handled := true;
+end;
+
+procedure TMyTreeView.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  VertScrollBar.Position := VertScrollBar.Position - MyTVLineStep;
+  Handled := true;
 end;
 
 procedure TMyTreeView.Expanding(Q: QObject);

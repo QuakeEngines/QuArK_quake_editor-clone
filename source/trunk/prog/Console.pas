@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2014/11/09 08:52:10  danielpharos
+Fixed long-standing bug with character output (backslashes) in the console.
+
 Revision 1.23  2010/04/02 16:47:30  danielpharos
 Changed an exception.create to an InternalE.
 
@@ -105,6 +108,7 @@ type
     ToolbarButton971: TToolbarButton97;
     EnterComboBox1: TEnterComboBox;
     Timer1: TTimer;
+    constructor Create(AOwner: TComponent); override;
     procedure DisplayPaint(Sender: TObject; DC: HDC; const rcPaint: TRect);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -121,6 +125,8 @@ type
     procedure DisplayMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure Timer1Timer(Sender: TObject);
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     destructor Destroy; override;
   private
     ConsoleFont: HFont;
@@ -500,6 +506,13 @@ const
  LeftMargin = 2;
  HMargin    = LeftMargin * 2;
 
+constructor TConsoleForm.Create(AOwner: TComponent);
+begin
+ inherited;
+  OnMouseWheelDown:=MouseWheelDown;
+  OnMouseWheelUp:=MouseWheelUp;
+end;
+
 destructor TConsoleForm.Destroy;
 begin
   if ConsoleFont<>0 then
@@ -816,6 +829,18 @@ begin
  else
   Display.VertScrollBar.Position:=Display.VertScrollBar.Position+Step;
  DisplayMouseMove(Nil, [], 0, Y);
+end;
+
+procedure TConsoleForm.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  Display.VertScrollBar.Position := Display.VertScrollBar.Position + 32;
+  Handled := true;
+end;
+
+procedure TConsoleForm.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  Display.VertScrollBar.Position := Display.VertScrollBar.Position - 32;
+  Handled := true;
 end;
 
 initialization
