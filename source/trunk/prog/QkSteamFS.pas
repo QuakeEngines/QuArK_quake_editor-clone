@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2012/07/01 12:40:42  danielpharos
+Added new Source MP engine.
+
 Revision 1.42  2011/07/31 16:40:04  danielpharos
 Improved error message if QuArK's QSAS is missing.
 
@@ -157,6 +160,7 @@ uses Windows, Classes;
 
 function RunSteam: Boolean;
 function RunSteamExtractor(const Filename : String) : Boolean;
+function GetSteamCacheDir : String;
 
  {------------------------}
 
@@ -196,48 +200,56 @@ var
   FilesToCharLength: Integer;
   I: Integer;
 begin
-  if (FilesFrom<>nil) and (FilesFrom.Count > 0) then
-  begin
-    FilesFromCharLength := 1;
-    for I:=0 to FilesFrom.Count-1 do
-      FilesFromCharLength := FilesFromCharLength + Length(FilesFrom[I]) + 1;
-    GetMem(PFilesFrom, FilesFromCharLength+1);
-    ZeroMemory(PFilesFrom, FilesFromCharLength+1);
-    ParseFiles(FilesFrom, PFilesFrom);
-  end
-  else
-    PFilesFrom := nil;
-  if (FilesTo<>nil) and (FilesTo.Count > 0) then
-  begin
-    FilesToCharLength := 1;
-    for I:=0 to FilesTo.Count-1 do
-      FilesToCharLength := FilesToCharLength + Length(FilesTo[I]) + 1;
-    GetMem(PFilesTo, FilesToCharLength+1);
-    ZeroMemory(PFilesTo, FilesToCharLength+1);
-    ParseFiles(FilesTo, PFilesTo);
-  end
-  else
-    PFilesTo := nil;
-  FillChar(FileOp, SizeOf(FileOp), 0);
-  FileOp.wFunc := Operation;
-  FileOp.pFrom := PFilesFrom;
-  FileOp.pTo := PFilesTo;
-  FileOp.fFlags := FileOpFlags;
-  if SHFileOperation(FileOp) <> 0 then
-  begin
-    if FileOp.fAnyOperationsAborted = false then
-      Log(LOG_WARNING, 'Warning: User aborted file operation!');
-    Result:=false;
-  end
-  else
-  begin
-    Log(LOG_WARNING, 'Warning: File operation failed!');
-    Result:=false;
+  try
+    if (FilesFrom<>nil) and (FilesFrom.Count > 0) then
+    begin
+      FilesFromCharLength := 1;
+      for I:=0 to FilesFrom.Count-1 do
+        FilesFromCharLength := FilesFromCharLength + Length(FilesFrom[I]) + 1;
+      GetMem(PFilesFrom, FilesFromCharLength+1);
+      ZeroMemory(PFilesFrom, FilesFromCharLength+1);
+      ParseFiles(FilesFrom, PFilesFrom);
+    end
+    else
+      PFilesFrom := nil;
+    if (FilesTo<>nil) and (FilesTo.Count > 0) then
+    begin
+      FilesToCharLength := 1;
+      for I:=0 to FilesTo.Count-1 do
+        FilesToCharLength := FilesToCharLength + Length(FilesTo[I]) + 1;
+      GetMem(PFilesTo, FilesToCharLength+1);
+      ZeroMemory(PFilesTo, FilesToCharLength+1);
+      ParseFiles(FilesTo, PFilesTo);
+    end
+    else
+       PFilesTo := nil;
+    FillChar(FileOp, SizeOf(FileOp), 0);
+    FileOp.wFunc := Operation;
+    FileOp.pFrom := PFilesFrom;
+    FileOp.pTo := PFilesTo;
+    FileOp.fFlags := FileOpFlags;
+    if SHFileOperation(FileOp) <> 0 then
+    begin
+      if FileOp.fAnyOperationsAborted = false then
+        Log(LOG_WARNING, 'Warning: User aborted file operation!');
+      Result:=false;
+    end
+    else
+    begin
+      Log(LOG_WARNING, 'Warning: File operation failed!');
+      Result:=false;
+    end;
+  finally
+    if PFilesTo <> nil then
+      FreeMem(PFilesTo);
+    if PFilesFrom <> nil then
+      FreeMem(PFilesFrom);
   end;
-  if PFilesTo <> nil then
-    FreeMem(PFilesTo);
-  if PFilesFrom <> nil then
-    FreeMem(PFilesFrom);
+end;
+
+function GetSteamCacheDir : String;
+begin
+  Result := ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), 'QSAS']);
 end;
 
 function RunSteam: Boolean;
@@ -326,6 +338,7 @@ begin
   end;
 
   SteamDirectory:=Setup.Specifics.Values['Directory'];
+  SteamGameDir:=GetSteamBaseDir;
   SteamUser:=Setup.Specifics.Values['SteamUser'];
   QSASAdditionalParameters:=Setup.Specifics.Values['ExtractorParameters'];
   GameDirectory:=SetupGameSet.Specifics.Values['Directory'];
@@ -370,7 +383,10 @@ begin
   end;
 
   if QuArKSASEXE='' then
+  begin
+    Log(LOG_WARNING, 'No QuArKSAS executable name found; defaulting to QuArKSAS.exe.');
     QuArKSASEXE:='QuArKSAS.exe';
+  end;
 
   //Copy QSAS if it's not in the Steam directory yet
   SteamProgramDirectory:=Setup.Specifics.Values['ProgramDirectory'];
@@ -378,6 +394,9 @@ begin
   QSASFile := ConcatPaths([QSASPath, QuArKSASEXE]);
   if CheckQuArKSAS then
   begin
+
+    //FIXME: First check if the Steam path exists at all!
+
     if FileExists(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE])) = false then
       LogAndRaiseError('Unable to extract file from Steam. dlls/'+QuArKSASEXE+' not found.');
     if FileExists(QSASFile) = false then
@@ -401,7 +420,7 @@ begin
     CheckQuArKSAS:=false;
   end;
 
-  TmpDirectory:=ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), 'QSAS']);
+  TmpDirectory:=GetSteamCacheDir;
   if DirectoryExists(TmpDirectory) = false then
     if CreateDir(TmpDirectory) = false then
       LogAndRaiseError('Unable to extract file from Steam. Cannot create cache directory.');
@@ -411,6 +430,8 @@ begin
   if Length(QSASAdditionalParameters)<>0 then
     QSASParameters:=QSASParameters+' '+QSASAdditionalParameters;
 
+  Log(LOG_VERBOSE, 'Now calling: '+QSASFile + ' ' + QSASParameters + ' ' + FullFilename);
+
   FillChar(QSASStartupInfo, SizeOf(QSASStartupInfo), 0);
   FillChar(QSASProcessInformation, SizeOf(QSASProcessInformation), 0);
   QSASStartupInfo.cb:=SizeOf(QSASStartupInfo);
@@ -419,11 +440,12 @@ begin
   if Windows.CreateProcess(nil, PChar(QSASFile + ' ' + QSASParameters + ' ' + FullFilename), nil, nil, false, 0, nil, PChar(QSASPath), QSASStartupInfo, QSASProcessInformation)=false then
     LogAndRaiseError('Unable to extract file from Steam. Call to CreateProcess failed.');
   try
+    CloseHandle(QSASProcessInformation.hThread);
+
     //DanielPharos: Waiting for INFINITE is rather dangerous, so let's wait only a certain amount of seconds
     if WaitForSingleObject(QSASProcessInformation.hProcess, QSASDelay)=WAIT_FAILED then
       LogAndRaiseError('Unable to extract file from Steam. Call to WaitForSingleObject failed.');
   finally
-    CloseHandle(QSASProcessInformation.hThread);
     CloseHandle(QSASProcessInformation.hProcess);
   end;
   Result:=True;

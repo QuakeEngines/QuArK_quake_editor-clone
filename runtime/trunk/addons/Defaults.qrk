@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.547  2014/10/05 15:25:10  danielpharos
+//Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
+//
 //Revision 1.546  2013/06/30 15:18:29  danielpharos
 //Updated for 6.6 Beta 6 release.
 //
@@ -3944,10 +3947,10 @@ QQRKSRC1
         ProgramDirectory = "steamapps"
         SourceSDKDirectory = "sourcesdk\bin"
         QuArKSASEXENameOld = "QuArKSAS.exe"
-        QuArKSASEXENameSource2006 = "QuArKSAS.exe"
+        QuArKSASEXENameSource2006 = "QuArKSAS_source2006.exe"
         QuArKSASEXENameSource2007 = "QuArKSAS_source2007.exe"
         QuArKSASEXENameSource2009 = "QuArKSAS_source2009.exe"
-        QuArKSASEXENameSourceOrangebox = "QuArKSAS_orangebox.exe"
+        QuArKSASEXENameOrangebox = "QuArKSAS_orangebox.exe"
         Form = "GameSteam"
       }
 

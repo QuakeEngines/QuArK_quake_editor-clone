@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.89  2014/08/26 10:46:24  danielpharos
+Fixed possible Find-handle leak on error code path (based on code from Game2).
+
 Revision 1.88  2012/11/20 18:52:20  danielpharos
 Use PosEx, and let's not try and create the root drive as a folder, shall we?
 
@@ -1175,14 +1178,17 @@ begin
         while (FilenameAlias <> '') do
         begin
           if RunSteamExtractor(FilenameAlias) then
-            if FileExists(ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), FilenameAlias])) then
+          begin
+            Log(LOG_VERBOSE, 'Steam extraction successful. Now loading file %s...', [ConcatPaths([GetSteamCacheDir, FilenameAlias])]);
+            if FileExists(ConcatPaths([GetSteamCacheDir, FilenameAlias])) then
             begin
-              Result:=ExactFileLink(ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), FilenameAlias]), Nil, True);
+              Result:=ExactFileLink(ConcatPaths([GetSteamCacheDir, FilenameAlias]), Nil, True);
               Result.Flags:=Result.Flags or ofWarnBeforeChange;
               GameFiles.Add(Result);
               GameFiles.Sort(ByFileName);
               Exit; { found it }
             end;
+          end;
 
           FilenameAlias := GetNextAlias;
         end;
