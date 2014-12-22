@@ -70,7 +70,7 @@ The contributing developers of QuArK
         e-mail:         fredrick.vamstad@gmail.com
 
 - "DanielPharos"
-        e-mail:         ***
+        e-mail:         danielpharos@users.sourceforge.net
 
 
 The developers of used libraries/programs
