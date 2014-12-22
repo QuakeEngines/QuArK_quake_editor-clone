@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2014/10/24 16:16:37  danielpharos
+Fixed the VIDEO enumeration for system details info.
+
 Revision 1.50  2014/08/26 12:16:19  danielpharos
 Fixed a leak on an error code path, and changed unknown modern OSes to use Windows 7 code paths, not merely Vista's.
 
@@ -1179,7 +1182,7 @@ begin
   RegisteredUser:='';
   RegisteredOrg:='';
   SerialNumber:='';
-  with TRegistry.create do
+  with TRegistry.create(KEY_READ) do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
     if OpenKey(rkOSInfo,false) then
@@ -1206,17 +1209,18 @@ begin
 
   n:=MAX_PATH;
   p:=StrAlloc(n);
+  try
+    GetWindowsDirectory(p,n);
+    FDirs.Add('Windows='+StrPas(p));
 
-  GetWindowsDirectory(p,n);
-  FDirs.Add('Windows='+StrPas(p));
+    GetSystemDirectory(p,n);
+    FDirs.Add('System='+StrPas(p));
 
-  GetSystemDirectory(p,n);
-  FDirs.Add('System='+StrPas(p));
-
-  GetTempPath(n,p);
-  FDirs.Add('Temp='+StrPas(p));
-
-  StrDispose(p);
+    GetTempPath(n,p);
+    FDirs.Add('Temp='+StrPas(p));
+  finally
+    StrDispose(p);
+  end;
 
   WinH:=GetDesktopWindow;
   FDirs.Add('AppData='          +GetSpecialFolder(WinH,CSIDL_APPDATA));
@@ -1381,7 +1385,7 @@ begin
   GetComputerName(PChar(buf),n);
   SetLength(buf,n-1);
   result:=buf;
-  with TRegistry.Create do
+  with TRegistry.Create(KEY_READ) do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
     if OpenKey(rkMachine,false) then
@@ -1427,7 +1431,7 @@ begin
   FUser:=GetUser;
   if WindowsPlatformCompatibility=osWinNTComp then
   begin
-    with TRegistry.Create do
+    with TRegistry.Create(KEY_READ) do
     begin
       rootkey:=HKEY_LOCAL_MACHINE;
       if OpenKey(rkBIOS,false) then
@@ -1759,7 +1763,7 @@ begin
     rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
     Found:=False;
    
-    with TRegistry.Create do
+    with TRegistry.Create(KEY_READ) do
     begin
       RootKey:=HKEY_LOCAL_MACHINE;
       if OpenKey(rk,false) then
@@ -1955,7 +1959,7 @@ const
   rkDirectMusic = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectMusic\SoftwareSynths';
   rvDesc = 'Description';
 begin
-  with TRegistry.Create do
+  with TRegistry.Create(KEY_READ) do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
     if OpenKey(rkDirectX,false) then
@@ -2107,7 +2111,7 @@ var
   v: string;
   installed: boolean;
 begin
-  R:=TRegistry.Create;
+  R:=TRegistry.Create(KEY_READ);
   try
     R.RootKey:=HKEY_LOCAL_MACHINE;
     installed:=R.KeyExists('\SOFTWARE\Python\PythonCore\CurrentVersion');
