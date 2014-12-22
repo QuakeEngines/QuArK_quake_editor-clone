@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.17  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -686,7 +689,7 @@ end;
 
 procedure TToolBoxForm.wmInternalMessage;
 var
- L: TList;
+ L: TQList;
 begin
  if not Explorer.ProcessMessage(Self, Msg) then
   case Msg.wParam of

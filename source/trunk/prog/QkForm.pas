@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.23  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -221,6 +224,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Deactivate; override;
     function ProcessMenuShortcut(var Msg: TWMKeyDown; ShortCut: TShortCut) : Boolean; dynamic;
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
   public
     MarsCap: TMarsColors;
     constructor Create(AOwner: TComponent); override;
@@ -255,7 +260,7 @@ procedure EnvoieMessageFiches(wParam, lParam: Integer);
 procedure SetMarsCapActive(nActive: Boolean);
 
 function GetObjectResult(Q: QObject) : LongInt;
-function GetObjectsResult(QList: TList) : LongInt;
+function GetObjectsResult(QList: TQList) : LongInt;
 function HasGotObject(L: LongInt; FirstOk: Boolean) : QObject;
 function HasGotObjects(L: LongInt) : TQList;
 
@@ -300,18 +305,28 @@ var
  L: TQList;
 begin
  L:=TQList.Create;
- if Q<>Nil then L.Add(Q);
- Result:=LongInt(L);
+ try
+  if Q<>Nil then L.Add(Q);
+  Result:=LongInt(L);
+ except
+  L.Free;
+  raise;
+ end;
 end;
 
-function GetObjectsResult(QList: TList) : LongInt;
+function GetObjectsResult(QList: TQList) : LongInt;
 var
  L: TQList;
  I: Integer;
 begin
  L:=TQList.Create;
- for I:=0 to QList.Count-1 do L.Add(QList[I]);
- Result:=LongInt(L);
+ try
+  for I:=0 to QList.Count-1 do L.Add(QList[I]);
+  Result:=LongInt(L);
+ except
+  L.Free;
+  raise;
+ end;
 end;
 
 function HasGotObject(L: LongInt; FirstOk: Boolean) : QObject;
@@ -439,6 +454,8 @@ constructor TQkForm.Create(AOwner: TComponent);
 begin
  inherited;
  ShowHint:=True;
+ OnMouseWheelDown:=MouseWheelDown;
+ OnMouseWheelUp:=MouseWheelUp;
 end;
 
 procedure TQkForm.DefineProperties(Filer: TFiler);
@@ -464,6 +481,18 @@ procedure TQkForm.Deactivate;
 begin
  LocalDoAccept(ActiveControl);
  inherited;
+end;
+
+procedure TQkForm.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  VertScrollBar.Position := VertScrollBar.Position + 32;
+  Handled := true;
+end;
+
+procedure TQkForm.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  VertScrollBar.Position := VertScrollBar.Position - 32;
+  Handled := true;
 end;
 
 procedure TQkForm.wmInternalMessage(var Msg: TMessage);

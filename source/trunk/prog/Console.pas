@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2014/12/20 15:37:22  danielpharos
+Added mouse scroll wheel support in various places.
+
 Revision 1.24  2014/11/09 08:52:10  danielpharos
 Fixed long-standing bug with character output (backslashes) in the console.
 
@@ -508,7 +511,7 @@ const
 
 constructor TConsoleForm.Create(AOwner: TComponent);
 begin
- inherited;
+  inherited;
   OnMouseWheelDown:=MouseWheelDown;
   OnMouseWheelUp:=MouseWheelUp;
 end;

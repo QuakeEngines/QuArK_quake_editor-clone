@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.12  2009/02/21 17:10:20  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -331,7 +334,7 @@ end;*)
 function TQkExplorer2.ProcessMessage(nParent: TForm; var Msg: TMessage) : Boolean;
 var
  Info: TFileObjectClassInfo;
- L: TList;
+ L: TQList;
 begin
  Result:=True;
  case Msg.wParam of

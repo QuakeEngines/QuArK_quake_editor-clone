@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2012/09/05 18:06:10  danielpharos
+Move implementation of FloatSpec internally to QkObjects.
+
 Revision 1.57  2010/10/05 03:25:34  cdunde
 New slide bar dialog form type control added by DanielPharos.
 
@@ -274,6 +277,8 @@ type
               procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
              {procedure cmMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
               procedure cmMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;}
+              procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+              procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
               procedure Resize; override;
               procedure SectionResize(Sender: THeaderControl; Section: THeaderSection);
               procedure SectionClick(Sender: THeaderControl; Section: THeaderSection);
@@ -1779,6 +1784,8 @@ constructor TFormCfg.Create(AOwner: TComponent);
 begin
   inherited;
   PopupForm:=nil;
+  OnMouseWheelDown:=MouseWheelDown;
+  OnMouseWheelUp:=MouseWheelUp;
 end;
 
 procedure TFormCfg.wmInternalMessage(var Msg: TMessage);
@@ -2794,6 +2801,18 @@ begin
      ReclickPopupForm.Click;
    end;
  end;
+end;
+
+procedure TFormCfg.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  SB.VertScrollBar.Position := SB.VertScrollBar.Position + 32;
+  Handled := true;
+end;
+
+procedure TFormCfg.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  SB.VertScrollBar.Position := SB.VertScrollBar.Position - 32;
+  Handled := true;
 end;
 
 procedure SetBtnChecked;
