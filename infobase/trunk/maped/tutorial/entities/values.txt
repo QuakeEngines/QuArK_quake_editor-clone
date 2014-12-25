@@ -11,7 +11,7 @@ Try to do it as shown in the image. Drag the
 <ref> intro/mapeditor/dataforms/specsargsview \ specifics/args view </ref>
 out, and drop it somewhere.
 
-Okay, so whats this specific/arg thingy then? Well, all entities requires some
+Okay, so what's this specific/arg thingy then? Well, all entities requires some
 parameters, which the game-engine uses to figure out what the entity is and
 what it is supposed to do. These parameters are called <tt>specifics</tt> and
 <tt>arguments</tt> in QuArK. You could call them the entity's variables and

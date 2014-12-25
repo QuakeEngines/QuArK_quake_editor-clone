@@ -34,7 +34,7 @@ flow.
 <u>Putting Face Sharing to work</u>
 
 Imagine 3 polys in a row (part of a room).  The middle one is the same height
-as the ones to the left and right, but it's bottom is raised up. It's an entry
+as the ones to the left and right, but its bottom is raised up. It's an entry
 way into a hallway.  Here's the view if you're facing the 3 walls:
 
 <center><img>front.png</img></center>
