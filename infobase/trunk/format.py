@@ -14,7 +14,7 @@ HEADER_BEGIN = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 <head>
   <title>%(title)s</title>
   <meta name="Description" content="QuArK Information Database - Page: %(classif)s%(title)s">
-  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
+  <meta name="Keywords" content="QuArK InfoBase, Quake Army Knife, QRK, QKM, Python, PY, Map Editor, Model Editor">
   <link rel=stylesheet href="standard.css" type="text/css">
 </head>
 
@@ -63,7 +63,7 @@ FOOTER = """
   <tr class="headline">
     <td width="99%%" align=center>
       <p class="sm">
-        Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a><br>
+        Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a>
       </p>
     </td>
     <td width="1%%" align=right nowrap>
@@ -86,8 +86,10 @@ SUBDIR_BEGIN = """
   </tr>
 </table>
 <ul class="section">"""
-SUBDIR_ITEM = """
-  <li><b>%(classif)s&nbsp;<a href="%(htmlfile)s">%(title)s</a></b>&nbsp;<span class="added">(%(updateday)s)</span></li>"""
+SUBDIR_ITEM_BEGIN = """
+  <li><b>%(classif)s&nbsp;<a href="%(htmlfile)s">%(title)s</a></b>&nbsp;<span class="added">(%(updateday)s)</span>"""
+SUBDIR_ITEM_MORE = """<br>"""
+SUBDIR_ITEM_END = """</li>"""
 SUBDIR_END = """
 </ul>
 <br>

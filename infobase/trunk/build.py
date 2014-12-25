@@ -495,13 +495,20 @@ class Folder:
         if self.folders:
             data.append(SUBDIR_BEGIN % self.kw)
             for folder in self.folders:
-                data.append(SUBDIR_ITEM % folder.kw)
+                data.append(SUBDIR_ITEM_BEGIN % folder.kw)
+                DoneMore = False
                 if folder.folders:
+                    if not DoneMore:
+                        data.append(SUBDIR_ITEM_MORE % { })
+                        DoneMore = True
                     data.append(SUBSUBDIR_BEGIN % folder.kw)
                     for subfolder in folder.folders:
                         data.append(SUBSUBDIR_ITEM % subfolder.kw)
                     data.append(SUBSUBDIR_END % folder.kw)
                 if folder.files:
+                    if not DoneMore:
+                        data.append(SUBDIR_ITEM_MORE % { })
+                        DoneMore = True
                     if len(folder.files) < 11:
                         data.append(SUBFILES_BEGIN % folder.kw)
                         for subfiles in folder.files:
@@ -521,6 +528,7 @@ class Folder:
                             cnt = cnt + 1
                         data.append(SUBFILES_END % folder.kw)
                         data.append(SUBFILES_TABLEEND % { });
+                data.append(SUBDIR_ITEM_END % { })
             data.append(SUBDIR_END % self.kw)
         if self.files:
             data.append(FILES_BEGIN % self.kw)
@@ -606,6 +614,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.30  2009/03/14 16:52:39  danielpharos
+# Made a <link> tag.
+#
 # Revision 1.29  2008/09/20 17:19:28  danielpharos
 # Fix climbing path all the way back to main path not working.
 #

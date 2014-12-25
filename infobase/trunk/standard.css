@@ -53,6 +53,9 @@ P.subsubheadline {
   font-weight: bold;
   font-size: 10pt;
 }
+TABLE {
+  border-spacing: 0;
+}
 TR.headline {
   background: #E0E0E0;
 }
@@ -76,6 +79,7 @@ TH, TD, OL {
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
   color: #000000;
+  padding: 0;
 }
 DL {
   font-family: MS Sans Serif, Arial;
