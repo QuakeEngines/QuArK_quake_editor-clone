@@ -134,8 +134,10 @@ def procpic(kw, path, extraargs):  #tiglari
     except:
         raise "open-error for file \"%s\"" % (kw["path"]+path)
     f = open(OutputPath+"/"+picrl, "wb")
-    f.write(data)
-    f.close()
+    try:
+        f.write(data)
+    finally:
+        f.close()
 #    self.forgotten.remove(path)
     return img
 
@@ -143,8 +145,10 @@ def procrsc(kw, path):  #tiglari
     rscrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     data = open(kw["path"]+path, "rb").read()
     f = open(OutputPath+"/"+rscrl, "wb")
-    f.write(data)
-    f.close()
+    try:
+        f.write(data)
+    finally:
+        f.close()
 #    self.forgotten.remove(path)
     return '"%s"' % rscrl
 
@@ -155,8 +159,10 @@ def proczip(kw, path):  #tiglari
         if not os.path.exists(OutputPath+"/zips"):
             os.mkdir(OutputPath+"/zips")
         f = open(OutputPath+"/zips/"+path, "wb")
-        f.write(data)
-        f.close()
+        try:
+            f.write(data)
+        finally:
+            f.close()
         return '<a href="%s">%s</a>' % (path, path)
     else:
         return '<a href="%s%s">%s</a>' % (ZIPLOC, path, path)
@@ -287,7 +293,7 @@ def processtext(root, self, data):
                     flags["preformatmode"] = flags["preformatmode"] - 1
         return replacewith, line, flags
 
-    paragraf_tags_added = 0
+    paragraph_tags_added = 0
     flags = { }
     flags["prevlineempty"] = 1
     flags["preformatmode"] = 0
@@ -299,9 +305,12 @@ def processtext(root, self, data):
         if not trimmedline:
             correctedline = "\n"
             flags["prevlineempty"] = 1
-            if (paragraf_tags_added > 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
-                correctedline = "</p>"
-                paragraf_tags_added = paragraf_tags_added - 1
+            if (paragraph_tags_added > 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+                if len(data):
+                    data[-1] = data[-1].rstrip("\r\n") + "</p>\n"
+                else:
+                    data.append("</p>\n")
+                paragraph_tags_added = paragraph_tags_added - 1
         else:
             # Scan through the 'line' in search for "<tag's" to replace/perform actions on
             while len(line) > 0:
@@ -345,16 +354,22 @@ def processtext(root, self, data):
 
             if flags["prevlineempty"] == 1:
                 if (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
-                    # prepend with paragraf-tag
+                    # prepend with paragraph-tag
                     correctedline = "<p>" + correctedline
-                    paragraf_tags_added = paragraf_tags_added + 1
+                    paragraph_tags_added = paragraph_tags_added + 1
 
             flags["prevlineempty"] = 0
 
         data.append(correctedline)
 
-    for ptags in range(paragraf_tags_added):
-        data.append("</p>")
+    for ptags in range(paragraph_tags_added):
+        if len(data):
+            data[-1] = data[-1].rstrip("\r\n") + "</p>\n"
+        else:
+            data.append("</p>\n")
+
+    if len(data) and not data[-1].endswith("\n"):
+        data[-1] = data[-1] + "\n"
 
 def parse(file):
     try:
@@ -614,6 +629,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.31  2014/12/25 13:33:03  danielpharos
+# Small fixes for HTML compliance, and cosmetic improvements.
+#
 # Revision 1.30  2009/03/14 16:52:39  danielpharos
 # Made a <link> tag.
 #

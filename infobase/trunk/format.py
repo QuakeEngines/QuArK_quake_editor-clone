@@ -45,8 +45,7 @@ HEADER_BEGIN = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
   </tr>
 </table>
 <table border=0 width="100%%" cellspacing=10><tr><td>"""
-HEADER_END = """
-</td></tr></table>
+HEADER_END = """</td></tr></table>
 <br>
 """
 
@@ -72,7 +71,8 @@ FOOTER = """
   </tr>
 </table>
 </body>
-</html>"""
+</html>
+"""
 
 #
 # Formatting: List of folders
