@@ -299,7 +299,6 @@ quarkpy.qmacro.MACRO_slider2 = macro_slider2<br>
 &nbsp;Labels = "1" # To display Min & Max settings above.<br>
 &nbsp;ShowValue = "1" # To display value below slider bar.<br>
 &nbsp;Macro="slider" # To use macro code (shown on left) for continuous value use as slider is moved.<br>
-<P>
 </td></tr>
 
 <tr><td align=center>----</td>

@@ -26,5 +26,4 @@ to be delayed till 6.7, or never to happen at all.
 
 <LI>Left-overs from 6.5
 <br>status: ...
-
 </UL>

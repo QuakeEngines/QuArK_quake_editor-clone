@@ -26,7 +26,7 @@ path.
 
 <table border=0 cellspacing=0>
 <tr><td valign=top align=left>
-<b>Extruder use steps:</b><P>
+<b>Extruder use steps:</b>
 
 1) Click on the blue cube to open the Shape Builders menu and double click on <b>Extruder</b> to put one in the Tree view.
 

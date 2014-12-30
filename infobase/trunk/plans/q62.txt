@@ -105,4 +105,3 @@ object.
 <br>selects groups and brush entities if all of their
 sub-objects are also selected.
 </ul>
-

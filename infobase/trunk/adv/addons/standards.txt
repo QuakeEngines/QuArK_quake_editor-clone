@@ -3,6 +3,7 @@ author: Decker
 
 If you create a new add-on for a new game that is going to be supported by
 QuArK, there are some basic standards you must include in the add-on:
+
 <ul>
 <li>The Default Room
 <li>Grouping of Entities
@@ -52,11 +53,7 @@ text-file, this will usually be a little bit faster, if you have all the
 texture filenames ready at hand.
 
 
-<ul><u>
-<li>Access of Mod & Custom Textures
-</u><br>
-</ul>
-
+<u>Access of Mod & Custom Textures</u><br>
 Another way of setting up access to textures for Mods and Custom Textures
 is to use the blanket command name "build" with a value of "1" setting.
 This is covered in detail in the 

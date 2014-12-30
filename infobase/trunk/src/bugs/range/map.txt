@@ -13,3 +13,4 @@ pointer value, a lot of other problems appears.  This problem could
 be related to the views not drawing correctly on startup.<br>
 <b>Fixed just after 6.6.0 Beta 4 release.</b>
 </UL>
+</UL>

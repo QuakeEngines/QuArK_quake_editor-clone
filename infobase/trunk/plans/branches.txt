@@ -48,7 +48,7 @@ only done a few recent ones, mostly that I've been responsible for.
   wireframe views as well.
 </UL>
 
-<U>Tags</UL>
+<U>Tags</U>
 
 <UL>
 <LI> <B>snapshot_1015</B>: ?

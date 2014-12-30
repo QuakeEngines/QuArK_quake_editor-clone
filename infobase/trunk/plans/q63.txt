@@ -165,6 +165,7 @@ story might be a good QuArK-Python tutorial on handling mouse stuff.)
 </ul>
 
 And in future updates + 6.3.1.
+
 <UL>
 <LI> enhanced wallmaker: (tiglari)
 <br>status: done in current update patch
@@ -173,7 +174,7 @@ And in future updates + 6.3.1.
 <LI> enhanced prism builder: (ax2grind, cdunde)
 <br>status: done in current update patch
 <LI> tagging commands toolbar: (cdunde)
-<status>done as plugin
+<br>status: done as plugin
 <LI> more flexible vertex movement: (milifaar)
-<status>done as plugin
+<br>status: done as plugin
 </ul>

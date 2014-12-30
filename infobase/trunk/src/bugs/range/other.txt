@@ -9,6 +9,7 @@ in STVEF game mode. e is always between 0 and 15, so the range error
 doesn't occur in mask_bits[e]. I'm not sure what exactly is causing
 it, but the error appears to be non-critical.
 </UL>
+</UL>
 
 Remark: The ZIP and UNZIP modules are a mess. Somebody should replace
 these with more up-to-date libraries that have the same (or more)

@@ -8,3 +8,4 @@ author: tiglari
 <LI>Another attempt to free an unexisting resource from QkForm.pas:422(QkForm.Destroy),
 with a different call stack from the one from opening and closing QuArK.
 </UL>
+</UL>

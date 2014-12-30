@@ -294,6 +294,7 @@ def processtext(root, self, data):
         return replacewith, line, flags
 
     paragraph_tags_added = 0
+    listing_tags_added = 0
     flags = { }
     flags["prevlineempty"] = 1
     flags["preformatmode"] = 0
@@ -305,7 +306,7 @@ def processtext(root, self, data):
         if not trimmedline:
             correctedline = "\n"
             flags["prevlineempty"] = 1
-            if (paragraph_tags_added > 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+            if (paragraph_tags_added > 0) and (listing_tags_added == 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
                 if len(data):
                     data[-1] = data[-1].rstrip("\r\n") + "</p>\n"
                 else:
@@ -345,15 +346,19 @@ def processtext(root, self, data):
                                 # there must exist an endchar_tag on the same line!
                                 raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], self.kw["title"])
                             else:
-                                tag = (line[:endchar_tag_found+1])
+                                tag = (line[:endchar_tag_found+1]).lower()
                                 if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html") or (tag[:6] == "</html"):
                                     # do not allow these tags!
                                     raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"])
+                                if (tag[:3] == "<ul"):
+                                    listing_tags_added += 1
+                                elif (tag[:4] == "</ul"):
+                                    listing_tags_added -= 1
                                 correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, self.kw)
                         correctedline = correctedline + correctedappend
 
             if flags["prevlineempty"] == 1:
-                if (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+                if (listing_tags_added == 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
                     # prepend with paragraph-tag
                     correctedline = "<p>" + correctedline
                     paragraph_tags_added = paragraph_tags_added + 1
@@ -370,6 +375,9 @@ def processtext(root, self, data):
 
     if len(data) and not data[-1].endswith("\n"):
         data[-1] = data[-1] + "\n"
+
+    if listing_tags_added != 0:
+        raise "File ends with an open ul-tag! <File>.TXT title: \"%s\"" % (self.kw["title"], )
 
 def parse(file):
     try:
@@ -629,6 +637,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.32  2014/12/25 20:18:03  danielpharos
+# Fixed production of some non-compliant HTML code.
+#
 # Revision 1.31  2014/12/25 13:33:03  danielpharos
 # Small fixes for HTML compliance, and cosmetic improvements.
 #
