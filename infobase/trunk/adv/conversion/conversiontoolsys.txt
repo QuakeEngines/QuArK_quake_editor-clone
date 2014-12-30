@@ -18,10 +18,11 @@ The second part is in the plugins\ent1conversiontools.py file at the very bottom
 
 The other file is the <b>QuArK\quarkpy\qentbase.py</b> file that did not require any changes and is only used
 at the same location in the plugins\ent1conversiontools.py file to pass the menu item to the qmacro.py file.
-<ul>
-<g><b><u>1st Level Hierarchy :</u></b></g><br>
-<li><b>ent1conversiontools.py :</b> This is the main control file. It has <b>4</b> major functions:
 
+<g><b><u>1st Level Hierarchy :</u></b></g>
+
+<ul>
+<li><b>ent1conversiontools.py :</b> This is the main control file. It has <b>4</b> major functions:
 <b>1</b>) It produces the main dialog where all of the core selections are made at the very beginning
 (<a href="adv.conversion.html#conversiontool">shown above</a>).<br>
 <b>2</b>) It processes these selections to <g>trim</g> and provide only that part of the input as needed.<br>
@@ -58,10 +59,12 @@ If a problem does exist with one or more of the files due to a selection in the
 <a href="adv.conversion.html#conversiontool">main dialog</a>, those selections can be changed<br>
 &nbsp;&nbsp;&nbsp;&nbsp;
 and the individual files re-created as long as the <a href="adv.conversion.html#conversiontool">main dialog</a>
-has not been closed. Other wise it will reset the entire system and clear all selections.
+has not been closed. Otherwise it will reset the entire system and clear all selections.
 </ul>
+
+<g><b><u>2nd Level Hierarchy :</u></b></g>
+
 <ul>
-<g><b><u>2nd Level Hierarchy :</u></b></g><br>
 <li><b>ConvertToolQ3typeEnts.py :</b> This creates the <g>(gamename)Entities.qrk</g> file for a
 <a href="adv.conversion.html#conversiontool">Quake 3 type game engine</a>.<br>
 It can use <g>.def, .cpp</g> or any other entity definition file that uses the <b>keyword</b> <g>/*Quaked</g>
@@ -73,8 +76,6 @@ entity Specifics detail data<br>
 as well as create its own <g>Color Setting</g> and <g>Selection Lists</g> code for such things as
 <g>Game Models</g>, <g>Game Sounds</g> and<br>
 <g>Game Music</g> if those items are seleced from its dialog to be included in the <a href="adv.intro.html#qrk">.qrk</a> file.
-
-
 <li><b>ConvertToolD3typeEnts.py :</b> This creates the <g>(gamename)Entities.qrk</g> file for a
 <a href="adv.conversion.html#conversiontool">Doom 3 type game engine</a>.<br>
 It can use <g>.def, .cpp</g> or any other entity definition file that uses the <b>keyword</b> <g>entityDef</g>
@@ -87,8 +88,10 @@ as well as create its own <g>Color Setting</g> and <g>Selection Lists</g> code f
 <g>Game Models</g>, <g>Game Sounds</g> and<br>
 <g>Game Music</g> if those items are seleced from its dialog to be included in the <a href="adv.intro.html#qrk">.qrk</a> file.
 </ul>
+
+<g><b><u>3rd Level Hierarchy :</u></b></g>
+
 <ul>
-<g><b><u>3rd Level Hierarchy :</u></b></g><br>
 <li><b>AddModelEnts.py :</b> This file is called on directly by the <g>ent1conversiontools.py</g> file to make the
 <g>(gamename)ModelEntities.qrk</g> file.
 <li><b>AddShaderList.py :</b> This file is called on directly by the <g>ent1conversiontools.py</g> file to make the

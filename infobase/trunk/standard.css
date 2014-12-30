@@ -53,7 +53,7 @@ P.subsubheadline {
   font-weight: bold;
   font-size: 10pt;
 }
-TABLE {
+TABLE.tight {
   border-spacing: 0;
 }
 TR.headline {

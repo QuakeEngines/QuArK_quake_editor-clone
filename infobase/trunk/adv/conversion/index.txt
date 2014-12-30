@@ -6,11 +6,13 @@ desc: conversiontoolsys
 
 <img border=1 align=right>conversion1.png</img>
 There are three conversion tools in QuArK:
+
 <ul>
 <li><ref>adv/conversion/conversiontool \ Conversion Tool</ref> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(makes multiple types of .qrk files)
 <li><ref>adv/conversion/qeradiant \ QERadiant .def file</ref> &nbsp;(only works with this type of file)
 <li><ref>adv/conversion/worldcraft \ Worldcraft .fgd file</ref> &nbsp;&nbsp;&nbsp;(only works with this type of file)
 </ul>
+
 All of these tools will convert other files into <ref>adv/intro/qrk \ .qrk</ref>
 files that QuArK can use for game <ref>adv/addons \ Add-Ons</ref> files that
 provide specific elements to work with in the
@@ -20,6 +22,7 @@ But the <g>QERadiant</g> and <g>Worldcraft</g> tools will only make one of the n
 files, the entities.qrk file.
 The <ref>adv/conversion/conversiontool \ Conversion Tool</ref> can make one or all
 of the needed files.
+
 <ul>
 <li><g>Data(gamename).qrk</g>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used to setup basic things such as the <ref>maped/tutorial/starting/defaultroom \ default room</ref> for <ref>maped/tutorial/starting \ NewMap</ref>,
 <li><g>UserData (gamename).qrk</g> &nbsp;Used to setup items for the QuArK <ref>intro/mapeditor/userdata \ Userdata panel</ref> and the <ref>intro/mapeditor/menu/gamemenu \ Games menu</ref> items.

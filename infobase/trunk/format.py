@@ -20,7 +20,7 @@ HEADER_BEGIN = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 
 <body>
 <a name="__top__"></a>
-<table width="100%%" border=0 cellspacing=0>
+<table class="tight" width="100%%" border=0 cellspacing=0>
   <tr>
     <td width=213>
       <a target="_blank" href="http://quark.sourceforge.net/"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
@@ -34,7 +34,8 @@ HEADER_BEGIN = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     </td>
   </tr>
 </table>
-<table width="100%%" border=0 cellspacing=0>
+<br>
+<table class="tight" width="100%%" border=0 cellspacing=0>
   <tr class="headline">
     <td width="99%%">
       <p class="headline">&nbsp;%(classif)s%(title)s</p>
@@ -58,7 +59,7 @@ SUBHEADERLVL  = """Upper&nbsp;levels:<br>"""
 HEADERLVL     = """-&nbsp;<a href="%(htmlfile)s">%(classif)s%(htmltitleshort)s</a><br>"""
 
 FOOTER = """
-<table width="100%%" border=0 cellspacing=0>
+<table class="tight" width="100%%" border=0 cellspacing=0>
   <tr class="headline">
     <td width="99%%" align=center>
       <p class="sm">
@@ -78,7 +79,7 @@ FOOTER = """
 # Formatting: List of folders
 #
 SUBDIR_BEGIN = """
-<table width="100%%" border=0 cellspacing=0>
+<table class="tight" width="100%%" border=0 cellspacing=0>
   <tr class="headline">
     <td width="100%%">
       <p class="headline">&nbsp;Sections</p>
@@ -99,7 +100,7 @@ SUBDIR_END = """
 # Formatting: List of files (first an index with titles only, then with detailed answers)
 #
 FILES_BEGIN = """
-<table width="100%%" border=0 cellspacing=0>
+<table class="tight" width="100%%" border=0 cellspacing=0>
   <tr class="headline">
     <td width="100%%">
       <p class="subheadline">&nbsp;Index</p>
@@ -124,7 +125,7 @@ FILES_END = """
 
 FILE_BEGIN = """
 <a name="%(hrefaname)s"></a>
-  <table width="100%%" border=0 cellspacing=0>
+  <table class="tight" width="100%%" border=0 cellspacing=0>
     <tr class="headline">
       <td>
         <p class="item">&nbsp;%(title)s</p>
@@ -168,7 +169,7 @@ SUBFILES_END   = """
 # Split up into two columns
 #
 SUBFILES_TABLEBEGIN = """
-  <table border=0><tr><td width="50%%" valign=top>"""
+  <table class="tight" border=0><tr><td width="50%%" valign=top>"""
 SUBFILES_TABLEMIDDLE = """
   </td><td width="50%%" valign=top>"""
 SUBFILES_TABLEEND = """
