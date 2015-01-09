@@ -24,7 +24,7 @@ from quarkpy.qutils import *
 
 
 Rebuild3Ds = quarkpy.mapoptions.toggleitem("&Rebuild 3D views", "Rebuild3D", (1,1),
-      hint="|Rebuild 3D views:\n\nThis rebuilds the 3D views (actually all views) in case of a lockup. You may have to do this a few times to clear the views up.\n\nThe easiest way is to just push the HotKey 'Tab' untill the views unlock and clear up.|intro.mapeditor.menu.html#optionsmenu")
+      hint="|Rebuild 3D views:\n\nThis rebuilds the 3D views (actually all views) in case of a lockup. You may have to do this a few times to clear the views up.\n\nThe easiest way is to just push the HotKey until the views unlock and clear up.|intro.mapeditor.menu.html#optionsmenu")
 
 quarkpy.mapoptions.items.append(Rebuild3Ds)
 for menitem, keytag in [(Rebuild3Ds, "Rebuild3D")]:
@@ -42,6 +42,9 @@ quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.6  2008/02/22 09:52:22  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.5  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #

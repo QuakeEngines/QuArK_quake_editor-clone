@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.548  2014/12/20 22:03:49  danielpharos
+//Small fixes for SteamFS.
+//
 //Revision 1.547  2014/10/05 15:25:10  danielpharos
 //Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
 //
@@ -2079,7 +2082,7 @@ QQRKSRC1
         Unfreeze Selection = "Alt+U"
         Make Detail = "Alt+D"
         AxisXYZ = "Alt+A"
-        Rebuild3D = "Tab"
+        Rebuild3D = "Ctrl+F5"
         EditorNextShot = "F3"
         EditorPrevShot = "F4"
         Editor3Dshot = "F5"
