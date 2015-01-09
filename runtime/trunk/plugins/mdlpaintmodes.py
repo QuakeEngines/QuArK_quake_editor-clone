@@ -5426,10 +5426,10 @@ def DialogClick(m): # Not being used right now, maybe for Airbrush or Patterns l
  #(change)           mapterrainpos.PaintBrushClick(m)
 
         else:
-            quarkx.msgbox("Your current Paint Selector does not use this function.\n\nIt only applyies to one that shows it (uses 'Dialog Box')\n                      in its discription popup.", MT_INFORMATION, MB_OK)
+            quarkx.msgbox("Your current Paint Selector does not use this function.\n\nIt only applies to one that shows it (uses 'Dialog Box')\n                      in its description popup.", MT_INFORMATION, MB_OK)
             return
     else:
-        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Paint mode' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its discription popup.", MT_ERROR, MB_OK)
+        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Paint mode' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its description popup.", MT_ERROR, MB_OK)
         return
 
 
@@ -5627,6 +5627,10 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.13  2012/03/11 05:26:38  cdunde
+# Updated Model Editor texture paint functions to do gray-scale and blue-scale
+# for texture mapping and greatly improved airbrush function quality for fade in effect.
+#
 # Revision 1.12  2012/01/29 00:53:47  cdunde
 # Missed passing one variable in previous update to this one.
 #

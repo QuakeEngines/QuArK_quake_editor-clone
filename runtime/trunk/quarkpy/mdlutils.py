@@ -522,7 +522,7 @@ def findTriangles(comp, index):
 # Find and return other triangles (AND their tri_index and ver_index_order_pos numbers)
 # containing a vertex at the same location as the one selected creating a VertexHandle instance.
 # Also returns each triangles vertex, vert_index and vert_pos for the following complete list items.
-###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
+###|--- contents ---|-------- format -------|----------------------- description -----------------------|
 #   Editor vertexes  (frame_vertices_index, view.proj(pos), tri_index, ver_index_order_pos, (tri_vert0,tri_vert1,tri_vert2))
 #                    Created using:    editor.Root.currentcomponent.currentframe.vertices
 #                                         (see Infobase docs help/src.quarkx.html#objectsmodeleditor)
@@ -4938,6 +4938,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.173  2013/02/13 03:28:42  cdunde
+#Code cleanup.
+#
 #Revision 1.172  2013/02/11 21:05:44  cdunde
 #To remove 1 unit hard coded offset causing misplacement of dragged faces.
 #

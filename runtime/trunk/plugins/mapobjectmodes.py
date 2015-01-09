@@ -543,7 +543,7 @@ def DialogClick(m):
             TorusDistortionClick(m)
 
         else:
-            quarkx.msgbox("Your current Quick Object Maker does not use this function.\n\nIt only applyies to one that shows it (uses 'Dialog Box')\n                      in its discription popup.", MT_INFORMATION, MB_OK)
+            quarkx.msgbox("Your current Quick Object Maker does not use this function.\n\nIt only applies to one that shows it (uses 'Dialog Box')\n                      in its description popup.", MT_INFORMATION, MB_OK)
             return
     else:
         quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Quick Object Makers' on this toolbar.", MT_ERROR, MB_OK)
@@ -4914,6 +4914,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2008/09/12 19:08:40  cdunde
+# Minor code cleanup.
+#
 # Revision 1.13  2008/02/22 09:52:21  danielpharos
 # Move all finishdrawing code to the correct editor, and some small cleanups.
 #

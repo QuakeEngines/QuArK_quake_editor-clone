@@ -443,7 +443,7 @@ def DialogClick(m):
             TorusDistortionClick(m)
 
         else:
-            quarkx.msgbox("Your current Quick Object Maker does not use this function.\n\nIt only applyies to one that shows it (uses 'Dialog Box')\n                      in its discription popup.", MT_INFORMATION, MB_OK)
+            quarkx.msgbox("Your current Quick Object Maker does not use this function.\n\nIt only applies to one that shows it (uses 'Dialog Box')\n                      in its description popup.", MT_INFORMATION, MB_OK)
             return
     else:
         quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Quick Object Makers' on this toolbar.", MT_ERROR, MB_OK)
@@ -5626,6 +5626,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2011/11/17 01:19:02  cdunde
+# Setup BBox drag toolbar button to work correctly with other toolbar buttons.
+#
 # Revision 1.20  2011/03/04 06:50:28  cdunde
 # Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
 #

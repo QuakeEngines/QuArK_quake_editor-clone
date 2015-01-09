@@ -874,7 +874,7 @@ class skd_obj:
 ######################################################
 class SKC_Bone_Channel:
     #Header Structure      #item of data file, size & type,   description.
-    channels = ""          #item   0-31   32 char, the bone's channel text discription, if it's a pos or rot.
+    channels = ""          #item   0-31   32 char, the bone's channel text description, if it's a pos or rot.
 
     binary_format="<%ds" % MAX_NAME #little-endian (<), see #item descriptions above.
 
@@ -1501,6 +1501,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2013/02/20 05:19:41  cdunde
+# Fix for sometimes incorrect skinsize being used.
+#
 # Revision 1.13  2012/01/13 07:50:21  cdunde
 # Change to get away from relying on ModelFolder for exporting models.
 #

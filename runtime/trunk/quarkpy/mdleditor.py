@@ -54,7 +54,7 @@ class ModelEditor(BaseEditor):
             BaseEditor.__init__(self, form)
 
     ### Different lists of the Skin View.
-    ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
+    ###|--- contents ---|-------- format -------|----------------------- description -----------------------|
     SkinViewList = {'handlepos': {}, 'tristodraw': {}}
     # Current uses for Skin-view vertex handles:
     # ['tristodraw'] = {'compname:mc': {22: [35, 34, 21, 2, 1] }}
@@ -65,7 +65,7 @@ class ModelEditor(BaseEditor):
     #                               key2 value :  A list of other view.handle indexes (as integers) used for drawing drag lines to during a drag.
 
     ### Different lists of the Model Editor.
-    ###|--- contence ---|-------- format -------|----------------------- discription -----------------------|
+    ###|--- contents ---|-------- format -------|----------------------- description -----------------------|
 
     # modelfacelist = mdlhandles.ClickOnView(self, view, x, y) located in qbaseeditor.py file.
     #                               Use:    To collect Internal Objects selected in all views for passing to various functions.
@@ -1868,6 +1868,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.165  2013/01/28 04:00:45  cdunde
+#Fix for Skin-view tristodraw and view handles not being stored in .qkl file.
+#
 #Revision 1.164  2011/05/30 20:46:32  cdunde
 #Added frame name change to complete updatings and AutoFrameRenaming function.
 #

@@ -100,18 +100,18 @@ This is just a form, represented in .qrk format.
 The value to be assigned to dlgdef begins with triple double quotes,
 and ends with them too, because it's a multi-line string.
 Note that it can happily contain ordinary solo double quotes.
-A detailed discription of the <a href="adv.intro.html#typ">Typ</a>
+A detailed description of the <a href="adv.intro.html#typ">Typ</a>
 items that it uses is located in the <a href="adv.intro.html#typ">Guide to Typ's</a>
 section of these docs.
 
 A <b>very important</b> thing to know and remember about this is how to use a Python defined variable within this
-tripple double quotes area.
+triple double quotes area.
 
-First the variable, which can also be a stored setting, must be defind before and outside of the above area like this:
+First the variable, which can also be a stored setting, must be defined before and outside of the above area like this:
 <code>
     NbrOfLines = "10"
 </code>
-Then that variable can be used within the tripple double quotes area like this:
+Then that variable can be used within the triple double quotes area like this:
 
 <code>
     mesh_shader: = {Typ="M"

@@ -127,10 +127,10 @@ def DialogClick(m):
             mapterrainpos.PaintBrushClick(m)
 
         else:
-            quarkx.msgbox("Your current Terrain Selector does not use this function.\n\nIt only applyies to one that shows it (uses 'Dialog Box')\n                      in its discription popup.", MT_INFORMATION, MB_OK)
+            quarkx.msgbox("Your current Terrain Selector does not use this function.\n\nIt only applies to one that shows it (uses 'Dialog Box')\n                      in its description popup.", MT_INFORMATION, MB_OK)
             return
     else:
-        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Terrain Generator' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its discription popup.", MT_ERROR, MB_OK)
+        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Terrain Generator' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its description popup.", MT_ERROR, MB_OK)
         return
 
 
@@ -142,7 +142,7 @@ def Dialog3DviewsClick(m):
         mapterrainpos.Options3DviewsClick(m)
 
     else:
-        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Terrain Generator' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its discription popup.", MT_ERROR, MB_OK)
+        quarkx.msgbox("This 'Dialog Box' function is only used with\n'QuArK's Terrain Generator' selectors.\n\nSelect one that shows it (uses 'Dialog Box')\n               in its description popup.", MT_ERROR, MB_OK)
         return
 
 #
@@ -2369,6 +2369,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.28  2008/07/24 23:34:11  cdunde
+# To fix non-ASCII character from causing python depreciation errors.
+#
 # Revision 1.27  2008/02/22 09:52:22  danielpharos
 # Move all finishdrawing code to the correct editor, and some small cleanups.
 #
