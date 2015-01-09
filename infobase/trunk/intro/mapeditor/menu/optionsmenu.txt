@@ -2,9 +2,9 @@ title: Options menu
 author: Decker
 
 <img border=0 align=right>options.png</img>
-<i>Grid scale in 2D views</i>&nbsp;. These functions allow you to display a scale and tick mark guides of the current grid setting in any one, combination, or all of the 2D views of the Editor, as shown in the top sub-menu. You can also center any one or combination of the scales for each view. If&nbsp;' All 2D views '&nbsp; or&nbsp;' all scales centered '&nbsp; is checked, it will deactivate this menu's individual items.
+<i>Grid scale in 2D views</i>. These functions allow you to display a scale and tick mark guides of the current grid setting in any one, combination, or all of the 2D views of the Editor, as shown in the top sub-menu. You can also center any one or combination of the scales for each view. If&nbsp;' All 2D views '&nbsp; or&nbsp;' all scales centered '&nbsp; is checked, it will deactivate this menu's individual items.
 
-<i>Ruler guide in 2D views</i>&nbsp;. These functions allow you to display a line with the unit distance of total selected items in any one, combination, or all of the 2D views of the Editor. Much like the&nbsp;'Grid scale in 2D views'&nbsp; function above, this feature also has its own list of selections, as shown in the bottom sub-menu. If one of these sub-menu items is active, checked, then when ever a single <g>face</g>, <g>poly</g> or group of polys are selected a&nbsp;'Ruler'&nbsp; will be displayed above and/or beside them from the starting point to the end point of the selected items along with&nbsp;'0'&nbsp; at the starting point and the total amount of their distance at the end point.
+<i>Ruler guide in 2D views</i>. These functions allow you to display a line with the unit distance of total selected items in any one, combination, or all of the 2D views of the Editor. Much like the&nbsp;'Grid scale in 2D views'&nbsp; function above, this feature also has its own list of selections, as shown in the bottom sub-menu. If one of these sub-menu items is active, checked, then when ever a single <g>face</g>, <g>poly</g> or group of polys are selected a&nbsp;'Ruler'&nbsp; will be displayed above and/or beside them from the starting point to the end point of the selected items along with&nbsp;'0'&nbsp; at the starting point and the total amount of their distance at the end point.
 
 <i>Delete unused faces & polys</i>. If this is unchecked, you will be able to
 make invalid polyhedrons/faces. Always keep this marked, so QuArK will warn
@@ -43,7 +43,7 @@ the FPS-game. Uncheck this if you want your entire map build.
 
 <i>Set Line Thickness</i>. This lets you set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.
 
-<i>Rebuild 3D views</i>&nbsp;. This rebuilds the 3D views (actually all views) in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' untill the views unlock and clear up.
+<i>Rebuild 3D views</i>. This rebuilds the 3D views (actually all views) in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey until the views unlock and clear up.
 
 <i>Axis XYZ letter indicator in view windows</i>. This display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.
 
@@ -60,7 +60,6 @@ the FPS-game. Uncheck this if you want your entire map build.
 <a name="developermode"></a>
 <i>Developer Mode</i>. In this mode, two extra items appear on the 'Commands' menu, to help with debugging, etc. They are <a href="intro.mapeditor.menu.html#heapstatus">HeapStatus</a> and <a href="intro.mapeditor.menu.html#reload">Reload</a>. For more detail on them see the 'Commands' menu listing above.
 
-<i>List of Plug-ins</i>. Opens a window which shows what plug-ins QuArK has
-loaded.
+<i>List of Plug-ins</i>. Opens a window which shows what plug-ins QuArK has loaded.
 
 <i>Configuration</i>. Takes you to the <ref> intro/configuration </ref>.
