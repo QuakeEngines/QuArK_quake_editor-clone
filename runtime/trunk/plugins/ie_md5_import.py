@@ -983,7 +983,7 @@ def load_md5(md5_filename, basepath, actionname):
         if mesh.mesh_index == 0:
             for bone in QuArK_bones:
                 bone['component'] = Component.name
-                # This next line preserves origianl handle scale setting for each bone.
+                # This next line preserves original handle scale setting for each bone.
                 bone['org_scale'] = bone.dictspec['scale']
         if shader_file is not None: # The path and name of the shader file.
             Component['shader_file'] = shader_file
@@ -1516,7 +1516,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
             md2fileobj.appenditem(editor.Root)
             md2fileobj.openinnewwindow()
         else: # Imports a model properly from within the editor.
-            QuArK_mesh_counter = 0
             undo = quarkx.action()
             for bone in newbones:
                 undo.put(editor.Root.dictitems['Skeleton:bg'], bone)
@@ -1526,8 +1525,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
                 compframes = editor.Root.currentcomponent.findallsubitems("", ':mf')   # get all frames
                 for compframe in compframes:
                     compframe.compparent = editor.Root.currentcomponent # To allow frame relocation after editing.
-
-                QuArK_mesh_counter = QuArK_mesh_counter + 1
 
                 try:
                     progressbar.close()
@@ -1794,6 +1791,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.49  2012/01/15 07:08:00  cdunde
+# Change for proper bone parent setting to avoid invalid bone connections.
+#
 # Revision 1.48  2012/01/14 22:51:03  cdunde
 # Change by DanielPharos to avoid cutting off shader names incorrectly because they have spaces in them.
 #
