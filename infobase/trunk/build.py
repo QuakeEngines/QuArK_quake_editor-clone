@@ -295,6 +295,7 @@ def processtext(root, self, data):
 
     paragraph_tags_added = 0
     listing_tags_added = 0
+    table_tags_added = 0
     flags = { }
     flags["prevlineempty"] = 1
     flags["preformatmode"] = 0
@@ -306,7 +307,7 @@ def processtext(root, self, data):
         if not trimmedline:
             correctedline = "\n"
             flags["prevlineempty"] = 1
-            if (paragraph_tags_added > 0) and (listing_tags_added == 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+            if (paragraph_tags_added > 0) and (listing_tags_added == 0) and (table_tags_added == 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
                 if len(data):
                     data[-1] = data[-1].rstrip("\r\n") + "</p>\n"
                 else:
@@ -350,15 +351,21 @@ def processtext(root, self, data):
                                 if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html") or (tag[:6] == "</html"):
                                     # do not allow these tags!
                                     raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"])
-                                if (tag[:3] == "<ul"):
+                                if (tag[:3] == "<ul") or (tag[:3] == "<ol") or (tag[:3] == "<dl"):
                                     listing_tags_added += 1
-                                elif (tag[:4] == "</ul"):
+                                elif (tag[:4] == "</ul") or (tag[:4] == "</ol") or (tag[:4] == "</dl"):
                                     listing_tags_added -= 1
+                                    flags["prevlineempty"] = 0 #Don't paragraph this line, even if the previous line was empty
+                                elif (tag[:6] == "<table"):
+                                    table_tags_added += 1
+                                elif (tag[:7] == "</table"):
+                                    table_tags_added -= 1
+                                    flags["prevlineempty"] = 0 #Don't paragraph this line, even if the previous line was empty
                                 correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, self.kw)
                         correctedline = correctedline + correctedappend
 
             if flags["prevlineempty"] == 1:
-                if (listing_tags_added == 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+                if (listing_tags_added == 0) and (table_tags_added == 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
                     # prepend with paragraph-tag
                     correctedline = "<p>" + correctedline
                     paragraph_tags_added = paragraph_tags_added + 1
@@ -637,6 +644,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.33  2014/12/30 22:06:22  danielpharos
+# UL-tags should not be put in paragraph-tags; fixes for various html-issues that were uncovered by this additional check.
+#
 # Revision 1.32  2014/12/25 20:18:03  danielpharos
 # Fixed production of some non-compliant HTML code.
 #
