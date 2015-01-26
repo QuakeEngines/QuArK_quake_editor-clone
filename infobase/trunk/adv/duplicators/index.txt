@@ -73,10 +73,10 @@ end of June, 2000):
 The old readvalues method just picks up an origin and an offset.  The newer
 one does things like try to find a file with texture-substiutions, and
 stuff needed for applying to linear mappings to copies around individual
-centerpoints (e.g. spin each copy by 30 degrees w.r.t the last around its
+centerpoints (e.g. spin each copy by 30 degrees w.r.t. the last around its
 center).
 
-The 'do' method applies the changes to be made to the item.  each change
+The 'do' method applies the changes to be made to the item.  Each change
 is w.r.t. the previously made copy.
 <code>
     def do(self, item):
@@ -118,7 +118,7 @@ And here's the old buildimages:
 It features Armin's facility with the functional programming facilities of Python,
 and you might notice that it's quite inefficient for buildimages!=None:
 for each copy that it makes, it goes thru the whole list and chucks away
-all but the one specified by the singlimages parameter.
+all but the one specified by the singleimage parameter.
 
 The remaining code is concered with generating handles, one for the
 duplicator and one for each image-position, and a clever scheme for
