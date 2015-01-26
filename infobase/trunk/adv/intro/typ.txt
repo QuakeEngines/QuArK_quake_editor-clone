@@ -2,14 +2,16 @@ title: Guide to Typ's
 author: cdunde
 
 Typ's are used in all kinds of forms but the most common are <a href="adv.quarkpy.gui.html#dialogs">Dialog Boxes</a>.
-These are placed within tripple double quotes <g>"""</g> and ends with them also, because it's a multi-line string.<br>
+These are placed within tripple double quotes <tt>"""</tt> and ends with them also, because it's a multi-line string.<br>
 A <b>very important</b> thing to know and remember about this is how to use a Python defined variable within this
 tripple double quotes area.
 
 First the variable, which can also be a stored setting, must be defind before and outside of the above area like this:
+
 <code>
     NbrOfLines = "10"
 </code>
+
 Then that variable can be used within the tripple double quotes area like this:
 
 <code>
@@ -21,7 +23,8 @@ Then that variable can be used within the tripple double quotes area like this:
                          "This can be copied to a text file, changed and saved."
                    }
 </code>
-The <g>chr(34)</g> items, which is for a single double quote, must be used like this to avoid confusion with the tripple double quotes.
+
+The <tt>chr(34)</tt> items, which is for a single double quote, must be used like this to avoid confusion with the tripple double quotes.
 
 Here is a list of the most common used Typ's in .QRK :form definitions.
 
@@ -36,8 +39,8 @@ Hint = "Help text"$ODOD"How to spr"
 
 The dollar sign is used to enter one or more special/invisible characters. In this case two new-line characters.<br>It is also valid to cut the text off and begin a new line if it becomes too long.<br>The above Hint will display:
 
-<b>Help text
-
+<b>Help text<br>
+<br>
 How to spread text on several lines.</b>
 
 <u>Txt</u> - defines the lable. Labels are special in QuArK. If you set their value to "&" they will display the name of the component.<br>So if you have defined a component like this:
@@ -60,7 +63,7 @@ its caption (Txt) does not occupy.
 <td align=center><b>Entry fields</b></td>
 <td align=center><b>----</b></td></tr>
 
-<tr><th width=10%>Typ's</th><th width=40%>Description</th><th width=50%>Examples and Comments</th></tr>
+<tr><th width="10%">Typ's</th><th width="40%">Description</th><th width="50%">Examples and Comments</th></tr>
 
 <tr><td align=center>
 E<br>
@@ -232,12 +235,10 @@ EQ<br>
 Displays entry field for two floating point entries and 
 4-way directional button as pressed gives floating point entries.<br>
 </td><td>
-<pre><br>
+<pre>
 <img align=left>EQ_btn.png</img>
-</br>
 <br>
 offset: = { Txt = "Offset" Typ="EQ" Hint="x, y offsets" }
-</br>
 </pre>
 </td></tr>
 
@@ -248,12 +249,10 @@ EU<br>
 Displays entry field for single digit entry and 
 increase/decrease button as pressed gives single digit entry.<br>
 </td><td>
-<pre><br>
+<pre>
 <img align=left>EU_btn.png</img>
-</br>
 <br>
 tilt: = { Txt = "Tilt" Typ="EU" Hint="`tilt' angle, in degrees." }
-</br>
 </pre>
 </td></tr>
 
@@ -264,9 +263,8 @@ K<br>
 Use this if you want to define keyboard shortcuts 
 or otherwise need info in form of a key.<br>
 </td><td>
-<pre><br>
+<pre>
 KeyLeft: = {Typ="K" Txt=" turn left"}
-</br>
 </pre>
 </td></tr>
 

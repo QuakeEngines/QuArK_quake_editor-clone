@@ -5,9 +5,7 @@ QuArK development can be carried out at three levels:
 
 <ul>
 <li>the *.qrk configuration files
-
 <li>the Python code
-
 <li>the Delphi code.
 </ul>
 
@@ -42,6 +40,7 @@ them is essential for following the Python and Delphi as well.
 
 A QObject is a thing (technically an instance of a class in Delphi)
 with two kinds of properties:
+
 <ul>
 <li>A list of attributes called `Specifics', each with a value, which
     might be a string, a number, a sequence of numbers or a few
@@ -72,6 +71,7 @@ are in effect a file-type), while the colons are for smaller types
 of objects, such as the different components of a map.
 
 Here are some of the more important extensions:
+
 <ul>
 <li>.qctx - Quake Context.  Contains info that modifies how things are done
 <li>.qtx - Toolbox.  Collection of objects that can be chosen from and inserted into something.
