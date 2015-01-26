@@ -105,11 +105,11 @@ Some special tags, that <tt>build.py</tt> checks for:
 
 List of examples:
 
-<table width=90% border=1 cellspacing=0 cellpadding=4>
+<table width="90%" border=1 cellspacing=0 cellpadding=4>
 
-<tr><th width=50%>
+<tr><th width="50%">
 This text...
-</th><th width=50%>
+</th><th width="50%">
 ...will result in this
 </th></tr>
 

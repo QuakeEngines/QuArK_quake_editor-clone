@@ -55,10 +55,7 @@ This will load up textures dynamically from the <g>.PK3</g> folders. For
 better performance, you can use the 'make texture links' button in the texture
 toolbox and check 'static' to produce a list of the textures in the .PK3's.
 
-<ul><u>
-<li>Access of Mod & Custom Textures
-</u><br>
-</ul>
+<u>Access of Mod & Custom Textures</u>
 
 Another way of setting up access to textures for Mods and Custom Textures
 is to set the "path" to that specific Mod folder and use the blanket
