@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2010/04/16 20:07:23  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.31  2010/04/16 19:13:33  danielpharos
 Added a way to get the value of LogLevel. Please only use for log-output optimization!
 
@@ -312,6 +315,7 @@ initialization
     try
       LogLevel:=StrToInt(LogLevelEnv);
     except
+      LogLevel:=LOG_WARNING;
     end;
   end;
   OpenLogFile;
