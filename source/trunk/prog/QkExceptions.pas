@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2010/04/02 16:51:58  danielpharos
+Created a new LogWindowsError procedure.
+
 Revision 1.10  2009/10/27 19:43:53  cdunde
 Commented out annoying message.
 
@@ -84,11 +87,17 @@ uses Forms, QkTextBoxForm, Quarkx, Logging;
 function GetExceptionMessage(E: Exception) : String;
 var
  I: Integer;
+ S: String;
 begin
  Result:=E.Message;
+{$IFDEF Debug}
+ Exit;
+{$ENDIF}
  I:=Pos('//', Result);
  if I>0 then
   begin
+   S:=Copy(Result, I+2, MaxInt);
+   Log(LOG_VERBOSE, 'GetExceptionMessage: '+S);
    SetLength(Result, I);
    Result[I]:='.';
   end
