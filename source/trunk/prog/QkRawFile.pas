@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.14  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -131,6 +134,7 @@ type
     PositionReset: Boolean;
     ThreadErrorMsg: String;
     KeepPlaying: boolean; // Rowdy
+    Info: TRawDataInfo;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     function GetPlayPosition : Integer;
     procedure SetPlayPosition(nPos: Integer);
@@ -141,7 +145,6 @@ type
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
   public
-    Info: TRawDataInfo;
     property PlayPosition: Integer read GetPlayPosition write SetPlayPosition;
   end;
 

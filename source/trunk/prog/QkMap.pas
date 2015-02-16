@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.113  2014/03/09 17:33:52  danielpharos
+Added some logging if brushDef2or3 couldn't load texture.
+
 Revision 1.112  2014/03/08 14:13:20  danielpharos
 Fix for texture scales when importing brushDef2 and brushDef3.
 
@@ -433,12 +436,12 @@ type
   private
    {FOldPaint: TCSBPaintEvent;}
     FRoot: TTreeMap;
+    ScrollBox1: TPyMapView;
     procedure ScrollBox1Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     procedure ReadSetupInformation(Level: Integer); override;
   public
-    ScrollBox1: TPyMapView;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   end;
 

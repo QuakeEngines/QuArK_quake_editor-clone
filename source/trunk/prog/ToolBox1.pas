@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2014/12/22 10:48:36  danielpharos
+Mousewheel scrolling in more places, and fixes a variable type.
+
 Revision 1.18  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -155,6 +158,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     InfobaseLink: String;
+    Explorer: TTbExplorer;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmSysCommand(var Msg: TWMSysCommand); message wm_SysCommand;
     procedure cmSysColorChange(var Msg: TWMSysCommand); message cm_SysColorChange;
@@ -169,7 +173,6 @@ type
     procedure BrowseToolBox(const ToolBoxName: String);
     function DefaultTarget : TQkExplorer;
   public
-    Explorer: TTbExplorer;
     function FindTbObject(const nName: String; WantClass, BrowseClass: QObjectClass) : QObject;
     procedure SelectTbObject(Q: QObject);
     function GetToolBoxSingleName: String;

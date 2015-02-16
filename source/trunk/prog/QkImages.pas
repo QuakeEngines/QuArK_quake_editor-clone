@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2012/12/29 13:59:44  danielpharos
+Small improvements to DevIL error checking.
+
 Revision 1.34  2010/04/16 19:07:57  danielpharos
 Added default value for ForceUnload argument.
 
@@ -203,12 +206,12 @@ type
     procedure Format24bitsClick(Sender: TObject);
     procedure AlphaCBClick(Sender: TObject);
   private
+    ImageDisplayer: TImageDisplayer;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr: String; override;
   public
-    ImageDisplayer: TImageDisplayer;
     function MacroCommand(Cmd: Integer) : Boolean; override;
     procedure UserConversion(var NewPSD: TPixelSetDescription);
   end;
