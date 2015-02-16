@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2014/03/06 15:33:39  danielpharos
+Stop a failed initialization of a viewport causing access violations.
+
 Revision 1.58  2009/07/30 09:41:51  danielpharos
 Added additional logging.
 
@@ -2997,6 +3000,7 @@ begin
        except
         on E: Exception do
          begin
+          Log(LOG_WARNING, 'Error in scene: %s', [GetExceptionMessage(E)]);
           ClearPanel(GetExceptionMessage(E));
           Scene.ClearScene;
           Drawing:=Drawing or dfRebuildScene;
