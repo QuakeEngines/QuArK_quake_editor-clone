@@ -4,7 +4,7 @@
 
 """   QuArK  -  Quake Army Knife
 
-QuArK Model Editor importer for STL model files.
+QuArK Model Editor importer for StL model files.
 """
 #
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
@@ -66,11 +66,12 @@ def loadmodel(root, filename, gamename, nomessage=0):
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
 
     #Try and read in the first line
-    file = open(filename,"r")
-    first_line=file.readline()
-    file.close()
+    file = open(filename, "r")
+    try:
+        first_line = file.readline()
+    finally:
+        file.close()
 
-    Binary = False
     if first_line.startswith("solid "):
         #ASCII StL file
         Binary = False
@@ -84,9 +85,11 @@ def loadmodel(root, filename, gamename, nomessage=0):
     try:
         if not Binary: #ASCII
             #read the file in
-            file = open(filename,"r")
-            lines=file.readlines()
-            file.close()
+            file = open(filename, "r")
+            try:
+                lines = file.readlines()
+            finally:
+                file.close()
 
             solidname = None
             InFacet = False
@@ -157,7 +160,50 @@ def loadmodel(root, filename, gamename, nomessage=0):
             del lines #Release memory
             progressbar.close()
         else: #Binary
-            raise RuntimeError("Binary importing not implemented (yet)!") #FIXME
+            file = open(filename, "rb")
+            try:
+                header = struct.unpack("<80B", file.read(80))
+                solidname = ""
+                for i, char in enumerate(header):
+                    if char == 0:
+                        break
+                    solidname += chr(char)
+                solidname = solidname.strip()
+                NTriangles = struct.unpack("<I", file.read(4))[0]
+                progressbar = quarkx.progressbar(2454, NTriangles)
+                for i in range(NTriangles):
+                    progressbar.progress()
+                    normal = struct.unpack("<3f", file.read(3 * 4)) #Note: Not using this.
+                    verts = [None, None, None]
+                    verts[0] = struct.unpack("<3f", file.read(3 * 4))
+                    verts[1] = struct.unpack("<3f", file.read(3 * 4))
+                    verts[2] = struct.unpack("<3f", file.read(3 * 4))
+                    AttributeByteCount = struct.unpack("<H", file.read(2))[0] #Attribute byte count; not using this.
+
+                    #Change vertex ordering #FIXME: Is this really necessary?
+                    verts = (verts[0], verts[2], verts[1])
+
+                    triangle = []
+                    for index in range(len(verts)):
+                        if RemoveDuplicates:
+                            vert_index = -1
+                            for j,test_vert in enumerate(vertices):
+                                if (test_vert[0] == verts[index][0]) and (test_vert[1] == verts[index][1]) and (test_vert[2] == verts[index][2]):
+                                    #Merge this duplicated vertex
+                                    vert_index = j
+                                    break
+                            if vert_index == -1:
+                                triangle += [len(vertices)]
+                                vertices += [verts[index]]
+                            else:
+                                triangle += [vert_index]
+                        else:
+                            triangle += [len(vertices)]
+                            vertices += [verts[index]]
+                    triangles += [triangle]
+            finally:
+                file.close()
+            progressbar.close()
     except RuntimeError,e:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
         quarkx.msgbox("Invalid .StL model.\n\n    " + filename + "\n\nEditor can not import it.\n("+e.args[0]+")", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
@@ -243,3 +289,6 @@ quarkpy.qmdlbase.RegisterMdlImporter(".StL Importer", ".StL file", "*.stl", load
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2015/01/11 14:26:07  danielpharos
+# Added experimental StL model importing (ASCII format only).
+#
