@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2014/10/24 20:55:30  danielpharos
+Don't constantly rebuild textures, and added the clearing of them.
+
 Revision 1.43  2014/10/24 20:40:57  danielpharos
 Changed to store Direct3D textures in the right place.
 
@@ -180,6 +183,8 @@ uses Windows, Classes,
      EdSceneObject;
 
 type
+  TTextureFiltering = (tfNone, tfBilinear, tfTrilinear, tfAnisotropic);
+
   TDirect3DSceneObject = class(TSceneObject)
   private
     Fog: Boolean;
@@ -201,6 +206,7 @@ type
   protected
     ScreenResized: Boolean;
     m_CurrentAlpha, m_CurrentColor: TColorRef;
+    TextureFiltering: TTextureFiltering;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
@@ -494,6 +500,72 @@ begin
   end;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   Dithering:=Setup.Specifics.Values['Dither']<>'';
+  if Setup.Specifics.Values['TextureFiltering'] = '1' then
+  begin
+    TextureFiltering := tfBilinear;
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MAGFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MINFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
+  end
+  else if Setup.Specifics.Values['TextureFiltering'] = '2' then
+  begin
+    TextureFiltering := tfTrilinear;
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MAGFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MINFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
+  end
+  else if Setup.Specifics.Values['TextureFiltering'] = '3' then
+  begin
+    TextureFiltering := tfAnisotropic;
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MAGFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MINFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
+
+//FIXME: d3dDevice->SetSamplerState(0,D3DSAMP_MAXANISOTROPY,caps.MaxAnisotropy);
+  end
+  else //Probably 0
+  begin
+    TextureFiltering := tfNone;
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MAGFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MINFILTER)', DXGetErrorString9(l_Res)]);
+
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
+  end;
 
   if (ScreenX = 0) or (ScreenY = 0) then
   begin

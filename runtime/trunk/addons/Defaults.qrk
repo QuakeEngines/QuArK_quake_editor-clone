@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.549  2015/01/09 20:08:31  danielpharos
+//Changed default hotkey of Rebuild3D to a more conventional one.
+//
 //Revision 1.548  2014/12/20 22:03:49  danielpharos
 //Small fixes for SteamFS.
 //
@@ -1884,6 +1887,7 @@ QQRKSRC1
         Transparency = "1"
         Lights = "1"
         Dither = ""
+        TextureFiltering = "1"
         BackBufferFormat = "1"
         StencilBufferBits = "0"
         VCorrection = '0.92'
@@ -9749,6 +9753,13 @@ QQRKSRC1
       }
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it." }
       Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
+      TextureFiltering: = {
+        Txt="Texture filtering"
+        Typ="CL"
+        Items  = "None" $0D "Bilinear" $0D "Trilinear" $0D "Anisotropic"
+        Values = "0"    $0D "1"        $0D "2"         $0D "3"
+        Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
+      }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                                              $0D"This doesn't apply to transparent faces." }
       HighPrecision: = { Typ="X" Txt="High floating point precision" Cap="Enabled" Hint="Enables high precision floating point calculations. Improves accuracy, but decreases performance."}
