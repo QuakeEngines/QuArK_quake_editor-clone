@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2014/12/22 10:48:36  danielpharos
+Mousewheel scrolling in more places, and fixes a variable type.
+
 Revision 1.25  2014/12/20 15:37:22  danielpharos
 Added mouse scroll wheel support in various places.
 
@@ -564,7 +567,7 @@ begin
  if Bottom>=ConsoleHeight then Bottom:=ConsoleHeight-1;
 
  if Top>Bottom then Exit;
- Font:=SelectObject(DC, ConsoleFont);
+ Font:=SelectObject(DC, ConsoleFont); try
  SetBkColor(DC, clBlack);
 
  SetLength(LineBuf, ConsoleWidth);
@@ -606,7 +609,7 @@ begin
    Inc(P);
    if P=ConsoleHeight then P:=0;
   end;
- SelectObject(DC, Font);
+ finally SelectObject(DC, Font); end;
 end;
 
 procedure TConsoleForm.FormClose(Sender: TObject;
@@ -774,13 +777,24 @@ begin
     Inc(I);
     if I>=ConsoleHeight then Dec(I, ConsoleHeight);
    until I=Clipboard2;
+
    H:=GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, Length(Text)+1);
+   if H=0 then
+    //FIXME: Log or raise error?
+    Exit;
    Move(PChar(Text)^, GlobalLock(H)^, Length(Text)+1);
    GlobalUnlock(H);
-   OpenClipboard(Handle);
-   EmptyClipboard;
-   SetClipboardData(CF_TEXT, H);
-   CloseClipboard;
+   if OpenClipboard(Handle) = false then
+    //FIXME: Log or raise error?
+    Exit;
+   try
+    EmptyClipboard;
+    if SetClipboardData(CF_TEXT, H) = 0 then
+     //FIXME: Log or raise error?
+     GlobalFree(H);
+   finally
+    CloseClipboard;
+   end;
   end;
  Clipboard2:=Clipboard1;
  Display.Repaint;
