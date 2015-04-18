@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2015/04/17 19:35:39  danielpharos
+Added bilinear texture filtering, and the start of the higher filter settings.
+
 Revision 1.44  2014/10/24 20:55:30  danielpharos
 Don't constantly rebuild textures, and added the clearing of them.
 
@@ -548,7 +551,9 @@ begin
     if (l_Res <> D3D_OK) then
       raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
 
-//FIXME: d3dDevice->SetSamplerState(0,D3DSAMP_MAXANISOTROPY,caps.MaxAnisotropy);
+    l_Res:=D3DDevice.SetSamplerState(0, D3DSAMP_MAXANISOTROPY, D3DCaps.MaxAnisotropy);
+    if (l_Res <> D3D_OK) then
+      raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MAXANISOTROPY)', DXGetErrorString9(l_Res)]);
   end
   else //Probably 0
   begin
@@ -1212,7 +1217,11 @@ begin
         PSD.Done;
       end;
 
-      l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil);
+      if (TextureFiltering = tfTrilinear) or (TextureFiltering = tfAnisotropic) then
+        l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC or D3DUSAGE_AUTOGENMIPMAP, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil)
+      else
+        l_Res:=D3DDevice.CreateTexture(W, H, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil);
+
       if (l_Res <> D3D_OK) then
         raise EErrorFmt(6403, ['CreateTexture', DXGetErrorString9(l_Res)]);
 
