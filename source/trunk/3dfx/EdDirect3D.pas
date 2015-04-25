@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2015/04/18 09:28:01  danielpharos
+Implemented trilinear and anisotropic texture filtering.
+
 Revision 1.45  2015/04/17 19:35:39  danielpharos
 Added bilinear texture filtering, and the start of the higher filter settings.
 
@@ -408,6 +411,7 @@ procedure TDirect3DSceneObject.Init(nCoord: TCoordinates;
 var
   nFogColor: array[0..3] of float;
   FogColor{, FrameColor}: TColorRef;
+  tmpFogDensity: float;
   Setup: QObject;
   l_Res: HResult;
   WindowRect: TRect;
@@ -614,13 +618,13 @@ begin
   if Fog then
   begin
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 1);  //True := 1
-    D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, Cardinal(D3DFOG_EXP2));
+    D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, DWORD(D3DFOG_EXP2));
    {D3DDevice.SetRenderState(D3DRS_FOGSTART, FarDistance * kDistFarToShort);
     D3DDevice.SetRenderState(D3DRS_FOGEND, FarDistance);}
-//DanielPharos: Got to find a conversion...
-//    D3DDevice.SetRenderState(D3DRS_FOGDENSITY, FogDensity/FarDistance);
-//DanielPharos: Got to make sure the color is send in the same format
-//    D3DDevice.SetRenderState(D3DRS_FOGCOLOR, FogColor);
+    //Need a trick, because SetRenderState wants a DWORD...
+    tmpFogDensity:=FogDensity/FarDistance;
+    D3DDevice.SetRenderState(D3DRS_FOGDENSITY, PCardinal(@tmpFogDensity)^);
+    D3DDevice.SetRenderState(D3DRS_FOGCOLOR, DXFogColor);
   end
   else
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 0);  //False := 0
