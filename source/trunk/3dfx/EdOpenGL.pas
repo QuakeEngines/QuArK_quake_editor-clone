@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.99  2011/07/29 19:23:19  danielpharos
+Added a new OpenGL lighting quality setting.
+
 Revision 1.98  2010/09/04 18:34:08  danielpharos
 Fix an access violation in OpenGL lighting if there are no lights.
 
@@ -336,16 +339,12 @@ uses Windows, Classes,
      GL1,
      EdSceneObject;
 
-const
- kScaleCos = 0.5;
- cFaintLightFactor = 0.05;
-
 type
  PLightList = ^TLightList;
  TLightList = record
                SubLightList, Next: PLightList;
                Position, Min, Max: vec3_t;
-               Brightness, Brightness2: scalar_t;
+               Brightness: scalar_t;
                Color: TColorRef;
               end;
  TLightParams = record
@@ -374,7 +373,7 @@ type
    OpenGLLoaded: Boolean;
    DWMLoaded: Boolean;
    MapLimit: TVect;
-   MapLimitSmallest: Double;
+   MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
    MaxLights: GLint;
    maxAnisotropyTextureFiltering: GLfloat;
    LightingQuality: Integer;
@@ -430,6 +429,10 @@ uses SysUtils, Quarkx, QkExceptions, Setup, Python, Logging, {Math,}
      QkObjects, QkMapPoly, QkPixelSet, QkForm, SystemDetails, DWM;
 
  {------------------------}
+
+const
+ kScaleCos = 0.5;
+ cFaintLightFactor = 0.05;
 
 type
  PVertex3D = ^TVertex3D;
@@ -501,7 +504,7 @@ begin
           Incoming[1]:=LP^.Position[1]-Point1.v.xyz[1];
           Incoming[2]:=LP^.Position[2]-Point1.v.xyz[2];
           DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
-          if DistToSource<LP^.Brightness2 then
+          if DistToSource<LP^.Brightness*LP^.Brightness then
           begin
             if DistToSource < rien then
               Dist1:=1E10
@@ -1164,9 +1167,9 @@ begin
 
     glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
     CheckOpenGLError('Init: GL_MAX_LIGHTS');
-    if MaxLights<8 then
+    if MaxLights < 8 then //8 is the minimum demanded by the OpenGL spec.
     begin
-      Log(LOG_WARNING, 'OpenGL Init: OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.'); //@MOVE to dict!
+      Log(LOG_WARNING, 'OpenGL Init: OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.'); //FIXME: MOVE to dict!
       Lighting:=false;
     end;
 
@@ -1350,7 +1353,6 @@ begin
   PL^.Position[2]:=Position.Z;
 
   PL^.Brightness:=Brightness;
-  PL^.Brightness2:=Brightness*Brightness;
 
   PL^.Color:={SwapColor(Color)} Color and $FFFFFF;
 
@@ -1431,6 +1433,7 @@ var
 begin
   if (Lighting and (LightingQuality=0)) or Transparency then
   begin
+    //Calculate average positions of all the faces  
     PS:=FListSurfaces;
     while Assigned(PS) do
     begin
@@ -1504,7 +1507,7 @@ begin
           begin
             Distance2:=(OpenGLAveragePosition[0]-PL.Position[0])*(OpenGLAveragePosition[0]-PL.Position[0])+(OpenGLAveragePosition[1]-PL.Position[1])*(OpenGLAveragePosition[1]-PL.Position[1])+(OpenGLAveragePosition[2]-PL.Position[2])*(OpenGLAveragePosition[2]-PL.Position[2]);
             //Distance2 = distance squared.
-            Brightness:=PL.Brightness/Distance2; //FIXME: Not sure if this is right!
+            Brightness:=(PL.Brightness * PL.Brightness) / Distance2; //FIXME: Not sure if this is right!
             for LightNR:=0 to MaxLights-1 do
             begin
               if TempLightList[LightNR].LightBrightness < 0 then
@@ -2010,8 +2013,8 @@ begin
               stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
               mov dl, [esi]           { copy 'Blue' byte from source to edx-low-register }
               mov al, dl          {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
-              mov dl, [ebx]
-              mov ah, dl
+              mov dl, [ebx]           { copy 'Alpha' byte from alphasource to edx-low-register }
+              mov ah, dl          {A} { copy the gamma-corrected? 'Alpha'-byte from gammabuf to eax-high-register }
               stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
               add esi, 3              { increment source-pointer, the esi-register with 3 }
               add ebx, 1              { increment alphasource-pointer, the ebx-register with 1 }
@@ -2405,7 +2408,7 @@ begin
           CheckOpenGLError('RenderPList: glLightf: GL_CONSTANT_ATTENUATION');
           glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
           CheckOpenGLError('RenderPList: glLightf: GL_LINEAR_ATTENUATION');
-          glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0/PL.Brightness2);
+          glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0 / (PL.Brightness * PL.Brightness));
           CheckOpenGLError('RenderPList: glLightf: GL_QUADRATIC_ATTENUATION');
 
           glEnable(GL_LIGHT0+LightNR);
@@ -2475,7 +2478,7 @@ begin
       begin  { normal polygon }
         PVBase:=PV;
         if not Odd(VertexCount) then
-          Inc(PV);
+          Inc(PV); //FIXME: Hmm, should we render triangles instead? Because now sometimes PV1==PV1 in RenderQuad!
         for I:=0 to (VertexCount-3) div 2 do
         begin
           PV2:=PV;
