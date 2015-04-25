@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2015/04/25 10:04:43  danielpharos
+Implemented Direct3D fade/fog.
+
 Revision 1.46  2015/04/18 09:28:01  danielpharos
 Implemented trilinear and anisotropic texture filtering.
 
@@ -191,6 +194,13 @@ uses Windows, Classes,
 type
   TTextureFiltering = (tfNone, tfBilinear, tfTrilinear, tfAnisotropic);
 
+  PLightList = ^TLightList;
+  TLightList = record
+                Next: PLightList;
+                Position: vec3_t;
+                Brightness: Double;
+               end;
+
   TDirect3DSceneObject = class(TSceneObject)
   private
     Fog: Boolean;
@@ -203,15 +213,17 @@ type
     DWMLoaded: Boolean;
     MapLimit: TVect;
     MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
+    MaxLights: DWORD;
     pPresParm: D3DPRESENT_PARAMETERS;
     DXFogColor: D3DColor;
     LightingQuality: Integer;
+    Lights: PLightList; //This is needed, because we can't use GetLight due to PureDevice.
+    NumberOfLights: DWORD;
     SwapChain: IDirect3DSwapChain9;
     DepthStencilSurface: IDirect3DSurface9;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
   protected
     ScreenResized: Boolean;
-    m_CurrentAlpha, m_CurrentColor: TColorRef;
     TextureFiltering: TTextureFiltering;
     ScreenX, ScreenY: Integer;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
@@ -243,8 +255,8 @@ type
     procedure Copy3DView; override;
  (*
     procedure SwapBuffers(Synch: Boolean); override;
-    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
  *)
+    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
     function ChangeQuality(nQuality: Integer) : Boolean; override;
   end;
 
@@ -264,18 +276,24 @@ implementation
 uses Logging, Quarkx, QkExceptions, Setup, SysUtils, DWM, SystemDetails,
      QkObjects, QkMapPoly, QkPixelSet, DXTypes, D3DX9, Direct3D, DXErr9;
 
+const
+ cFaintLightFactor = 0.05;
+
 type
  PVertex3D = ^TVertex3D;
  TVertex3D = packed record
       x: TD3DValue;
       y: TD3DValue;
       z: TD3DValue;
+      n_x: TD3DValue;
+      n_y: TD3DValue;
+      n_z: TD3DValue;
       color: TD3DColor;
       tu: TD3DValue;
       tv: TD3DValue;
  end;
 
-const FVFType: DWORD = D3DFVF_XYZ or D3DFVF_DIFFUSE or D3DFVF_TEX1;
+const FVFType: DWORD = D3DFVF_XYZ or D3DFVF_NORMAL or D3DFVF_DIFFUSE or D3DFVF_TEX1;
 
  {------------------------}
 
@@ -369,10 +387,6 @@ begin
 
   PVertex3D(PV)^.tu := ns;
   PVertex3D(PV)^.tv := nt;
-
-  PVertex3D(PV)^.color := D3DCOLOR_XRGB(255, 255, 255); //@
-  {PVertex3D(PV)^.color := D3DXColorToDWord(D3DXColor(random, random, random, 0));}
-
 end;
 
 constructor TDirect3DSceneObject.Create;
@@ -576,6 +590,13 @@ begin
       raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
   end;
 
+  MaxLights := D3DCaps.MaxActiveLights;
+  if MaxLights <= 0 then
+  begin
+    Log(LOG_WARNING, 'Direct3D Init: Zero lights supported! Lighting disabled out of safety.'); //FIXME: MOVE to dict!
+    Lighting:=false;
+  end;
+
   if (ScreenX = 0) or (ScreenY = 0) then
   begin
     if GetWindowRect(ViewWnd, WindowRect)=false then
@@ -633,6 +654,7 @@ begin
   begin
     D3DDevice.SetRenderState(D3DRS_LIGHTING, 1);  //True := 1
     D3DDevice.SetRenderState(D3DRS_AMBIENT, D3DXColorToDWord(D3DXColor(255, 255, 255, 0))); //FIXME!
+    D3DDevice.SetRenderState(D3DRS_NORMALIZENORMALS, 1); //True := 1
   end
   else
     D3DDevice.SetRenderState(D3DRS_LIGHTING, 0);  //False := 0
@@ -682,7 +704,6 @@ begin
     Exit;
   end;
 
-  //FIXME: The first parameter isn't necessarily 0!
   l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
   if (l_Res <> D3D_OK) then
     raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
@@ -701,7 +722,6 @@ begin
     if (l_Res <> D3D_OK) then
       raise EErrorFmt(6403, ['Reset', DXGetErrorString9(l_Res)]);
 
-    //FIXME: Are the first two parameters always 0?
     l_Res:=D3DDevice.GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, OrigBackBuffer);
     if (l_Res <> D3D_OK) then
     begin
@@ -739,8 +759,52 @@ begin
   Result:=True;
 end;
 
-procedure TDirect3DSceneObject.ClearScene;
+procedure TDirect3DSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
+var
+  l_Res: HResult;
+  light: D3DLIGHT9;
+  PL: PLightList;
 begin
+  light._Type := Direct3D9.D3DLIGHT_POINT;
+  light.Diffuse := D3DXColorFromDWord(SwapColor(Color) and $FFFFFF);
+  light.Position := D3DXVECTOR3(Position.X, Position.Y, Position.Z);
+  light.Range := MapLimitSmallest;
+
+  light.Attenuation0 := 1.0;
+  light.Attenuation1 := 0.0;
+  light.Attenuation2 := 5.0 / (Brightness * Brightness);
+
+  l_Res:=D3DDevice.SetLight(NumberOfLights, light);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetLight', DXGetErrorString9(l_Res)]);
+
+  //Store the light as well
+  New(PL);
+
+  PL^.Next:=Lights;
+  Lights:=PL;
+
+  PL^.Position[0]:=Position.X;
+  PL^.Position[1]:=Position.Y;
+  PL^.Position[2]:=Position.Z;
+
+  PL^.Brightness:=Brightness;
+
+  NumberOfLights:=NumberOfLights+1;
+end;
+
+procedure TDirect3DSceneObject.ClearScene;
+var
+ PL: PLightList;
+begin
+  while Assigned(Lights) do
+  begin
+    PL:=Lights;
+    Lights:=PL^.Next;
+    Dispose(PL);
+  end;
+  NumberOfLights:=0;
+  inherited;
 end;
 
 function TDirect3DSceneObject.StartBuildScene(var VertexSize: Integer) : TBuildMode;
@@ -750,7 +814,219 @@ begin
 end;
 
 procedure TDirect3DSceneObject.EndBuildScene;
+type
+ TLightingList = record
+                  LightNumber: DWORD;
+                  LightBrightness: TDouble;
+                 end;
+
+var
+ PS: PSurfaces;
+ TempLightList: array of TLightingList;
+ Surf: PSurface3D;
+ SurfEnd: PChar;
+ SurfAveragePosition: vec3_t;
+ PAveragePosition: vec3_t;
+ VertexNR: Integer;
+ PV: PVertex3D;
+ Sz: Integer;
+ PL: PLightList;
+ LightNR, LightNR2: DWORD;
+ LightCurrent: DWORD;
+ Distance2, Brightness: Double;
+ LightListIndex: PDWORD;
+ NumberOfLightsInList: Integer;
 begin
+  //Set the normals and color of all the vertices
+  PS:=FListSurfaces;
+  while Assigned(PS) do
+  begin
+    Surf:=PS^.Surf;
+    SurfEnd:=PChar(Surf)+PS^.SurfSize;
+    while (Surf<SurfEnd) do
+    begin
+      with Surf^ do
+      begin
+        Inc(Surf);
+
+        if not (VertexCount = 0) then
+        begin
+          PV:=PVertex3D(Surf);
+          if VertexCount>=0 then
+            Sz:=SizeOf(TVertex3D)
+          else
+            Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
+          for VertexNR:=1 to Abs(VertexCount) do
+          begin
+            if (Lighting and (LightingQuality=0)) then
+            begin
+              PVertex3D(PV)^.n_x := Normale[0];
+              PVertex3D(PV)^.n_y := Normale[1];
+              PVertex3D(PV)^.n_z := Normale[2];
+            end;
+            PVertex3D(PV)^.color := D3DCOLOR_XRGB(255, 255, 255); //@
+            Inc(PChar(PV), Sz);
+          end;
+          if VertexCount>=0 then
+            Inc(PVertex3D(Surf), VertexCount)
+          else
+            Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+        end;
+      end;
+    end;
+    PS:=PS^.Next;
+  end;
+
+  if (Lighting and (LightingQuality=0)) or Transparency then
+  begin
+    //Calculate average positions of all the faces
+    //Note: Re-using the member variables already present for OpenGL!
+    PS:=FListSurfaces;
+    while Assigned(PS) do
+    begin
+      if (Lighting and (LightingQuality=0)) or (Transparency and ((PS^.Transparent=True) or (PS^.NumberTransparentFaces>0))) then
+      begin
+        Surf:=PS^.Surf;
+        SurfEnd:=PChar(Surf)+PS^.SurfSize;
+        PAveragePosition[0]:=0;
+        PAveragePosition[1]:=0;
+        PAveragePosition[2]:=0;
+        while (Surf<SurfEnd) do
+        begin
+          with Surf^ do
+          begin
+            Inc(Surf);
+            SurfAveragePosition[0]:=0;
+            SurfAveragePosition[1]:=0;
+            SurfAveragePosition[2]:=0;
+            if not (VertexCount = 0) then
+            begin
+              PV:=PVertex3D(Surf);
+              if VertexCount>=0 then
+                Sz:=SizeOf(TVertex3D)
+              else
+                Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
+              for VertexNR:=1 to Abs(VertexCount) do
+              begin
+                SurfAveragePosition[0]:=SurfAveragePosition[0]+PV^.x;
+                SurfAveragePosition[1]:=SurfAveragePosition[1]+PV^.y;
+                SurfAveragePosition[2]:=SurfAveragePosition[2]+PV^.z;
+                Inc(PChar(PV), Sz);
+              end;
+              SurfAveragePosition[0]:=SurfAveragePosition[0]/Abs(VertexCount);
+              SurfAveragePosition[1]:=SurfAveragePosition[1]/Abs(VertexCount);
+              SurfAveragePosition[2]:=SurfAveragePosition[2]/Abs(VertexCount);
+            end;
+            PAveragePosition[0]:=PAveragePosition[0]+SurfAveragePosition[0];
+            PAveragePosition[1]:=PAveragePosition[1]+SurfAveragePosition[1];
+            PAveragePosition[2]:=PAveragePosition[2]+SurfAveragePosition[2];
+            OpenGLAveragePosition:=SurfAveragePosition;
+            if VertexCount>=0 then
+              Inc(PVertex3D(Surf), VertexCount)
+            else
+              Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+          end;
+        end;
+      end;
+      PS.OpenGLAveragePosition:=PAveragePosition;
+      PS:=PS^.Next;
+    end;
+  end;
+
+  if Lighting and (LightingQuality=0) then
+  begin
+    SetLength(TempLightList, MaxLights);
+    PS:=FListSurfaces;
+    while Assigned(PS) do
+    begin
+      Surf:=PS^.Surf;
+      SurfEnd:=PChar(Surf)+PS^.SurfSize;
+      while (Surf<SurfEnd) do
+      begin
+        with Surf^ do
+        begin
+          Inc(Surf);
+          for LightNR:=0 to MaxLights-1 do
+            TempLightList[LightNR].LightBrightness:=-1.0; //Using -1 to mark as empty
+          LightCurrent:=0;
+          PL:=Lights;
+          while Assigned(PL) do
+          begin
+            Distance2:=(OpenGLAveragePosition[0]-PL.Position[0])*(OpenGLAveragePosition[0]-PL.Position[0])+(OpenGLAveragePosition[1]-PL.Position[1])*(OpenGLAveragePosition[1]-PL.Position[1])+(OpenGLAveragePosition[2]-PL.Position[2])*(OpenGLAveragePosition[2]-PL.Position[2]);
+            //Distance2 = distance squared.
+            Brightness:=PL.Brightness/Distance2; //FIXME: Not sure if this is right!
+            for LightNR:=0 to MaxLights-1 do
+            begin
+              if TempLightList[LightNR].LightBrightness < 0 then
+              begin
+                // Empty spot in the list; drop in this light
+                TempLightList[LightNR].LightNumber:=LightCurrent;
+                TempLightList[LightNR].LightBrightness:=Brightness;
+                break;
+              end;
+              if Brightness > TempLightList[LightNR].LightBrightness then
+              begin
+                // This light is brighter than the one in this spot in the list
+                for LightNR2:=MaxLights-1 downto LightNR+1 do
+                  // Move the rest over
+                  TempLightList[LightNR2]:=TempLightList[LightNR2-1];
+                // Drop in this light
+                TempLightList[LightNR].LightNumber:=LightCurrent;
+                TempLightList[LightNR].LightBrightness:=Brightness;
+                break;
+              end;
+            end;
+            LightCurrent:=LightCurrent+1;
+            PL:=PL^.Next;
+          end;
+          NumberOfLightsInList:=0;
+          if OpenGLLightList<>nil then
+          begin
+            FreeMem(OpenGLLightList);
+            OpenGLLightList := nil;
+            OpenGLLights := 0;
+          end;
+          // We make the surface's list of lights as large as possible for now...
+          OpenGLLights := MaxLights;
+          GetMem(Direct3DLightList, OpenGLLights * SizeOf(DWORD));
+          try
+            LightListIndex:=Direct3DLightList;
+            for LightNR:=0 to MaxLights-1 do
+            begin
+              // If this spot in the list is empty: stop
+              if TempLightList[LightNR].LightBrightness < 0 then
+                break;
+              // If this light is fainter than cFaintLightFactor times the brightest light: stop
+              // This is to reduce the amount of lights used per surface in a consistent manner
+              if TempLightList[LightNR].LightBrightness < TempLightList[0].LightBrightness * cFaintLightFactor then
+                break;
+              // Found a light we want; add it to the list
+              LightListIndex^:=TempLightList[LightNR].LightNumber;
+              NumberOfLightsInList:=NumberOfLightsInList+1;
+              Inc(LightListIndex);
+            end;
+          finally
+            if NumberOfLightsInList<>0 then
+            begin
+              OpenGLLights:=NumberOfLightsInList;
+              ReAllocMem(Direct3DLightList, OpenGLLights * SizeOf(DWORD));
+            end
+            else
+            begin
+              FreeMem(Direct3DLightList);
+              Direct3DLightList := nil;
+              OpenGLLights := 0;
+            end
+          end;
+          if VertexCount>=0 then
+            Inc(PVertex3D(Surf), VertexCount)
+          else
+            Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+        end;
+      end;
+      PS:=PS^.Next;
+    end;
+  end;
 end;
 
 procedure TDirect3DSceneObject.Render3DView;
@@ -940,9 +1216,6 @@ begin
     if (l_Res <> 0) then
       raise EErrorFmt(6403, ['SetTransform', DXGetErrorString9(l_Res)]);
 
-//    m_CurrentAlpha  :=0;
-//    m_CurrentColor:=0;
-
     PList:=ListSurfaces;
     while Assigned(PList) do
     begin
@@ -993,11 +1266,18 @@ var
   l_Res: HResult;
   PV, PVBase, PV1, PV2, PV3: PVertex3D;
   NeedTex, NeedColor: Boolean;
+  PO: PDWORD;
+  LightNR: DWORD;
   I: Integer;
   NTriangles: Cardinal;
   VertexBuffer: IDirect3DVertexBuffer9;
   IndexBuffer: IDirect3DIndexBuffer9;
   pBuffer: PVertex3D;
+
+  PSD: TPixelSetDescription;
+  Currentf, CurrentfTMP: array[0..3] of float;
+
+  material: D3DMATERIAL9;
 begin
   case RenderMode of
   rmWireframe:
@@ -1028,11 +1308,73 @@ begin
       if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
       and (SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
       begin
-        if AlphaColor<>m_CurrentAlpha then
+        if Lighting and (LightingQuality=0) then
         begin
-          m_CurrentAlpha := AlphaColor;
-          m_CurrentColor := m_CurrentAlpha;
+          //First, disable all lights
+          //
+          //DanielPharos: This line fixes a subtle bug. LightNR is a cardinal, so if it's
+          //zero, the max bound of the for-loop overflows into max_int. -> The loop isn't
+          //skipped!
+          if NumberOfLights <> 0 then
+          //
+          for LightNR := 0 to NumberOfLights-1 do
+          begin
+            l_Res:=D3DDevice.LightEnable(LightNR, False);
+            if (l_Res <> D3D_OK) then
+              raise EErrorFmt(6403, ['LightEnable', DXGetErrorString9(l_Res)]);
+          end;
+
+          //Next, enable the lights we want
+          //
+          //DanielPharos: This line fixes a subtle bug. LightNR is a cardinal, so if it's
+          //zero, the max bound of the for-loop overflows into max_int. -> The loop isn't
+          //skipped!
+          if OpenGLLights <> 0 then
+          //
+          PO:=Direct3DLightList;
+          for LightNR := 0 to OpenGLLights-1 do
+          begin
+            l_Res:=D3DDevice.LightEnable(PO^, True);
+            if (l_Res <> D3D_OK) then
+              raise EErrorFmt(6403, ['LightEnable', DXGetErrorString9(l_Res)]);
+
+            Inc(PO, 1);
+          end;
         end;
+
+        UnpackColor(AlphaColor, Currentf);
+
+        ZeroMemory(@material, sizeof(material));
+        if NeedColor then
+        begin
+          with PList^.Texture^ do
+          begin
+            if MeanColor = MeanColorNotComputed then
+            begin
+              PSD:=GetTex3Description(PList^.Texture^);
+              try
+                MeanColor:=ComputeMeanColor(PSD);
+              finally
+                PSD.Done;
+              end;
+            end;
+            UnpackColor(MeanColor, CurrentfTMP);
+            Currentf[0]:=Currentf[0]*CurrentfTMP[0];
+            Currentf[1]:=Currentf[1]*CurrentfTMP[1];
+            Currentf[2]:=Currentf[2]*CurrentfTMP[2];
+            Currentf[3]:=Currentf[3];
+          end;
+          //SwapColors?!?
+
+          material.Diffuse := D3DXCOLOR(Currentf[0], Currentf[1], Currentf[2], Currentf[3]);
+          //material.Ambient := D3DXCOLOR(1.0, 1.0, 1.0, 1.0);
+        end
+        else
+          material.Diffuse := D3DXCOLOR(1.0, 1.0, 1.0, 1.0);
+
+        l_Res:=D3DDevice.SetMaterial(material);
+        if (l_Res <> D3D_OK) then
+          raise EErrorFmt(6403, ['SetMaterial', DXGetErrorString9(l_Res)]);
 
         if NeedTex then
         begin
@@ -1116,13 +1458,6 @@ begin
         end
         else
         begin { strip }
-(*
-          for I:=1 to -VertexCount do
-          begin
-            l_TriangleStrip[i].color := m_CurrentColor;
-          end;
-*)
-
           l_Res:=D3DDevice.CreateVertexBuffer((-VertexCount)*SizeOf(TVertex3D), D3DUSAGE_WRITEONLY, FVFType, D3DPOOL_DEFAULT, VertexBuffer, nil);
           if (l_Res <> D3D_OK) then
             raise EErrorFmt(6403, ['RenderPList_CreateVertexBuffer', DXGetErrorString9(l_Res)]);

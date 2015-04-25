@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2014/10/25 09:33:21  danielpharos
+Made sure to release Direct3D textures when needed.
+
 Revision 1.56  2014/10/24 20:40:57  danielpharos
 Changed to store Direct3D textures in the right place.
 
@@ -274,9 +277,10 @@ type
                Normale: vec3_t;          { not defined if GL_TRI_STRIP }
                Dist: scalar_t;           { not defined if GL_TRI_STRIP }
                GlideRadius: scalar_t;
-               OpenGLLights: Integer;
+               OpenGLLights: Integer; //Note: Also used for Direct3D
                OpenGLLightList: PGLenum; //GLenum = type of GL_LIGHT0. Together with OpenGLLights, this is just an array, but we can't use array here since SizeOf(TSurface3D) needs to be constant and we're GetMem-constructing this record all the time.
-               OpenGLAveragePosition: vec3_t;
+               OpenGLAveragePosition: vec3_t; //Note: Also used for Direct3D
+               Direct3DLightList: PDWORD;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: TColorRef;
                TextureMode: Integer;
