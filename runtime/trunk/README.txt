@@ -32,11 +32,11 @@ Contents
 
 QuArK is the Quake Army Knife, a multi-purpose tool for games based on
 or similar to the Quake engine by id Software.  QuArK has the ability
-to directly edit maps, and to a limited extent, models, and can
-import, export and convert sounds, textures and various other game
-assets. It is also able to modify .pak and .pk3 files, as well as
-importing compiled BSP's in order to study the entities as well as
-add/change/delete entities from these files.
+to directly edit maps, as well as models, and can import, export and
+convert sounds, textures and various other game assets. It is also able
+to modify .pak and .pk3 files, as well as importing compiled BSP's in
+order to study the entities as well as add/change/delete entities from
+these files.
 
 QuArK is completely different from and not related to the desktop
 publishing program Quark.
@@ -58,7 +58,7 @@ http://sourceforge.net/projects/quark.
 
 Source archives are also available, or you could use anonymous cvs to
 checkout the sources from our SourceForge cvs repository (the project
-name is `quark`).
+name is 'quark').
 
 
 3. What are the system requirements for QuArk?
@@ -129,8 +129,8 @@ and post questions and get answers to suit your particular needs.
 6. What's New
 -------------
 
-Read the `NEWS.txt` file in the same directory as this file, which is the
-folder that QuArK was installed in. This file gives a listing of new and
+Read the 'NEWS.txt' file in the same directory as this file, which is the
+folder that QuArK was installed in.  This file gives a listing of new and
 improved items for this installation and previous versions of QuArK in
 their distribution order.
 
@@ -138,7 +138,7 @@ their distribution order.
 7. License
 ----------
 
-QuArK is distributed under the Gnu Public License.  See `COPYING.txt` in the
+QuArK is distributed under the Gnu Public License.  See 'COPYING.txt' in the
 same directory as this file, which is the folder that QuArK was installed in.
 
 
@@ -151,6 +151,9 @@ installed in.  This file also tries to give their last known e-mail address.
 However, because some have moved on they may not always still be active, and
 might not want to be contacted about QuArK.  Please don't bother people this way
 if you need help: see section 5.
+
+Additionally, there's the people that made QuArk possible through donations.
+They are listed in 'DONATORS.txt'. Thank you all!
 
 
 9. What is the GameCodeList.txt file?
