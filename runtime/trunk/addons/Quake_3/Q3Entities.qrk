@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2009/02/14 15:55:19  danielpharos
+//Fixed some Typ C --> CL's.
+//
 //Revision 1.7  2009/02/11 15:51:55  danielpharos
 //Corrected combobox types.
 //
@@ -65,13 +68,13 @@ QQRKSRC1
     Root = "Quake 3 Entities.qtxfolder"
     Quake 3 Entities.qtxfolder =
     {
-      Player Spawn Postions & Info_*.qtxfolder =
+      Player Spawn Positions & Info_*.qtxfolder =
       {
         info_player_deathmatch:e =
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Player spawing position for all Q3A maps."
+          ;desc = "Player spawning position for all Q3A maps."
         }
         info_player_intermission:e =
         {
@@ -88,13 +91,13 @@ QQRKSRC1
         info_null:e =
         {
           origin = "0 0 0"
-          ;desc = "A target for light to create a spotlight. A directional pointing entity. Can also use target_position"
+          ;desc = "A target for light to create a spotlight. A directional pointing entity. Can also use target_position."
         }
         info_notnull:e =
         {
           origin = "0 0 0"
           // Maleficus: Comment fixed
-          ;desc = "Used as a positional target for entities that use directional pointing. Can also use target_position"
+          ;desc = "Used as a positional target for entities that use directional pointing. Can also use target_position."
         }
       }
       Weapons & Ammo.qtxfolder =
@@ -219,7 +222,7 @@ QQRKSRC1
         }
       }
       // Maleficus: A new folder for the missing Q3 Bot entities.
-      Bot Entites.qtxfolder =
+      Bot Entities.qtxfolder =
       {
         info_camp:e =
         {
@@ -391,7 +394,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "Invisiblity power-up."
+          ;desc = "Invisibility power-up."
         }
         item_quad:e =
         {
@@ -584,7 +587,7 @@ QQRKSRC1
         trigger_multiple:b =
         {
           ;incl = "defpoly"
-          ;desc = "Will trigger everytime player comes in contact with it."
+          ;desc = "Will trigger every time player comes in contact with it."
         }
         trigger_push:b =
         {
@@ -3539,7 +3542,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3603,7 +3606,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3666,7 +3669,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3729,7 +3732,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3792,7 +3795,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3855,7 +3858,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3918,7 +3921,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -3981,7 +3984,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "Set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -4070,7 +4073,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not spawn in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not spawn in a Teamplay or CTF game. (Default value is 0)"
       }
 // Maleficus: the missing entities of the func_* group. Now in ALL func_*.
       light: =
@@ -4150,7 +4153,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       model2: =
       {
@@ -4249,7 +4252,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       light: =
       {
@@ -4328,7 +4331,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       model2: =
       {
@@ -4400,7 +4403,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       model2: =
       {
@@ -4489,7 +4492,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -4537,7 +4540,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4584,7 +4587,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       model2: =
       {
@@ -4679,7 +4682,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4720,7 +4723,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -4730,7 +4733,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4778,7 +4781,7 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notfree: =
       {
@@ -4788,7 +4791,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4840,7 +4843,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4871,7 +4874,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4895,7 +4898,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -4927,7 +4930,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       nobots: =
       {
@@ -5037,7 +5040,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5095,7 +5098,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5153,7 +5156,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5216,7 +5219,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5279,7 +5282,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5342,7 +5345,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5405,7 +5408,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5468,7 +5471,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5531,7 +5534,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5594,7 +5597,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5657,7 +5660,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5720,7 +5723,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5783,7 +5786,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -5886,7 +5889,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -5929,7 +5932,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     misc_teleporter_dest:form =
@@ -5954,7 +5957,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -5993,7 +5996,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6042,7 +6045,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     shooter_plasma:form =
@@ -6086,7 +6089,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     shooter_rocket:form =
@@ -6130,7 +6133,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     target_delay:form =
@@ -6169,7 +6172,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6198,7 +6201,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6222,7 +6225,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6251,7 +6254,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6275,7 +6278,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6304,7 +6307,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       notsingle: =
       {
@@ -6359,7 +6362,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       speed: =
       {
@@ -6398,7 +6401,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -6443,7 +6446,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     target_score:form =
@@ -6477,7 +6480,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     target_speaker:form =
@@ -6522,21 +6525,21 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
         Txt = "&"
         Typ = "X1"
         Cap = "LOOPED_ON"
-        Hint = "sound will loop and initially start on in level"
+        Hint = "sound will loop and initially start on in level."
       }
       spawnflags: =
       {
         Txt = "&"
         Typ = "X2"
         Cap = "LOOPED_OFF"
-        Hint = "sound will loop and initially start off in level"
+        Hint = "sound will loop and initially start off in level."
       }
       spawnflags: =
       {
@@ -6579,7 +6582,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     team_CTF_blueflag:form =
@@ -6659,7 +6662,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     trigger_hurt:form =
@@ -6673,7 +6676,7 @@ QQRKSRC1
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notfree: =
       {
@@ -6688,7 +6691,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -6728,7 +6731,7 @@ QQRKSRC1
       random: =
       {
         Txt = "&"
-        Hint = "random time variance in seconds added or subtracted from wait delay (default 0)"
+        Hint = "random time variance in seconds added or subtracted from wait delay. (Default value 0)"
       }
       wait: =
       {
@@ -6743,7 +6746,7 @@ QQRKSRC1
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notfree: =
       {
@@ -6753,7 +6756,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     trigger_push:form =
@@ -6767,7 +6770,7 @@ QQRKSRC1
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notfree: =
       {
@@ -6782,7 +6785,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     trigger_teleport:form =
@@ -6796,7 +6799,7 @@ QQRKSRC1
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notfree: =
       {
@@ -6811,7 +6814,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
     }
     weapon_bfg:form =
@@ -6832,12 +6835,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -6847,7 +6850,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       wait: =
       {
@@ -6867,7 +6870,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -6905,12 +6908,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -6920,7 +6923,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -6930,7 +6933,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -6968,12 +6971,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -6983,7 +6986,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -6993,7 +6996,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7031,12 +7034,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7046,7 +7049,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7056,7 +7059,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7094,12 +7097,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7109,7 +7112,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7119,7 +7122,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7157,12 +7160,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7172,7 +7175,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7182,7 +7185,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7220,12 +7223,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7235,7 +7238,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7245,7 +7248,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7283,12 +7286,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7298,7 +7301,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7308,7 +7311,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7346,12 +7349,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7361,7 +7364,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7371,7 +7374,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
@@ -7409,12 +7412,12 @@ QQRKSRC1
       team: =
       {
         Txt = "&"
-        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up"
+        Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
       notbot: =
       {
         Txt = "&"
-        Hint = "Bots will not trigger this"
+        Hint = "Bots will not trigger this."
       }
       notsingle: =
       {
@@ -7424,7 +7427,7 @@ QQRKSRC1
       count: =
       {
         Txt = "&"
-        Hint = "sets the amount of ammo given to the player when weapon is picked up"
+        Hint = "sets the amount of ammo given to the player when weapon is picked up."
       }
       notfree: =
       {
@@ -7434,7 +7437,7 @@ QQRKSRC1
       notteam: =
       {
         Txt = "&"
-        Hint = "This item will not work in a Teamplay or CTF game.(Default value is 0)"
+        Hint = "This item will not work in a Teamplay or CTF game. (Default value is 0)"
       }
       spawnflags: =
       {
