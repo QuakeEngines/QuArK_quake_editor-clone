@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2015/04/25 17:06:12  danielpharos
+Added Direct3D9 lighting.
+
 Revision 1.57  2014/10/25 09:33:21  danielpharos
 Made sure to release Direct3D textures when needed.
 
@@ -553,6 +556,12 @@ begin
              OpenGLLightList:=nil;
              OpenGLLights:=0;
            end;
+           if Direct3DLightList<>nil then
+           begin
+             FreeMem(Direct3DLightList);
+             Direct3DLightList:=nil;
+             OpenGLLights:=0;
+           end;
            if VertexCount>=0 then
              Inc(PVertex3D(Surf), VertexCount)
            else
@@ -766,6 +775,7 @@ var
 
         OpenGLLights := 0;
         OpenGLLightList := nil;
+        Direct3DLightList := nil;
         if nRadius2>Radius2 then
           GlideRadius:=Sqrt(nRadius2)
         else
@@ -1068,6 +1078,7 @@ begin
            VertexCount:=prvVertexCount;
            OpenGLLights := 0;
            OpenGLLightList := nil;
+           Direct3DLightList := nil;
 
            AlphaColor:=CurrentColor or ($FF000000);
            TextureMode:=0;
@@ -1287,6 +1298,7 @@ begin
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
                OpenGLLights := 0;
                OpenGLLightList := nil;
+               Direct3DLightList := nil;
 
                if NeedVertexList2 then
                begin
@@ -1404,6 +1416,7 @@ begin
                Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
                OpenGLLights := 0;
                OpenGLLightList := nil;
+               Direct3DLightList := nil;
 
                if NeedVertexList2 then
                begin
@@ -1517,6 +1530,7 @@ begin
                begin
                  OpenGLLights := 0;
                  OpenGLLightList := nil;
+                 Direct3DLightList := nil;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
                  TextureMode:=NewRenderMode;
