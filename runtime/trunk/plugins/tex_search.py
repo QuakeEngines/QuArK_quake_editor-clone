@@ -56,7 +56,7 @@ def tex_doit(s):
 
 class TextureSearchDlg(quarkpy.qmacro.dialogbox):
     # Dialog layout
-    size = (290, 117)
+    size = (290, 120)
     dfsep = 0.4     # separation at 40% between labels and edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
 
@@ -100,6 +100,9 @@ def openbox():
     TextureSearchDlg(f)
 
 # $Log$
+# Revision 1.9  2007/12/09 23:36:36  danielpharos
+# Fixed a typo.
+#
 # Revision 1.8  2005/10/15 00:51:56  cdunde
 # To reinstate headers and history
 #
