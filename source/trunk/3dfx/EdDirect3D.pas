@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2015/04/25 17:06:12  danielpharos
+Added Direct3D9 lighting.
+
 Revision 1.47  2015/04/25 10:04:43  danielpharos
 Implemented Direct3D fade/fog.
 
@@ -199,6 +202,7 @@ type
                 Next: PLightList;
                 Position: vec3_t;
                 Brightness: Double;
+                Color: TColorRef;
                end;
 
   TDirect3DSceneObject = class(TSceneObject)
@@ -397,10 +401,20 @@ begin
 end;
 
 procedure TDirect3DSceneObject.ReleaseResources;
+var
+  PList: PSurfaces;
 begin
   //FIXME: Set the RenderBackBuffer to something else, just in case...
   SwapChain:=nil;
   DepthStencilSurface:=nil;
+
+  //Release all the textures
+  PList:=ListSurfaces;
+  while Assigned(PList) do
+  begin
+    PList^.Texture^.Direct3DTexture:=nil;
+    PList:=PList^.Next;
+  end;
 end;
 
 destructor TDirect3DSceneObject.Destroy;
@@ -704,14 +718,6 @@ begin
     Exit;
   end;
 
-  l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
-
-  l_Res:=D3DDevice.SetDepthStencilSurface(nil);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
-
   if NeedReset then
   begin
     qrkDXState.ReleaseAllResources;
@@ -729,16 +735,22 @@ begin
       Exit;
     end;
 
-    //FIXME: We now need to reload all the textures and stuff!
-  end
-  else
-  begin
-    if not (DepthStencilSurface=nil) then
-      DepthStencilSurface:=nil;
-
-    if not (SwapChain=nil) then
-      SwapChain:=nil;
+    //FIXME: Also need to re-set all the state!
   end;
+
+  l_Res:=D3DDevice.SetRenderTarget(0, OrigBackBuffer);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetRenderTarget', DXGetErrorString9(l_Res)]);
+
+  l_Res:=D3DDevice.SetDepthStencilSurface(nil);
+  if (l_Res <> D3D_OK) then
+    raise EErrorFmt(6403, ['SetDepthStencilSurface', DXGetErrorString9(l_Res)]);
+
+  if not (DepthStencilSurface=nil) then
+    DepthStencilSurface:=nil;
+
+  if not (SwapChain=nil) then
+    SwapChain:=nil;
 
   l_Res:=D3DDevice.CreateAdditionalSwapChain(pPresParm, SwapChain);
   if (l_Res <> D3D_OK) then
@@ -761,24 +773,8 @@ end;
 
 procedure TDirect3DSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
 var
-  l_Res: HResult;
-  light: D3DLIGHT9;
   PL: PLightList;
 begin
-  light._Type := Direct3D9.D3DLIGHT_POINT;
-  light.Diffuse := D3DXColorFromDWord(SwapColor(Color) and $FFFFFF);
-  light.Position := D3DXVECTOR3(Position.X, Position.Y, Position.Z);
-  light.Range := MapLimitSmallest;
-
-  light.Attenuation0 := 1.0;
-  light.Attenuation1 := 0.0;
-  light.Attenuation2 := 5.0 / (Brightness * Brightness);
-
-  l_Res:=D3DDevice.SetLight(NumberOfLights, light);
-  if (l_Res <> D3D_OK) then
-    raise EErrorFmt(6403, ['SetLight', DXGetErrorString9(l_Res)]);
-
-  //Store the light as well
   New(PL);
 
   PL^.Next:=Lights;
@@ -789,6 +785,8 @@ begin
   PL^.Position[2]:=Position.Z;
 
   PL^.Brightness:=Brightness;
+
+  PL^.Color:=SwapColor(Color) and $FFFFFF;
 
   NumberOfLights:=NumberOfLights+1;
 end;
@@ -1044,6 +1042,9 @@ var
   l_Eye, l_At, l_Up: TD3DXVector3;
   l_AtTMP: TD3DXVector4;
   m_World, m_View, m_Projection: TD3DXMatrix;
+  light: D3DLIGHT9;
+  LightCurrent: DWORD;
+  PL: PLightList;
   PList: PSurfaces;
 begin
   if not Direct3DLoaded then
@@ -1215,6 +1216,27 @@ begin
     l_Res := D3DDevice.SetTransform(Direct3D9.D3DTS_PROJECTION, m_Projection);
     if (l_Res <> 0) then
       raise EErrorFmt(6403, ['SetTransform', DXGetErrorString9(l_Res)]);
+
+    PL:=Lights;
+    LightCurrent:=0;
+    while Assigned(PL) do
+    begin
+      light._Type := Direct3D9.D3DLIGHT_POINT;
+      light.Diffuse := D3DXColorFromDWord(PL^.Color);
+      light.Position := D3DXVECTOR3(PL^.Position[0], PL^.Position[1], PL^.Position[2]);
+      light.Range := MapLimitSmallest;
+
+      light.Attenuation0 := 1.0;
+      light.Attenuation1 := 0.0;
+      light.Attenuation2 := 5.0 / (PL^.Brightness * PL^.Brightness);
+
+      l_Res:=D3DDevice.SetLight(LightCurrent, light);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['SetLight', DXGetErrorString9(l_Res)]);
+
+      LightCurrent:=LightCurrent+1;
+      PL:=PL^.Next;
+    end;
 
     PList:=ListSurfaces;
     while Assigned(PList) do
@@ -1525,7 +1547,6 @@ begin
 
         //FIXME: Format hardcoded right now...
         //FIXME: MUST check the CAPS2 for dynamic texture!!!
-        //FIXME: Set the autogen for mipmaps...?
 
         //FIXME: Change to ASM, see OpenGL!
         for J:=1 to H do
