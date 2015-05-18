@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.114  2015/02/16 19:19:08  danielpharos
+Made some class members private.
+
 Revision 1.113  2014/03/09 17:33:52  danielpharos
 Added some logging if brushDef2or3 couldn't load texture.
 
@@ -2877,7 +2880,7 @@ begin
   UOff:=-Dot(QV0,P0);
   VOff:=-Dot(QV1,P0);
 
-  { up do this point, QV0,UOff and QV1,VOff seem to be identical to the
+  { up to this point, QV0,UOff and QV1,VOff seem to be identical to the
      quark.vects structure in zoner's }
 
   UAxis:=QV0;
@@ -3665,6 +3668,7 @@ var
  { tiglari }
  rval : Single; { for Value/lightvalue }
  Q: QPixelSet;
+ Size: TPoint;
  TextureName: String;
  Mirror, EtpMirror: Boolean;
  DecimalPlaces: Integer;
@@ -4034,6 +4038,27 @@ begin
           SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
 
           ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
+
+          //DanielPharos: Normalize the texture shift. If we don't do this,
+          //this causes a *lot* of texture info entries in the BSP file.
+          Q:=GlobalFindTexture(NomTex, Nil);
+          if Q<>Nil then
+            try
+              //Size:=Q.GetSize;
+              Size.X:=128;
+              Size.Y:=128;
+            except
+              Q:=Nil;
+            end;
+          if Q<>Nil then
+          begin
+            Params[1]:=Params[1] - Size.X * int(Params[1] / Size.X);
+            Params[2]:=Params[2] - Size.Y * int(Params[2] / Size.Y);
+          end;
+          //FIXME: Do this for other formats as well!
+          //FIXME: Also, make this an option! (Enabled by default!)
+          //FIXME: Progressbar? QuArK kinda hangs if all these textures can't be found!
+
           for I:=1 to 2 do
             S:=S+' '+IntToStr(Round(Params[I]));
           for I:=3 to 5 do
