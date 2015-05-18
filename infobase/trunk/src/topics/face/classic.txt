@@ -11,7 +11,7 @@ E.g.
 This is Quake; other games elaborate on this by putting various things
 after the five numbers, such as in Q2/3 the three fields (Content, Flags,
 Value) etc. (you can get an idea of the variations by studying the
-SaveAsMapTextTFace procedure in QkQuakeMap).
+SaveAsMapTextTFace procedure in QkMap).
 The way the five numbers work is that one imagines the texture as being
 plastered onto whatever of the three axis-planes is closest to parallel
 to the face, and then as being projected on the face, after being shifted,
@@ -28,6 +28,6 @@ world of floating point and roundoff errors.
 
 Anyway, this texture positioning scheme has difficulties with certain kinds
 of configurations, such as unpredictable results for faces making 45 degree
-angles to the axes, amd also makes it difficult to cause textures to move
+angles to the axes, and also makes it difficult to cause textures to move
 with faces when objects are shifted (since the textures are basically
 connected with axis planes, and projected onto the faces). 
