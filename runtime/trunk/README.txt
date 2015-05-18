@@ -18,7 +18,7 @@ Contents
 
 1. What is QuArK?
 2. Where can I get QuArK?
-3. What are the system requirements for QuArk?
+3. What are the system requirements for QuArK?
 4. How do I install QuArK?
 5. How do I get help?
 6. What's New
@@ -61,7 +61,7 @@ checkout the sources from our SourceForge cvs repository (the project
 name is 'quark').
 
 
-3. What are the system requirements for QuArk?
+3. What are the system requirements for QuArK?
 ----------------------------------------------
 
 Although the exact minimum system requirements are unknown and prone
