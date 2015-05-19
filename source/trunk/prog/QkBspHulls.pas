@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2012/03/22 13:12:24  danielpharos
+Removed unnecessary functions, and moved MipTex flag into Defaults.qrk.
+
 Revision 1.33  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -277,7 +280,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 implementation
 
 uses QkExceptions, QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D,
-     QkObjectClassList, Dialogs;
+     QkObjectClassList, Dialogs, Logging;
 
  {------------------------}
 
@@ -457,6 +460,8 @@ begin
     Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
     cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3,  LEdges)   div SizeOf(TLEdge);
     cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     NoBsp3,      Edges)    div SizeOf(TEdge);
+    Log(LOG_INFO, 'Loading BSP file: Got %d list edges!', [cLEdges]); //FIXME: Dictionary!
+    Log(LOG_INFO, 'Loading BSP file: Got %d edges!', [cEdges]); //FIXME: Dictionary!
   end else
   begin
     SurfaceSize:=Sizeof(TbQ3Surface);
@@ -474,6 +479,10 @@ begin
 
   Vertices:=PChar(FBsp.FVertices);
   cVertices:=FBsp.VertexCount;
+
+  Log(LOG_INFO, 'Loading BSP file: Got %d texinfos!', [cTexInfo]); //FIXME: Dictionary!
+  Log(LOG_INFO, 'Loading BSP file: Got %d planes!', [cPlanes]); //FIXME: Dictionary!
+  Log(LOG_INFO, 'Loading BSP file: Got %d vertices!', [cVertices]); //FIXME: Dictionary!
 
   Size1:=0;
   { for each face in the brush, reserve space for a Surface }
