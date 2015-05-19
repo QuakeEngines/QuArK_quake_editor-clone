@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.115  2015/05/18 19:18:07  danielpharos
+Attempt to fix large Quake 2 maps from having many unnecessary texinfo structures due to texture wrapping abuse by QuArK.
+
 Revision 1.114  2015/02/16 19:19:08  danielpharos
 Made some class members private.
 
@@ -4044,16 +4047,19 @@ begin
           Q:=GlobalFindTexture(NomTex, Nil);
           if Q<>Nil then
             try
-              //Size:=Q.GetSize;
-              Size.X:=128;
-              Size.Y:=128;
+              Size:=Q.GetSize;
             except
               Q:=Nil;
             end;
           if Q<>Nil then
           begin
-            Params[1]:=Params[1] - Size.X * int(Params[1] / Size.X);
-            Params[2]:=Params[2] - Size.Y * int(Params[2] / Size.Y);
+            //We're going to round later anyway, and we need integers here!
+            Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
+            Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
+            if Params[1] < 0 then
+              Params[1]:=Params[1] + Size.X;
+            if Params[2] < 0 then
+              Params[2]:=Params[2] + Size.Y;
           end;
           //FIXME: Do this for other formats as well!
           //FIXME: Also, make this an option! (Enabled by default!)
