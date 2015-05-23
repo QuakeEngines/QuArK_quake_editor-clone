@@ -1013,6 +1013,8 @@ Strings = {
     5770: "There were errors reading the map; please check the console.",
     5771: "Couldn't load texture '%s'; brushDef2 or brushDef3 texture scales may be incorrect!",
     5772: "Could not load shaderlist file '%s', even though it exists.",
+    5773: "Half Life Sprite Signature = %d, Should be: %d",
+    5774: "Half Life Sprite Version = %d, Should be: %d",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1094,6 +1096,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.162  2014/10/05 15:23:13  danielpharos
+#Fixed a mistyped term.
+#
 #Revision 1.161  2014/09/27 14:28:59  danielpharos
 #Fixed the Reset-button in the Configuration to do what people expected it to do.
 #

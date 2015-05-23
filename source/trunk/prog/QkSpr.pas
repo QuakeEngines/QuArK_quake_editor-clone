@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.20  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -286,9 +289,9 @@ begin
   ID_SPRHEADER:=(ord('P') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
   fs.ReadBuffer(dst,sizeof(dst));
   if dst.ident<>ID_SPRHEADER then
-    raise Exception.CreateFmt('Half Life Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SPRHEADER]);
+    raise EErrorFmt(5773, [dst.ident,ID_SPRHEADER]);
   if dst.version<>2 then
-    raise Exception.CreateFmt('Half Life Sprite Version = %d, Should be: %d',[dst.version,2]);
+    raise EErrorFmt(5774, [dst.version,2]);
   ObjectGameCode:=mjHalfLife;
   Self.Specifics.Add(format('SPR_STYPE=%d',[dst.sType]));
   Self.Specifics.Add(format('SPR_TXTYPE=%d',[dst.texformat]));
