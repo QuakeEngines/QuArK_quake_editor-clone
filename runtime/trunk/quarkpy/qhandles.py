@@ -294,7 +294,7 @@ class Rotate3DHandle(GenericHandle):
     def draw(self, view, cv, draghandle=None):
         "Draws the camera position eye line and ball handle"
         p1, p2 = view.proj(self.center), view.proj(self.pos)
-    ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+    ## To turn off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
         editor = self.editor
         import mdleditor
         if isinstance(editor, mdleditor.ModelEditor):
@@ -365,7 +365,7 @@ class Rotate3DHandle(GenericHandle):
 
     def drawred(self, redimages, view, redcolor, oldnormal=None):
             "Draws the camera position eye line above in red when dragging"
-        ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+        ## To turn off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
             if view.info["type"] == "3D":
                 if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
                 if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
@@ -533,7 +533,7 @@ class EyePosition(GenericHandle):
 
     def drawred(self, redimages, view, redcolor, oldpos=None):
         "Draws red x in place of camera position eye icon when dragging"
-    ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+    ## To turn off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
         if view.info["type"] == "3D":
             if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
             if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
@@ -556,7 +556,7 @@ class EyePosition(GenericHandle):
 
     def draw(self, view, cv, draghandle=None):
         "Draws the camera position eye icon"
-    ## To trun off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
+    ## To turn off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
         if view.info["type"] == "3D":
             if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1": return
             if view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1": return
@@ -2250,6 +2250,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.101  2011/10/06 20:13:37  danielpharos
+#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
+#
 #Revision 1.100  2011/03/15 08:25:46  cdunde
 #Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #
