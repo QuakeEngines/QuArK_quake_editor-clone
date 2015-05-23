@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2015/02/01 16:05:58  danielpharos
+Improved verbose output for error messages.
+
 Revision 1.11  2010/04/02 16:51:58  danielpharos
 Created a new LogWindowsError procedure.
 
@@ -164,7 +167,7 @@ begin
    DummyStringList:=GlobalWarnings;
    try
      GlobalWarnings:=Nil;
-     //FIXME: ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning);
+     ShowTextBox('QuArK', 'There are warnings:', DummyStringList, mtWarning); //FIXME: Translation!
    finally
      DummyStringList.Free;
    end;
