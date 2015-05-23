@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2015/05/19 17:30:29  danielpharos
+Added some logging for BSP file format limits.
+
 Revision 1.34  2012/03/22 13:12:24  danielpharos
 Removed unnecessary functions, and moved MipTex flag into Defaults.qrk.
 
@@ -280,7 +283,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 implementation
 
 uses QkExceptions, QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D,
-     QkObjectClassList, Dialogs, Logging;
+     QkObjectClassList, Dialogs, Travail, Logging;
 
  {------------------------}
 
@@ -389,6 +392,8 @@ var
 
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
+ Log(LOG_INFO, LoadStr1(5466), [Index]);
+
  // Initialize variables
  PChar(LEdge) := #0;
  PlaneDist := 0;
@@ -407,7 +412,7 @@ begin
    HullQ1:  Size1:=SizeOf(THull);
    HullHx:  Size1:=SizeOf(THullH2);
    HullQ2:  Size1:=SizeOf(THullQ2);
-   HullQ3:   Size1:=SizeOf(THullQ3);
+   HullQ3:  Size1:=SizeOf(THullQ3);
   else Exit;
   end;
   I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
@@ -518,8 +523,10 @@ begin
 
   SubElements.Capacity:=NbFaces;
 
+  ProgressIndicatorStart(5463, NbFaces); try
   for I:=1 to NbFaces do
    begin
+    ProgressIndicatorIncrement;
     if q12surf then
     begin
       Inc(PChar(Faces), SurfaceSize);
@@ -763,6 +770,9 @@ begin
     Face.LinkSurface(Surface1);
     PChar(Surface1):=PChar(Dest);
    end;
+  finally
+   ProgressIndicatorStop;
+  end;
 
   if InvFaces>0 then
    GlobalWarning(FmtLoadStr1(5638, [Index, InvFaces, LastError]));

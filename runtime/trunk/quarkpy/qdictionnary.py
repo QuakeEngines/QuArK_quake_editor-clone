@@ -745,6 +745,10 @@ Strings = {
     5460: "preparing Models...",
     5461: "Loading from pak file...",
     5462: "Searching online for updates...",
+    5463: "Loading .bsp hull...",
+    5464: "Exporting .map worldspawn...",
+    5465: "Could not load texture %s; cannot unwrap texture coordinates!",
+    5466: "Loading BSP file: Going to load index %d...",
 
     5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
@@ -1096,6 +1100,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.163  2015/05/23 16:00:10  danielpharos
+#Moved two strings to dictionary, and fixed a typo in one of them.
+#
 #Revision 1.162  2014/10/05 15:23:13  danielpharos
 #Fixed a mistyped term.
 #

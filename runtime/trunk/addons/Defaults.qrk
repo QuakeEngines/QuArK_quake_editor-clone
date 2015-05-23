@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.550  2015/04/17 19:35:35  danielpharos
+//Added bilinear texture filtering, and the start of the higher filter settings.
+//
 //Revision 1.549  2015/01/09 20:08:31  danielpharos
 //Changed default hotkey of Rebuild3D to a more conventional one.
 //
@@ -4321,6 +4324,7 @@ QQRKSRC1
       {
         TextureNameCheck = "1"
         TextureEmptyNameValid = "1"
+        UnwrapCoordinates = "1"
         Form = "FilesTextures"
       }
       DevIL:config =
@@ -8580,6 +8584,7 @@ QQRKSRC1
       Style = "7"
       TextureNameCheck: = {Typ="X" Txt="Texture name check" Cap="Enabled" Hint = "Enables the checking of texture names to check for texture integrity."}
       TextureEmptyNameValid: = {Typ="X" Txt="Empty texture name is always valid" Cap="Enabled" Hint = "Treats empty texture names as always valid."}
+      UnwrapCoordinates: = {Typ="X" Txt="Unwrap texture coordinates" Cap="Enabled" Hint = "Unwrap texture coordinates by removing multiples of texture width/height."$0D"(Only affects "$22"Classic Quake"$22", "$22"Quark etp"$22" and "$22"Valve 220"$22" texture formats.)"}
     }
     FilesDevIL:form =
     {

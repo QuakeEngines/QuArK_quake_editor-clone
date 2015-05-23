@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.116  2015/05/19 17:31:04  danielpharos
+Small improvement of previous commit, and remove its debugging code.
+
 Revision 1.115  2015/05/18 19:18:07  danielpharos
 Attempt to fix large Quake 2 maps from having many unnecessary texinfo structures due to texture wrapping abuse by QuArK.
 
@@ -1480,9 +1483,9 @@ expected one.
   PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
  begin
    PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
-   PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
+   PP1:=VecSum(PP0,VecScale(Params[4]*EchelleTexture,UAxis));
     { note p.i.t.a sign-flip }
-   PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
+   PP2:=VecSum(PP0,VecScale(-Params[5]*EchelleTexture,VAxis));
    with Surface do
    begin
      TexNorm:=Cross(UAxis,VAxis);
@@ -2769,6 +2772,8 @@ var
   S1, S2, UOff, VOff : Double;
   Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
   QV0, QV1, UAxis, VAxis : TVect; // from Zoners
+  Q: QPixelSet;
+  Size: TPoint;
   DecimalPlaces : Integer;
 
   procedure write4vect(const V: TVect; D : Double; var S: String);
@@ -2839,8 +2844,8 @@ begin
   P2:=ProjectPointToPlane(PP2, Axis, Origin, Axis);
 
   // D1|D2 = Zoner's TexPt[0|1]
-  D1:= VecScale(1.0/128.0, VecDiff(P1, P0));
-  D2:= VecScale(1.0/128.0, VecDiff(P2, P0));
+  D1:= VecScale(1.0/EchelleTexture, VecDiff(P1, P0));
+  D2:= VecScale(1.0/EchelleTexture, VecDiff(P2, P0));
  {
         dot22 = DotProduct(TexPt[0], TexPt[0]);
         dot23 = DotProduct(TexPt[0], TexPt[1]);
@@ -2882,6 +2887,30 @@ begin
 
   UOff:=-Dot(QV0,P0);
   VOff:=-Dot(QV1,P0);
+
+  if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
+  begin
+    //DanielPharos: Normalize the texture shift. If we don't do this,
+    //this causes a *lot* of texture info entries in the BSP file.
+    Q:=GlobalFindTexture(F.NomTex, Nil);
+    if Q<>Nil then
+     try
+      Size:=Q.GetSize;
+     except
+      Log(LOG_WARNING, LoadStr1(5465), [F.NomTex]);
+      Q:=Nil;
+     end;
+    if Q<>Nil then
+    begin
+      //We're going to round later anyway, and we need integers here!
+      UOff:=Round(UOff) mod Cardinal(Size.X);
+      VOff:=Round(VOff) mod Cardinal(Size.Y);
+      if UOff < 0 then
+        UOff:=UOff + Size.X;
+      if VOff < 0 then
+        VOff:=VOff + Size.Y;
+    end;
+  end;
 
   { up to this point, QV0,UOff and QV1,VOff seem to be identical to the
      quark.vects structure in zoner's }
@@ -3211,7 +3240,7 @@ begin
      Face.GetThreePointsUserTex, so if texture scale
      is 1:1, (P1-P0) will be texture width, P2-P0
      texture height.  In written out map, for 1:1
-     texture scale these #'s will be 128 }
+     texture scale these #'s will be 128 (EchelleTexture) }
 
     P0:=V[1];
     P2:=V[3]; P1:=V[2];
@@ -3386,11 +3415,21 @@ begin
           end;
          Break;
         end;
-    for I:=0 to Polyedres.Count-1 do
-     begin
-      Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
-      SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), MapSaveSettings, Texte, OriginBrush, Flags2);
-     end;
+
+     if (Flags2 and soOutsideWorldspawn = 0) then
+      ProgressIndicatorStart(5464, Polyedres.Count);
+     try
+      for I:=0 to Polyedres.Count-1 do
+       begin
+        if (Flags2 and soOutsideWorldspawn = 0) then
+         ProgressIndicatorIncrement;
+        Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
+        SaveAsMapTextTPolygon(TPolyedre(Polyedres[I]), MapSaveSettings, Texte, OriginBrush, Flags2);
+       end;
+      finally
+       if (Flags2 and soOutsideWorldspawn = 0) then
+        ProgressIndicatorStop;
+      end;
     { proceed with Bezier patches }
     I:=Polyedres.Count-1;
     Polyedres.Clear;
@@ -4042,28 +4081,29 @@ begin
 
           ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
 
-          //DanielPharos: Normalize the texture shift. If we don't do this,
-          //this causes a *lot* of texture info entries in the BSP file.
-          Q:=GlobalFindTexture(NomTex, Nil);
-          if Q<>Nil then
-            try
-              Size:=Q.GetSize;
-            except
-              Q:=Nil;
-            end;
-          if Q<>Nil then
+          if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
           begin
-            //We're going to round later anyway, and we need integers here!
-            Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
-            Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
-            if Params[1] < 0 then
-              Params[1]:=Params[1] + Size.X;
-            if Params[2] < 0 then
-              Params[2]:=Params[2] + Size.Y;
+            //DanielPharos: Normalize the texture shift. If we don't do this,
+            //this causes a *lot* of texture info entries in the BSP file.
+            Q:=GlobalFindTexture(NomTex, Nil);
+            if Q<>Nil then
+             try
+              Size:=Q.GetSize;
+             except
+              Log(LOG_WARNING, LoadStr1(5465), [NomTex]);
+              Q:=Nil;
+             end;
+            if Q<>Nil then
+            begin
+              //We're going to round later anyway, and we need integers here!
+              Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
+              Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
+              if Params[1] < 0 then
+                Params[1]:=Params[1] + Size.X;
+              if Params[2] < 0 then
+                Params[2]:=Params[2] + Size.Y;
+            end;
           end;
-          //FIXME: Do this for other formats as well!
-          //FIXME: Also, make this an option! (Enabled by default!)
-          //FIXME: Progressbar? QuArK kinda hangs if all these textures can't be found!
 
           for I:=1 to 2 do
             S:=S+' '+IntToStr(Round(Params[I]));
