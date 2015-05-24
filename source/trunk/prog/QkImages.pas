@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2015/02/16 19:19:09  danielpharos
+Made some class members private.
+
 Revision 1.35  2012/12/29 13:59:44  danielpharos
 Small improvements to DevIL error checking.
 
@@ -402,7 +405,7 @@ begin
     if ilLoadL(FileTypeDevIL, Pointer(RawBuffer), FSize)=IL_FALSE then
     begin
       CheckDevILError(ilGetError);
-      LogAndRaiseError(Format('Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.', [FormatName, FormatName]));
+      LogAndRaiseError(FmtLoadStr1(5736, [FormatName, FormatName]));
     end;
     CheckDevILError(ilGetError);
 
@@ -412,14 +415,14 @@ begin
     CheckDevILError(ilGetError);
     //DanielPharos: 46340 squared is just below the integer max value.
     if (Width>46340) or (Height>46340) then
-      LogAndRaiseError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
+      LogAndRaiseError(FmtLoadStr1(5737, [FormatName]));
     V[1]:=Width;
     V[2]:=Height;
     SetFloatsSpec('Size', V);
 
     if ilHasPalette then
     begin
-      //FIXME: Currently, no alpha is supported in palette-mode,
+      //DanielPharos: Currently, no alpha is supported in palette-mode,
       //so no need to check for that.
 
       //This is the padding for the 'Image1'-RGB array
@@ -445,7 +448,7 @@ begin
       PaletteSize:=ilGetInteger(IL_PALETTE_NUM_COLS);
       CheckDevILError(ilGetError);
       if (PaletteSize=0) or (PaletteSize>256) then
-        LogAndRaiseError(Format('Unable to load %s file. Invalid palette.', [FormatName]));
+        LogAndRaiseError(FmtLoadStr1(5738, [FormatName]));
 
       Source:=PByte(ilGetPalette);
       CheckDevILError(ilGetError);
@@ -647,11 +650,11 @@ begin
       CheckDevILError(ilGetError);
 
       if ilTexImage(Width, Height, 1, ImageBpp, ImageFormat, IL_UNSIGNED_BYTE, nil)=IL_FALSE then
-        LogAndRaiseError(Format('Unable to save %s file. Call to ilTexImage failed.', [FormatName]));
+        LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'ilTexImage']));
       CheckDevILError(ilGetError);
 
       if ilClearImage=IL_FALSE then
-        LogAndRaiseError(Format('Unable to save %s file. Call to ilClearImage failed.', [FormatName]));
+        LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'ilClearImage']));
       CheckDevILError(ilGetError);
 
       if PSD.Format = psf8bpp then
@@ -828,7 +831,7 @@ begin
     Height:=FreeImage_GetHeight(FIImage);
     //DanielPharos: 46340 squared is just below the integer max value.
     if (Width>46340) or (Height>46340) then
-      LogAndRaiseError(Format('Unable to load %s file. Picture is too large.', [FormatName]));
+      LogAndRaiseError(FmtLoadStr1(5737, [FormatName]));
     V[1]:=Width;
     V[2]:=Height;
     SetFloatsSpec('Size', V);
@@ -1024,7 +1027,7 @@ begin
     //FIImage:=FreeImage_Allocate(Width, Height, FIBpp, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK);
     FIImage:=FreeImage_Allocate(Width, Height, FIBpp, 0, 0, 0);
     if FIImage=nil then
-      LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_Allocate failed.', [FormatName]));
+      LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'FreeImage_Allocate']));
 
     if PSD.Format = psf8bpp then
     begin
@@ -1127,12 +1130,12 @@ begin
 
   FIBuffer := FreeImage_OpenMemory(nil, 0);
   if FIBuffer = nil then
-    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_OpenMemory failed.', [FormatName]));
+    LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'FreeImage_OpenMemory']));
 
   if FreeImage_SaveToMemory(FileTypeFreeImage, FIImage, FIBuffer, SaveFileFreeImageSettings)=false then
   begin
     FreeImage_CloseMemory(FIBuffer);
-    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_SaveToMemory failed.', [FormatName]));
+    LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'FreeImage_SaveToMemory']));
   end;
   FreeImage_Unload(FIImage); //FIXME: Put in try..finally
 
@@ -1141,17 +1144,17 @@ begin
   if FreeImage_SeekMemory(FIBuffer, 0, SEEK_SET)=false then
   begin
     FreeImage_CloseMemory(FIBuffer);
-    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_SeekMemory failed.', [FormatName]));
+    LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'FreeImage_SeekMemory']));
   end;
   OutputSize:=FreeImage_ReadMemory(Pointer(RawBuffer), 1, OutputSize, FIBuffer);
   if OutputSize=0 then
   begin
     FreeImage_CloseMemory(FIBuffer);
-    LogAndRaiseError(Format('Unable to save %s file. Call to FreeImage_ReadMemory failed.', [FormatName]));
+    LogAndRaiseError(FmtLoadStr1(5739, [FormatName, 'FreeImage_ReadMemory']));
   end;
   FreeImage_CloseMemory(FIBuffer); //FIXME: Put in try..finally
 
-  Info.F.WriteBuffer(Pointer(RawBuffer)^,OutputSize);
+  Info.F.WriteBuffer(Pointer(RawBuffer)^, OutputSize);
 end;
 
 function QImage.OpenWindow(nOwner: TComponent) : TQForm1;

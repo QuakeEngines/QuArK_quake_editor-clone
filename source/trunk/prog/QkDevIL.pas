@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2012/12/29 13:59:44  danielpharos
+Small improvements to DevIL error checking.
+
 Revision 1.30  2010/05/23 15:56:46  danielpharos
 Added some logging during loading and unloading of some external libraries.
 
@@ -423,7 +426,7 @@ procedure CheckDevILError(DevILError: DevILError);
 
 implementation
 
-uses Setup, QkExceptions, Logging, QkApplPaths;
+uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
   TimesLoaded: Integer;
@@ -435,7 +438,7 @@ begin
   if Result = Nil then
   begin
     LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
-    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the DevIL library');
+    LogAndRaiseError(FmtLoadStr1(5743, [APIFuncname, 'DevIL']));
   end;
 end;
 
@@ -447,14 +450,14 @@ begin
   begin
     if (HDevIL = 0) then
     begin
-      Log(LOG_VERBOSE, 'Loading DevIL...');
-
       DevILLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'DevIL.dll']);
+      Log(LOG_INFO, LoadStr1(5740), ['DevIL', DevILLibraryFilename]);
+
       HDevIL := LoadLibrary(PChar(DevILLibraryFilename));
       if HDevIL = 0 then
       begin
         LogWindowsError(GetLastError(), 'LoadLibrary("'+DevILLibraryFilename+'")');
-        LogAndRaiseError('Unable to load the DevIL library');
+        LogAndRaiseError(FmtLoadStr1(5741, ['DevIL']));
       end;
 
       ilInit            := InitDllPointer(HDevIL, 'ilInit');
@@ -491,11 +494,12 @@ begin
       ilRegisterPal     := InitDllPointer(HDevIL, 'ilRegisterPal');
 
       if ilGetInteger(IL_VERSION_NUM) < 178 then
-        LogAndRaiseError('DevIL library version mismatch!');
+        LogAndRaiseError(FmtLoadStr1(5742, ['DevIL']));
 
       ilInit;
+      CheckDevILError(ilGetError);
 
-      Log(LOG_VERBOSE, 'DevIL loaded!');
+      Log(LOG_VERBOSE, 'DevIL library loaded!');
     end;
 
     TimesLoaded := 1;

@@ -991,6 +991,14 @@ Strings = {
     5733: "VPK folder",
     5734: "NCF file",
     5735: "NCF folder",
+    5736: "Unable to load %s file. Call to ilLoadL failed. Please make sure the file is a valid %s file, and not damaged or corrupt.",
+    5737: "Unable to load %s file. Picture is too large.",
+    5738: "Unable to load %s file. Invalid palette.",
+    5739: "Unable to save %s file. Call to %s failed.",
+    5740: "Loading %s library from file %s...",
+    5741: "Unable to load the %s library!",
+    5742: "%s library version mismatch!",
+    5743: "API call '%s' not found in the %s library!",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
     5750: "Material '%s' has no image to display",
@@ -1103,6 +1111,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.165  2015/05/24 09:27:11  danielpharos
+#Moved three strings to the dictionary.
+#
 #Revision 1.164  2015/05/23 16:10:21  danielpharos
 #Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
 #

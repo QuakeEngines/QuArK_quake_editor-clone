@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2010/05/23 15:56:46  danielpharos
+Added some logging during loading and unloading of some external libraries.
+
 Revision 1.18  2010/04/16 19:07:57  danielpharos
 Added default value for ForceUnload argument.
 
@@ -276,7 +279,7 @@ begin
   if Result = Nil then
   begin
     LogWindowsError(GetLastError(), 'GetProcAddress(DLLHandle, "'+APIFuncname+'")');
-    LogAndRaiseError('API Func "'+APIFuncname+ '" not found in the FreeImage library');
+    LogAndRaiseError(FmtLoadStr1(5743, [APIFuncname, 'FreeImage']));
   end;
 end;
 
@@ -294,14 +297,14 @@ begin
   begin
     if (HFreeImage = 0) then
     begin
-      Log(LOG_VERBOSE, 'Loading FreeImage...');
-
       FreeImageLibraryFilename := ConcatPaths([GetQPath(pQuArKDll), 'FreeImage.dll']);
+      Log(LOG_INFO, LoadStr1(5740), ['FreeImage', FreeImageLibraryFilename]);
+
       HFreeImage := LoadLibrary(PChar(FreeImageLibraryFilename));
       if HFreeImage = 0 then
       begin
         LogWindowsError(GetLastError(), 'LoadLibrary("'+FreeImageLibraryFilename+'")');
-        LogAndRaiseError('Unable to load the FreeImage library');
+        LogAndRaiseError(FmtLoadStr1(5741, ['FreeImage']));
       end;
 
       //FreeImage_Initialise   := InitDllPointer(HFreeImage, '_FreeImage_Initialise@4');
@@ -339,20 +342,20 @@ begin
       VersionNumber:=SplitVersionNumber(FreeImage_GetVersion);
       if Length(VersionNumber) < 3 then
         //Malformed FreeImage version number
-        LogAndRaiseError('FreeImage library version mismatch!');
+        LogAndRaiseError(FmtLoadStr1(5742, ['FreeImage']));
       if (VersionNumber[0] <> 3) then
         //We only support the 3.x releases
-        LogAndRaiseError('FreeImage library version mismatch!');
+        LogAndRaiseError(FmtLoadStr1(5742, ['FreeImage']));
       if (VersionNumber[1] < 9) then
         //We only support the 3.9.x and higher releases
-        LogAndRaiseError('FreeImage library version mismatch!');
+        LogAndRaiseError(FmtLoadStr1(5742, ['FreeImage']));
       if (VersionNumber[1] = 9) and (VersionNumber[2] < 3) then
         //We only support the 3.9.3 and higher releases of the 3.9.x releases
-        LogAndRaiseError('FreeImage library version mismatch!');
+        LogAndRaiseError(FmtLoadStr1(5742, ['FreeImage']));
 
       FreeImage_SetOutputMessage(FreeImageErrorHandler);
 
-      Log(LOG_VERBOSE, 'FreeImage loaded!');
+      Log(LOG_VERBOSE, 'FreeImage library loaded!');
     end;
 
     TimesLoaded := 1;
