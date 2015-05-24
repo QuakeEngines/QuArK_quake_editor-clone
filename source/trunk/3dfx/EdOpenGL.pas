@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.100  2015/04/25 17:06:01  danielpharos
+Removed unneeded variable, and some other small cleanups.
+
 Revision 1.99  2011/07/29 19:23:19  danielpharos
 Added a new OpenGL lighting quality setting.
 
@@ -1124,7 +1127,7 @@ begin
   else
   begin
     //Backward compatibility
-    Log(LOG_WARNING, 'OpenGL Init: Texture Filtering setting missing or invalid!'); //@MOVE to dict!
+    Log(LOG_WARNING, LoadStr1(6306));
     if Setup.Specifics.Values['Bilinear']<>'' then
       TextureFiltering := tfBilinear
     else
@@ -1169,7 +1172,7 @@ begin
     CheckOpenGLError('Init: GL_MAX_LIGHTS');
     if MaxLights < 8 then //8 is the minimum demanded by the OpenGL spec.
     begin
-      Log(LOG_WARNING, 'OpenGL Init: OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.'); //FIXME: MOVE to dict!
+      Log(LOG_WARNING, LoadStr1(6307));
       Lighting:=false;
     end;
 
@@ -1181,7 +1184,7 @@ begin
     begin
       if TextureFiltering = tfAnisotropic then
       begin
-        Log(LOG_INFO, 'OpenGL Init: Anisotropic texture filtering not support. Falling back to trilinear texture filtering.'); //@MOVE to dict!
+        Log(LOG_INFO, LoadStr1(6308));
         TextureFiltering := tfTrilinear;
       end;
     end;

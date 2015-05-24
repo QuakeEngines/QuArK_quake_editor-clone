@@ -1054,6 +1054,9 @@ Strings = {
     6303: "An error '%s' occurred in the OpenGL routine '%s'",
     6304: "Unable to load OpenGL extension list. All OpenGL extensions will be disabled",
     6305: "Error in OpenGL finalization//'%s' failed",
+    6306: "OpenGL texture filtering setting missing or invalid!",
+    6307: "OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.",
+    6308: "OpenGL anisotropic texture filtering not support. Falling back to trilinear texture filtering.",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
     6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -1100,6 +1103,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.164  2015/05/23 16:10:21  danielpharos
+#Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
+#
 #Revision 1.163  2015/05/23 16:00:10  danielpharos
 #Moved two strings to dictionary, and fixed a typo in one of them.
 #
