@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.551  2015/05/23 16:10:21  danielpharos
+//Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
+//
 //Revision 1.550  2015/04/17 19:35:35  danielpharos
 //Added bilinear texture filtering, and the start of the higher filter settings.
 //
@@ -5184,7 +5187,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5297,7 +5300,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5403,7 +5406,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5481,7 +5484,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5585,7 +5588,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5690,7 +5693,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5797,7 +5800,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5890,7 +5893,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -5983,7 +5986,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6209,7 +6212,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6375,7 +6378,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6474,7 +6477,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6571,7 +6574,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6668,7 +6671,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6762,7 +6765,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -6907,7 +6910,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7014,7 +7017,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7118,7 +7121,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7211,7 +7214,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7310,7 +7313,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7416,7 +7419,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7520,7 +7523,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7626,7 +7629,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7731,7 +7734,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7825,7 +7828,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -7919,7 +7922,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -8022,7 +8025,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -8163,7 +8166,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -8283,7 +8286,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -8361,7 +8364,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -8565,7 +8568,7 @@ QQRKSRC1
       {
         Txt = "Game Light saturation"
         Typ = "EF1"
-        Hint = "Larger values make darker scenes. Only works is lighting has been enabled."
+        Hint = "Larger values make darker scenes. Only works if lighting has been enabled."
       }
       DecimalPlaces: = {
         Txt = "No. of decimal places for brushes and beziers."
@@ -9680,7 +9683,7 @@ QQRKSRC1
         Items  = "2" $0D "3" $0D "4" $0D "5" $0D "6"
         Values = "2" $0D "3" $0D "4" $0D "5" $0D "6"
         Hint = "The higher the value, the higher the quality of lighting, but the slower the rendering will be. (It's the maximum number of subdivisions per face.)"
-            $0D"(Lighting needs to be enabled for this options to be effective)"
+            $0D"(Lighting needs to be enabled for this option to be effective)"
       }
       StillQuality: = {
         Txt="Lighting quality when not moving"
@@ -9688,7 +9691,7 @@ QQRKSRC1
         Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
-            $0D"(Lighting needs to be enabled for this options to be effective)"
+            $0D"(Lighting needs to be enabled for this option to be effective)"
       }
       MovingQuality: = {
         Txt="Lighting quality while moving"
@@ -9696,7 +9699,7 @@ QQRKSRC1
         Items  = "OpenGL lighting" $0D "Basic lighting" $0D "No lighting"
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
-            $0D"(Lighting needs to be enabled for this options to be effective)"
+            $0D"(Lighting needs to be enabled for this option to be effective)"
       }
     }
     GeneralDirectX:form =
@@ -9777,7 +9780,7 @@ QQRKSRC1
       UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
       GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory (e.g. textures)"}
       GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
-      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
+      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of compression to use for zip files (0 .. 9)"}
       CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
     }
     GeneralUpdate:form =
