@@ -1632,7 +1632,7 @@ def MouseClicked(self, view, x, y, s, handle):
     try:
         editor = mapeditor()
         if editor is not None:
-            if isinstance(handle, PFaceHandle) and isinstance(editor.findtargetdlg, plugins.maptexpos.TexPosDlg):
+            if isinstance(handle, PFaceHandle) and isinstance(editor.texposdlg, plugins.maptexpos.TexPosDlg):
                 o = editor.layout.explorer.uniquesel
                 m = qmenu.item("Dummy", None, "")
                 m.o = o
@@ -2022,6 +2022,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.73  2008/09/29 21:59:51  danielpharos
+#Fixed a typo.
+#
 #Revision 1.72  2008/05/27 19:33:57  danielpharos
 #Fix typo
 #
