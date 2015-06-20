@@ -102,7 +102,6 @@ def read2vec(vals):
 
 def PosTexClick(m):
   editor = mapeditor()
-  if editor is None: return
   
   class pack:
     "just a place to stick stuff"
@@ -110,7 +109,7 @@ def PosTexClick(m):
   pack.o = m.o
   
   def setup(self, pack=pack):
-    editor.findtargetdlg=self
+    editor.texposdlg=self
     src = self.src
     face = pack.o
     p0, p1, p2 = face.threepoints(2)
@@ -158,10 +157,22 @@ def PosTexClick(m):
     undo_exchange(editor, face, f2, "position texture")
     pack.o = f2
 
+  #
+  # Cleanup when dialog closes (not needed if no mess has
+  #  been created)
+  #
+  def onclosing(self,editor=editor):
+    del editor.texposdlg
 
-    
-  TexPosDlg(quarkx.clickform, 'texpos', editor, setup, action)
-    
+  try:
+    openDlg = editor.texposdlg
+  except:
+    openDlg = None
+  if openDlg:
+    setup(openDlg, pack)
+    return
+  TexPosDlg(quarkx.clickform, 'texpos', editor, setup, action, onclosing)
+
 
 def texmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
   "the new right-mouse for sides"
@@ -178,6 +189,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.11  2007/11/29 23:39:00  cdunde
+# Changed to keep Texture Position dialog open and update dynamically.
+#
 # Revision 1.10  2005/10/15 00:51:56  cdunde
 # To reinstate headers and history
 #
