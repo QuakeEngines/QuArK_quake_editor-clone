@@ -116,7 +116,6 @@ def PlanesClick(m):
     planegroup = quarkx.newobj("Planes (%d):g"%len(planes))
     undo=quarkx.action()
     undo.put(root,planegroup)
-    i=0
     for plane in planes:
 #       debug('plane '+plane.shortname+': '+`plane['norm']`)
 #       debug('  dist: '+"%2f"%plane['dist'])
@@ -604,6 +603,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = bspfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2014/01/18 14:50:47  danielpharos
+#Removed some silly whitespace.
+#
 #Revision 1.13  2005/11/27 05:55:12  cdunde
 #To start header and history log
 #
