@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2012/09/05 18:18:59  danielpharos
+Moved some map options around to make them more findable, and to make them work again.
+
 Revision 1.57  2011/06/03 20:28:49  danielpharos
 Fixed RGB float color values not being clamped.
 
@@ -401,7 +404,7 @@ function ControleSelection(T: TTreeMap) : Boolean;
 implementation
 
 uses Setup, QkMapPoly, Undo, FormCfg, Game, QkMacro, Quarkx, QkExceptions, PyMath,
-     PyMapView, PyObjects, QkImages, Bezier, EdSceneObject,
+     PyMapView, PyObjects, QkImages, Bezier, EdSceneObject, Logging, StrUtils,
      QkObjectClassList, QkMD3, QkQkl, QkModelRoot, ExtraFunctionality;
 
  {------------------------}
@@ -1769,7 +1772,8 @@ end;*)
 
 function TTreeMapEntity.AddModelTo3DScene : Boolean;
 var
- S, MdlPath, MdlBase: String;
+ S, FullMdlPath, MdlPath, MdlBase: String;
+ MdlPathOffset: Cardinal;
  Q, FileObj1: QObject;
  Mdl: QModel;
  Frame1: QFrame;
@@ -1780,7 +1784,7 @@ var
  Model: PModel3DInfo;
  VSrc: vec3_p;
  VDest: vec3_p;
- I, K, Count: Integer;
+ I, J, K, Count: Integer;
  ModelOrg: vec3_t;
  RotVec: vec3_t;
  SkinDescr: String;
@@ -1790,39 +1794,60 @@ var
  mRotationMatrix:TMatrixTransformation;
 begin
  Result:=False;
- try
-   S:=GetFormName;
-   if S='' then
-     Exit;
 
-   Q:=CurrentMapView.EntityForms.FindLastShortName(S);
-   if Q=Nil then
-     Exit;
+ S:=GetFormName;
+ if S='' then
+   Exit;
 
-   Q.Acces;
+ Q:=CurrentMapView.EntityForms.FindLastShortName(S);
+ if Q=Nil then
+   Exit;
 
-   // here the specific is evaluated
-   MdlPath:=Q.Specifics.Values['mdl'];
-   if MdlPath='' then
-     Exit;
-   if (MdlPath[1]='[') and (MdlPath[length(mdlpath)]=']') then begin // uses model specified in entity (ie like in misc_model)
-     spec:=copy(mdlpath, 2, length(mdlpath)-2);
-     mdlpath:=Specifics.Values[spec];
+ Q.Acces;
+
+ // here the specific is evaluated
+ FullMdlPath:=Q.Specifics.Values['mdl'];
+ if FullMdlPath='' then
+   Exit;
+ if (FullMdlPath[1]='[') and (FullMdlPath[length(FullMdlPath)]=']') then // uses model specified in entity (ie like in misc_model)
+ begin
+   spec:=copy(FullMdlPath, 2, length(FullMdlPath)-2);
+   FullMdlPath:=Specifics.Values[spec];
+ end;
+
+ MdlPathOffset:=1;
+ while MdlPathOffset <> 0 do
+ begin
+   J:=PosEx(';', FullMdlPath, MdlPathOffset);
+   if J=0 then
+   begin
+     //This is the final entry
+     MdlPath:=copy(FullMdlPath, MdlPathOffset, length(FullMdlPath) - Integer(MdlPathOffset - 1));
+     MdlPathOffset:=0;
+   end
+   else
+   begin
+     MdlPath:=copy(FullMdlPath, MdlPathOffset, length(FullMdlPath) - J);
+     MdlPathOffset:=J+1;
    end;
 
    if mdlpath = '' then
-     exit;
+     Continue;
    if (mdlpath[1]='/') or (mdlpath[1]='\') then
      mdlpath:=copy(mdlpath, 2, length(mdlpath)-1);
 
    { loads mdl }
+   try
    MdlBase:=Q.Specifics.Values['mdlbase'];
    if MdlBase='' then
      FileObj1:=NeedGameFile(MdlPath, '')
    else
      FileObj1:=NeedGameFileBase(MdlBase, MdlPath, '');
    if (FileObj1 = nil) or not (FileObj1 is QModel) then
-     Exit;
+   begin
+     Log(LOG_INFO, LoadStr1(5775), [MdlPath, MdlBase]);
+     Continue;
+   end;
 
    Mdl:=QModel(FileObj1);
    Mdl.Acces;
@@ -1856,16 +1881,18 @@ begin
 
    Root:=Mdl.GetRoot;
    if Root=Nil then
-     Exit;
+   begin
+     Log(LOG_WARNING, LoadStr1(5776), [MdlPath]);
+     Continue;
+   end;
 
-   { prepare positionning }
+   { prepare positioning }
    with Origin do
    begin
      ModelOrg[0]:=X;
      ModelOrg[1]:=Y;
      ModelOrg[2]:=Z;
    end;
-
 
    AnglesDefined:=false;
    rotvec[0]:=0;
@@ -1889,7 +1916,6 @@ begin
      AnglesDefined:=true;
      mRotationMatrix:=RotMatrixZ(rotvec[0],mRotationMatrix);
    end;
-
 
    { list components }
    L:=TQList.Create;
@@ -2000,9 +2026,10 @@ begin
    finally
      L.Free;
    end;
- except
-  {rien}
- end;
+   except
+   {rien}
+   end;
+  end; //while J
 end;
 
 procedure TTreeMapEntity.AddTo3DScene(Scene: TObject);

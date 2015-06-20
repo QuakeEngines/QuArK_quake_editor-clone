@@ -1027,6 +1027,8 @@ Strings = {
     5772: "Could not load shaderlist file '%s', even though it exists.",
     5773: "Half Life Sprite Signature = %d, Should be: %d",
     5774: "Half Life Sprite Version = %d, Should be: %d",
+    5775: "Couldn't load model %s from %s.",
+    5776: "Couldn't find model root in model %s.",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1111,6 +1113,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.166  2015/05/24 15:21:41  danielpharos
+#Moved some strings into dictionary.
+#
 #Revision 1.165  2015/05/24 09:27:11  danielpharos
 #Moved three strings to the dictionary.
 #
