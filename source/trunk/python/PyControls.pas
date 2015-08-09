@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2009/07/30 09:38:57  danielpharos
+Updated website link.
+
 Revision 1.7  2008/09/06 15:57:32  danielpharos
 Moved exception code into separate file.
 
@@ -50,6 +53,8 @@ const
  mbKeyDown    = 4096;
  mbKeyUp      = 8192;
  mbMouseMove  = 16384;
+ mbMouseWheelUp = 32768;
+ mbMouseWheelDown = 131072; //Note: 65536 was already used in Python...
 
 type
   PyControlF = ^TyControlF;

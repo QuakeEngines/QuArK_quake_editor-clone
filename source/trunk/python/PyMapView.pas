@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2015/02/16 19:17:33  danielpharos
+Added additional logging of exceptions.
+
 Revision 1.59  2014/03/06 15:33:39  danielpharos
 Stop a failed initialization of a viewport causing access violations.
 
@@ -335,6 +338,8 @@ type
                  procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
                  procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
                  procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+                 procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+                 procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
                  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
                  procedure KeyUp(var Key: Word; Shift: TShiftState); override;
                  procedure SetViewMode(Vm: TMapViewMode);
@@ -409,6 +414,8 @@ begin
  OnSetCursor:=SetCursor;
  OnEnter:=FocusChanged;
  OnExit:=FocusChanged;
+ OnMouseWheelDown:=MouseWheelDown;
+ OnMouseWheelUp:=MouseWheelUp;
  FOnDraw:=PyNoResult;
  FOnMouse:=PyNoResult;
  FOnKey:=PyNoResult;
@@ -638,8 +645,8 @@ begin
      if VAngle<5 then
       VAngle:=5
      else
-      if VAngle>80 then
-       VAngle:=80;
+      if VAngle>85 then
+       VAngle:=85;
 
      with TCameraCoordinates(MapViewProj) do
       begin
@@ -767,8 +774,8 @@ begin
      if VAngle<5 then
       VAngle:=5
      else
-      if VAngle>80 then
-       VAngle:=80;
+      if VAngle>85 then
+       VAngle:=85;
 
      with TCameraCoordinates(MapViewProj) do
       begin
@@ -919,9 +926,9 @@ var
  X, Y, W, H: TDouble;
  scaling: Single;
 begin
- //@DanielPharos: Change to use StretchBlit, and no Bitmap-stuff anymore!
  with BackgroundImage do
   begin
+   //DanielPharos: Is is more efficient to call StretchBlt directly, instead of going through a TBitmap?
    PSD:=Image.Description;
    try
     Bitmap:=TBitmap.Create;
@@ -1262,6 +1269,18 @@ end;
 procedure TPyMapView.FocusChanged(Sender: TObject);
 begin
  RedrawRedLines(Self);
+end;
+
+procedure TPyMapView.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X, g_DrawInfo.Y, mbMouseWheelDown, g_DrawInfo.ShiftState, PyNoResult);
+  Handled := true;
+end;
+
+procedure TPyMapView.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X, g_DrawInfo.Y, mbMouseWheelUp, g_DrawInfo.ShiftState, PyNoResult);
+  Handled := true;
 end;
 
 function TPyMapView.GetCentreEcran : TVect;

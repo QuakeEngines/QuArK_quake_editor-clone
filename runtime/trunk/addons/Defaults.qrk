@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.552  2015/05/24 10:14:33  danielpharos
+//Fixed a bunch of typoes.
+//
 //Revision 1.551  2015/05/23 16:10:21  danielpharos
 //Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
 //
@@ -4568,6 +4571,7 @@ QQRKSRC1
         GridHFactor   = '2'
         // Rotate3D   = '80 2'     // 80 degrees per second during 2 seconds
         FreeZoom      = '1'
+        MouseWheel    = '1.25'
         ViewMode      = $01      // gray out of view by default
         ArrowSize     = '40 27'
         Form          = "MapDisplay"
@@ -4730,6 +4734,7 @@ QQRKSRC1
         SkinGridHighlight = "8"
         SkinGridHFactor   = '2'
         FreeZoom          = '1'
+        MouseWheel        = '1.25'
         ViewMode          = $01      // gray out of view by default
         ArrowSize         = '40 27'
         HandlesDelay      = '0.5'
@@ -4852,6 +4857,12 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "By default, Mouse Free Zoom is Shift-Middle-mouse-button"$0D"Enter a negative value to reverse 'In' and 'Out' directions"
       }
+      MouseWheel: =
+      {
+        Txt = "Mouse scrollwheel sensitivity"
+        Typ = "EF1"
+        Hint = "Zoom multiplication factor used when scrolling with the mousewheel in a view. Must be larger than 1."
+      }
     }
     MdlDisplay:form =
     {
@@ -4945,6 +4956,12 @@ QQRKSRC1
         Txt = "'Mouse Free Zoom' sensitivity"
         Typ = "EF1"
         Hint = "By default, Mouse Free Zoom is Shift-Middle-mouse-button"$0D"Enter a negative value to reverse 'In' and 'Out' directions"
+      }
+      MouseWheel: =
+      {
+        Txt = "Mouse scrollwheel sensitivity"
+        Typ = "EF1"
+        Hint = "Zoom multiplication factor used when scrolling with the mousewheel in a view. Must be larger than 1."
       }
       HandlesDelay: =
       {

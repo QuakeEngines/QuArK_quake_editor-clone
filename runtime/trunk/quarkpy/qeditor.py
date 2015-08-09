@@ -77,6 +77,8 @@ MB_DRAGEND      = 2048 ### This is when the mouse button(s) is actually RELEASED
 MB_KEYDOWN      = 4096
 MB_KEYUP        = 8192
 MB_MOUSEMOVE    = 16384 ### This is when NO mouse button(s) are pressed and the mouse is being moved around.
+MB_MOUSEWHEELUP = 32768
+MB_MOUSEWHEELDOWN = 131072
 
 MB_NOGRID       = 65536
 MB_REDIMAGE     = MB_DRAGGING|MB_CTRL
@@ -1581,6 +1583,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.65  2011/10/06 20:13:37  danielpharos
+#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
+#
 #Revision 1.64  2011/06/03 19:30:30  danielpharos
 #Fixed RGB float color values not being clamped.
 #

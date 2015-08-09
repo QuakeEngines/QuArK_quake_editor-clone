@@ -908,6 +908,30 @@ class BaseEditor:
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
 
+        #Handle mousewheel scrolling first
+        if flags == MB_MOUSEWHEELUP:
+            mousewheelfactor, = quarkx.setupsubset(self.MODE, "Display")["MouseWheel"]
+            if mousewheelfactor <= 1.0:
+                mousewheelfactor = 1.25
+            try:
+                scale = view.info["scale"] / mousewheelfactor
+            except KeyError:
+                scale = None
+            if scale is not None:
+                setviews(self.layout.views, "scale", scale)
+            return
+        elif flags == MB_MOUSEWHEELDOWN:
+            mousewheelfactor, = quarkx.setupsubset(self.MODE, "Display")["MouseWheel"]
+            if mousewheelfactor <= 1.0:
+                mousewheelfactor = 1.25
+            try:
+                scale = view.info["scale"] * mousewheelfactor
+            except KeyError:
+                scale = None
+            if scale is not None:
+                setviews(self.layout.views, "scale", scale)
+            return
+
         global flagsmouse, currentview, cursorpos  ### Used for the Model Editor only.
         flagsmouse = flags                         ### Used for the Model Editor only.
         currentview = view                         ### Used for the Model Editor only.
@@ -1795,6 +1819,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.152  2011/10/06 20:13:37  danielpharos
+#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
+#
 #Revision 1.151  2011/03/15 08:25:46  cdunde
 #Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
 #
