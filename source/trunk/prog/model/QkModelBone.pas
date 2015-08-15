@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2012/09/05 18:02:29  danielpharos
+Slight clean-up of FIXME-comments.
+
 Revision 1.29  2010/03/09 22:39:31  danielpharos
 Fixed a horrible crash with rotmatrix.
 
@@ -307,9 +310,11 @@ begin
 end;*)
 
 function QModelBone.TreeViewColorBoxes : TColorBoxList;
+const
+ SpecColor2 = '_color';
 begin
   Result:=TColorBoxList.Create;
-  Result.Add('_color', 'LI');
+  Result.Add(SpecColor2, 'LI');
 end;
 
 function QModelBone.PyGetAttr(attr: PChar) : PyObject;

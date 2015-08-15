@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2015/06/20 15:35:55  danielpharos
+Allow loading multiple models for map entities. (Needed for Kingpin.)
+
 Revision 1.58  2012/09/05 18:18:59  danielpharos
 Moved some map options around to make them more findable, and to make them work again.
 
@@ -895,11 +898,13 @@ end;
  {------------------------}
 
 (*function TTreeMapSpec.ModeAngle(var S: String) : Integer;
+const
+ SpecLight = 'light';
 begin
  Result:=0;
  if Specifics.Values['angle']<>'' then
   begin
-   if Specifics.Values['light']='' then
+   if Specifics.Values[SpecLight]='' then
     begin
      S:='angle';
      Result:=1;
@@ -1225,10 +1230,12 @@ begin
 end;*)
 
 procedure TTreeMapSpec.CouleurDessin;
+const
+ SpecColor2 = '_color';
 var
  S: String;
 begin
- S:=Specifics.Values['_color'];
+ S:=Specifics.Values[SpecColor2];
  if S<>'' then
   begin
    if g_DrawInfo.BasePen=White_pen then
@@ -1614,8 +1621,9 @@ begin
 end;
 
 procedure TTreeMapEntity.PreDessinerSel;
-{const
- FacteurCorrectionLumiere = 0.9;}
+const
+{ FacteurCorrectionLumiere = 0.9;}
+  SpecLight = 'light';
 var
  Pts: TPointProj;
  BBox: TBBoxInfo;
@@ -1633,7 +1641,7 @@ begin
  if HasOrigin then
   begin
    OriginPt:=CCoord.Proj(Origin);
- (*S:=Specifics.Values['light'];
+ (*S:=Specifics.Values[SpecLight];
    if S<>'' then
     try
      Rayon:=StrToFloat(S)*pProjZ*SetupGameSet.GetFloatSpec('LightFactor', 0.9);
@@ -2033,6 +2041,10 @@ begin
 end;
 
 procedure TTreeMapEntity.AddTo3DScene(Scene: TObject);
+const
+ SpecLight = 'light';
+ SpecLight2 = '_light';
+ SpecColor2 = '_color';
 var
  Light: Single;
  L4: array[1..4] of TDouble;
@@ -2069,12 +2081,12 @@ begin
      {FIXME: bounding boxes in 3D view}
     end;
 
-    if CompareText(Copy(Name,1,5), 'light')=0 then
+    if CompareText(Copy(Name,1,5), SpecLight)=0 then
     begin
-      Light:=StrToIntDef(Specifics.Values['light'], 0);
+      Light:=StrToIntDef(Specifics.Values[SpecLight], 0);
       if Light<=0 then
       begin
-        S:=Specifics.Values['_light'];
+        S:=Specifics.Values[SpecLight2];
         if S='' then
           Exit;
         try
@@ -2093,7 +2105,7 @@ begin
       begin
         FoundAColor:=false;
         Color:=clWhite;
-        S:=Specifics.Values['_color'];
+        S:=Specifics.Values[SpecColor2];
         if S<>'' then
         begin
           try
@@ -2450,9 +2462,11 @@ begin
 end;
 
 function TTreeMapGroup.TreeViewColorBoxes : TColorBoxList;
+const
+ SpecColor2 = '_color';
 begin
   Result:=TColorBoxList.Create;
-  Result.Add('_color', 'L');
+  Result.Add(SpecColor2, 'L');
 end;
 
  {------------------------}

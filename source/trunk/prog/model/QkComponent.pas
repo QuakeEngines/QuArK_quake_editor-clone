@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2011/07/29 19:25:25  danielpharos
+Added a comment...
+
 Revision 1.37  2011/02/11 19:12:27  cdunde
 DanielPharos fixed .m8 texture display for the game Heretic II.
 
@@ -746,10 +749,12 @@ begin
 end;
 
 procedure QComponent.CouleurDessin;
+const
+ SpecColor2 = '_color';
 var
   S: String;
 begin
-  S:=Specifics.Values['_color'];
+  S:=Specifics.Values[SpecColor2];
   if S<>'' then begin
     C:=clNone;
     try
