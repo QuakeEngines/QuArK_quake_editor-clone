@@ -1,0 +1,9 @@
+title: DLL loading
+author: DanielPharos
+desc: libraryloading functions typetranslation unloading
+
+I am assuming you have access to the C/C++ source code for the DLL file you want to load in Delphi, or at least a list of all the exported functions and their arguments. I'm also assuming you're reasonably Delphi-experienced, and know 'enough' about C.
+
+It's smart to create a separate Delphi <b>.pas file</b> for each <b>.DLL file</b>, since these files tend to get rather long with only dull code. It would create a big mess doing this inside another <b>.pas file</b>, and it's simply a good coding practice to keep different things separated.
+
+See <b>QkDevIL.pas</b> or <b>QkFreeImage.pas</b> for more/better example code. <b>GL1.pas</b> does the same, but a bit more complicated; it's better when bulk-loading functions though. And <b>DX9.pas</b> with the files it calls are only for those not faint-hearted!

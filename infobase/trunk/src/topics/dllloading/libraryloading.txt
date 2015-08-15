@@ -1,0 +1,23 @@
+title: Loading the library
+author: DanielPharos
+
+All Delphi functions that need to call one or more of the <b>.DLL files</b> functions, first call a function in the <b>DLLfile.pas</b> file to load the DLL file. This function has a counter (TimesLoaded) that counts the amount of times the DLL was called to load this way. If it's zero (i.e. it's the first time we need to load the DLL file), we actually load it, and set the counter to 1. If it's already 1 or higher, we only increase the counter; there's no loading to be done, since that already happened. This <b>LoadDLLfile</b> function returns a boolean ('true' or 'false') indicating success or failure when loading the DLL file and all of its functions.
+
+First, we've need to load the DLL file. We can do this by calling Windows' <b>LoadLibrary(</b>DLLfilename<b>)</b>. It takes one argument: the DLL filename. Most of QuArK's DLL files are in the <b>dlls directory</b>; it's best to place your DLL file there too (unless the DLL file is part of another program people need to install). LoadLibrary returns a <b>handle</b> to where the DLL file is loaded in memory.<br>
+So the call would be something like this:
+
+<code>DLLLib := LoadLibrary('dlls/DLLfile.dll');</code>
+
+DLLLib should be a <b>HMODULE</b> (which is the same as Cardinal, but please use HMODULE for future compatibility), declared at the top of the <b>DLLfile.pas</b>, in the implementation part (other parts of the program shouldn't need direct access to the loaded DLL file).
+
+If LoadLibrary returns 0, something went wrong when trying to load the DLL file (file not found, or corrupt file or something along those lines). So now we raise an error, and exit. (Remember to NOT increase the TimesLoaded at the start, but at the end: if we didn't load anything, we don't want to increase TimesLoaded, since that will only cause trouble when trying to unload later!)
+
+<code>
+if DLLLib = 0 then
+begin
+    Exception.Create('Unable to load dlls/DLLfile.dll');
+    Exit;
+end;
+</code>
+
+By the way, the code examples here are just generic stuff: you should use the proper exit strategy and error-raising that should be used in the section of QuArK you're working in. Don't forget to set the correct Results! The easiest way of getting it right is simply to copy one of the DLL loading .pas files (like QkDevIL.pas) and change the functions, variable-names and constants to suit your DLL file. Don't forget to add the new <b>.pas file</b> to the <b>.dpr file</b>!

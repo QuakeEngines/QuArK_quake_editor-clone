@@ -1,0 +1,18 @@
+title: Unloading the library
+author: DanielPharos
+
+Well, that's all the loading stuff. But we also need to do some clean up when QuArK shuts down, or when the DLL file is no longer needed.
+
+<b>UnloadDLLfile</b> is what we want to use. When a function is done using the DLL file, it calls <b>UnloadDLLfile</b> to decrease the TimesLoaded counter, and when the counter hits 0, that means the DLL file is no longer being used and we can now unload it. There are cases where this is not what we want, and we want to keep the DLL file loaded anyway. You will have to handle those situations however you see fit (and please add some comment as to 'why'!).
+
+Actually, we check if the counter hits 1, and then do the unload. If everything went OK, then we decrease the counter. We unload by simply calling Windows' <b>FreeLibrary</b> with the <b>HMODULE</b> of the DLL file as the only argument. It returns a boolean whether the unloading was successful or not. Do the usual error-raising if needed. Done!
+
+<code>
+if FreeLibrary(DLLLib) = false then
+begin
+    Exception.Create('Unable to unload dlls/DLLfile.dll');
+    Exit;
+end;
+</code>
+
+Well, just one more thing. To make error diagnostics easier, it's best to set all the functions and procedures that we loaded to <b>nil</b> when we unload them, so QuArK gives us a <b>clean crash</b> when we try to call any of those. Also, setting the <b>HMODULE</b> to zero is not a bad idea.

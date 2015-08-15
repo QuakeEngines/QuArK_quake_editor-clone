@@ -1,0 +1,8 @@
+title: What C++ variable-types map onto what Delphi variable-types?
+author: DanielPharos
+
+The Delphi help comes to the rescue, but only partially. For instance, find the article called 'Integer Types' (using Delphi 6/7 here, but it should be in every version, with possibly a different name). It gives a list of Delphi integer variable types, with their range, amount of bytes (or bits) and if they are signed or unsigned. That's exactly what we need. If C++ says <b>unsigned int</b>, that's an unsigned 32-bit integer. So that directly translates to Cardinal or Longword. I use Cardinal, but Longword is actually more accurate.
+
+Note: This only applies to a 32-bit application: Cardinal might be different in 64-bit Delphi, and the same goes for the C++ Int. However, since QuArK is 32-bit, and most DLL files are too, we don't need to be too concerned, but it is something to keep in mind.
+
+Pointers to variables can simply be translated into a Delphi pointer to a variable of the translated type. For instance, a <b>* char</b> can simply be translated into a <b>PChar</b> (a pointer to a Char). <b>* void</b> is special, and I suggest using <b>PByte</b> for this because it's often a pointer to a buffer of unknown content, so we probably want to read/parse it byte-for-byte.

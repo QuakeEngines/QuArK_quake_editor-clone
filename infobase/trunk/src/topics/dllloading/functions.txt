@@ -1,0 +1,26 @@
+title: Getting the functions
+author: DanielPharos
+
+Now that the DLL file is loaded, we need to load its functions. This is done using Windows' <b>GetProcAddress</b> API (Application Programming Interface) call. Its arguments are a handle to a DLL file in memory, and the name of the function we want to load, and it returns a pointer to that function. This is where things get tricky.
+
+First, we need to know the name of the function as it is stored in the DLL file. But, there is something called: <b>decoration</b>. Some DLL files use this, and it will appear as a <b>@X</b> behind the function name, where X is a non-negative integer number. This is used to identify between different functions with the same name: the X stands for the total amount of bytes the arguments the function takes are, so you can have several functions that are named the same, but one takes more (or different) arguments than the others.
+
+Often, these decorations are not documented, so you'll need to open up the DLL file in a text editor, search for the function name and simply look behind it to see if there's an <b>@X</b> attached. If so, use that. Sometimes, there's also an underscore '_' prepended to the name; so check that too while you're there. You can also try to guess the amount of bytes the arguments of the function will take up, but using a text editor is much easier (just be sure you take the <b>@X</b> of the right version of the function).
+
+Second, we need to know the calling convention. DLL files (and C++) support multiple calling conventions. This convention defines what the caller function should do, and what the callee function should do. It's mostly low-level programming stuff, like who cleans up the stack. The only thing we need to know is that we need to get it right, because if we don't do it right, QuArK might start crashing randomly (serious, this happened to me! It simply crashed at the next function call in the program, because the stack was corrupted).
+
+Most used are <b>cdecl</b> and <b>stdlib</b>. <b>cdecl</b> is the default C(++) one, while <b>stdlib</b> is a Windows one that's a bit faster. It should be stated which one to use in the C++ source code of the DLL file, where the functions get exported (near 'EXTERN_C' and 'DLL_EXPORT'). It's probably the same for all calls, but just make sure it is. Note it down; we need it for the next step.
+
+The final piece to this puzzle is 'Delphi-ing' the functions: making a Delphi version of the C++ arguments. We need to set-up the functions and procedures so <b>GetProcAddress</b> can fill them up. This can be done in either the interface or implementation section, depending on whether we need the function to be available outside of this <b>.pas file</b>, but most of the time, everybody simply dumps it in the interface-part so they're all packed together.
+
+<code>
+DelphiFunction := GetProcAddress(DLLLib, 'functionname');
+if DelphiFunction = Nil then
+begin
+    Exception.Create('Unable to load functionname from dlls/DLLfile.dll');
+    Exit;
+end;
+</code>
+
+Now we translate the C++ function into a Delphi one. If the DLL function returns a value, it's a <b>function</b> in Delphi. If not, it's a <b>procedure</b>. The arguments should be in the same order as in C++. The names of both the functions and the arguments don't have to be the same, but I suggest you leave them the same, unless of course the name is a keyword in Delphi (simply adding an 'x' or something in front of the name should take care of that). Behind the function/procedure's semicolon we add the calling convention ('cdecl', 'stdlib', ...) with another semicolon.
+
