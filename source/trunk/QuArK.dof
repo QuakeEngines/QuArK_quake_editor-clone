@@ -81,7 +81,7 @@ OriginalFilename=QuArK.EXE
 ProductName=Quake Army Knife
 ProductVersion=6.6 (Beta-Release)
 Comments=Original Coding by Armin Rigo
-Homepage=http://www.sourceforge.net/projects/quark
+Homepage=http://quark.sourceforge.net/
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\direct3d;.\components\zip;.\Prog;.\Prog\FastCode;.\Prog\Model;.\Python;.\3dfx
