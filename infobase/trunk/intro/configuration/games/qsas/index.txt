@@ -1,0 +1,17 @@
+title: Diagnosing problems with Steam
+author: DanielPharos
+
+I am assuming you've already checked the obvious things: you're in the right game mode, you've got the Source SDK, etc. Please read the game specific sections and search the forums for information how to set-up the configuration.
+
+If you're getting errors related to paths, i.e. "can't find ...", go to the <tt>Configuration</tt> > <tt>Games</tt> > <tt>HL2</tt> AND <tt>Configuration</tt> > <tt>Games</tt> > <tt>Steam</tt>, and make sure your paths are set correctly.
+
+<OL><LI>Make sure you're using the latest version of QuArK.
+<LI>Make sure you've got a CLEAN install of QuArK.
+<LI>Make sure your game-files (and Source SDK!) in Steam are up-to-date.
+<LI>Make sure Steam is up-to-date.
+<LI>Run the Source SDK (SDKLauncher.exe). This will check the integrity of the Source SDK files, and move updated files to their proper location.
+<LI>Can you run and play the game itself? Can you run the Hammer editor?
+<LI>Does QuArK work correctly in other game modes?
+</OL>
+
+If the error is coming from QuArKSAS.exe, please go to *Steam*/steamapps/*accountname*/sourcesdk/bin and check the QuArKSAS.log file (the one produced right after the crash).
