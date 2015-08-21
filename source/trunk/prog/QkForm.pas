@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2014/12/22 10:48:36  danielpharos
+Mousewheel scrolling in more places, and fixes a variable type.
+
 Revision 1.24  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -224,8 +227,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Deactivate; override;
     function ProcessMenuShortcut(var Msg: TWMKeyDown; ShortCut: TShortCut) : Boolean; dynamic;
-    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); dynamic;
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); dynamic;
   public
     MarsCap: TMarsColors;
     constructor Create(AOwner: TComponent); override;

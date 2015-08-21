@@ -1029,6 +1029,8 @@ Strings = {
     5774: "Half Life Sprite Version = %d, Should be: %d",
     5775: "Couldn't load model %s from %s.",
     5776: "Couldn't find model root in model %s.",
+    5777: "Error in texture browser: %s",
+    5778: "Error calling %s, defaulting to %s.",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1113,6 +1115,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.167  2015/06/20 15:35:53  danielpharos
+#Allow loading multiple models for map entities. (Needed for Kingpin.)
+#
 #Revision 1.166  2015/05/24 15:21:41  danielpharos
 #Moved some strings into dictionary.
 #

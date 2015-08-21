@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2012/11/24 10:37:19  danielpharos
+Final fix for reading in unknown stuff from BSP files.
+
 Revision 1.38  2012/11/20 20:52:16  danielpharos
 Fully fixed HL1 BSP MipTex saving.
 
@@ -1044,7 +1047,7 @@ begin
             if J=0 then
              TextureTitle:=Q.Name;
    DECKER*)
-            Log(LOG_WARNING, 'Error in texture browser: %s', [ErrorMsg]);
+            Log(LOG_WARNING, LoadStr1(5777), [ErrorMsg]);
           end;
         end;
        {if ScreenColors<>0 then

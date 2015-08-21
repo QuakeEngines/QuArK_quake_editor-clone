@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.14  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -123,6 +126,8 @@ type
     procedure SelectListItem(Item: TListItem);
     function EditMenuCommandLv(Cmd: Integer) : Integer;
     procedure CreateWnd; override;
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
   public
     procedure SelectObject(Q: QObject);
     procedure CopyToClipboard;
@@ -585,6 +590,20 @@ begin
  inherited;
  if WindowHandle<>0 then
   DragAcceptFiles(WindowHandle, True);
+end;
+
+procedure TQForm2.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  ListView1.Scroll(0, 32);
+  InvalidateRect(ListView1.Handle, Nil, False);
+  Handled := true;
+end;
+
+procedure TQForm2.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  ListView1.Scroll(0, -32);
+  InvalidateRect(ListView1.Handle, Nil, False);
+  Handled := true;
 end;
 
 procedure TQForm2.wmDropFiles;

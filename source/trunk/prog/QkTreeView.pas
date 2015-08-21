@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2014/12/20 15:37:22  danielpharos
+Added mouse scroll wheel support in various places.
+
 Revision 1.28  2014/11/09 08:52:10  danielpharos
 Fixed long-standing bug with character output (backslashes) in the console.
 
@@ -257,7 +260,8 @@ type
 
 implementation
 
-uses QkFileObjects, Python, PyImages, qmath, QkMapObjects {$IFDEF Debug}, QkExceptions{$ENDIF};
+uses QkFileObjects, Python, PyImages, qmath, QkMapObjects,
+     Quarkx, Logging {$IFDEF Debug}, QkExceptions{$ENDIF};
 
  {------------------------}
 
@@ -1661,14 +1665,30 @@ begin
 end;
 
 procedure TMyTreeView.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+var
+  ScrollLines: UInt;
 begin
-  VertScrollBar.Position := VertScrollBar.Position + MyTVLineStep;
+  if SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @ScrollLines, 0) = false then
+  begin
+    Log(LOG_WARNING, LoadStr1(5778), ['SystemParametersInfo(SPI_GETWHEELSCROLLLINES', '3']);
+    ScrollLines := 3;
+  end;
+
+  VertScrollBar.Position := VertScrollBar.Position + MyTVLineStep * ScrollLines;
   Handled := true;
 end;
 
 procedure TMyTreeView.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+var
+  ScrollLines: UInt;
 begin
-  VertScrollBar.Position := VertScrollBar.Position - MyTVLineStep;
+  if SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @ScrollLines, 0) = false then
+  begin
+    Log(LOG_WARNING, LoadStr1(5778), ['SystemParametersInfo(SPI_GETWHEELSCROLLLINES', '3']);
+    ScrollLines := 3;
+  end;
+
+  VertScrollBar.Position := VertScrollBar.Position - MyTVLineStep * ScrollLines;
   Handled := true;
 end;
 
