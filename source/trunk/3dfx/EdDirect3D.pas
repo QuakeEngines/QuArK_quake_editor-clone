@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2015/05/08 19:51:09  danielpharos
+First attempt to properly recover from lost device (textures not working yet).
+
 Revision 1.48  2015/04/25 17:06:12  danielpharos
 Added Direct3D9 lighting.
 
@@ -534,6 +537,7 @@ begin
     Culling:=False;
   end;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
+  AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   Dithering:=Setup.Specifics.Values['Dither']<>'';
   if Setup.Specifics.Values['TextureFiltering'] = '1' then
   begin

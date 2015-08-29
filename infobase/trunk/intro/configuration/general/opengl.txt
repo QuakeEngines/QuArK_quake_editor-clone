@@ -26,8 +26,6 @@ flickering from the rendering being visible.
 
 <i>Color dithering</i>. When enabled, OpenGL will dither colors.
 
-<i>'Supports GDI' flag</i>. This will enabled the 'Supports GDI' flag.
-
 <i>Over-the-scene lines+icons</i>. This will draw all the lines and
 icons over the scene.
 

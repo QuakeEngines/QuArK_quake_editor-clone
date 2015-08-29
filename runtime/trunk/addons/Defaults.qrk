@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.553  2015/08/09 16:30:06  danielpharos
+//Added mousewheel scrolling support in the 2D views.
+//
 //Revision 1.552  2015/05/24 10:14:33  danielpharos
 //Fixed a bunch of typoes.
 //
@@ -1877,7 +1880,6 @@ QQRKSRC1
         //Bilinear = "1" OLD SETTING, use TextureFiltering instead!
         TextureFiltering = "1"
         DoubleBuffer = "1"
-        SupportsGDI = ""
         AllowsGDI = "1"
         ColorBits = '0'
         DepthBits = '16'
@@ -1897,6 +1899,7 @@ QQRKSRC1
         Lights = "1"
         Dither = ""
         TextureFiltering = "1"
+        AllowsGDI = "1"
         BackBufferFormat = "1"
         StencilBufferBits = "0"
         VCorrection = '0.92'
@@ -9679,7 +9682,6 @@ QQRKSRC1
       }
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
       Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
-      SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" Hint="The amount of bits per pixel. The higher, the better the quality."
                                 $0D"Not all numbers are supported. Most common are 16, 24 and 32." }
@@ -9785,6 +9787,7 @@ QQRKSRC1
         Values = "0"    $0D "1"        $0D "2"         $0D "3"
         Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
       }
+      AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                                              $0D"This doesn't apply to transparent faces." }
       HighPrecision: = { Typ="X" Txt="High floating point precision" Cap="Enabled" Hint="Enables high precision floating point calculations. Improves accuracy, but decreases performance."}

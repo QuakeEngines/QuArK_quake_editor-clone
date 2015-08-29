@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2010/09/01 20:20:23  danielpharos
+Added experimental trilinear and anisotropic texture filtering.
+
 Revision 1.46  2010/04/16 19:19:37  danielpharos
 Fixed some ugly looping.
 
@@ -1051,9 +1054,10 @@ begin
   Result.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
   Result.iPixelType:=PFD_TYPE_RGBA;
   if Setup.Specifics.Values['DoubleBuffer']<>'' then
-    Result.dwFlags:=Result.dwFlags or PFD_DOUBLEBUFFER;
-  if Setup.Specifics.Values['SupportsGDI']<>'' then
-    Result.dwFlags:=Result.dwFlags or PFD_SUPPORT_GDI;
+    Result.dwFlags:=Result.dwFlags or PFD_DOUBLEBUFFER
+  else //FIXME: Currently, not allowed to set both!!!
+    if Setup.Specifics.Values['AllowsGDI']<>'' then
+      Result.dwFlags:=Result.dwFlags or PFD_SUPPORT_GDI;
   Result.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
   if Result.cColorBits<=0 then
     Result.cColorBits:=GetDeviceCaps(DC, BITSPIXEL);
