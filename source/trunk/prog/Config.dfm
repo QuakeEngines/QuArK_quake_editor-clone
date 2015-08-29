@@ -24,7 +24,7 @@ object ConfigDlg: TConfigDlg
     BevelOuter = bvLowered
     TabOrder = 0
     object CancelBtn: TToolbarButton97
-      Left = 181
+      Left = 179
       Top = 4
       Width = 68
       Height = 25
@@ -244,7 +244,7 @@ object ConfigDlg: TConfigDlg
       OnClick = ApplyBtnClick
     end
     object ResetBtn: TToolbarButton97
-      Left = 261
+      Left = 259
       Top = 4
       Width = 68
       Height = 25
@@ -318,7 +318,7 @@ object ConfigDlg: TConfigDlg
       OnClick = ResetBtnClick
     end
     object TrashBtn: TToolbarButton97
-      Left = 329
+      Left = 327
       Top = 5
       Width = 23
       Height = 23
