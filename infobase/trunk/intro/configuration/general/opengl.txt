@@ -8,7 +8,6 @@ graphics-card.
 <i>Fade</i>. With this you can enable and disable the fading fog.
 
 <i>Transparency</i>. With this you can enable and disable transparency.
-You might need to enable lighting in order for transparency to be applied.
 
 <i>Lighting</i>. With this you can enable and disable the lighting.
 
