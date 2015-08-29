@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.554  2015/08/29 17:00:50  danielpharos
+//Automated a confusing setting.
+//
 //Revision 1.553  2015/08/09 16:30:06  danielpharos
 //Added mousewheel scrolling support in the 2D views.
 //
@@ -1798,7 +1801,7 @@ QQRKSRC1
         Unsel = ""
         Sel = "1"
         MppTopBtns = "1"
-        IconPath = "images\\"
+        IconPath = "images\"
         MaxRecentFiles = '5'
         ConsoleWidth = '80'
         ConsoleHeight = '60'
