@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2014/12/22 11:25:15  danielpharos
+Fixed rest of registry enumeration (for example, DirectX version), and fixed a string leak on an error path.
+
 Revision 1.51  2014/10/24 16:16:37  danielpharos
 Fixed the VIDEO enumeration for system details info.
 
@@ -753,6 +756,15 @@ begin
                3: result:='Pentium II';
                4: result:='P55CT (P54 overdrive)';
                5: result:='Pentium II 0,25µm';
+               6: result:='Celeron, model 06';
+               7: result:='Pentium III, model 07';
+               8: result:='Pentium/Celeron III, model 08';
+               9: result:='Pentium M/Celeron M, model 09';
+               10: result:='Pentium Xeon III, model 0Ah';
+               11: result:='Pentium III, model 0Bh';
+               13: result:='Pentium M/Celeron M, model 0Dh';
+               14: result:='Intel Core';
+               15: result:='Intel Core 2';
              end;
 	        2: case Model of
                6: result:='K6';
