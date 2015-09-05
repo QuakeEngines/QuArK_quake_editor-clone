@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2014/03/08 14:37:58  danielpharos
+Fixed a bunch of typo's.
+
 Revision 1.23  2010/04/16 19:05:07  danielpharos
 Corrected variable type.
 
@@ -1307,13 +1310,19 @@ begin
   begin
     Result := False;
     try
+      Log(LOG_INFO, 'Attempting (1) to load Glide DLL: '+LibName);
       GlideLib:=LoadLibrary(PChar(LibName));
       if GlideLib=0 then
       begin
+        LogWindowsError(GetLastError, 'Loading Glide DLL (1)');
         S:=ConcatPaths([SearchDir, LibName]);
+        Log(LOG_INFO, 'Attempting (2) to load Glide DLL: '+S);
         GlideLib:=LoadLibrary(PChar(S));
         if GlideLib=0 then
+        begin
+          LogWindowsError(GetLastError, 'Loading Glide DLL (2)');
           Exit;
+        end;
       end;
       Log(LOG_INFO, 'Loading Glide DLL: '+RetrieveModuleFilename(GlideLib));
 
