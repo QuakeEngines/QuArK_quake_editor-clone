@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2014/10/24 16:15:58  danielpharos
+Added a verbose log statement.
+
 Revision 1.54  2011/10/02 14:07:39  danielpharos
 Switched back to Python 2.4.4 for Windows 95/NT4 compatibility.
 
@@ -558,6 +561,10 @@ PyModule_New: function (name: PChar) : PyObject; cdecl;
 //PyEval_GetLocals: function : PyObject; cdecl;
 //function PyEval_GetBuiltins : PyObject; cdecl;
 PyEval_CallObject: function (o, args: PyObject) : PyObject; cdecl;
+{$IFDEF PYTHON27}
+//Python 2.7.x broke backwards compatibility without warning
+PyEval_CallObjectWithKeywords: function (o, args, kw: PyObject) : PyObject; cdecl;
+{$ENDIF}
 PyCallable_Check: function (o: PyObject) : LongBool; cdecl;
 
 PyErr_Print: procedure; cdecl;
@@ -713,7 +720,11 @@ const
 //  (Variable: @@PyImport_ImportModule;      Name: 'PyImport_ImportModule';      MinimalVersion: 0 ),
 //  (Variable: @@PyEval_GetGlobals;          Name: 'PyEval_GetGlobals';          MinimalVersion: 0 ),
 //  (Variable: @@PyEval_GetLocals;           Name: 'PyEval_GetLocals';           MinimalVersion: 0 ),
+{$IFDEF PYTHON27}
+    (Variable: @@PyEval_CallObjectWithKeywords; Name: 'PyEval_CallObjectWithKeywords'; MinimalVersion: 0 ),
+{$ELSE}
     (Variable: @@PyEval_CallObject;          Name: 'PyEval_CallObject';          MinimalVersion: 0 ),
+{$ENDIF}
     (Variable: @@PyCallable_Check;           Name: 'PyCallable_Check';           MinimalVersion: 0 ),
     (Variable: @@PyErr_Print;                Name: 'PyErr_Print';                MinimalVersion: 0 ),
     (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear';                MinimalVersion: 0 ),
@@ -772,6 +783,15 @@ var
 
   PythonLib: HMODULE;
   PythonDll: String;
+
+ {-------------------}
+
+{$IFDEF PYTHON27}
+function PyEval_CallObjectX(o, args: PyObject) : PyObject; cdecl;
+begin
+  result := PyEval_CallObjectWithKeywords(o, args, nil);
+end;
+{$ENDIF}
 
  {-------------------}
 
@@ -921,12 +941,18 @@ begin
     begin
       P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
       if P=Nil then
-       Exit;
+      begin
+        Log(LOG_PYTHON, LOG_CRITICAL, 'Unable to load %s!', [PythonProcList[I].Name]);
+        Exit;
+      end;
     end
     else
       P:=nil;
     PPointer(PythonProcList[I].Variable)^:=P;
   end;
+  {$IFDEF PYTHON27}
+  PyEval_CallObject := PyEval_CallObjectX;
+  {$ENDIF}
   Py_SetProgramName(PChar(Application.Exename));
   Py_Initialize;
   s:=Py_GetVersion;
@@ -1000,7 +1026,10 @@ begin
     begin
       P:=GetProcAddress(PythonLib, PythonProcList[I].Name);
       if P=Nil then
-       Exit;
+      begin
+        Log(LOG_PYTHON, LOG_CRITICAL, 'Unable to load %s!', [PythonProcList[I].Name]);
+        Exit;
+      end;
       PPointer(PythonProcList[I].Variable)^:=P;
     end;
   end;
