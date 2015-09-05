@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2015/09/05 16:47:38  danielpharos
+Added some more logging.
+
 Revision 1.24  2014/03/08 14:37:58  danielpharos
 Fixed a bunch of typo's.
 
@@ -1220,7 +1223,7 @@ procedure UnloadGlide;
 
 implementation
 
-uses QkExceptions, QkDummyWindow, QkApplPaths, Logging, SystemDetails, ExtraFunctionality;
+uses QkExceptions, QkDummyWindow, QkApplPaths, Logging, Quarkx, SystemDetails, ExtraFunctionality;
 
 type
   TFuncRequirement =  { Specifies which DLL, the function should exist in: }
@@ -1310,21 +1313,21 @@ begin
   begin
     Result := False;
     try
-      Log(LOG_INFO, 'Attempting (1) to load Glide DLL: '+LibName);
+      Log(LOG_INFO, LoadStr1(6201), [LibName]);
       GlideLib:=LoadLibrary(PChar(LibName));
       if GlideLib=0 then
       begin
-        LogWindowsError(GetLastError, 'Loading Glide DLL (1)');
+        LogWindowsError(GetLastError, LoadStr1(6202));
         S:=ConcatPaths([SearchDir, LibName]);
-        Log(LOG_INFO, 'Attempting (2) to load Glide DLL: '+S);
+        Log(LOG_INFO, LoadStr1(6203), [S]);
         GlideLib:=LoadLibrary(PChar(S));
         if GlideLib=0 then
         begin
-          LogWindowsError(GetLastError, 'Loading Glide DLL (2)');
+          LogWindowsError(GetLastError, LoadStr1(6204));
           Exit;
         end;
       end;
-      Log(LOG_INFO, 'Loading Glide DLL: '+RetrieveModuleFilename(GlideLib));
+      Log(LOG_INFO, LoadStr1(6205), [RetrieveModuleFilename(GlideLib)]);
 
       if qrkGlideState<>nil then
       begin

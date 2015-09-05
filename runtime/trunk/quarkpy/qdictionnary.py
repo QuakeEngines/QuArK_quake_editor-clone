@@ -1055,6 +1055,11 @@ Strings = {
 
     # DanielPharos would like to reserve 6200 .. 6299 for the Glide renderer
     6200: "Error with the 3Dfx Glide drivers//%s failed",
+    6201: "Attempting (1) to load Glide DLL: %s",
+    6202: "Loading Glide DLL (1)",
+    6203: "Attempting (2) to load Glide DLL: %s",
+    6204: "Loading Glide DLL (2)",
+    6205: "Loading Glide DLL: %s",
 
     6220: "Glide renderer does not support fullscreen views (yet)",
     6221: "You must first call Open3Dfx",
@@ -1115,6 +1120,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.168  2015/08/21 18:23:53  danielpharos
+#Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
+#
 #Revision 1.167  2015/06/20 15:35:53  danielpharos
 #Allow loading multiple models for map entities. (Needed for Kingpin.)
 #
