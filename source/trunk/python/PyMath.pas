@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2013/01/28 04:03:25  cdunde
+Fix by Dan for handling Skin-view tristodraw data.
+
 Revision 1.24  2009/07/30 09:38:57  danielpharos
 Updated website link.
 
@@ -1249,7 +1252,7 @@ begin
     end
    else
     begin
-     GetMem(PtBuffer, NbPts*SizeOf(TPoint));
+     GetMem(PtBuffer, NbPts*SizeOf(TPoint)); try
      Dest:=PtBuffer;
      for I:=1 to NbPts do
       begin
@@ -1262,7 +1265,7 @@ begin
        Inc(Dest);
       end;
      Windows.Polyline(g_DrawInfo.DC, PtBuffer^, NbPts);
-     FreeMem(PtBuffer);
+     finally FreeMem(PtBuffer); end;
     end;
    end
  else
@@ -1290,7 +1293,7 @@ begin
     end
    else
     begin
-     GetMem(PtBuffer, NbPts*SizeOf(TPoint));
+     GetMem(PtBuffer, NbPts*SizeOf(TPoint)); try
      Dest:=PtBuffer;
      for I:=1 to NbPts do
       begin
@@ -1303,7 +1306,7 @@ begin
        Inc(Dest);
       end;
      Windows.Polyline(g_DrawInfo.DC, PtBuffer^, NbPts);
-     FreeMem(PtBuffer);
+     finally FreeMem(PtBuffer); end;
     end;
   end;
 end;

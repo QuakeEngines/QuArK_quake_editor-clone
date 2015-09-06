@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.30  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -667,7 +670,7 @@ begin
   end;
  if CorrPolygon then
   begin
-   GetMem(Tampon, NbPts * (2*SizeOf(TPoint)));
+   GetMem(Tampon, NbPts * (2*SizeOf(TPoint))); try
    Pt:=@Pts;
    Dest:=Pt;
    Inc(Dest, NbPts-1);
@@ -702,7 +705,7 @@ begin
      Dec(I);
    if I>=3 then
     Windows.Polygon(DC, Tampon^, I);
-   FreeMem(Tampon);
+   finally FreeMem(Tampon); end;
   end
  else
   Windows.Polygon(DC, Pts, NbPts);
