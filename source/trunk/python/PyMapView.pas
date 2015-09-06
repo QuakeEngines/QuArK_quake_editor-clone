@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2015/08/09 16:29:59  danielpharos
+Added mousewheel scrolling support in the 2D views.
+
 Revision 1.60  2015/02/16 19:17:33  danielpharos
 Added additional logging of exceptions.
 
@@ -279,7 +282,6 @@ type
                private
                  DisplayType: TDisplayType;
                  RenderMode: TMapViewRenderMode;
-                 NoDraw: Boolean;
                  kDelta: TPoint;
                  FOnDraw, FBoundingBoxes, FOnMouse, FOnKey, FHandles,
                  FOnCameraMove: PyObject;
@@ -304,7 +306,6 @@ type
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
                  FPainting: Boolean;
-                 ShowProgress: Boolean;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
                  procedure Render;
@@ -408,7 +409,6 @@ begin
    CurrentMapView:=Nil;
   end;
  inherited;
- NoDraw:=False;
  PressingMouseButton:=mbNotPressing;
  OnPaint:=Paint;
  OnSetCursor:=SetCursor;
@@ -437,7 +437,6 @@ begin
  SceneConfigSrc:=Nil;
  Hint:=BlueHintPrefix;
  TabStop:=True;
- ShowProgress:=True;
  RenderMode:=rmFull;
 end;
 
@@ -721,7 +720,6 @@ begin
         raise EErrorFmt(6000, ['Invalid ViewMode']);
       end;
 
-      Scene.ShowProgress:=ShowProgress;
       Scene.SetViewWnd(Self.Handle);
       Scene.SetDrawRect(GetClientRect);
       Scene.Init(MapViewProj, DisplayMode, DisplayType, RenderMode, Specifics.Values['Lib'], AllowsGDI);
@@ -2236,7 +2234,7 @@ begin
   end;
 end;
 
-function TPyMapView.ResetFullScreen(nFullScreen: Boolean) : Boolean;
+function TPyMapView.ResetFullScreen(nFullScreen: Boolean) : Boolean; //@
 begin
  if FullScreen xor nFullScreen then
   begin
@@ -3034,7 +3032,7 @@ begin
  end;
 end;
 
-function mFull3Dview(self, args: PyObject) : PyObject; cdecl;
+function mFull3Dview(self, args: PyObject) : PyObject; cdecl; //@
 var
  mode, returnvalue: Integer;
 begin
@@ -3243,14 +3241,6 @@ begin
             Result:=PyInt_FromLong((QkControl as TPyMapView).HandleCursor);
            Exit;
           end;
-    'n': if StrComp(attr, 'nodraw')=0 then
-          begin
-           if (QkControl as TPyMapView).NoDraw then
-            Result:=PyInt_FromLong(1)
-           else
-            Result:=PyInt_FromLong(0);
-           Exit;
-          end;
     'r': if StrComp(attr, 'redlines')=0 then
           begin
            if QkControl<>Nil then
@@ -3294,15 +3284,6 @@ begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
              Result:=GetPyObj(ConfigSrc);
-           Exit;
-          end
-         else
-         if StrComp(attr, 'showprogress')=0 then
-          begin
-           if (QkControl as TPyMapView).ShowProgress then
-            Result:=PyInt_FromLong(1)
-           else
-            Result:=PyInt_FromLong(0);
            Exit;
           end;
     'v': if StrComp(attr, 'viewmode')=0 then
@@ -3563,15 +3544,6 @@ begin
            Result:=0;
            Exit;
           end;
-    'n': if StrComp(attr, 'nodraw')=0 then
-          begin
-           if PyInt_AsLong(value)=0 then
-            (QkControl as TPyMapView).NoDraw:=False
-           else
-            (QkControl as TPyMapView).NoDraw:=True;
-           Result:=0;
-           Exit;
-          end;
   (*'r': if StrComp(attr, 'root')=0 then
           begin
            if QkControl<>Nil then
@@ -3643,18 +3615,6 @@ begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
              CentreEcran:=PyVect(value)^.V;
-           Result:=0;
-           Exit;
-          end
-         else
-         if StrComp(attr, 'showprogress')=0 then
-          begin
-           if PyInt_AsLong(value)=0 then
-            (QkControl as TPyMapView).ShowProgress:=False
-           else
-            (QkControl as TPyMapView).ShowProgress:=True;
-           if (QkControl as TPyMapView).Scene<>nil then
-            (QkControl as TPyMapView).Scene.ShowProgress:=(QkControl as TPyMapView).ShowProgress;
            Result:=0;
            Exit;
           end;

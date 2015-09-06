@@ -51,10 +51,6 @@ class FourViewsLayout(ModelLayout):
         self.ViewXZ.viewtype="editor"
         self.ViewYZ.viewtype="editor"
         self.View3D.viewtype="editor"
-        self.ViewXY.showprogress=0
-        self.ViewXZ.showprogress=0
-        self.ViewYZ.showprogress=0
-        self.View3D.showprogress=0
 
         #
         # Put these 4 views in the view lists.
@@ -327,6 +323,9 @@ LayoutsList.insert(0, FourViewsLayout2)
 #
 #
 # $Log$
+# Revision 1.18  2010/12/30 07:19:49  cdunde
+# Additional needed fixes to last changes.
+#
 # Revision 1.17  2010/12/29 21:20:49  cdunde
 # Fix by DanielPharos for 3D view depth causing not being able
 # to select bounding boxes in those type of views sometimes.

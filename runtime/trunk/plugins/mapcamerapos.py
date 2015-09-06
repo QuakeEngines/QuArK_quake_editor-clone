@@ -55,7 +55,7 @@ def get3DView(editor,makeone=0):
     views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
     if len(views)==0:
         if makeone:
-            editor.layout.full3Dclick(None)
+            editor.layout.new3Dwindow(None)
             views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
             return views[0]
         else:
@@ -452,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.19  2011/03/13 20:30:56  cdunde
+# Merged code line to avoid Python problems.
+#
 # Revision 1.18  2011/03/11 07:53:01  cdunde
 # Fixed dialog box height.
 #

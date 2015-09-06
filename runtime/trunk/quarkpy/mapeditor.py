@@ -247,10 +247,8 @@ class MapEditor(BaseEditor):
         BaseEditor.setupview(self, v, drawmap, flags, copycol)
         v.boundingboxes = loadbbox
         if v.info["type"] == "3D":
-            try:
-                v.cameraposition = self.oldcamerapos
-            except:
-                pass
+            if self.last3Dcameraposition is not None:
+                v.cameraposition = self.last3Dcameraposition
 
 
     #
@@ -406,6 +404,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.26  2012/07/01 12:24:12  danielpharos
+#Improved MapError error message.
+#
 #Revision 1.25  2011/10/06 20:13:37  danielpharos
 #Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
 #

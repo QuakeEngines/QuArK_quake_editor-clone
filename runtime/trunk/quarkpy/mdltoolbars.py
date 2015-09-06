@@ -38,7 +38,9 @@ class DisplayBar(qeditor.ToolBar):
         zoombtn.views = layout.views
         zoombtn.caption = "zoom"
 
-        Btn3D = qtoolbar.button(layout.full3Dclick, "Full 3D view||Full 3D view will create a new floating 3D-window, which you can place anywhere on your desktop and resize as you wish.\n\nAdditional 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", ico_maped, 21, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
+        Btn3D = qtoolbar.button(layout.new3Dwindow, "New 3D window||New 3D window:\n\nThis will create a new floating 3D-display.\n\nMultiple 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", ico_maped, 20, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows")
+
+        BtnFull3D = qtoolbar.button(layout.full3Dclick, "3D fullscreen view||3D fullscreen view:\n\nThis will create a full-screen 3D-display.\nYou must press Escape to return to the model editor.", ico_maped, 21, infobaselink="intro.modeleditor.toolpalettes.display.html#3dwindows") 
 
         LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Vertex/Face modes||Vertex/Face modes:\n\nThis button is always active in one way or another. If deactivated (off, default) your in Vertex mode, if activated (on) your in Face mode. It performs various ways in each mode in the Model Editor, depending on what is selected, and has no effect for the Skin-view. When more then one item is selected in any view it will display a 'Linear Drag Handle', a circle around those selected objects, for editing purposes.\n\nThis circle and its attached handles let you apply 'linear movement' to the objects. 'Linear movement' means any transformation such as group movement, rotation, enlarging/shrinking and distortion/shearing. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear movement on the selected objects.\n\n.\Some Toolbar functions require you to be in the Face mode to operate such as Reverse face direction, Subdivide faces, Face Cut tool and the Keep Dupe Vertexes buttons.n\nClick the 'InfoBase' button for more details on its uses.", ico_maped, 19,  infobaselink="intro.modeleditor.toolpalettes.display.html#linear")
 
@@ -48,7 +50,7 @@ class DisplayBar(qeditor.ToolBar):
 
         layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
 
-        return [gridbtn, zoombtn, Btn3D, LinearVBtn, LockViewsBtn, helpbtn]
+        return [gridbtn, zoombtn, Btn3D, BtnFull3D, LinearVBtn, LockViewsBtn, helpbtn]
 
 
 # Extrude selected faces in the ModelFaceSelList without bulkheads function.
@@ -1020,6 +1022,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.19  2013/10/15 17:54:46  cdunde
+#Updated Toolbar Button for Model Editor.
+#
 #Revision 1.18  2011/11/17 01:19:02  cdunde
 #Setup BBox drag toolbar button to work correctly with other toolbar buttons.
 #

@@ -239,8 +239,7 @@ def qmenuitem1click(m):
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if setup["CloseOnGame"]:
             editor.layout.mpp.viewpage(0)
-            for floating in editor.layout.Floating3DWindows:
-              floating.close()
+            editor.layout.closeall3DWindows()
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
       m.info["RunGame"], m.text, 0, [], "", None)
 
@@ -630,6 +629,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.63  2012/10/07 17:57:35  danielpharos
+#Workaround for SOF1 tools needing the wrong slashes.
+#
 #Revision 1.62  2011/07/31 12:07:55  danielpharos
 #Removed bad try-except, and fixed file-groups not working properly.
 #

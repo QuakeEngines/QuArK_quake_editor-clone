@@ -32,10 +32,10 @@ currentview = None
 cursorpos = None
 
 def drawview(view,mapobj,mode=0):
-        #
-        # tig: does the drawing, for later redefinition
-        #
-        view.drawmap(mapobj, mode)
+    #
+    # tig: does the drawing, for later redefinition
+    #
+    view.drawmap(mapobj, mode)
 
 class BaseEditor:
 
@@ -50,6 +50,7 @@ class BaseEditor:
         self.dragobject = None
         self.Root = None
         self.TexSource = None
+        self.last3Dcameraposition = None
         #self.drawmode = <from setupchanged()>
         #self.grid = <from setupchanged()>
         #self.gridstep = <from setupchanged()>
@@ -58,7 +59,6 @@ class BaseEditor:
         self.ReopenRoot(form)
         self.setupchanged1 = (self.setupchanged,)
         apply(SetupRoutines.append, self.setupchanged1)
-        self.list = ()
 
    # def __del__(self):
    #     debug("MapEditor closes")
@@ -69,6 +69,7 @@ class BaseEditor:
         self.fileobject = form.fileobject
         self.Root = None
         self.TexSource = None
+        self.last3Dcameraposition = None
         self.OpenRoot()
         if self.layout is None:
             nlayoutname = quarkx.setupsubset(self.MODE, "Layouts")["_layout"]
@@ -84,23 +85,6 @@ class BaseEditor:
 
     def drawmap(self, view):
         "Draws the map/model on the given view."
-        try:
-            list = self.list
-        except:
-            pass
-
-        #
-        # Stop any pending timer that would cause this view to be redrawn later.
-        #
-        try:
-            view.info["timer"]   # check the presence of the "timer" attribute
-            quarkx.settimer(qbasemgr.RefreshView, view, 0)
-            view.nodraw = 1
-            qbasemgr.RefreshView(view)   # re-invalidate the whole view
-            return
-        except:
-            pass
-        view.nodraw = 0
 
         #
         # First read the view's scale.
@@ -138,41 +122,37 @@ class BaseEditor:
         #
         setup = quarkx.setupsubset(self.MODE, "Display")
 
-        if view.viewmode == "wire":
-            def DrawAxis(setup=setup, view=view, MODE=self.MODE):
-                X, Y, Z = setup["MapLimit"]
-                if (quarkx.setupsubset()["MapLimit"]<>None):    # games can overide default setting
-                    X, Y, Z = quarkx.setupsubset()["MapLimit"]
+        def DrawAxis(setup=setup, view=view, MODE=self.MODE):
+            X, Y, Z = setup["MapLimit"]
+            if (quarkx.setupsubset()["MapLimit"]<>None):    # games can overide default setting
+                X, Y, Z = quarkx.setupsubset()["MapLimit"]
 
-                ax = []
-                if MapOption("DrawAxis", MODE):
-                    ax.append((-X, 0, 0,  X, 0, 0))
-                    ax.append(( 0,-Y, 0,  0, Y, 0))
-                    ax.append(( 0, 0,-Z,  0, 0, Z))
-                if view.info["type"]!="3D" and MapOption("DrawMapLimit", MODE):
-                    # this big "map-limits" cube looks bad in perspective views
-                    ax.append((-X,-Y,-Z,  X,-Y,-Z))
-                    ax.append((-X,-Y, Z,  X,-Y, Z))
-                    ax.append((-X, Y,-Z,  X, Y,-Z))
-                    ax.append((-X, Y, Z,  X, Y, Z))
-                    ax.append((-X,-Y,-Z, -X, Y,-Z))
-                    ax.append((-X,-Y, Z, -X, Y, Z))
-                    ax.append(( X,-Y,-Z,  X, Y,-Z))
-                    ax.append(( X,-Y, Z,  X, Y, Z))
-                    ax.append((-X,-Y,-Z, -X,-Y, Z))
-                    ax.append((-X, Y,-Z, -X, Y, Z))
-                    ax.append(( X,-Y,-Z,  X,-Y, Z))
-                    ax.append(( X, Y,-Z,  X, Y, Z))
-                if ax:
-                    cv = view.canvas()
-                    cv.pencolor = MapColor("Axis", MODE)
-                    for x1,y1,z1,x2,y2,z2 in ax:
-                        p1 = view.proj(x1,y1,z1)
-                        p2 = view.proj(x2,y2,z2)
-                        cv.line(p1, p2)
-        else:
-            def DrawAxis():
-                pass
+            ax = []
+            if MapOption("DrawAxis", MODE):
+                ax.append((-X, 0, 0,  X, 0, 0))
+                ax.append(( 0,-Y, 0,  0, Y, 0))
+                ax.append(( 0, 0,-Z,  0, 0, Z))
+            if view.info["type"]!="3D" and MapOption("DrawMapLimit", MODE):
+                # this big "map-limits" cube looks bad in perspective views
+                ax.append((-X,-Y,-Z,  X,-Y,-Z))
+                ax.append((-X,-Y, Z,  X,-Y, Z))
+                ax.append((-X, Y,-Z,  X, Y,-Z))
+                ax.append((-X, Y, Z,  X, Y, Z))
+                ax.append((-X,-Y,-Z, -X, Y,-Z))
+                ax.append((-X,-Y, Z, -X, Y, Z))
+                ax.append(( X,-Y,-Z,  X, Y,-Z))
+                ax.append(( X,-Y, Z,  X, Y, Z))
+                ax.append((-X,-Y,-Z, -X,-Y, Z))
+                ax.append((-X, Y,-Z, -X, Y, Z))
+                ax.append(( X,-Y,-Z,  X,-Y, Z))
+                ax.append(( X, Y,-Z,  X, Y, Z))
+            if ax:
+                cv = view.canvas()
+                cv.pencolor = MapColor("Axis", MODE)
+                for x1,y1,z1,x2,y2,z2 in ax:
+                    p1 = view.proj(x1,y1,z1)
+                    p2 = view.proj(x2,y2,z2)
+                    cv.line(p1, p2)
 
         solidgrid = MapOption("SolidGrid", self.MODE)
         def DrawGrid(self=self, setup=setup, solidgrid=solidgrid, view=view):
@@ -232,12 +212,12 @@ class BaseEditor:
         #
         # Draw the axis and the grid in the correct order
         #
-        if not solidgrid: DrawAxis()
-
         if view.viewmode == "wire":
+            if not solidgrid:
+                DrawAxis()
             DrawGrid()
-
-        if solidgrid: DrawAxis()
+            if solidgrid:
+                DrawAxis()
 
         #
         # Call the layout to update the map view limits, i.e. the
@@ -245,9 +225,6 @@ class BaseEditor:
         #
         self.layout.drawing(view)
 
-        #
-        # Fill the background of the selected object
-        #
         ex = self.layout.explorer
         fs = ex.focussel
 
@@ -258,13 +235,16 @@ class BaseEditor:
         if isinstance(self, mdleditor.ModelEditor):
             pass
         else:
-            if self.layout.toolbars["tb_terrmodes"] is not None and len(self.layout.explorer.sellist) > 1:
+            if self.layout.toolbars["tb_terrmodes"] is not None and len(ex.sellist) > 1:
                 tb2 = self.layout.toolbars["tb_terrmodes"]
                 for b in tb2.tb.buttons:
                     if b.state == 2:
                         fs = None
         # End of Terrain Generator added code
 
+        #
+        # Fill the background of the selected object
+        #
         if isinstance(self, mdleditor.ModelEditor):
             pass
         else:
@@ -272,7 +252,7 @@ class BaseEditor:
                 # This gives the option of NOT filling the selected poly with color in 2D views.
                 # Very helpful when a background image is being used to work with.
                 if MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
-                    mode=self.drawmode | DM_DONTDRAWSEL
+                    mode = self.drawmode | DM_DONTDRAWSEL
                 else:
                     mode = self.drawmode | DM_BACKGROUND
 
@@ -280,9 +260,6 @@ class BaseEditor:
                     mode=mode|DM_BBOX
                 self.ObjectMgr.im_func("drawback", fs, self, view, mode)
 
-        #
-        # Draw the views.
-        #
         mode = self.drawmode
         if MapOption("BBoxAlways", self.MODE): # Might be able to use this for the Model Editor as well, not active yet.
             mode=mode|DM_BBOX
@@ -378,7 +355,8 @@ class BaseEditor:
                 pass
             else:
                 mode = self.drawmode
-                if MapOption("BBoxSelected", self.MODE): mode=mode|DM_BBOX
+                if MapOption("BBoxSelected", self.MODE):
+                    mode=mode|DM_BBOX
                 list = ex.sellist
                 if len(list)==1:
                     self.ObjectMgr.im_func("drawsel", list[0], view, mode)
@@ -386,9 +364,13 @@ class BaseEditor:
                     for sel in list:    # draw the selected objects in "highlight" white-and-black lines
                         view.drawmap(sel, mode | DM_SELECTED, view.setup.getint("SelMultColor"))
 
+                # This allows plp to pick the color the selected poly will be drawn when the No Fill option is active.
+                if fs is not None and MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
+                    view.drawmap(fs, mode | DM_OTHERCOLOR, quarkx.setupsubset(SS_MAP, "Colors").getint("NoFillSel"))
+
         #
-        # Send the above drawed map items to the 3D renderer (nice grammar..."drawed"?...no such word)
-        # This is used by BOTH the Map and Model editors.
+        # Draw the rendered views.
+        #
         if view.viewmode != "wire":
             view.solidimage(self.TexSource)  # in case of solid or textured view, this computes and draws the full solid or textured image
             if MapOption("GridVisibleTex", self.MODE):
@@ -437,13 +419,6 @@ class BaseEditor:
                 if MapOption("BBoxSelected", self.MODE):
                     mode=mode|DM_BBOX
                 self.ObjectMgr.im_func("drawback", fs, self, view, mode) # Causes lines to be drawn in Model Editor.
-
-        if isinstance(self, mdleditor.ModelEditor):
-            pass
-        else:
-            # This allows plp to pick the color the selected poly will be drawn when the No Fill option is active.
-            if len(list)==1 and MapOption("PolySelectNoFill", self.MODE) and fs.type != ":e":
-                view.drawmap(list[0], mode | DM_OTHERCOLOR, quarkx.setupsubset(SS_MAP, "Colors").getint("NoFillSel"))
 
         self.finishdrawing(view)
 
@@ -698,6 +673,7 @@ class BaseEditor:
         v.onmouse = self.mousemap
         v.onkey = self.keymap
         v.ondrop = self.dropmap
+        v.oncameramove = self.cameramoved
         v.flags = v.flags | flags
         if self.MODE == SS_MODEL:
             try:
@@ -741,12 +717,11 @@ class BaseEditor:
             nlayout.explorer.onundo = self.explorerundo
             nlayout.setupchanged(None)
             self.lastscale = 0    # force a call to buildhandles()
-            if self.Root is not None:
-                for v in nlayout.views:
-                    self.setupview(v, copycol=0)
-                nlayout.explorer.addroot(self.Root)
             nlayout.updateviewproj()
-            nlayout.postinitviews()
+            for v in nlayout.views:
+                self.setupview(v, copycol=0)
+            if self.Root is not None:
+                nlayout.explorer.addroot(self.Root)
             if not self.lockviews:
                 nlayout.UnlockViews()
             self.initmenu(form)
@@ -814,6 +789,11 @@ class BaseEditor:
             setup["GridActive"] = "1"[not self.grid:]
 
 
+    def cameramoved(self, view):
+        if view.info["type"] == "3D":
+            self.last3Dcameraposition = view.cameraposition
+
+
     def explorerselchange(self, ex=None):
         self.buildhandles()
         self.invalidateviews(1)
@@ -828,7 +808,7 @@ class BaseEditor:
         undo.ok(self.Root, msg)
 
 
-    def invalidateviews(self, rebuild=0, viewmodes=''):
+    def invalidateviews(self, rebuild=0, viewmode=''):
         "Force all views to be redrawn."
 
         import mdleditor
@@ -892,7 +872,7 @@ class BaseEditor:
                 pass
         else:
             for v in self.layout.views:
-                if (viewmodes == '') or (v.viewmode == viewmodes):
+                if (viewmode == '') or (v.viewmode == viewmode):
                     v.invalidate(rebuild)
 
 
@@ -1819,6 +1799,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.153  2015/08/09 16:30:06  danielpharos
+#Added mousewheel scrolling support in the 2D views.
+#
 #Revision 1.152  2011/10/06 20:13:37  danielpharos
 #Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
 #

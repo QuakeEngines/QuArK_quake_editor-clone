@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2015/04/25 17:17:45  danielpharos
+Fix memory leak with Direct3D lighting.
+
 Revision 1.58  2015/04/25 17:06:12  danielpharos
 Added Direct3D9 lighting.
 
@@ -475,6 +478,7 @@ begin
  ViewWnd:=0;
  ViewDC:=0;
  FInitialized:=false;
+ ShowProgress:=true; //Currently not used; make this an option?
 end;
 
 destructor TSceneObject.Destroy;

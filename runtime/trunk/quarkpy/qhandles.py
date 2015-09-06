@@ -961,7 +961,6 @@ class RedImageDragObject(DragObject):
                 import mdleditor
                 editor = mdleditor.mdleditor
         self.editor = editor
-        self.view = view
         self.newx = x
         self.newy = y
         self.newz = z
@@ -1294,8 +1293,8 @@ class HandleDragObject(RedImageDragObject):
 
 
 
-def refreshtimer(self):
-    editor = self.editor
+def refreshtimer(obj):
+    editor = obj.editor
     import mdleditor
     if editor is None:
         editor = mdleditor.mdleditor
@@ -1314,50 +1313,50 @@ def refreshtimer(self):
         if flagsmouse != 1032:
             # This area draws the rectangle selector and view handles
             #   in the Model Editor 3D view when it pauses.
-            if self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
-                self.view.handles = []
+            if obj.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles1"] == "1":
+                obj.view.handles = []
                 return
-            elif self.view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
-                self.view.handles = []
+            elif obj.view.info["viewname"] == "XY" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles2"] == "1":
+                obj.view.handles = []
                 return
-            elif self.view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
-                self.view.handles = []
+            elif obj.view.info["viewname"] == "YZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles3"] == "1":
+                obj.view.handles = []
                 return
-            elif self.view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
-                self.view.handles = []
+            elif obj.view.info["viewname"] == "XZ" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles4"] == "1":
+                obj.view.handles = []
                 return
-            elif self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
-                self.view.handles = []
+            elif obj.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_nohandles5"] == "1":
+                obj.view.handles = []
                 return
             else:
-                if len(self.view.handles) == 0:
+                if len(obj.view.handles) == 0:
                     import mdlhandles
-                    self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
+                    obj.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, obj.view)
             if flagsmouse == 1072:
-                mdleditor.setsingleframefillcolor(editor, self.view)
-                self.view.repaint()
+                mdleditor.setsingleframefillcolor(editor, obj.view)
+                obj.view.repaint()
                 try:
                     if editor.ModelFaceSelList != []:
                         import mdlhandles
-                        mdlhandles.ModelFaceHandle(GenericHandle).draw(editor, self.view, editor.EditorObjectList)
+                        mdlhandles.ModelFaceHandle(GenericHandle).draw(editor, obj.view, editor.EditorObjectList)
                 except:
                     pass
-            cv = self.view.canvas()
-            for h in self.view.handles:
-                h.draw(self.view, cv, self)
+            cv = obj.view.canvas()
+            for h in obj.view.handles:
+                h.draw(obj.view, cv, obj)
             try:
                 if editor.ModelVertexSelList != []:
                     for vtx in editor.ModelVertexSelList:
-                        h = self.view.handles[vtx]
-                        h.draw(self.view, cv, h)
+                        h = obj.view.handles[vtx]
+                        h.draw(obj.view, cv, h)
             except:
                 pass
             if flagsmouse == 1072:
                 mode = DM_OTHERCOLOR|DM_BBOX
                 reccolor = MapColor("Drag3DLines", SS_MODEL)
-                if self.redimages is not None:
-                    for r in self.redimages:
-                        self.view.drawmap(r, mode, reccolor)
+                if obj.redimages is not None:
+                    for r in obj.redimages:
+                        obj.view.drawmap(r, mode, reccolor)
             return
         if flagsmouse == 1032:
             import mdlhandles
@@ -1365,50 +1364,46 @@ def refreshtimer(self):
                 # This area draws the rectangle selector and view handles
                 #   in the Model Editor 2D view or Skin-view when it pauses.
                 mode = DM_OTHERCOLOR|DM_BBOX
-                if self.redimages is not None:
-                    if self.view.info["viewname"] == "skinview":
-                        self.view.repaint()
+                if obj.redimages is not None:
+                    if obj.view.info["viewname"] == "skinview":
+                        obj.view.repaint()
                         rectanglecolor = MapColor("SkinDragLines", SS_MODEL)
-                        for r in self.redimages:
-                            self.view.drawmap(r, mode, rectanglecolor)
+                        for r in obj.redimages:
+                            obj.view.drawmap(r, mode, rectanglecolor)
                     else:
-                        if len(self.view.handles) == 0:
+                        if len(obj.view.handles) == 0:
                             import mdlhandles
-                            self.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, self.view)
+                            obj.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, obj.view)
                   # Line below stops the editor 2D view handles from drawing during rec drag after the timer
                   # goes off one time, but does not recreate the handles if nothing is selected at end of drag.
-                  #      self.view.handles = []
-                        self.view.invalidaterect(self.xmin, self.ymin, self.xmax, self.ymax)
-                        newxmin = newxmax = self.x
-                        newymin = newymax = self.y
-                        if self.newx < newxmin:
-                            newxmin = self.xmin
-                        if self.newx > newxmax:
-                            newxmax = self.xmax
-                        if self.newy < newymin:
-                            newymin = self.ymin
-                        if self.newy > newymax:
-                            newymax = self.ymax
-                        self.xmin = newxmin
-                        self.xmax = newxmax
-                        self.ymin = newymin
-                        self.ymax = newymax
+                  #      obj.view.handles = []
+                        obj.view.invalidaterect(obj.xmin, obj.ymin, obj.xmax, obj.ymax)
+                        newxmin = newxmax = obj.x
+                        newymin = newymax = obj.y
+                        if obj.newx < newxmin:
+                            newxmin = obj.xmin
+                        if obj.newx > newxmax:
+                            newxmax = obj.xmax
+                        if obj.newy < newymin:
+                            newymin = obj.ymin
+                        if obj.newy > newymax:
+                            newymax = obj.ymax
+                        obj.xmin = newxmin
+                        obj.xmax = newxmax
+                        obj.ymin = newymin
+                        obj.ymax = newymax
             else:
                 if not isinstance(editor.dragobject, mdlhandles.LinearHandle):
                     return
         else:
             pass
     else:
-        try:
-            for v in self.views:
-                v.invalidate()
-        except:
-            for v in editor.layout.views:
-                v.invalidate()
+        for v in editor.layout.views:
+            v.invalidate()
 
-def refreshtimertex(self):
-    for v in self.views:
-        if (v.viewmode == "tex") and (v is not self.view):
+def refreshtimertex(obj):
+    for v in obj.editor.layout.views:
+        if (v.viewmode == "tex") and (v is not obj.view):
             v.invalidate(1)
 
 #
@@ -2250,6 +2245,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.102  2015/05/23 15:59:05  danielpharos
+#Fixed a typo.
+#
 #Revision 1.101  2011/10/06 20:13:37  danielpharos
 #Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
 #

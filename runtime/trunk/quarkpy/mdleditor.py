@@ -397,11 +397,11 @@ class ModelEditor(BaseEditor):
 
     def setupview(self, v, drawmap=None, flags=MV_AUTOFOCUS, copycol=1):
         BaseEditor.setupview(self, v, drawmap, flags, copycol)
-        try:
-            if v.info["type"] == "3D":
+        if v.info["type"] == "3D":
+            if self.last3Dcameraposition is not None:
+                v.cameraposition = self.last3Dcameraposition
+            else:
                 v.cameraposition = (quarkx.vect(150,-100,25), 2.5, 0.0)
-        except:
-            pass
 
 
     def setlayout(self, form, nlayout):
@@ -1868,6 +1868,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.166  2015/01/09 20:22:26  danielpharos
+#Typo fixes.
+#
 #Revision 1.165  2013/01/28 04:00:45  cdunde
 #Fix for Skin-view tristodraw and view handles not being stored in .qkl file.
 #

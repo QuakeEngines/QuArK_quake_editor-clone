@@ -878,10 +878,6 @@ class MapLayout(BaseLayout):
     def NewItem1Click(self, m):
         quarkx.opentoolbox("New map items...")
 
-    def cameramoved(self, view):
-        self.update3Dviews()
-        self.editor.oldcamerapos = view.cameraposition
-
 
 
 #
@@ -902,6 +898,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.28  2014/03/08 14:12:15  danielpharos
+#Fix console error for texture-flags RMB menu if game paths are not configured.
+#
 #Revision 1.27  2008/12/19 23:36:01  danielpharos
 #Oops
 #

@@ -33,7 +33,9 @@ class DisplayBar(qeditor.ToolBar):
         zoombtn.views = layout.views
         zoombtn.caption = "zoom"
 
-        Btn3D = qtoolbar.button(layout.full3Dclick, "3D view||3D view:\n\nThis will take you to a floating 3D-display.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
+        Btn3D = qtoolbar.button(layout.new3Dwindow, "New 3D window||New 3D window:\n\nThis will create a new floating 3D-display.\n\nMultiple 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", ico_maped, 20, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
+
+        BtnFull3D = qtoolbar.button(layout.full3Dclick, "3D fullscreen view||3D fullscreen view:\n\nThis will create a full-screen 3D-display.\nYou must press Escape to return to the map editor.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows") 
 
         LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear mapping circle on selection||Linear mapping circle on selection:\n\nWhen this button is selected, QuArK always displays a pink circle around the selected objects; otherwise, it only appears if multiple objects are selected.\n\nThis circle and its attached handles let you apply 'linear mappings' on the objects. 'Linear mapping' means any transformation like rotation, enlarging/shrinking, symmetry, or a combination of them all. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear mapping on the selected objects. This is only interesting to know for a special kind of Duplicators, the one that can apply linear mappings. It means that this kind of Duplicator can create images with any of the previous movement commands applied, for example to create spiral stairs.", ico_maped, 19, infobaselink="intro.mapeditor.toolpalettes.display.html#linear")
 
@@ -43,7 +45,7 @@ class DisplayBar(qeditor.ToolBar):
 
         layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
 
-        return [gridbtn, zoombtn, Btn3D, LinearVBtn, LockViewsBtn, helpbtn]
+        return [gridbtn, zoombtn, Btn3D, BtnFull3D, LinearVBtn, LockViewsBtn, helpbtn]
 
 
 #
@@ -58,6 +60,9 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.12  2008/11/17 19:10:00  danielpharos
+#Fixed a typo.
+#
 #Revision 1.11  2008/08/21 12:11:53  danielpharos
 #Fixed an import failure.
 #

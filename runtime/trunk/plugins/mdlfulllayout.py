@@ -37,7 +37,6 @@ class Full3DLayout(ModelLayout):
         self.views[:] = [self.View3D]
         self.baseviews = self.views[:]
         self.View3D.viewmode = "tex"
-        self.View3D.showprogress=0
         self.View3D.info = {
           "type": "3D",
           "viewname": "editors3Dview",
@@ -79,6 +78,9 @@ LayoutsList.append(Full3DLayout)
 #
 #
 # $Log$
+# Revision 1.15  2010/12/30 07:19:49  cdunde
+# Additional needed fixes to last changes.
+#
 # Revision 1.14  2010/12/29 21:30:58  cdunde
 # Increased dept for this layout in case a large model is loaded.
 #

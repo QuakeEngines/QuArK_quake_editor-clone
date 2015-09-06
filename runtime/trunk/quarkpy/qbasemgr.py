@@ -32,8 +32,6 @@ ModesHint = "|Each view can be set to one of three rendering modes :\n\nWirefram
 class BaseLayout:
     "An abstract base class for Map and Model Editor screen layouts."
 
-    Floating3DWindows = []
-
     def __init__(self):
         # debug("Creation of layout '%s'" % self.__class__.__name__)
         self.clearrefs()
@@ -48,6 +46,8 @@ class BaseLayout:
         self.buttons = {}
         self.toolbars = {}
         self.leftpanel = None
+        self.floating3DWindows = []
+        self.full3Dview = None
         self.hintcontrol = None
         self.hinttext = ""
         self.compass = None
@@ -89,8 +89,7 @@ class BaseLayout:
                     quarkx.update(self.editor.form)
             except KeyError:
                 pass
-            for floating in BaseLayout.Floating3DWindows:
-                floating.close()
+            self.closeall3DWindows()
             self.editor.layout.mpp.viewpage(0)
         if len(self.views):
             if MapOption("CrossCursor", self.MODE):
@@ -180,7 +179,9 @@ class BaseLayout:
         Mod2.mode = "solid"
         Mod3 = qmenu.item("&Textured", self.setviewmode, modhint)
         Mod3.mode = "tex"
-        New3D = qmenu.item("3D view", self.full3Dclick, "|3D view:\n\nThis will create a new free-floating 3D edit window.", infobaselink)
+        New3D = qmenu.item("3D view", self.new3Dwindow, "|3D view:\n\nThis will create a new free-floating 3D edit window.\n\nMultiple 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", infobaselink)
+        NewFull3D = qmenu.item("3D fullscreen", self.full3Dclick, "|3D fullscreen view:\n\nThis will create a full-screen 3D-display.\nYou must press Escape to return to the editor.", infobaselink)
+
         cliphint = "|While you edit your "+text+", some parts of it may be visible on one view but not on the others. Such parts are considered to be 'out of view', and these commands control how they are displayed :\n\n'Show whole "+text+"': no out-of-view masking\n'Gray out of view': grayed out (default)\n'Hide out of view': simply hidden"
         DrM1 = qmenu.item("Show &whole "+text, self.setdrawmode, cliphint, infobaselink)
         DrM1.mode = DM_NORMAL
@@ -192,7 +193,7 @@ class BaseLayout:
          #
          # NOTE: this menu is accessed by position in the function "layoutmenuclick"
          #
-        return [Mod1, Mod2, Mod3, New3D, qmenu.sep, DrM1, DrM2,
+        return [Mod1, Mod2, Mod3, New3D, NewFull3D, qmenu.sep, DrM1, DrM2,
          DrM3, qmenu.sep, PanelRight], {"Ctrl+1":Mod1, "Ctrl+2":Mod2,
          "Ctrl+3":Mod3, "Ctrl+4": New3D}
         #return [Mod1, Mod2, Mod3, New3D, NewOGL, NewF3D, qmenu.sep, DrM1, DrM2,
@@ -223,50 +224,104 @@ class BaseLayout:
     def setdrawmode(self, menu):
         self.editor.drawmode = menu.mode | (self.editor.drawmode &~ DM_MASKOOV)
         self.editor.savesetupinfos()
-        for v in self.views:
-            if v.viewmode == "wire":
-                v.invalidate()
+        self.editor.invalidateviews(viewmode="wire")
 
     def panelatright(self, menu):
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
-    def full3Dclick(self, menu):
-        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
-        if self.buttons["3D"].state == 0:
-            if setup["Warning3D"]:
-                if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
-                    raise quarkx.abort
-            self.openfull3Dview()
-            setup["Warning3D"] = ""
-            if not setup["AllowMultiple"]:
-                self.buttons["3D"].state = qtoolbar.selected
-                quarkx.update(self.editor.form)
-        else:
-            if not setup["AllowMultiple"]:
-                for floating in BaseLayout.Floating3DWindows:
-                    floating.close()
-
-    def openfull3Dview(self):
-        "Opens the 3D view."
+    def new3Dwindow(self, menu):
+        "Opens the floating 3D view."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if not setup["AllowMultiple"]:
-            for floating in BaseLayout.Floating3DWindows:
+            buttonstate = self.buttons["3D"].state #Need to store this, as it gets reset when the floating window closes
+            for floating in self.floating3DWindows:
                 floating.close()
+
+            if buttonstate != 0:
+                #We closed the window; that is all
+                return
+
+        if setup["Warning3D"]:
+            if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
+                raise quarkx.abort
+        floating = quarkx.clickform.newfloating(0, "3D view") #@@@ FWF_NOESCCLOSE?
+        view = floating.mainpanel.newmapview()
+        view.info = {"type": "3D", "viewname": "3Dwindow"}
+        view.viewmode = "tex"
+        view.viewtype = "window"
+
+        ### Calling this function causes the 3D view mouse maneuvering to change,
+        ### rotation is based on the center of the editor view or the model (0,0,0).
+        ### But only for the Model Editor, so we first test for that.
+        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+            view.viewtype = "editor"
+            quarkpy.qhandles.flat3Dview(view, self)
+            del view.info["noclick"]
+            view.info["viewname"]="3Dwindow"
+            import mdlmgr, mdlhandles
+            mdlmgr.treeviewselchanged = 0
+
+        setprojmode(view)
+        self.editor.setupview(view)
+        floating.info = view
+        floating.onclose = self.close3Dwindow
+
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        r = setup["WndRect"]
+        #floating.windowrect = quarkx.screenrect()
+        r = (int(r[0]), int(r[1]), int(r[2]), int(r[3]))   #py2.4
+        floating.windowrect = r
+        floating.rect = r[2:]
+
+        self.views.append(view)
+        if self.editor.MODE == 3:
+            mdlhandles.AddRemoveEyeHandles(self.editor, view)
+        floating.show()
+        self.floating3DWindows.append(floating)
+
+        #Trigger a rebuild of the handles and a refresh of the views
+        self.editor.layout.explorer.selchanged()
+
+        setup["Warning3D"] = ""
+        if not setup["AllowMultiple"]:
+            self.buttons["3D"].state = qtoolbar.selected
+            quarkx.update(self.editor.form)
+
+    def close3Dwindow(self, floating):
+        "Closes the floating 3D view."
+        view = floating.mainpanel.controls()[0]
+        r = floating.windowrect
+        r = r[:2] + floating.rect
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        setup["WndRect"] = r
+        if view in self.views:
+            self.views.remove(view)
+        self.floating3DWindows.remove(floating)
+        if not setup["AllowMultiple"]:
+            self.buttons["3D"].state = 0
+            quarkx.update(self.editor.form)
+        if self.editor.MODE == 3:
+            pass
+        else:
+            #Trigger a rebuild of the handles and a refresh of the views
+            self.editor.layout.explorer.selchanged()
+
+    def full3Dclick(self, menu):
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+
         #DanielPharos: Check for FullScreen. If set, go fullscreen!
-        floating = quarkx.clickform.newfloating(0, "Full 3D view")
+        floating = quarkx.clickform.newfloating(0, "3D view") #@@@ FWF_NOESCCLOSE?
         view = floating.mainpanel.newmapview()
         #floating.rect = view.setup["FullScreenSize"]
         #floating.rect = view.setup["WndRect"]
         view.info = {"type": "3D", "viewname": "3Dwindow"}
         #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
-        if self.editor.MODE == 3:
-            view.showprogress=0
         view.viewtype = "window"
 
-    ### Calling this function causes the 3D view mouse maneuvering to change,
-    ### rotation is based on the center of the editor view or the model (0,0,0).
-    ### But only for the Model Editor, so we first test for that.
+        ### Calling this function causes the 3D view mouse maneuvering to change,
+        ### rotation is based on the center of the editor view or the model (0,0,0).
+        ### But only for the Model Editor, so we first test for that.
         if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
             view.viewtype = "editor"
             quarkpy.qhandles.flat3Dview(view, self)
@@ -298,37 +353,21 @@ class BaseLayout:
             self.views.append(view)
             if self.editor.MODE == 3:
                 mdlhandles.AddRemoveEyeHandles(self.editor, view)
-            else:
-                self.update3Dviews(view)
-        BaseLayout.Floating3DWindows.append(floating)
+        self.floating3DWindows.append(floating)
         if self.editor.MODE == 3:
             pass
         else:
+            #Trigger a rebuild of the handles and a refresh of the views
             self.editor.layout.explorer.selchanged()
 
-    def closefull3Dview(self, floating):
-        "Closes the 3D view."
-        view = floating.mainpanel.controls()[0]
-        view.full3Dview()
-        #if not offscreen:  #This should be used!
-        r = floating.windowrect
-        r = r[:2] + floating.rect
-        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
-        setup["WndRect"] = r
-        if view in self.views:
-            self.views.remove(view)
-            if self.editor.MODE == 3:
-                pass
-            else:
-                self.update3Dviews()
-        BaseLayout.Floating3DWindows.remove(floating)
-        if not setup["AllowMultiple"]:
-            self.buttons["3D"].state = 0
-            quarkx.update(self.editor.form)
-        if self.editor.MODE == 3:
-            pass
-        else:
-            self.editor.layout.explorer.selchanged()
+    def closefull3Dview(self):
+        pass
+
+    def closeall3DWindows(self):
+        for floating in self.floating3DWindows:
+            floating.close()
+        if self.full3Dview is not None:
+            self.full3Dview.close()
 
     def setupdepth(self, view):
         pass    # abstract
@@ -530,33 +569,6 @@ class BaseLayout:
     def helpbtnclick(self, m):
         htmldoc("")
 
-    def update3Dviews(self, newview=None):
-        if newview is not None:
-            newview.oncameramove = self.cameramoved
-        import mdleditor
-        if isinstance(self.editor, mdleditor.ModelEditor) and quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
-            from qbaseeditor import currentview
-            if currentview.info['viewname'] == "editors3Dview":
-                pass
-            else:
-                self.editor.lastscale = 0    # force a call to buildhandles()
-                for v in self.views:
-                    if v is not newview:
-                        v.info["timer"] = 1
-                        quarkx.settimer(RefreshView, v, 200)
-        else:
-            self.editor.lastscale = 0    # force a call to buildhandles()
-            for v in self.views:
-                if v is not newview:
-                    v.info["timer"] = 1
-                    quarkx.settimer(RefreshView, v, 200)
-
-    cameramoved = update3Dviews
-
-    def postinitviews(self):
-        for v in self.views:
-            if v.info["type"] == "3D":
-                v.oncameramove = self.cameramoved
 
     def drawhint(self, ctrl):
         cv = ctrl.canvas()
@@ -628,14 +640,6 @@ class BaseLayout:
             setviews(self.views, "scale", scale)
 
 
-def RefreshView(v):
-    try:
-        del v.info["timer"]
-    except:
-        pass
-    v.invalidate()
-
-
 class MPPage:
     "A page in the multi-pages panel."
 
@@ -644,12 +648,15 @@ class MPPage:
         self.panel = panel
 
     def button(self):
-        raise "You must override the method 'button' of the class 'MPPage'" # abstract
+        raise RuntimeError("You must override the method 'button' of the class 'MPPage'") # abstract
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.41  2011/06/29 20:43:28  cdunde
+#Fixed problem with icon buttons sometimes disappearing next to compass.
+#
 #Revision 1.40  2011/03/10 20:56:39  cdunde
 #Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
 #and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
