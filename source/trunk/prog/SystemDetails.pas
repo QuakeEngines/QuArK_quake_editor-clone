@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2015/08/30 11:37:51  danielpharos
+Added a bunch of modern Intel CPUIDs.
+
 Revision 1.52  2014/12/22 11:25:15  danielpharos
 Fixed rest of registry enumeration (for example, DirectX version), and fixed a string leak on an error path.
 
@@ -481,7 +484,7 @@ end;
 const
   ID_Bit = $200000;    // EFLAGS ID bit
 
-  CPUVendorIDs :array[0..12] of string = ('GenuineIntel',
+  CPUVendorIDs :array[0..13] of string = ('GenuineIntel',
                                           'UMC UMC UMC',
                                           'AuthenticAMD',
                                           'CyrixInstead',
@@ -493,9 +496,10 @@ const
                                           'Geode by NSC',
                                           'VIA VIA VIA ',
                                           'AMDisbetter!',
-                                          'TransmetaCPU');
+                                          'TransmetaCPU',
+                                          'Vortex86 SoC');
 
-  CPUVendors :array[0..12] of string = ('Intel',
+  CPUVendors :array[0..13] of string = ('Intel',
                                         'UMC',
                                         'AMD',
                                         'Cyrix',
@@ -507,7 +511,8 @@ const
                                         'National Semiconductor',
                                         'VIA',
                                         'AMD',
-                                        'Transmeta');
+                                        'Transmeta',
+                                        'Vortex');
 
 function TCPU.CPUIDExists: boolean; register;
 asm
