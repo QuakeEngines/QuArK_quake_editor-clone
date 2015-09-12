@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2010/10/16 18:10:33  danielpharos
+Removed unneeded use.
+
 Revision 1.29  2010/08/15 21:19:38  danielpharos
 Updated to VTFLib 1.3.1, and added 7.5 VTF version to settings.
 
@@ -552,7 +555,7 @@ implementation
 uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
-  TimesLoaded: Integer;
+  TimesLoaded: Cardinal;
   HVTFLib : HMODULE;
 
 function InitDllPointer(DLLHandle: HMODULE; const APIFuncname : String) : Pointer;
@@ -764,7 +767,7 @@ begin
     TimesLoaded := 0;
   end
   else
-    if TimesLoaded>1 then
+    if TimesLoaded <> 0 then
       TimesLoaded := TimesLoaded - 1;
 end;
 

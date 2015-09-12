@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2010/10/16 21:47:40  danielpharos
+Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
+
 Revision 1.1  2010/10/16 18:50:55  danielpharos
 Re-factored GCF-file handling code: split into GCF and HLLib.
 
@@ -184,7 +187,7 @@ uses QkExceptions, Logging, QkApplPaths;
 const RequiredGCFAPI = 3;
 
 var
-  TimesLoaded: Integer;
+  TimesLoaded: Cardinal;
   HHLLib : HMODULE;
 
 function InitDllPointer(DLLHandle: HINST; const APIFuncname : String) : Pointer;
@@ -315,7 +318,7 @@ begin
     TimesLoaded := 0;
   end
   else
-    if TimesLoaded>1 then
+    if TimesLoaded <> 0 then
       TimesLoaded := TimesLoaded - 1;
 end;
 

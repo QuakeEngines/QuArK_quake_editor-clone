@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2010/08/28 18:07:31  danielpharos
+Added missing ForceUnload to if-statement.
+
 Revision 1.6  2010/04/16 19:07:23  danielpharos
 Corrected variable type, added some logging, and added ForceUnload argument.
 
@@ -74,7 +77,7 @@ const
  );
 
 var
-  TimesLoaded : Integer;
+  TimesLoaded : Cardinal;
   DWMLib : HMODULE;
 
 function LoadDWM : Boolean;
@@ -140,7 +143,8 @@ begin
     TimesLoaded := 0;
   end
   else
-    TimesLoaded := TimesLoaded - 1;
+    if TimesLoaded <> 0 then
+      TimesLoaded := TimesLoaded - 1;
 end;
 
 initialization

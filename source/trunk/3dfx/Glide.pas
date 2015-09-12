@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2015/09/05 17:13:26  danielpharos
+Moved new logging strings to dictionary.
+
 Revision 1.25  2015/09/05 16:47:38  danielpharos
 Added some more logging.
 
@@ -1217,7 +1220,7 @@ const
  SoftMultiplePalettes = 20;
  SoftTexFmt565        = 30;
 
-function GlideTimesLoaded : Integer;
+function GlideTimesLoaded : Cardinal;
 function LoadGlide(const LibName, SearchDir: String) : Boolean;
 procedure UnloadGlide;
 
@@ -1283,7 +1286,7 @@ const
    ,(FuncPtr: @@softgLoadFrameBuffer;           FuncReq: inSoftG;  FuncName: '_softgLoadFrameBuffer@8'          ) );
 
 var
-  TimesLoaded : Integer;
+  TimesLoaded : Cardinal;
   GlideLib: HMODULE;
 
   DummyWindow: HWND;
@@ -1295,7 +1298,7 @@ begin
   Result := DummyWindow;
 end;
 
-function GlideTimesLoaded : Integer;
+function GlideTimesLoaded : Cardinal;
 begin
   Result := TimesLoaded;
 end;
@@ -1397,7 +1400,8 @@ begin
     TimesLoaded := 0;
   end
   else
-    TimesLoaded := TimesLoaded - 1;
+    if TimesLoaded <> 0 then
+      TimesLoaded := TimesLoaded - 1;
 end;
 
 initialization

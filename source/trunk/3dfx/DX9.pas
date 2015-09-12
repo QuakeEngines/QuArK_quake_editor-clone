@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2014/10/05 15:25:14  danielpharos
+Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
+
 Revision 1.15  2010/10/17 15:39:14  danielpharos
 Added high precision float option to DirectX renderer.
 
@@ -59,7 +62,7 @@ implementation
 uses QkDummyWindow, D3Dx9, Logging, QkObjects, Setup, Quarkx, QkExceptions, DXErr9;
 
 var
-  TimesLoaded : Integer;
+  TimesLoaded : Cardinal;
 
   DummyWindow: HWND;
 
@@ -270,7 +273,8 @@ begin
     TimesLoaded := 0;
   end
   else
-    TimesLoaded := TimesLoaded + 1;
+    if TimesLoaded <> 0 then
+      TimesLoaded := TimesLoaded + 1;
 end;
 
 initialization

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2015/08/29 17:00:54  danielpharos
+Automated a confusing setting.
+
 Revision 1.47  2010/09/01 20:20:23  danielpharos
 Added experimental trilinear and anisotropic texture filtering.
 
@@ -978,7 +981,7 @@ const
   );
 
 var
-  TimesLoaded : Integer;
+  TimesLoaded : Cardinal;
 
   OpenGL32Lib: HMODULE;
   Glu32Lib: HMODULE;
@@ -1195,7 +1198,6 @@ begin
     DeleteDummyWindow(DummyWindow);
     DummyWindow := 0;
 
-
     if GLExtensions<>nil then
     begin
       GLExtensions.Free;
@@ -1231,7 +1233,8 @@ begin
     TimesLoaded := 0;
   end
   else
-    TimesLoaded := TimesLoaded - 1;
+    if TimesLoaded <> 0 then
+      TimesLoaded := TimesLoaded - 1;
 end;
 
 function LoadExtentionList : Boolean;

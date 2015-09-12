@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2015/05/24 15:21:40  danielpharos
+Moved some strings into dictionary.
+
 Revision 1.19  2010/05/23 15:56:46  danielpharos
 Added some logging during loading and unloading of some external libraries.
 
@@ -270,7 +273,7 @@ implementation
 uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
-  TimesLoaded: Integer;
+  TimesLoaded: Cardinal;
   HFreeImage : HMODULE;
 
 function InitDllPointer(DLLHandle: HMODULE; const APIFuncname : String) : Pointer;
@@ -420,7 +423,7 @@ begin
     TimesLoaded := 0;
   end
   else
-    if TimesLoaded>1 then
+    if TimesLoaded <> 0 then
       TimesLoaded := TimesLoaded - 1;
 end;
 

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2015/05/24 15:21:40  danielpharos
+Moved some strings into dictionary.
+
 Revision 1.31  2012/12/29 13:59:44  danielpharos
 Small improvements to DevIL error checking.
 
@@ -429,7 +432,7 @@ implementation
 uses Setup, Quarkx, QkExceptions, Logging, QkApplPaths;
 
 var
-  TimesLoaded: Integer;
+  TimesLoaded: Cardinal;
   HDevIL : HMODULE;
 
 function InitDllPointer(DLLHandle: HMODULE; const APIFuncname: String) : Pointer;
@@ -568,7 +571,7 @@ begin
     TimesLoaded := 0;
   end
   else
-    if TimesLoaded>1 then
+    if TimesLoaded <> 0 then
       TimesLoaded := TimesLoaded - 1;
 end;
 

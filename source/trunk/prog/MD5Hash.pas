@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2010/05/23 15:56:46  danielpharos
+Added some logging during loading and unloading of some external libraries.
+
 Revision 1.9  2010/04/02 16:51:58  danielpharos
 Created a new LogWindowsError procedure.
 
@@ -73,7 +76,7 @@ var
   GetStringMd5: function(szString: LPSTR): LPSTR; cdecl;
   GetRandomMd5: function: LPSTR; cdecl;
 
-  TimesLoaded: Integer;
+  TimesLoaded: Cardinal;
   HMd5Hash  : HMODULE;
 
 function InitDllPointer(DLLHandle: HMODULE; const APIFuncname : String) : Pointer;
@@ -148,7 +151,7 @@ begin
     TimesLoaded := 0;
   end
   else
-    if TimesLoaded>1 then
+    if TimesLoaded <> 0 then
       TimesLoaded := TimesLoaded - 1;
 end;
 
