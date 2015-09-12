@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.11  2009/02/21 17:09:44  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -605,7 +608,7 @@ begin
              if not IsRectEmpty(nRect) then
               QkToolbar.FloatingRightX:=nRect.Right-nRect.Left
              else
-              QkToolbar.FloatingRightX:=GetSystemMetrics(g_CxScreen);
+              QkToolbar.FloatingRightX:=GetDesktopArea().Right-GetDesktopArea().Left;
             end;
            Exit;
           end;
