@@ -47,13 +47,13 @@ class ArenaFileMaker(StandardDuplicator):
 	else:
 	   self.bots = None
 
-	s = self.dup["longname"]	
+	s = self.dup["longname"]
 	if s:
 	   self.longname = s
 	else:
 	   self.longname = None
 
-	s = self.dup["fraglimit"]	
+	s = self.dup["fraglimit"]
 	if s:
 	   self.fraglimit = s
 	else:
@@ -103,6 +103,9 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 #
 #$Log$
+#Revision 1.5  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.2  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
