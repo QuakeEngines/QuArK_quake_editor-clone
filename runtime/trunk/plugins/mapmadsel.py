@@ -925,7 +925,7 @@ def macro_browselist(self, index=0):
 
     if len(editor.layout.explorer.sellist)>1:
 # cdunde-To give warning and instructions.
-        quarkx.msgbox("The whole group is selected.\n\nYou must first select\na spacific item in the list\nfor this function to work.", MT_ERROR, MB_OK)
+        quarkx.msgbox("The whole group is selected.\n\nYou must first select\na specific item in the list\nfor this function to work.", MT_ERROR, MB_OK)
     else:
         if editor is None: return
         elif index==1:
@@ -1127,6 +1127,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.41  2008/10/05 13:42:49  danielpharos
+# Fixed a typo.
+#
 # Revision 1.40  2007/12/21 20:39:23  cdunde
 # Added new Templates functions and Templates.
 #
