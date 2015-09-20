@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2015/09/06 12:35:31  danielpharos
+Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+
 Revision 1.59  2015/04/25 17:17:45  danielpharos
 Fix memory leak with Direct3D lighting.
 
@@ -249,7 +252,6 @@ const
  Minoow = 1.0001/MaxW;
  Maxoow = 0.9999/MinW;
  RFACTOR_1 = 32768*1.1;
- MAX_PITCH = pi/2.1;
 *)
 
  {vfFlagsInvalidate = vfAxis;}
@@ -351,6 +353,7 @@ type
    DisplayType: TDisplayType;
    RenderMode: TRenderMode;
    FInitialized: Boolean;
+   DWMLoaded: Boolean;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -361,6 +364,7 @@ type
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); virtual; abstract;
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
    procedure BuildTexture(Texture: PTexture3); virtual; abstract;
+   procedure DisableDWM;
    procedure ChangedViewWnd; virtual;
    procedure ChangedViewDC; virtual;
  public
@@ -390,8 +394,7 @@ type
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
-   procedure SwapBuffers(Synch: Boolean); virtual;
-   procedure Copy3DView; virtual; abstract;
+   procedure Draw3DView(Synch: Boolean); virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddPolyFace(const a_PolyFace: PSurface);
@@ -445,7 +448,7 @@ type
    property Scenes: TList read FScenes;
  end;
 
-function GetNewSceneObject: TSceneObject;
+function GetNewSceneObject(const Renderer: String = ''): TSceneObject;
 
 function ComputeMeanColor(const PSD: TPixelSetDescription) : TColorRef;
 function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
@@ -457,7 +460,7 @@ procedure GetwhForTexture(const info: GrTexInfo; var w,h: Integer);
 
 implementation
 
-uses SysUtils, ExtraFunctionality,
+uses SysUtils, DWM, Logging, ExtraFunctionality,
      Travail, Quarkx, QkExceptions, Setup,
      QkMdlObject, QkTextures, QkImages, QkFileObjects,
      EdSoftware, EdGlide, EdOpenGL, EdDirect3D;
@@ -491,6 +494,11 @@ begin
  BezierInfo.Free;
  SpriteInfo.Free;
  TemporaryStuff.Free;
+ if DWMLoaded then
+ begin
+  DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
+  UnloadDWM;
+ end;
  inherited;
 end;
 
@@ -628,10 +636,6 @@ end;
 procedure TSceneObject.SetCoords(nCoord: TCoordinates);
 begin
   Coord:=nCoord;
-end;
-
-procedure TSceneObject.SwapBuffers;
-begin
 end;
 
 procedure TSceneObject.EndBuildScene;
@@ -1632,6 +1636,20 @@ begin
   ChangedViewDC;
 end;
 
+procedure TSceneObject.DisableDWM;
+begin
+  //We may need to disable Desktop Composition,
+  //because this causes GDI draw calls to draw incorrectly
+  if not DWMLoaded then
+  begin
+    DWMLoaded:=LoadDWM;
+    if not DWMLoaded then
+      Log(LOG_WARNING, LoadStr1(6013));
+  end;
+  if DWMLoaded then
+    DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
+end;
+
 procedure TSceneObject.ChangedViewWnd;
 begin
 end;
@@ -2214,11 +2232,14 @@ end;
 
  {------------------------}
 
-function GetNewSceneObject: TSceneObject;
+function GetNewSceneObject(const Renderer: String): TSceneObject;
 var
  S: String;
 begin
- S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
+ if Renderer<>'' then
+  S:=Renderer
+ else
+  S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
  if S='qrksoftg.dll' then
   Result:=TSoftwareSceneObject.Create
  else if S='glide2x.dll' then

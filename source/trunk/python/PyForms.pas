@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.18  2009/07/30 09:38:57  danielpharos
 Updated website link.
 
@@ -142,7 +145,7 @@ procedure PyFormsClickItem(Options: Integer; nForm: TPyForm);
 implementation
 
 uses PyMenus, PyToolbars, PyObjects, Setup, Qk1, QkConsts,
-     PyFloating, PyExplorer, ComCtrls, QkTreeView,
+     PyFloating, PyFullscreen, PyExplorer, ComCtrls, QkTreeView,
      EnterEditCtrl, TbPalette, HelpPopup1, Travail;
 
 {$R *.DFM}
@@ -451,6 +454,36 @@ begin
  end;
 end;
 
+function wNewFullscreen(self, args: PyObject) : PyObject; cdecl;
+var
+ Fw: TPyFullscreenWnd;
+ nCaption: PChar;
+ nFlags: Integer;
+begin
+ try
+  Result:=Nil;
+  nFlags:=0;
+  nCaption:='';
+  if not PyArg_ParseTupleX(args, '|is', [@nFlags, @nCaption]) then
+   Exit;
+  with PyWindow(self)^ do
+   begin
+    if Form=Nil then
+     begin
+      Result:=PyNoResult;
+      Exit;
+     end;
+    Fw:=TPyFullscreenWnd.CreateCustom(Form, nFlags, nCaption);
+    Result:=Fw.WindowObject;
+    Fw.WindowObject^.Hidden:=True;
+    LayoutMgrFromPanelObj(Form.MainPanelC).InsertControl(Result);
+   end;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 function wMacro(self, args: PyObject) : PyObject; cdecl;
 var
  nMacro: PChar;
@@ -552,10 +585,11 @@ begin
 end;*)
 
 const
- MethodTable: array[0..9] of TyMethodDef =
+ MethodTable: array[0..10] of TyMethodDef =
   ((ml_name: 'macro';          ml_meth: wMacro;          ml_flags: METH_VARARGS),
    (ml_name: 'newtoolbar';     ml_meth: wNewToolbar;     ml_flags: METH_VARARGS),
    (ml_name: 'newfloating';    ml_meth: wNewFloating;    ml_flags: METH_VARARGS),
+   (ml_name: 'newfullscreen';  ml_meth: wNewFullscreen;  ml_flags: METH_VARARGS),
    (ml_name: 'toolbars';       ml_meth: wToolbars;       ml_flags: METH_VARARGS),
    (ml_name: 'floatings';      ml_meth: wFloatings;      ml_flags: METH_VARARGS),
    (ml_name: 'btnpanels';      ml_meth: wBtnPanels;      ml_flags: METH_VARARGS),
@@ -815,7 +849,7 @@ var
  F: TCustomForm;
 begin
  F:=GetParentForm(Control);
- if (F is TPyFloatingWnd) and (F.Owner is TCustomForm) then
+ if ((F is TPyFloatingWnd) or (F is TPyFullscreenWnd)) and (F.Owner is TCustomForm) then
   F:=TCustomForm(F.Owner);
  if F is TPyForm then
   Result:=TPyForm(F)
@@ -845,7 +879,8 @@ begin
      or ((Ac is TMyTreeView) and TMyTreeView(Ac).Editing) then
       Exit;
      if (B.Owner is TCustomForm) and
-     (not (B is TPyFloatingWnd) or (TPyFloatingWnd(B).Flags and fwf_KeepFocus = 0)) then
+     (not (B is TPyFloatingWnd) or (TPyFloatingWnd(B).Flags and fwf_KeepFocus = 0)) and
+     (not (B is TPyFullscreenWnd) or (TPyFullscreenWnd(B).Flags and fwf_KeepFocus = 0)) then
       B:=TCustomForm(B.Owner);
      if A<>B then Exit;
     end;
@@ -1193,27 +1228,6 @@ begin
  Panel.Align:=nAlign;
  Result:=Panel.PanelObject;
 end;}
-
-(*function TPyForm.GetRestoredRect : TRect;
-var
- WindowPlacement: TWindowPlacement;
-begin
- WindowPlacement.Length := SizeOf(WindowPlacement);
- GetWindowPlacement(Handle, @WindowPlacement);
- Result:=WindowPlacement.rcNormalPosition;
-end;
-
-procedure TPyForm.SetRestoredRect(const R: TRect);
-var
- WindowPlacement: TWindowPlacement;
-begin
- WindowPlacement.Length := SizeOf(WindowPlacement);
- GetWindowPlacement(Handle, @WindowPlacement);
- if not Visible then
-  WindowPlacement.ShowCmd:=sw_Hide;
- WindowPlacement.rcNormalPosition:=R;
- SetWindowPlacement(Handle, @WindowPlacement);
-end;*)
 
 (*function BySurface(Item1, Item2: Pointer) : Integer;
 var

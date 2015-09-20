@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.101  2015/05/24 09:27:10  danielpharos
+Moved three strings to the dictionary.
+
 Revision 1.100  2015/04/25 17:06:01  danielpharos
 Removed unneeded variable, and some other small cleanups.
 
@@ -374,7 +377,6 @@ type
    LightParams: TLightParams;
    FullBright: TLightParams;
    OpenGLLoaded: Boolean;
-   DWMLoaded: Boolean;
    MapLimit: TVect;
    MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
    MaxLights: GLint;
@@ -408,7 +410,7 @@ type
                   var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
-   procedure Copy3DView; override;
+   procedure Draw3DView(Synch: Boolean); override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
@@ -429,7 +431,7 @@ var
 implementation
 
 uses SysUtils, Quarkx, QkExceptions, Setup, Python, Logging, {Math,}
-     QkObjects, QkMapPoly, QkPixelSet, QkForm, SystemDetails, DWM;
+     QkObjects, QkMapPoly, QkPixelSet, QkForm;
 
  {------------------------}
 
@@ -990,12 +992,6 @@ begin
   inherited;
   if OpenGLLoaded then
     UnloadOpenGl;
-
-  if DWMLoaded then
-  begin
-    DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
-    UnloadDWM;
-  end;
 end;
 
 procedure TGLSceneObject.Init(nCoord: TCoordinates;
@@ -1016,20 +1012,6 @@ begin
   DisplayType:=nDisplayType;
   RenderMode:=nRenderMode;
 
-  //We need to disable Desktop Composition on Vista and higher,
-  //because this causes Python-overlays to draw incorrectly
-  if CheckWindowsVista then
-  begin
-    if not DWMLoaded then
-    begin
-      DWMLoaded:=LoadDWM;
-      if not DWMLoaded then
-        Log(LOG_WARNING, LoadStr1(6013));
-    end;
-    if DWMLoaded then
-      DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
-  end;
-
   //Has the OpenGL DLL already been loaded?
   if not OpenGLLoaded then
   begin
@@ -1040,8 +1022,8 @@ begin
       Raise EErrorFmt(6300, [GetLastError]);
     OpenGLLoaded := true;
   end;
-  if (DisplayMode=dmFullScreen) then
-   Raise InternalE(LoadStr1(6320));
+  //@if (DisplayMode=dmFullScreen) then
+  //@ Raise InternalE(LoadStr1(6320));
 
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
@@ -1087,6 +1069,8 @@ begin
   FogColor:=Setup.IntSpec['FogColor'];
   {FrameColor:=Setup.IntSpec['FrameColor'];}
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+  if Setup.Specifics.Values['DisableDWM']<>'' then
+    DisableDWM();
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
     Fog:=Setup.Specifics.Values['Fog']<>'';
@@ -1281,7 +1265,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.Copy3DView;
+procedure TGLSceneObject.Draw3DView(Synch: Boolean);
 var
   SwapHintX, SwapHintY: GLint;
   SwapHintWidth, SwapHintHeight: GLsizei;

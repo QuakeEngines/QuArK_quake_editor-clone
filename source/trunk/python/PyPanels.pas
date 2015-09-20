@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.9  2009/02/21 17:09:44  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -159,7 +162,7 @@ implementation
 
 uses Quarkx, QkExceptions, PyExplorer, PyFormCfg, PyMapView, PyImages,
      PyToolbars, PyForms, PyControls, FormCfg, QkObjects,
-     PyFloating;
+     PyFloating, PyFullscreen;
 
 const
  wp_RealignControls = 91;
@@ -312,7 +315,7 @@ begin
      QkControl.Hide
     else
      begin
-      if not (QkControl is TPyFloatingWnd) then
+      if not (QkControl is TPyFloatingWnd) and not (QkControl is TPyFullscreenWnd) then
        QkControl.Left:=-QkControl.Width;
       QkControl.Visible:=True;
      end;
@@ -477,7 +480,7 @@ begin
  if c^.ob_type = @TyPanel_Type then
   Result:=LayoutMgrFromPanelObj(c).Align
  else
-  if c^.ob_type = @TyFloating_Type then
+  if (c^.ob_type = @TyFloating_Type) or (c^.ob_type = @TyFullscreen_Type) then
    Result:=lpFloating
   else
    Result:=lpClient;
@@ -494,7 +497,8 @@ begin
  while (I>0) and (nAlign>=GetLayoutPos(PyList_GetItem(Controls, I-1))) do
   Dec(I);
  PyList_Insert(Controls, I, nControl);
- InvalidateAlignment;
+ //@if Align>lpFloating then
+  InvalidateAlignment;
 end;
 
 procedure TLayoutMgr.InsertControl2(nControl: PyObject);
@@ -508,7 +512,8 @@ begin
  while (I>0) and (nAlign>GetLayoutPos(PyList_GetItem(Controls, I-1))) do
   Dec(I);
  PyList_Insert(Controls, I, nControl);
- InvalidateAlignment;
+ //@if Align>lpFloating then
+  InvalidateAlignment;
 end;
 
 procedure TLayoutMgr.RemoveControl(nControl: PyObject);
@@ -1304,11 +1309,19 @@ end;
 function pNewMapView(self, args: PyObject) : PyObject; cdecl;
 var
  Mgr: TLayoutMgr;
+ Renderer: PChar;
 begin
  try
+  Result:=Nil;
+  Renderer:=Nil;
+  if not PyArg_ParseTupleX(args, '|s', [@Renderer]) then
+   Exit;
+
   Mgr:=LayoutMgrFromPanelObj(self);
   with TPyMapView.Create(Mgr.GetOwner.Owner) do
    begin
+    if Renderer<>Nil then
+     SetRenderer(Renderer);
     Left:=-2048;
     Parent:=Mgr.Owner;
     Result:=MapViewObject;

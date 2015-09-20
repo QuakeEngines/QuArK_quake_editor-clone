@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2015/09/06 12:31:41  danielpharos
+Added a CPU vendor.
+
 Revision 1.53  2015/08/30 11:37:51  danielpharos
 Added a bunch of modern Intel CPUIDs.
 
@@ -1181,15 +1184,11 @@ begin
   case WindowsPlatformCompatibility of
   osWin95Comp:
    begin
-    g_CxScreen:=sm_CxScreen;
-    g_CyScreen:=sm_CyScreen;
     rkOSInfo:=rkOSInfo95;
     rvVersionName:=rvVersionName95;
    end;
   osWinNTComp:
    begin
-    g_CxScreen:=SM_CXVIRTUALSCREEN;
-    g_CyScreen:=SM_CYVIRTUALSCREEN;
     rkOSInfo:=rkOSInfoNT;
     rvVersionName:=rvVersionNameNT;
    end;

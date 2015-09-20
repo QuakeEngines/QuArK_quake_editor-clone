@@ -12,6 +12,7 @@ The map editor's "Toolbars" menu (to be extended by plug-ins)
 
 
 import qmenu
+import qtoolbar
 from maputils import *
 import qeditor
 
@@ -35,7 +36,9 @@ class DisplayBar(qeditor.ToolBar):
 
         Btn3D = qtoolbar.button(layout.new3Dwindow, "New 3D window||New 3D window:\n\nThis will create a new floating 3D-display.\n\nMultiple 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", ico_maped, 20, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
 
-        BtnFull3D = qtoolbar.button(layout.full3Dclick, "3D fullscreen view||3D fullscreen view:\n\nThis will create a full-screen 3D-display.\nYou must press Escape to return to the map editor.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows") 
+        BtnFull3D = qtoolbar.button(layout.full3Dclick, "3D fullscreen view||3D fullscreen view:\n\nThis will create a full-screen 3D-display.\nYou must press Escape to return to the map editor.", ico_maped, 21, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
+
+        BtnFancyFull3D = qtoolbar.button(layout.fancyfull3Dclick, "Fancy3D fullscreen view||Fancy 3D fullscreen view:\n\nThis will create a full-screen 3D-display, with all kinds of fancy graphics.\nYou must press Escape to return to the map editor.", ico_maped, 27, infobaselink="intro.mapeditor.toolpalettes.display.html#3dwindows")
 
         LinearVBtn = qtoolbar.button(layout.editor.linear1click, "Linear mapping circle on selection||Linear mapping circle on selection:\n\nWhen this button is selected, QuArK always displays a pink circle around the selected objects; otherwise, it only appears if multiple objects are selected.\n\nThis circle and its attached handles let you apply 'linear mappings' on the objects. 'Linear mapping' means any transformation like rotation, enlarging/shrinking, symmetry, or a combination of them all. When you use the rotate, enlarge, shrink, and symmetry buttons of the movement tool palette, you actually apply a linear mapping on the selected objects. This is only interesting to know for a special kind of Duplicators, the one that can apply linear mappings. It means that this kind of Duplicator can create images with any of the previous movement commands applied, for example to create spiral stairs.", ico_maped, 19, infobaselink="intro.mapeditor.toolpalettes.display.html#linear")
 
@@ -43,9 +46,9 @@ class DisplayBar(qeditor.ToolBar):
 
         helpbtn = qtoolbar.button(layout.helpbtnclick, "Contextual help||Contextual help:\n\nWill open up your web-browser, and display the QuArK main help page.", ico_maped, 13, infobaselink="intro.mapeditor.toolpalettes.display.html#helpbook")
 
-        layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
+        layout.buttons.update({"grid": gridbtn, "3D": Btn3D, "Full3D": BtnFull3D, "linear": LinearVBtn, "lockv": LockViewsBtn})
 
-        return [gridbtn, zoombtn, Btn3D, BtnFull3D, LinearVBtn, LockViewsBtn, helpbtn]
+        return [gridbtn, zoombtn, Btn3D, BtnFull3D, BtnFancyFull3D, LinearVBtn, LockViewsBtn, helpbtn]
 
 
 #
@@ -60,6 +63,9 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.13  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.12  2008/11/17 19:10:00  danielpharos
 #Fixed a typo.
 #

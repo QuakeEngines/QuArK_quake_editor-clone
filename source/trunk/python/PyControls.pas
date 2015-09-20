@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2015/08/09 16:29:59  danielpharos
+Added mousewheel scrolling support in the 2D views.
+
 Revision 1.8  2009/07/30 09:38:57  danielpharos
 Updated website link.
 
@@ -81,8 +84,8 @@ procedure PythonDrop(nForm: TForm; lParam: LongInt; Button: Boolean);
 
 implementation
 
-uses QkExceptions, QkForm, Quarkx, PyForms, PyFloating, QkObjects,
-     QkExplorer, PyObjects, PyToolbars;
+uses QkExceptions, QkForm, Quarkx, PyForms, PyFloating, PyFullscreen,
+     QkObjects, QkExplorer, PyObjects, PyToolbars;
 
  {-------------------}
 
@@ -407,6 +410,8 @@ begin
              else
               if F is TPyFloatingWnd then
                Result:=TPyFloatingWnd(F).WindowObject
+              else if F is TPyFullscreenWnd then
+               Result:=TPyFullscreenWnd(F).WindowObject
               else
                Result:=Py_None;
             end;

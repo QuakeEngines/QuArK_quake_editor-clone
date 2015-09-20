@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2014/03/08 14:39:25  danielpharos
+Stop access violation and other weird errors if Glide library wasn't initialized properly.
+
 Revision 1.22  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -226,7 +229,7 @@ type
 
  TGlideSceneObject = class(TSceneObject)
  private
-   FBuildNo: Integer;
+   FBuildNo: LongWord;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
    CurrentAlpha: FxU32;
@@ -258,9 +261,8 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
+   procedure Draw3DView(Synch: Boolean); override;
    procedure ClearFrame; override;
-   procedure Copy3DView; override;
-   procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
@@ -268,8 +270,8 @@ type
 
 procedure SetIntelPrecision;
 procedure RestoreIntelPrecision;
-procedure Do3DFXTwoMonitorsActivation;
-procedure Do3DFXTwoMonitorsDeactivation;
+procedure Do3DFXTwoMonitorsActivation; //FIXME: Currently unused!
+procedure Do3DFXTwoMonitorsDeactivation; //FIXME: Currently unused!
 procedure Set3DFXGammaCorrection(Value: TDouble);
 
 var
@@ -282,7 +284,7 @@ var
 
 implementation
 
-uses Game, Quarkx, QkExceptions, FullScr1, Travail,
+uses Game, Quarkx, QkExceptions, Travail,
      PyMath3D, QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 const
@@ -291,7 +293,7 @@ const
 type
  PVect3D = ^TVect3D;
  TVect3D = record
-            BuildNo: LongInt;
+            BuildNo: LongWord;
             x, y, oow: Single;
             v: Pointer;
             OffScreen: Byte;
@@ -459,6 +461,7 @@ procedure TGlideSceneObject.Init(nCoord: TCoordinates; nDisplayMode: TDisplayMod
 var
  HiColor: Boolean;
  hwconfig: GrHwConfiguration;
+ AdapterNo: Integer;
  FogColor, FrameColor: TColorRef;
  Setup: QObject;
  SetupResolution: Integer;
@@ -473,6 +476,9 @@ begin
  RenderMode:=nRenderMode;
 
  Setup:=SetupSubSet(ssGeneral, 'Glide (3DFX)');
+ if Setup.Specifics.Values['DisableDWM']<>'' then
+  DisableDWM();
+
  SetupResolution:=StrToInt(Setup.Specifics.Values['Resolution']);
  case SetupResolution of
   0 : begin
@@ -571,23 +577,30 @@ begin
    Origin:=GR_ORIGIN_UPPER_LEFT;  //Default to upper left
  end;
 
+ AdapterNo:=StrToInt(Setup.Specifics.Values['AdapterNo']);
+
  if not GlideLoaded then
   begin
    if LibName='' then
     Raise EError(6001);
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
+   if not Hardware3DFX then
+    Raise EError(6206);
    try
     try
      SetIntelPrecision;
      grGlideInit;
      if not grSstQueryHardware(hwconfig) then
       Raise EErrorFmt(6200, ['grSstQueryHardware']);
-     grSstSelect(0);
+     if AdapterNo >= hwconfig.num_sst then
+      Raise EErrorFmt(6207, [AdapterNo, hwconfig.num_sst]);
+      
+     grSstSelect(AdapterNo);
      if GlideTimesLoaded=1 then
        //Glide only only supports 1 window at a time. So we can't use ViewWnd here!
        if not grSstWinOpen(GetGlideDummyHwnd,
-                         Resolution,
+                         Resolution, //@FIXME: GR_RESOLUTION_NONE for windowed mode!!!
                          GR_REFRESH_60HZ,
                          GR_COLORFORMAT_ARGB,
                          Origin,
@@ -610,11 +623,7 @@ begin
   end;
  if (DisplayMode=dmFullScreen) then
    Raise InternalE(LoadStr1(6220));
- if (DisplayMode=dmFullScreen) then   {Second check: So Glide kinda works...}
-  Do3DFXTwoMonitorsActivation
- else
-  if TwoMonitorsDlg=Nil then
-   Do3DFXTwoMonitorsDeactivation;
+
  Coord:=nCoord;
  TTextureManager.AddScene(Self);
  
@@ -981,9 +990,6 @@ end;
 
  {------------------------}
 
-const
- SOFTMARGIN = 2;
-
 type
  TV1 = record
         x, y, oow, sow, tow: FxFloat;
@@ -1109,10 +1115,7 @@ begin
  if Fog=True then
    grFogTable(FogTableCache^);
 
- if Hardware3DFX then
-   grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
- else
-   grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
+ grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom);
 
  CurrentAlpha:=0;
  IteratedAlpha:=False;
@@ -1135,7 +1138,7 @@ begin
  grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
  RenderTransparent(True);
 
- if Hardware3DFX and CCoord.FlatDisplay and (TranspFactor>0) then
+ if CCoord.FlatDisplay and (TranspFactor>0) then
  begin
    Inc(FBuildNo);
    //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA, GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
@@ -1165,7 +1168,7 @@ begin
  end;
 end;
 
-procedure Proj(var Vect: TVect3D; const ViewRect: TViewRect; nBuildNo: Integer{; DistMin, DistMax: FxFloat}) {: Boolean};
+procedure Proj(var Vect: TVect3D; const ViewRect: TViewRect; nBuildNo: LongWord{; DistMin, DistMax: FxFloat}) {: Boolean};
 var
  V1: TVect;
  PP: TPointProj;
@@ -1943,7 +1946,7 @@ begin
   end;
 end;
 
-procedure TGlideSceneObject.Copy3DView;
+procedure TGlideSceneObject.Draw3DView(Synch: Boolean);
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1964,6 +1967,14 @@ var
   end;
 
 begin
+ if Synch then  //@>@@>>@>@>@
+  begin
+   grBufferSwap(0);
+   if Synch then
+    grSstIdle;
+   Exit;
+  end;
+
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
  FillChar(BmpInfo, SizeOf(BmpInfo), 0);
  with bmiHeader do
@@ -1982,106 +1993,103 @@ begin
    if DIBSection = 0 then
      Raise EErrorFmt(6200, ['CreateDIBSection']);
    try
-    if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
-        GR_ORIGIN_ANY, FXFALSE, info) then
-     Raise EErrorFmt(6200, ['grLfbLock']);
-    I:=bmiHeader.biHeight;
-    SrcPtr:=info.lfbptr;
-    Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*Integer(info.strideInBytes));
-    Count1:=(R-L) div 4;
-    asm
-     push esi
-     push edi
-     mov edi, [Bits]
+    if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_ANY, FXFALSE, info) then
+      Raise EErrorFmt(6200, ['grLfbLock']);
+    try
+      I:=bmiHeader.biHeight;
+      SrcPtr:=info.lfbptr;
+      Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*Integer(info.strideInBytes));
+      Count1:=(R-L) div 4;
+      asm
+       push esi
+       push edi
+       mov edi, [Bits]
+    
+       @BoucleY:
+        mov esi, [SrcPtr]
+        mov eax, [info.strideInBytes]
+        add eax, esi
+        mov [SrcPtr], eax
+        mov ecx, [Count1]
+        push ebx
+    
+        @Boucle:
+    
+         mov eax, [esi]
+         mov edx, eax
+         shl eax, 11    { 1B }
+         mov ebx, edx
+         shr edx, 3
+         mov al, dl     { 1G }
+         shl eax, 16
+         mov ah, bh     { 1R }
+         shr edx, 10
+         mov al, dl     { 2B }
+         and eax, $F8FCF8F8
+         bswap eax
+         mov [edi], eax
+      
+         shr edx, 6
+         shl dh, 3
+         and dl, $F8
+         bswap edx    { 2G - 2R }
+         mov eax, [esi+4]
+         add esi, 8
+         shld ebx, eax, 16
+         shl eax, 3
+         mov dh, al   { 3B }
+         shl eax, 2
+         mov dl, ah   { 3G }
+         bswap edx
+         mov [edi+4], edx
+      
+         mov ah, bl   { 4B }
+         shl eax, 11  { 3R }
+         mov al, bh   { 4R }
+         shr ebx, 3
+         mov ah, bl   { 4G }
+         and eax, $F8F8FCF8
+         bswap eax
+         mov [edi+8], eax
+         add edi, 12
+      
+         dec ecx
+        jnz @Boucle
+      
+        pop ebx
+        dec [I]
+       jnz @BoucleY
+      
+       pop edi
+       pop esi
+      end;
+     finally
+      grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+     end;
 
-     @BoucleY:
-      mov esi, [SrcPtr]
-      mov eax, [info.strideInBytes]
-      add eax, esi
-      mov [SrcPtr], eax
-      mov ecx, [Count1]
-      push ebx
-
-      @Boucle:
-
-       mov eax, [esi]
-       mov edx, eax
-       shl eax, 11    { 1B }
-       mov ebx, edx
-       shr edx, 3
-       mov al, dl     { 1G }
-       shl eax, 16
-       mov ah, bh     { 1R }
-       shr edx, 10
-       mov al, dl     { 2B }
-       and eax, $F8FCF8F8
-       bswap eax
-       mov [edi], eax
-
-       shr edx, 6
-       shl dh, 3
-       and dl, $F8
-       bswap edx    { 2G - 2R }
-       mov eax, [esi+4]
-       add esi, 8
-       shld ebx, eax, 16
-       shl eax, 3
-       mov dh, al   { 3B }
-       shl eax, 2
-       mov dl, ah   { 3G }
-       bswap edx
-       mov [edi+4], edx
-
-       mov ah, bl   { 4B }
-       shl eax, 11  { 3R }
-       mov al, bh   { 4R }
-       shr ebx, 3
-       mov ah, bl   { 4G }
-       and eax, $F8F8FCF8
-       bswap eax
-       mov [edi+8], eax
-       add edi, 12
-
-       dec ecx
-      jnz @Boucle
-
-      pop ebx
-      dec [I]
-     jnz @BoucleY
-
-     pop edi
-     pop esi
-    end;
+     L:=(ScreenX-bmiHeader.biWidth) div 2;
+     T:=(ScreenY-bmiHeader.biHeight) div 2;
+     R:=L+bmiHeader.biWidth;
+     B:=T+bmiHeader.biHeight;
+     FrameBrush:=0;
+     try
+       if L>0 then  Frame(0, T, L, B-T);
+       if T>0 then  Frame(0, 0, ScreenX, T);
+       if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
+       if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
+     finally
+       if FrameBrush<>0 then
+        DeleteObject(FrameBrush);
+     end;
+     if SetDIBitsToDevice(ViewDC, L, T, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+      0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+       Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
    finally
-    grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+     DeleteObject(DIBSection);
    end;
-
-   L:=(ScreenX-bmiHeader.biWidth) div 2;
-   T:=(ScreenY-bmiHeader.biHeight) div 2;
-   R:=L+bmiHeader.biWidth;
-   B:=T+bmiHeader.biHeight;
-   FrameBrush:=0;
-   if L>0 then  Frame(0, T, L, B-T);
-   if T>0 then  Frame(0, 0, ScreenX, T);
-   if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
-   if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
-   if FrameBrush<>0 then
-    DeleteObject(FrameBrush);
-   if SetDIBitsToDevice(ViewDC, L, T,
-    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
-     Raise EErrorFmt(6200, ['SetDIBitsToDevice']);
-   DeleteObject(DIBSection);
  finally
    SetViewDC(False);
  end;
-end;
-
-procedure TGlideSceneObject.SwapBuffers(Synch: Boolean);
-begin
- grBufferSwap(0);
- if Synch then
-  grSstIdle;
 end;
 
 procedure TGlideSceneObject.SetViewSize(SX, SY: Integer);

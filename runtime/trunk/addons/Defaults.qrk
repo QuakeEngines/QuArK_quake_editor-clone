@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.555  2015/08/29 22:08:18  danielpharos
+//Removed a double-slash in a path.
+//
 //Revision 1.554  2015/08/29 17:00:50  danielpharos
 //Automated a confusing setting.
 //
@@ -1864,14 +1867,15 @@ QQRKSRC1
       Glide (3Dfx):config =
       {
         //3DfxLogo = ""
-        //FullScreen = ""
         TwoMonitors = ""
         FullScreenGamma = '1.3'
-        FullScreenSize = '560 420'
+        FullScreenSize = '560 420' //@
         TranspFactor = '0.3'  // in isometric views, an additional 30% of the normal depth is visible but transparent
         Fog = "1"
         Resolution = "7"
         Mirror = "0"
+        AdapterNo = "0"
+        DisableDWM = "1"
         Form = "GeneralGlide"
       }
       OpenGL:config =
@@ -1893,6 +1897,7 @@ QQRKSRC1
         LightingQuality = "4"
         StillQuality = "0"
         MovingQuality = "2"
+        DisableDWM = "1"
         Form = "GeneralOpenGL"
       }
       DirectX:config =
@@ -1908,6 +1913,7 @@ QQRKSRC1
         VCorrection = '0.92'
         Culling = "1"
         HighPrecision = ""
+        DisableDWM = "1"
         Form = "GeneralDirectX"
       }
       Memory:config =
@@ -9619,7 +9625,6 @@ QQRKSRC1
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- Glide 2.4 card owners only ----"}
-      //FullScreen: = {Txt="Glide Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the Glide card display is copied in a window"}
       TwoMonitors: = {
         Txt="Second monitor on Glide"
         Typ="CL"
@@ -9647,6 +9652,8 @@ QQRKSRC1
         Values = "0"            $0D "1"
         Hint = "Flips the screen around. Change this option if your view is upside down"
       }
+      DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
+                                $0D"If the views are not drawing correctly, try checking this box." }
     }
     GeneralOpenGL:form =
     {
@@ -9723,12 +9730,13 @@ QQRKSRC1
         Hint = "Slowest: OpenGL lighting   Fastest: No lighting"
             $0D"(Lighting needs to be enabled for this option to be effective)"
       }
+      DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
+                                $0D"If the views are not drawing correctly, try checking this box." }
     }
     GeneralDirectX:form =
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
-      LX: = {Typ="S" Bold="0" Txt="This renderer has not been fully implemented yet."}
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled" Hint = "Enables fading for distant objects."}
       Transparency: = {
         Txt="Transparency"
@@ -9792,8 +9800,10 @@ QQRKSRC1
       }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
-                                                             $0D"This doesn't apply to transparent faces." }
+                                $0D"This doesn't apply to transparent faces." }
       HighPrecision: = { Typ="X" Txt="High floating point precision" Cap="Enabled" Hint="Enables high precision floating point calculations. Improves accuracy, but decreases performance."}
+      DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
+                                $0D"If the views are not drawing correctly, try checking this box." }
     }
     GeneralMemory:form =
     {
@@ -10040,7 +10050,7 @@ QQRKSRC1
         Typ="S"
         Txt = "Skin-view:"
       }
-      SkinFrom3Dview:           = {Typ="X" Txt="Co-ordnances"                    Cap="Cords from 3D view"                   }
+      SkinFrom3Dview:           = {Typ="X" Txt="Coordinates"                     Cap="Coordinates from 3D view"                   }
       UseSkinViewScale:         = {Typ="X" Txt="Apply scale"                     Cap="Apply Skin-view scale"                }
       SkinGridVisible:          = {Typ="X" Txt="Grid"                            Cap="Grid visible"                         }
       SkinGridActive:           = {Typ="X" Txt="   ``"                           Cap="Grid active"                          }

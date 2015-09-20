@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2015/09/06 12:35:31  danielpharos
+Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+
 Revision 1.61  2015/08/09 16:29:59  danielpharos
 Added mousewheel scrolling support in the 2D views.
 
@@ -202,7 +205,7 @@ uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
 type
   TMapViewType = (vtEditor, vtPanel, vtWindow, vtFullScreen);
   TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured);
-  TMapViewRenderMode = (rmFull, rmSolidImage);
+  TMapViewDrawMode = (dmFull, dmRenderingOnly);
 
 const
   MapViewStr : array[TMapViewMode] of PChar =
@@ -226,7 +229,7 @@ const
   dfRebuildScene = 2;
   dfBuilding     = 4;
   dfFocusRect    = 8;
-  dfFull3Dview   = 16;
+  dfFull3Dview   = 16; //unused
   dfNoGDI        = 32;
 
   dmGrayOov      = 1;
@@ -280,15 +283,16 @@ type
                      end;
   TPyMapView = class(TCursorScrollBox)
                private
-                 DisplayType: TDisplayType;
-                 RenderMode: TMapViewRenderMode;
+                 ViewMode: TMapViewMode;
+                 ViewType: TMapViewType;
+                 DrawMode: TMapViewDrawMode;
                  kDelta: TPoint;
                  FOnDraw, FBoundingBoxes, FOnMouse, FOnKey, FHandles,
                  FOnCameraMove: PyObject;
                  BackgroundImage: TBackgroundImage;
                  FEntityForms: TQList;
                  Flags: Byte;  { vfXXX }
-                 Drawing: Byte;
+                 Drawing: Byte;  { dfXXX }
                  PressingMouseButton: TMouseButton;
                  CorrectionX, CorrectionY: Integer;
                  HandleCursor: TCursor;
@@ -298,9 +302,8 @@ type
                  FScene: TSceneObject;
                  SceneConfigSrc: QObject;
                  SceneConfigSubSrc: QObject;
-                 StillQuality, MovingQuality: Byte;
-                 FullScreen: Boolean;
-                 SecondMonitor: Char;  { #0: none, '1': left, '2': right }
+                 StillQuality, MovingQuality: Integer;
+                 Renderer: String;
                  FKey3D: array[TKey3D] of Word;
                  FRAMETIME: TDouble;
                  Animation: PAnimationSeq;
@@ -350,8 +353,6 @@ type
                public
                  MapViewObject: PyControlF;
                  BoxColor, CouleurFoncee: TColor;
-                 ViewMode: TMapViewMode;
-                 ViewType: TMapViewType;
                  {Root: TTreeMap;}
                  MapViewProj: TCoordinates;
                  constructor Create(AOwner: TComponent); override;
@@ -363,7 +364,7 @@ type
                  function EntityForms : TQList;
                  procedure DrawGrid(const V1, V2: TVect; Color, Color2: TColorRef; Flags: Integer; const Zero: TVect);
                  function DoKey3D(Key: Word) : Boolean;
-                 function ResetFullScreen(nFullScreen: Boolean) : Boolean;
+                 procedure SetRenderer(const nRenderer: String);
                  procedure MapShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
                   { mouse functions are public to be called by TFullScrDlg only }
                  function MouseDown1(Button: TMouseButton; Shift: TShiftState; X, Y: Integer) : Boolean;
@@ -393,8 +394,11 @@ var
 
 implementation
 
-uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Logging, Qk1,
-     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkFileObjects, QkExceptions;
+uses PyCanvas, QkFileObjects, QkTextures, Game, PyForms, RedLines, Logging, Qk1,
+     EdSoftware, EdGlide, EdOpenGL, EdDirect3D, SystemDetails, QkExceptions;
+
+const
+ MAX_PITCH = pi/2.1;
 
  {------------------------}
 
@@ -437,7 +441,8 @@ begin
  SceneConfigSrc:=Nil;
  Hint:=BlueHintPrefix;
  TabStop:=True;
- RenderMode:=rmFull;
+ Renderer:='';
+ DrawMode:=dmFull;
 end;
 
 destructor TPyMapView.Destroy;
@@ -528,17 +533,8 @@ begin
       BackBuffer:=0;
       OldBmp:=0;
       Brush:=0;}
-      if not FullScreen then
-       begin
-        Scene.ChangeQuality(MovingQuality);
-        DC:=GetDC(Handle);
-       end
-      else
-       begin
-        Scene.ClearFrame;
-        Do3DFXTwoMonitorsActivation;
-        DC:=0;
-       end;
+      Scene.ChangeQuality(MovingQuality);
+      DC:=GetDC(Handle);
      end;
   end;
 end;
@@ -549,26 +545,7 @@ var
 begin
  case Msg.wParam of
   wp_GetPyControl: Msg.Result:=LongInt(MapViewObject);
-  wp_PyInvalidate: begin
-                    Drawing:=Drawing or dfRebuildScene;
-                    if FullScreen and (Drawing and dfFull3Dview = 0) then
-                     begin
-                      Inc(Drawing, dfFull3Dview);
-                      PostMessage(Handle, wm_InternalMessage, wp_PaintFull3Dview, 0);
-                     end;
-                   end;
-  wp_PaintFull3Dview: begin
-                     Drawing:=Drawing and not dfFull3Dview;
-                     if FullScreen then
-                      begin
-                       Canvas.Handle:=HDC(-1);
-                       try
-                        //@Render;
-                       finally
-                        Canvas.Handle:=0;
-                       end;
-                      end;
-                    end;
+  wp_PyInvalidate: Drawing:=Drawing or dfRebuildScene;
   wp_MoveRedLine: begin
                    Y:=Abs(Msg.lParam);
                    if Msg.lParam<0 then   { bottom red line }
@@ -586,7 +563,6 @@ begin
                    RedLines[Ord(Msg.lParam<0)]:=Y/ClientHeight;
                    SetRedLines;
                   end;
- {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
    inherited;
@@ -607,7 +583,10 @@ var
 begin
  if SceneConfigSubSrc=Nil then
  begin
-   S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib'];
+   if Renderer='' then
+    S:=SetupSubSet(ssGeneral, '3D View').Specifics.Values['Lib']
+   else
+    S:=Renderer;
    if S='qrksoftg.dll' then
      Result:=SetupSubSet(ssGeneral, 'Software 3D')
    else if S='glide2x.dll' then
@@ -629,9 +608,11 @@ var
  VAngle: TDouble;
  K: TKey3D;
  ve1: TViewEntities;
- DisplayMode: TDisplayMode;
- RenderMode: TRenderMode;
  AllowsGDI: Boolean;
+ DisplayMode: TDisplayMode;
+ DisplayType: TDisplayType;
+ RenderMode: TRenderMode;
+ RenderLib: String;
 begin
  if Inv then
   Invalidate;
@@ -672,10 +653,6 @@ begin
     begin
      DisplayType:=dt2D;
     end;
-
-  {FullScreen:=Specifics.Values['FullScreen']<>'';}
-   FullScreen:=False;      {Disable FullScreen for the moment...}
-   SecondMonitor:=Chr(IntSpec['TwoMonitors']);
 
    if Scene<>Nil then
     begin
@@ -720,9 +697,14 @@ begin
         raise EErrorFmt(6000, ['Invalid ViewMode']);
       end;
 
+      if Renderer='' then
+       RenderLib:=Specifics.Values['Lib']
+      else
+       RenderLib:=Renderer;
+
       Scene.SetViewWnd(Self.Handle);
       Scene.SetDrawRect(GetClientRect);
-      Scene.Init(MapViewProj, DisplayMode, DisplayType, RenderMode, Specifics.Values['Lib'], AllowsGDI);
+      Scene.Init(MapViewProj, DisplayMode, DisplayType, RenderMode, RenderLib, AllowsGDI);
       Scene.SetViewSize(ClientWidth, ClientHeight);
 
       if AllowsGDI then
@@ -738,14 +720,14 @@ begin
        end;
      end;
 
-     if FullScreen and (Scene.ErrorMsg='') then
+     if (DisplayMode=dmFullScreen) and (Scene.ErrorMsg='') then
       begin
      (*if GetFloatsSpec('FullScreenSize', Size)
        and (Size[1]>0) and (Size[2]>0) then
         SetScreenSize(Round(Size[1]), Round(Size[2]))
        else
         SetScreenSize(ScreenSizeX, ScreenSizeY);*)
-       Set3DFXGammaCorrection(GetFloatSpec('FullScreenGamma', 1));
+       Set3DFXGammaCorrection(GetFloatSpec('FullScreenGamma', 1)); //@
        Perform(wm_InternalMessage, wp_PyInvalidate, 0);
       end;
 
@@ -860,11 +842,6 @@ end;*)
 
 procedure TPyMapView.Paint(Sender: TObject; DC: HDC; const rcPaint: TRect);
 begin
- if FullScreen then
-  begin
-   ClearPanel(LoadStr1(5397));
-   Exit;
-  end;
  if Drawing and dfDrawing <> 0 then
   begin
    ClearPanel('');
@@ -874,8 +851,8 @@ begin
  if (Scene<>Nil) then
   Scene.SetDrawRect(rcPaint);
 
- case RenderMode of
- rmFull:
+ case DrawMode of
+ dmFull:
   begin
    if Animation<>Nil then
     Canvas.Handle:=Animation^.DC
@@ -891,13 +868,10 @@ begin
      Canvas.Handle:=0;
    end;
   end;
- rmSolidImage:
+ dmRenderingOnly:
   begin
-   Scene.Render3DView;
-   if FullScreen then
-    Scene.SwapBuffers(True)
-   else
-    Scene.Copy3DView;
+   Scene.Render3DView();
+   Scene.Draw3DView(True);
   end;
  end;
 end;
@@ -906,7 +880,7 @@ procedure TPyMapView.NeedScene(NeedSetup: Boolean);
 begin
  if Scene=Nil then
   begin
-   FScene:=GetNewSceneObject;
+   FScene:=GetNewSceneObject(Renderer);
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
   end
@@ -1082,8 +1056,6 @@ var
  p: TPoint;
 begin
  Result:=Py_None;
- CorrectionX:=0;
- CorrectionY:=0;
  if MapViewProj=Nil then Exit;
  try
   Count:=PyObject_Length(FHandles);
@@ -1119,9 +1091,9 @@ begin
         begin
          if Corrige then
           begin
-           CorrectionX:=Round(p.x)-X;
-           CorrectionY:=Round(p.y)-Y;
-           ScreenCrossCursor(CorrectionX, CorrectionY);
+           Inc(CorrectionX, Round(p.x)-X);
+           Inc(CorrectionY, Round(p.y)-Y);
+           ScreenCrossCursor(Round(p.x)-X, Round(p.y)-Y);
           end;
          if MouseArea<>Nil then
           with MouseArea^ do
@@ -1271,13 +1243,13 @@ end;
 
 procedure TPyMapView.MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
-  CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X, g_DrawInfo.Y, mbMouseWheelDown, g_DrawInfo.ShiftState, PyNoResult);
+  CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X+CorrectionX, g_DrawInfo.Y+CorrectionY, mbMouseWheelDown, g_DrawInfo.ShiftState, PyNoResult);
   Handled := true;
 end;
 
 procedure TPyMapView.MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
-  CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X, g_DrawInfo.Y, mbMouseWheelUp, g_DrawInfo.ShiftState, PyNoResult);
+  CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X+CorrectionX, g_DrawInfo.Y+CorrectionY, mbMouseWheelUp, g_DrawInfo.ShiftState, PyNoResult);
   Handled := true;
 end;
 
@@ -1425,15 +1397,9 @@ procedure TPyMapView.MouseMove1(Shift: TShiftState; X, Y: Integer);
 const
  Margin = 16;
 var
- P, Delta, SSize: TPoint;
+ P, P_window, Delta: TPoint;
  HiddenMouse: Integer;
  CurrentHandleX: PyObject; //Send handle for mbDragging
-
-  function TargetPosition : TPoint;
-  begin
-   Result:=ClientToScreen(Point(ClientWidth div 2, ClientHeight div 2));
-  end;
-
 begin
  if MouseTimer<>Nil then
   begin
@@ -1475,20 +1441,19 @@ begin
      if HiddenMouse>=2 then
       Screen.Cursor:=crNone;
 
-     SSize.X:=GetSystemMetrics(g_CxScreen);
-     SSize.Y:=GetSystemMetrics(g_CyScreen);
-     if P.X<Margin then
-      Delta.X:=TargetPosition.X
+     P_window:=ScreenToClient(P);
+     if P_window.X<Margin then
+      Delta.X:=ClientWidth div 2
      else
-      if P.X>=SSize.X-Margin then
-       Delta.X:=TargetPosition.X-SSize.X
+      if P_window.X>=ClientWidth-Margin then
+       Delta.X:=-ClientWidth div 2
       else
        Delta.X:=0;
-     if P.Y<Margin then
-      Delta.Y:=TargetPosition.Y
+     if P_window.Y<Margin then
+      Delta.Y:=ClientHeight div 2
      else
-      if P.Y>=SSize.Y-Margin then
-       Delta.Y:=TargetPosition.Y-SSize.Y
+      if P_window.Y>=ClientHeight-Margin then
+       Delta.Y:=-ClientHeight div 2
       else
        Delta.Y:=0;
      if (Delta.X<>0) or (Delta.Y<>0) then
@@ -1674,9 +1639,6 @@ begin
    Result:=True;
    Update;
 
-   for K:=Low(K) to High(K) do
-    GetAsyncKeyState(FKey3D[K]);
-
    with ConfigSrc do
     begin
      Speed[False]:=GetFloatSpec('Speed', 200);
@@ -1710,17 +1672,8 @@ begin
      OldBmp:=0;
      Brush:=0;
 
-     if not FullScreen then
-      begin
-       Scene.ChangeQuality(MovingQuality);
-       DC:=GetDC(Handle);
-      end
-     else
-      begin
-       Scene.ClearFrame;
-       Do3DFXTwoMonitorsActivation;
-       DC:=0;
-      end;
+     Scene.ChangeQuality(MovingQuality);
+     DC:=GetDC(Handle);
     end;
 
    try
@@ -1732,7 +1685,7 @@ begin
     repeat
      KeySet:=[];
      for K:=Low(K) to High(K) do
-      if GetAsyncKeyState(FKey3D[K]) and $8001 <> 0 then
+      if GetAsyncKeyState(FKey3D[K]) and $8000 <> 0 then
        Include(KeySet, K);
      if KeySet<=Modifier3DKeys then
       Break;
@@ -1844,11 +1797,11 @@ begin
       end
      else
       begin
-       RenderMode:=rmSolidImage;
+       DrawMode:=dmRenderingOnly;
        try
          Repaint;
        finally
-         RenderMode:=rmFull;
+         DrawMode:=dmFull;
        end;
       end;
 
@@ -2234,34 +2187,10 @@ begin
   end;
 end;
 
-function TPyMapView.ResetFullScreen(nFullScreen: Boolean) : Boolean; //@
+procedure TPyMapView.SetRenderer(const nRenderer: String);
 begin
- if FullScreen xor nFullScreen then
-  begin
-   FullScreen:=nFullScreen;
-   NeedScene(True);
-   if FullScreen and (Scene.ErrorMsg<>'') then
-    begin
-     MessageDlg(Scene.ErrorMsg, mtError, [mbOk], 0);
-     Abort;
-    end;
-   Result:=FullScreen and (SecondMonitor=#0);
-   if Result then
-    begin
-     OpenFullScrDlg(Self);
-     ResetFullScreen(False);
-    end
-   else
-    if FullScreen then
-     OpenTwoMonitorsDlg(Self, SecondMonitor='1')
-    else
-     begin
-      Do3DFXTwoMonitorsDeactivation;
-      TwoMonitorsDlg.Free;
-     end;
-  end
- else
-  Result:=False;
+ Renderer:=nRenderer;
+ DeleteScene();
 end;
 
 procedure TPyMapView.MapShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
@@ -2327,7 +2256,13 @@ begin
      Exit;
     Camera:=v1^.V;
     HorzAngle:=f1;
-    PitchAngle:=-f2;
+    if -f2>MAX_PITCH then
+     PitchAngle:=MAX_PITCH
+    else
+     if -f2<-MAX_PITCH then
+      PitchAngle:=-MAX_PITCH
+     else
+      PitchAngle:=-f2;
     Result:=True;
    end
  else
@@ -2980,11 +2915,11 @@ begin
      if not FPainting then
       begin
        //FIXME: This function should not be called outside wmPaint...
-       RenderMode:=rmSolidImage;
+       DrawMode:=dmRenderingOnly;
        try
          Repaint;
        finally
-         RenderMode:=rmFull;
+         DrawMode:=dmFull;
        end;
       end
      else
@@ -3003,16 +2938,8 @@ begin
             Drawing:=Drawing and not dfRebuildScene;
            end;
           Drawing:=Drawing and not dfBuilding;
-          if FullScreen then
-           Scene.ClearFrame;
-          Scene.Render3DView;
-          if FullScreen then
-           begin
-            Scene.SwapBuffers(False);
-            Do3DFXTwoMonitorsActivation;
-           end
-          else
-           Scene.Copy3DView;
+          Scene.Render3DView();
+          Scene.Draw3DView(False);
          end;
        except
         on E: Exception do
@@ -3026,32 +2953,6 @@ begin
      end;
    end;
   Result:=PyNoResult;
- except
-  EBackToPython;
-  Result:=Nil;
- end;
-end;
-
-function mFull3Dview(self, args: PyObject) : PyObject; cdecl; //@
-var
- mode, returnvalue: Integer;
-begin
- try
-  {Result:=Nil;
-  if not PyArg_ParseTupleX(args, 'i', [@mode]) then
-   Exit;}
-  returnvalue:=0;
-  if PyControlF(self)^.QkControl<>Nil then
-   with PyControlF(self)^.QkControl as TPyMapView do
-    begin
-     mode:=0;  //FIXME: Gotta change all of this!!! Separate fullscreen option!
-     if mode>=0 then
-      if ResetFullScreen(mode>0) then
-       returnvalue:=1;
-     if FullScreen then
-      returnvalue:=2;
-    end;
-  Result:=PyInt_FromLong(returnvalue);
  except
   EBackToPython;
   Result:=Nil;
@@ -3080,7 +2981,7 @@ end;
  {------------------------}
 
 const
- MethodTable: array[0..14] of TyMethodDef =
+ MethodTable: array[0..13] of TyMethodDef =
   ((ml_name: 'proj';            ml_meth: mProj;            ml_flags: METH_VARARGS),
    (ml_name: 'space';           ml_meth: mSpace;           ml_flags: METH_VARARGS),
    (ml_name: 'vector';          ml_meth: mVector;          ml_flags: METH_VARARGS),
@@ -3094,7 +2995,6 @@ const
    (ml_name: 'drawgrid';        ml_meth: mDrawGrid;        ml_flags: METH_VARARGS),
    (ml_name: 'setrange';        ml_meth: mSetRange;        ml_flags: METH_VARARGS),
    (ml_name: 'setprojmode';     ml_meth: mSetProjMode;     ml_flags: METH_VARARGS),
-   (ml_name: 'full3Dview';      ml_meth: mFull3Dview;      ml_flags: METH_VARARGS),
    (ml_name: 'invalidaterect';  ml_meth: mInvalidateRect;  ml_flags: METH_VARARGS));
 
 function GetMapViewObject(self: PyObject; attr: PChar) : PyObjectPtr;
@@ -3184,6 +3084,16 @@ begin
              else
               Result:=Py_None;
            Exit;
+          end
+         else if StrComp(attr, 'border')=0 then
+          begin
+           if QkControl<>Nil then
+            begin
+             if (QkControl as TPyMapView).BorderStyle=bsNone then
+              Result:=Py_BuildValueX('i', [1])
+             else
+              Result:=Py_BuildValueX('i', [0]);
+            end;
           end;
     'c': if StrComp(attr, 'cameraposition')=0 then
           begin
@@ -3227,14 +3137,6 @@ begin
              Result:=PyInt_FromLong(Flags);
            Exit;
           end;
-        {else
-         if StrComp(attr, 'full3Dview')=0 then
-          begin
-           if QkControl<>Nil then
-            with QkControl as TPyMapView do
-             Result:=PyInt_FromLong(Ord(FullScreen));
-           Exit;
-          end;}
     'h': if StrComp(attr, 'handlecursor')=0 then
           begin
            if QkControl<>Nil then
@@ -3402,6 +3304,16 @@ begin
             end;
            Result:=0;
            Exit;
+          end
+         else if StrComp(attr, 'border')=0 then
+          begin
+           nFlags:=PyInt_AsLong(value); //Note: Recycling variable
+           if nFlags=0 then
+            (QkControl as TPyMapView).BorderStyle:=bsNone
+           else
+            (QkControl as TPyMapView).BorderStyle:=bsSingle;
+           Result:=0;
+           Exit;
           end;
     'c': if StrComp(attr, 'cameraposition')=0 then
           begin
@@ -3426,20 +3338,17 @@ begin
                  begin
                   if not FPainting then
                   begin
-                    RenderMode:=rmSolidImage;
+                    DrawMode:=dmRenderingOnly;
                     try
                       Repaint;
                     finally
-                      RenderMode:=rmFull;
+                      DrawMode:=dmFull;
                     end;
                   end
                   else
                   begin
-                   Scene.Render3DView;
-                   if FullScreen then
-                    Scene.SwapBuffers(True)
-                   else
-                    Scene.Copy3DView;
+                    Scene.Render3DView();
+                    Scene.Draw3DView(True);
                   end;
                  end;
              end;
@@ -3520,19 +3429,6 @@ begin
            Result:=0;
            Exit;
           end;
-        {else
-         if StrComp(attr, 'full3Dview')=0 then
-          begin
-           if QkControl<>Nil then
-            with QkControl as TPyMapView do
-             if FullScreen xor PyObject_IsTrue(value) then
-              begin
-               FullScreen:=not FullScreen;
-               ResetFullScreen;
-              end;
-           Result:=0;
-           Exit;
-          end;}
     'h': if StrComp(attr, 'handlecursor')=0 then
           begin
            if QkControl<>Nil then

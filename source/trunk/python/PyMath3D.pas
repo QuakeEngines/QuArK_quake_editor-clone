@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/07/30 09:38:57  danielpharos
+Updated website link.
+
 Revision 1.8  2007/07/24 13:54:47  danielpharos
 Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
 
@@ -59,7 +62,6 @@ const
  Minoow = 1.0001/MaxW;
  Maxoow = 0.9999/MinW;
  RFACTOR_1 = 32768*1.1;
- MAX_PITCH = pi/2.1;
 
 type
   T3DCoordinates = class(TCoordinates)

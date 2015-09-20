@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.103  2011/03/13 00:40:11  cdunde
+New flag added to tell if Texture Browser is open or not by DanielPharos.
+
 Revision 1.102  2010/11/06 14:11:08  danielpharos
 Consted two string parameters.
 
@@ -389,11 +392,11 @@ implementation
 uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      QkForm, PyToolbars, PyImages, PyPanels, TB97, QkObjects, QkConsts,
      PyObjects, QkFileObjects, {PyFiles,} PyExplorer, Travail, Running,
-     Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyMapView, qmath, Setup,
+     Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyFullscreen, PyMapView, qmath, Setup,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
-     PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
+     PakFiles, Reg2, SearchHoles, QkMapPoly, HelpPopup1, QkFullScreenWindow,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList, QkTextBoxForm,
      QkApplPaths, MapError, StrUtils, QkImages, QkGCF, QkExceptions, ExtraFunctionality;
 
@@ -806,6 +809,8 @@ begin
     else
      if (Mode>=1) and (F is TPyFloatingWnd) then
       PyList_Append(Result, TPyFloatingWnd(F).WindowObject)
+     else if (Mode>=1) and (F is TPyFullscreenWnd) then
+      PyList_Append(Result, TPyFullscreenWnd(F).WindowObject)
      else
       if (Mode>=2) then
        PyList_Append(Result, Py_None);
@@ -841,6 +846,25 @@ begin
  end;
 end;
 
+function xOpenFullscreen(self, args: PyObject) : PyObject; cdecl;
+var
+ rootobj: PyObject;
+ s: PChar;
+ Root: QObject;
+begin
+ try
+  Result:=Nil;
+  s:=Nil;
+  if not PyArg_ParseTupleX(args, 'O|s', [@rootobj, @s]) then
+   Exit;
+  Root:=QkObjFromPyObj(rootobj);
+  OpenFullscreenWindow(s, Root);
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
 
 (*function xMainForm(self, args: PyObject) : PyObject; cdecl;
 begin
@@ -3307,7 +3331,7 @@ begin
 end;
 
 const
- MethodTable: array[0..90] of TyMethodDef =
+ MethodTable: array[0..91] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3355,6 +3379,7 @@ const
    (ml_name: 'matrix';          ml_meth: xMatrix;          ml_flags: METH_VARARGS),
    (ml_name: 'newform';         ml_meth: xNewForm;         ml_flags: METH_VARARGS),
    (ml_name: 'update';          ml_meth: xUpdate;          ml_flags: METH_VARARGS),
+   (ml_name: 'openfullscreen';  ml_meth: xOpenFullscreen;  ml_flags: METH_VARARGS),
    (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;     ml_flags: METH_VARARGS),
    (ml_name: 'listfileext';     ml_meth: xListFileExt;     ml_flags: METH_VARARGS),
    (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;   ml_flags: METH_VARARGS),
@@ -3434,6 +3459,7 @@ begin
  RegType(TyExplorer_Type,  'explorer_type');
  RegType(TyFormCfg_Type,   'dataform_type');
  RegType(TyFloating_Type,  'floating_type');
+ RegType(TyFullscreen_Type,'fullscreen_type');
  RegType(TyMapView_Type,   'mapview_type');
  RegType(TyImageCtrl_Type, 'imagectrl_type');
  RegType(TyBtnPanel_Type,  'btnpanel_type');

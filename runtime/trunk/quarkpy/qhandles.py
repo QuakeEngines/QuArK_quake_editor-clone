@@ -893,7 +893,7 @@ class DragObject:
         self.scrolltimer = None
 
     def dragto(self, x, y, flags):
-        "Called by the map editor when the mouse moves."
+        "Called by the editor when the mouse moves."
         pass   # abstract
 
     def ok(self, editor, x, y, flags):
@@ -1548,14 +1548,9 @@ class FreeViewDragObject(AnimatedDragObject):
         fx, fy = self.f0
         roll = self.roll0 + x*fx
         pitch = self.pitch0 + y*fy
-        if pitch<-1.5: pitch = -1.5
-        elif pitch>1.5: pitch = 1.5
 
         self.view.animation = 1
-        try:
-            self.view.cameraposition = self.pos0, roll, pitch
-        except:
-            self.view.invalidate(1)
+        self.view.cameraposition = self.pos0, roll, pitch
 
 #
 # Mouse Walk like in Quake.
@@ -2245,6 +2240,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.103  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.102  2015/05/23 15:59:05  danielpharos
 #Fixed a typo.
 #

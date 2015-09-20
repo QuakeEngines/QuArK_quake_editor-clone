@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2014/08/15 21:50:03  danielpharos
+Added FastMove and FastCode for better performance.
+
 Revision 1.75  2014/03/06 15:32:46  danielpharos
 Workaround for the long-standing bug where float-specifics were not working in Wine, and on non-Latin-alphabet Windows (for example, Chinese Windows).
 
@@ -244,8 +247,7 @@ uses
   EdSceneObject in '3dfx\EdSceneObject.pas',
   EdSoftware in '3dfx\EdSoftware.pas',
   QkDummyWindow in '3dfx\QkDummyWindow.pas',
-  FullScr1 in '3dfx\FullScr1.pas' {TwoMonitorsDlg},
-  FullScreenWnd in '3dfx\FullScreenWnd.pas' {FullScrDlg},
+  QkFullScreenWindow in '3dfx\QkFullScreenWindow.pas',
   GL1 in '3dfx\GL1.pas',
   Glide in '3dfx\Glide.pas',
   form_Model in 'prog\model\form_Model.pas' {FQMdl},
@@ -399,6 +401,7 @@ uses
   PyFloating in 'python\PyFloating.pas',
   PyFormCfg in 'python\PyFormCfg.pas',
   PyForms in 'python\PyForms.pas' {PyForm},
+  PyFullScreen in 'python\PyFullScreen.pas',
   PyImages in 'python\PyImages.pas',
   PyMacros in 'python\PyMacros.pas',
   PyMapView in 'python\PyMapView.pas',

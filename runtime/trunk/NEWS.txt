@@ -14,6 +14,10 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Brought back the fullscreen view window! Also, added a toolbar that allows you to
+          - select the renderer to use for new windows. (Work in progress.) Added an experimental
+          - fancy fullscreen mode, with a tight-ish message pump.
+
 * [DanielPharos]: Added mousewheel scrolling support in the 2D views.
 
 * [DanielPharos]: Fixed texture positioning tool causing the treeview panel to partially disappear.

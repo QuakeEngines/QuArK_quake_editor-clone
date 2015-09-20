@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2015/08/21 18:23:55  danielpharos
+Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
+
 Revision 1.25  2014/12/22 10:48:36  danielpharos
 Mousewheel scrolling in more places, and fixes a variable type.
 
@@ -168,7 +171,7 @@ const
  wp_GetPyControl         = 200;
  wp_FreeMenuHandle       = 201;
  wp_PyInvalidate         = 202;
- wp_PaintFull3Dview      = 203;
+ //wp_PaintFull3Dview      = 203;
  wp_MoveRedLine          = 204;
 
  wp_ProcessNotifyFirst   = 290;

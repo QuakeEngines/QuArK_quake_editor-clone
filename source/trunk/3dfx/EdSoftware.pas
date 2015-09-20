@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2014/03/08 14:39:25  danielpharos
+Stop access violation and other weird errors if Glide library wasn't initialized properly.
+
 Revision 1.21  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -226,7 +229,6 @@ const
  Minoow = 1.0001/MaxW;
  Maxoow = 0.9999/MinW;
  RFACTOR_1 = 32768*1.1;
- MAX_PITCH = pi/2.1;
 *)
 
  ScreenSizeX = 640;
@@ -243,7 +245,7 @@ type
 
  TSoftwareSceneObject = class(TSceneObject)
  private
-   FBuildNo: Integer;
+   FBuildNo: LongWord;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
    CurrentAlpha: TColorRef;
@@ -276,9 +278,8 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
+   procedure Draw3DView(Synch: Boolean); override;
    procedure ClearFrame; override;
-   procedure Copy3DView; override;
-   procedure SwapBuffers(Synch: Boolean); override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
@@ -286,15 +287,15 @@ type
 
 procedure SetIntelPrecision;
 procedure RestoreIntelPrecision;
-procedure Do3DFXTwoMonitorsActivation;
-procedure Do3DFXTwoMonitorsDeactivation;
+procedure Do3DFXTwoMonitorsActivation; //FIXME: Currently unused!
+procedure Do3DFXTwoMonitorsDeactivation; //FIXME: Currently unused!
 procedure Set3DFXGammaCorrection(Value: TDouble);
 
  {------------------------}
 
 implementation
 
-uses Game, Quarkx, QkExceptions, FullScr1, Travail,
+uses Game, Quarkx, QkExceptions, Travail,
      PyMath3D, QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 const
@@ -304,7 +305,7 @@ const
 type
  PVect3D = ^TVect3D;
  TVect3D = record
-            BuildNo: LongInt;
+            BuildNo: LongWord;
             x, y, oow: Single;
             v: Pointer;
             OffScreen: Byte;
@@ -469,7 +470,6 @@ procedure TSoftwareSceneObject.Init(nCoord: TCoordinates; nDisplayMode: TDisplay
           nRenderMode: TRenderMode; const LibName: String; var AllowsGDI: Boolean);
 var
  HiColor: Boolean;
- hwconfig: GrHwConfiguration;
  FogColor, FrameColor: TColorRef;
  Setup: QObject;
 begin
@@ -490,12 +490,7 @@ begin
      RendererVersion:=softgQuArK;
      SetIntelPrecision;
      grGlideInit;
-     if Assigned(grSstQueryHardware) then
-      if not grSstQueryHardware(hwconfig) then
-       Raise EErrorFmt(6100, ['grSstQueryHardware']);
-     if Assigned(grSstSelect) then
-      grSstSelect(0);
-     if Assigned(grSstWinOpen) and (GlideTimesLoaded=1) then
+     if GlideTimesLoaded=1 then
        if not grSstWinOpen(0,
                          GR_RESOLUTION_640x480,
                          GR_REFRESH_60HZ,
@@ -506,7 +501,6 @@ begin
     finally
      RestoreIntelPrecision;
     end;
-     // grSstControl(GR_CONTROL_DEACTIVATE);
     if Assigned(grDepthBufferMode) then
      grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
     if Assigned(grDepthMask) then
@@ -521,14 +515,7 @@ begin
    end;
   end;
  if (DisplayMode=dmFullScreen) then
- begin
   Raise InternalE(LoadStr1(6120));
-  //DanielPharos: We have to check all this...
-  Do3DFXTwoMonitorsActivation;
- end
- else
-  if TwoMonitorsDlg=Nil then
-   Do3DFXTwoMonitorsDeactivation;
  
  Coord:=nCoord;
  TTextureManager.AddScene(Self);
@@ -1081,7 +1068,7 @@ begin
  RenderTransparent(True);
 end;
 
-procedure Proj(var Vect: TVect3D; const ViewRect: TViewRect; nBuildNo: Integer{; DistMin, DistMax: FxFloat}) {: Boolean};
+procedure Proj(var Vect: TVect3D; const ViewRect: TViewRect; nBuildNo: LongWord{; DistMin, DistMax: FxFloat}) {: Boolean};
 var
  V1: TVect;
  PP: TPointProj;
@@ -1888,7 +1875,7 @@ begin
   end;
 end;
 
-procedure TSoftwareSceneObject.Copy3DView;
+procedure TSoftwareSceneObject.Draw3DView(Synch: Boolean);
 var
  L, R, T, B: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1908,6 +1895,8 @@ var
   end;
 
 begin
+ //Note: No support for doublebuffering, so ignoring Synch
+
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
  FillChar(BmpInfo, SizeOf(BmpInfo), 0);
  with bmiHeader do
@@ -1925,35 +1914,32 @@ begin
    DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
    if DIBSection = 0 then
      Raise EErrorFmt(6100, ['CreateDIBSection']);
-   softgLoadFrameBuffer(Bits, SoftBufferFormat);
+   try
+     softgLoadFrameBuffer(Bits, SoftBufferFormat);
 
-   L:=(ScreenX-bmiHeader.biWidth) div 2;
-   T:=(ScreenY-bmiHeader.biHeight) div 2;
-   R:=L+bmiHeader.biWidth;
-   B:=T+bmiHeader.biHeight;
-   FrameBrush:=0;
-   if L>0 then  Frame(0, T, L, B-T);
-   if T>0 then  Frame(0, 0, ScreenX, T);
-   if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
-   if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
-   if FrameBrush<>0 then
-    DeleteObject(FrameBrush);
-   if SetDIBitsToDevice(ViewDC, L, T,
-    bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-    0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
-     Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
-   DeleteObject(DIBSection);
+     L:=(ScreenX-bmiHeader.biWidth) div 2;
+     T:=(ScreenY-bmiHeader.biHeight) div 2;
+     R:=L+bmiHeader.biWidth;
+     B:=T+bmiHeader.biHeight;
+     FrameBrush:=0;
+     try
+       if L>0 then  Frame(0, T, L, B-T);
+       if T>0 then  Frame(0, 0, ScreenX, T);
+       if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
+       if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
+     finally
+       if FrameBrush<>0 then
+        DeleteObject(FrameBrush);
+     end;
+     if SetDIBitsToDevice(ViewDC, L, T, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+      0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+       Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
+   finally
+     DeleteObject(DIBSection);
+   end;
  finally
    SetViewDC(False);
  end;
-end;
-
-procedure TSoftwareSceneObject.SwapBuffers(Synch: Boolean);
-begin
- if Assigned(grBufferSwap) then
-  grBufferSwap(0);
- if Synch and Assigned(grSstIdle) then
-  grSstIdle;
 end;
 
 procedure TSoftwareSceneObject.SetViewSize(SX, SY: Integer);
@@ -1978,9 +1964,7 @@ begin
  else
   begin
    XMargin:=(ScreenSizeX-SX) div 2;
-   if (XMargin<0) and Hardware3DFX then XMargin:=0;
    YMargin:=(ScreenSizeY-SY) div 2;
-   if (YMargin<0) and Hardware3DFX then YMargin:=0;
   end;
 
  ViewRect.R.Left:=XMargin;

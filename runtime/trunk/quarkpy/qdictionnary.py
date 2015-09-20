@@ -709,7 +709,7 @@ Strings = {
     5394: "This stores your settings",
     5395: "view of textures is disabled - click here to enable",
     5396: "Paste special...",
-    5397: "(full-screen)",
+    # 5397: "(full-screen)",
     5398: "Elapsed time: %d second",
     5399: "Elapsed time: %d seconds",
     5400: "Byte count: %d bytes (%d KB)",
@@ -1060,6 +1060,8 @@ Strings = {
     6203: "Attempting (2) to load Glide DLL: %s",
     6204: "Loading Glide DLL (2)",
     6205: "Loading Glide DLL: %s",
+    6206: "Somehow loaded software renderer instead of Glide",
+    6207: "Trying to load non-existing Glide adaptor %d; maximum is %d",
 
     6220: "Glide renderer does not support fullscreen views (yet)",
     6221: "You must first call Open3Dfx",
@@ -1120,6 +1122,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.169  2015/09/05 17:13:24  danielpharos
+#Moved new logging strings to dictionary.
+#
 #Revision 1.168  2015/08/21 18:23:53  danielpharos
 #Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
 #

@@ -47,7 +47,8 @@ class BaseLayout:
         self.toolbars = {}
         self.leftpanel = None
         self.floating3DWindows = []
-        self.full3Dview = None
+        self.fullscreen3DWindows = []
+        self.renderer = None
         self.hintcontrol = None
         self.hinttext = ""
         self.compass = None
@@ -181,6 +182,7 @@ class BaseLayout:
         Mod3.mode = "tex"
         New3D = qmenu.item("3D view", self.new3Dwindow, "|3D view:\n\nThis will create a new free-floating 3D edit window.\n\nMultiple 3D windows can be opened if the 'Allow multiple 3D windows' option is selected in the Configuration, General, 3D view, Additional settings section.", infobaselink)
         NewFull3D = qmenu.item("3D fullscreen", self.full3Dclick, "|3D fullscreen view:\n\nThis will create a full-screen 3D-display.\nYou must press Escape to return to the editor.", infobaselink)
+        NewFancyFull3D = qmenu.item("Fancy 3D fullscreen", self.fancyfull3Dclick, "|Fancy 3D fullscreen view:\n\nThis will create a full-screen 3D-display, with all kinds of fancy graphics.\nYou must press Escape to return to the editor.", infobaselink)
 
         cliphint = "|While you edit your "+text+", some parts of it may be visible on one view but not on the others. Such parts are considered to be 'out of view', and these commands control how they are displayed :\n\n'Show whole "+text+"': no out-of-view masking\n'Gray out of view': grayed out (default)\n'Hide out of view': simply hidden"
         DrM1 = qmenu.item("Show &whole "+text, self.setdrawmode, cliphint, infobaselink)
@@ -193,7 +195,7 @@ class BaseLayout:
          #
          # NOTE: this menu is accessed by position in the function "layoutmenuclick"
          #
-        return [Mod1, Mod2, Mod3, New3D, NewFull3D, qmenu.sep, DrM1, DrM2,
+        return [Mod1, Mod2, Mod3, New3D, NewFull3D, NewFancyFull3D, qmenu.sep, DrM1, DrM2,
          DrM3, qmenu.sep, PanelRight], {"Ctrl+1":Mod1, "Ctrl+2":Mod2,
          "Ctrl+3":Mod3, "Ctrl+4": New3D}
         #return [Mod1, Mod2, Mod3, New3D, NewOGL, NewF3D, qmenu.sep, DrM1, DrM2,
@@ -230,12 +232,11 @@ class BaseLayout:
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
     def new3Dwindow(self, menu):
-        "Opens the floating 3D view."
+        "Opens a floating 3D view."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if not setup["AllowMultiple"]:
             buttonstate = self.buttons["3D"].state #Need to store this, as it gets reset when the floating window closes
-            for floating in self.floating3DWindows:
-                floating.close()
+            self.closeall3DWindows()
 
             if buttonstate != 0:
                 #We closed the window; that is all
@@ -245,7 +246,10 @@ class BaseLayout:
             if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
                 raise quarkx.abort
         floating = quarkx.clickform.newfloating(0, "3D view") #@@@ FWF_NOESCCLOSE?
-        view = floating.mainpanel.newmapview()
+        if self.renderer:
+            view = floating.mainpanel.newmapview(self.renderer)
+        else:
+            view = floating.mainpanel.newmapview()
         view.info = {"type": "3D", "viewname": "3Dwindow"}
         view.viewmode = "tex"
         view.viewtype = "window"
@@ -285,10 +289,11 @@ class BaseLayout:
         setup["Warning3D"] = ""
         if not setup["AllowMultiple"]:
             self.buttons["3D"].state = qtoolbar.selected
+            self.buttons["Full3D"].state = qtoolbar.disabled
             quarkx.update(self.editor.form)
 
     def close3Dwindow(self, floating):
-        "Closes the floating 3D view."
+        "Closes a floating 3D view."
         view = floating.mainpanel.controls()[0]
         r = floating.windowrect
         r = r[:2] + floating.rect
@@ -298,7 +303,8 @@ class BaseLayout:
             self.views.remove(view)
         self.floating3DWindows.remove(floating)
         if not setup["AllowMultiple"]:
-            self.buttons["3D"].state = 0
+            self.buttons["3D"].state = qtoolbar.normal
+            self.buttons["Full3D"].state = qtoolbar.normal
             quarkx.update(self.editor.form)
         if self.editor.MODE == 3:
             pass
@@ -307,17 +313,20 @@ class BaseLayout:
             self.editor.layout.explorer.selchanged()
 
     def full3Dclick(self, menu):
+        "Opens a fullscreen 3D view."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
 
-        #DanielPharos: Check for FullScreen. If set, go fullscreen!
-        floating = quarkx.clickform.newfloating(0, "3D view") #@@@ FWF_NOESCCLOSE?
-        view = floating.mainpanel.newmapview()
-        #floating.rect = view.setup["FullScreenSize"]
-        #floating.rect = view.setup["WndRect"]
+        fullscreen = quarkx.clickform.newfullscreen(0, "3D view")
+        if self.renderer:
+            view = fullscreen.mainpanel.newmapview(self.renderer)
+        else:
+            view = fullscreen.mainpanel.newmapview()
+        #fullscreen.rect = view.setup["FullScreenSize"] @@@
         view.info = {"type": "3D", "viewname": "3Dwindow"}
         #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
         view.viewtype = "window"
+        view.border = 0
 
         ### Calling this function causes the 3D view mouse maneuvering to change,
         ### rotation is based on the center of the editor view or the model (0,0,0).
@@ -332,48 +341,49 @@ class BaseLayout:
 
         setprojmode(view)
         self.editor.setupview(view)
-        floating.info = view
-        floating.onclose = self.closefull3Dview
-        mode = view.full3Dview()
-        if mode!=2: #Check for fullscreen
-            #if mode==1: #Check for hidden?
-                #floating.close()
-                #return
-            #else:
-                #floating.windowrect = quarkx.screenrect()
-                setup = quarkx.setupsubset(SS_GENERAL, "3D View")
-                r = setup["WndRect"]
-                temp = (int(r[0]), int(r[1]), int(r[2]), int(r[3]))   #py2.4
-                r = temp   #py2.4
-                floating.windowrect = r
-                r = r[2:]
-                floating.rect = r
-                floating.show()
-        if not (view in self.views):
-            self.views.append(view)
-            if self.editor.MODE == 3:
-                mdlhandles.AddRemoveEyeHandles(self.editor, view)
-        self.floating3DWindows.append(floating)
+        fullscreen.info = view
+        fullscreen.onclose = self.closefull3Dview
+
+        self.views.append(view)
+        if self.editor.MODE == 3:
+            mdlhandles.AddRemoveEyeHandles(self.editor, view)
+        self.fullscreen3DWindows.append(fullscreen)
+        fullscreen.show()
+
+        #Trigger a rebuild of the handles and a refresh of the views
+        self.editor.layout.explorer.selchanged
+
+    def closefull3Dview(self, fullscreen):
+        "Closes a fullscreen 3D view."
+        view = fullscreen.mainpanel.controls()[0]
+        setup = quarkx.setupsubset(SS_GENERAL, "3D View")
+        if view in self.views:
+            self.views.remove(view)
+        self.fullscreen3DWindows.remove(fullscreen)
+        if not setup["AllowMultiple"]:
+            self.buttons["3D"].state = qtoolbar.normal
+            self.buttons["Full3D"].state = qtoolbar.normal
+            quarkx.update(self.editor.form)
         if self.editor.MODE == 3:
             pass
         else:
             #Trigger a rebuild of the handles and a refresh of the views
             self.editor.layout.explorer.selchanged()
 
-    def closefull3Dview(self):
-        pass
+    def fancyfull3Dclick(self, menu):
+        quarkx.openfullscreen(self.editor.Root, 'QuArK Fullscreen')
 
     def closeall3DWindows(self):
         for floating in self.floating3DWindows:
             floating.close()
-        if self.full3Dview is not None:
-            self.full3Dview.close()
+        for fullscreen in self.fullscreen3DWindows:
+            fullscreen.close()
 
     def setupdepth(self, view):
         pass    # abstract
 
     def readconfig(self, config):
-          # can be overridden
+        # can be overridden
         if self.leftpanel is not None:
             self.leftpanel.align = ("right", "left")[not config["LPAtLeft"]]
             i = config.getint("LeftPanel")
@@ -654,6 +664,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.42  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.41  2011/06/29 20:43:28  cdunde
 #Fixed problem with icon buttons sometimes disappearing next to compass.
 #

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2015/08/29 17:00:54  danielpharos
+Automated a confusing setting.
+
 Revision 1.49  2015/05/08 19:51:09  danielpharos
 First attempt to properly recover from lost device (textures not working yet).
 
@@ -217,7 +220,6 @@ type
     Culling: Boolean;
     Dithering: Boolean;
     Direct3DLoaded: Boolean;
-    DWMLoaded: Boolean;
     MapLimit: TVect;
     MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
     MaxLights: DWORD;
@@ -259,10 +261,7 @@ type
  *)
     procedure SetViewSize(SX, SY: Integer); override;
     procedure Render3DView; override;
-    procedure Copy3DView; override;
- (*
-    procedure SwapBuffers(Synch: Boolean); override;
- *)
+    procedure Draw3DView(Synch: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
     function ChangeQuality(nQuality: Integer) : Boolean; override;
   end;
@@ -280,7 +279,7 @@ var
 
 implementation
 
-uses Logging, Quarkx, QkExceptions, Setup, SysUtils, DWM, SystemDetails,
+uses Logging, Quarkx, QkExceptions, Setup, SysUtils,
      QkObjects, QkMapPoly, QkPixelSet, DXTypes, D3DX9, Direct3D, DXErr9;
 
 const
@@ -426,11 +425,6 @@ begin
   inherited;
   if Direct3DLoaded then
     UnloadDirect3D;
-  if DWMLoaded then
-  begin
-    DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
-    UnloadDWM;
-  end;
 end;
 
 procedure TDirect3DSceneObject.Init(nCoord: TCoordinates;
@@ -453,18 +447,6 @@ begin
   DisplayType:=nDisplayType;
   RenderMode:=nRenderMode;
 
-  if CheckWindowsVista then
-  begin
-    if not DWMLoaded then
-    begin
-      DWMLoaded:=LoadDWM;
-      if not DWMLoaded then
-        Log(LOG_WARNING, LoadStr1(6013));
-    end;
-    if DWMLoaded then
-      DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
-  end;
-
   //Is the Direct3D object already loaded?
   if Direct3DLoaded = False then
   begin
@@ -475,8 +457,8 @@ begin
       Raise EErrorFmt(6402, [GetLastError]);
     Direct3DLoaded := true;
   end;
-  if (DisplayMode=dmFullScreen) then
-   Raise InternalE(LoadStr1(6420));
+  //@if (DisplayMode=dmFullScreen) then
+  //@ Raise InternalE(LoadStr1(6420));
 
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
@@ -522,6 +504,8 @@ begin
   FogColor:=Setup.IntSpec['FogColor'];
   {FrameColor:=Setup.IntSpec['FrameColor'];}
   Setup:=SetupSubSet(ssGeneral, 'DirectX');
+  if Setup.Specifics.Values['DisableDWM']<>'' then
+    DisableDWM();
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
     Fog:=Setup.Specifics.Values['Fog']<>'';
@@ -1264,13 +1248,9 @@ begin
       raise EErrorFmt(6403, ['EndScene', DXGetErrorString9(l_Res)]);
   end;
 
-  {l_Res := D3DX.UpdateFrame(0);
-  if (l_Res <> 0) then
-    raise EErrorFmt(6403, ['UpdateFrame', D3DXGetErrorMsg(l_Res)]);}
-
 end;
 
-procedure TDirect3DSceneObject.Copy3DView;
+procedure TDirect3DSceneObject.Draw3DView(Synch: Boolean);
 var
   l_Res: HResult;
 begin
