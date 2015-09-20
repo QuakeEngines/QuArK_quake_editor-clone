@@ -16,7 +16,6 @@ from qeditor import *
 import qmacro
 import qmenu
 import qhandles
-import qtoolbar
 import mdlbtns
 import mdlcommands
 import mdlentities
@@ -1868,6 +1867,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.167  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.166  2015/01/09 20:22:26  danielpharos
 #Typo fixes.
 #

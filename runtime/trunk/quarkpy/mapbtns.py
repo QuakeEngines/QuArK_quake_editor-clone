@@ -13,7 +13,6 @@ Map Editor Buttons and implementation of editing commands
 
 
 import quarkx
-import qtoolbar
 from qdictionnary import Strings
 from maputils import *
 from b2utils import *
@@ -746,6 +745,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.37  2011/03/13 00:41:47  cdunde
+#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 #Revision 1.36  2008/11/17 23:56:04  danielpharos
 #Compensate for accidental change in behaviour in QkObjects rev 1.112.
 #

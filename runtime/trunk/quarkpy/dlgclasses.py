@@ -13,6 +13,7 @@
 #py2.4 indicates upgrade change for python 2.4
 
 import qmacro
+import qtoolbar
 from maputils import *
 
 class placepersistent_dialogbox(qmacro.dialogbox):
@@ -198,6 +199,9 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.15  2008/08/21 12:03:32  danielpharos
+#Cleaned up redundant code
+#
 #Revision 1.14  2007/10/06 20:13:54  cdunde
 #Changed placepersistent_dialogbox class windowrect and onclose functions
 #to allow Model Editor to store its own settings separate from the Map Editor.

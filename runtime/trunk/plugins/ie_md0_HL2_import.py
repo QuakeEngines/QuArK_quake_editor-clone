@@ -24,6 +24,7 @@ Info = {
 
 import struct, os, math
 import quarkx
+import quarkpy.qtoolbar
 from quarkpy.qutils import *
 import ie_utils
 from ie_utils import tobj
@@ -4838,7 +4839,7 @@ def dataformname(o):
     # Next line calls for the External Skin Editor Module in mdlentities.py to be used.
     external_skin_editor_dialog_plugin = quarkpy.mdlentities.UseExternalSkinEditor()
 
-    # Next lines create the spacific items for a skin's flags if the o object is a selected skin.
+    # Next lines create the specific items for a skin's flags if the o object is a selected skin.
     if o.dictspec.has_key('Image1'):
         flag_items = []
         flag__values = []
@@ -4865,7 +4866,7 @@ def dataformname(o):
 
         skin_items = skin_items + """ Hint="List of available skin flags."$0D"Will be applied to current skin only."$0D"None = 0 (default), Chrome = 2, Additive = 32"$0D"Chrome & Additive = 34, Transparent = 64"}"""
 
-    # Next lines create the spacific items for a frame if the o object is a selected frame.
+    # Next lines create the specific items for a frame if the o object is a selected frame.
     if o.type == ":mf":
         flag_items = []
         flag__values = []
@@ -5237,6 +5238,9 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2012/11/11 03:54:40  cdunde
+# Minor correction.
+#
 # Revision 1.19  2012/08/31 22:59:40  cdunde
 # Minor logging label correction.
 #

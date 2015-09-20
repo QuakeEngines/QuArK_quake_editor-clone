@@ -20,6 +20,7 @@ Info = {
 
 
 import quarkx
+import quarkpy.qtoolbar
 from tagging import *
 import maptagside
 import maptexpos
@@ -309,80 +310,80 @@ class TagModesBar(ToolBar):
 
 
 # See the quarkpy/qtoolbar.py file for the class button: definition
-# which gives the layout for each of the  " "  attribut
+# which gives the layout for each of the  " "  attribute
 # assignments below.
 
-# Now we can assign an opperation to each buttons attributes
+# Now we can assign an operation to each buttons attributes
 # which are "onclick" (what function to perform),
 # "hint" (what to display for the flyover and F1 popup window text),
 # "iconlist" (the icon.bmp file to use),
 # "iconindex" (a number attribute, which is the place holder
 # for each icon in the icon.bmp file.
-# and "infobaselink" (the infobase HTML page address and ancor,
-# which is a locator for a spacific place on the page)
+# and "infobaselink" (the infobase HTML page address and anchor,
+# which is a locator for a specific place on the page)
  
 
-        btn0 = qtoolbar.button(maptagside.TagSideClick, "Tag side||Tag side:\n\nThis function will place a tag on the side (face) that is selected.", icons, 0, infobaselink="maped.plugins.tagside.html")
+        btn0 = quarkpy.qtoolbar.button(maptagside.TagSideClick, "Tag side||Tag side:\n\nThis function will place a tag on the side (face) that is selected.", icons, 0, infobaselink="maped.plugins.tagside.html")
 
 
-        btn1 = qtoolbar.button(maptagside.ClearTagClick, "Clear all tags||Clear all tags:\n\nThis will clear (remove) all the tags that have been set.", icons,1, infobaselink="maped.plugins.tagside.html#basic")
+        btn1 = quarkpy.qtoolbar.button(maptagside.ClearTagClick, "Clear all tags||Clear all tags:\n\nThis will clear (remove) all the tags that have been set.", icons,1, infobaselink="maped.plugins.tagside.html#basic")
 
 
-        btn2 = qtoolbar.button(maptagside.GlueSideClick, "Glue to tagged||Glue to tagged:\n\nSee the Infobase for more detail.", icons, 2, infobaselink="maped.plugins.tagside.html#basic")
+        btn2 = quarkpy.qtoolbar.button(maptagside.GlueSideClick, "Glue to tagged||Glue to tagged:\n\nSee the Infobase for more detail.", icons, 2, infobaselink="maped.plugins.tagside.html#basic")
 
 
-        btn3 = qtoolbar.button(addtoTaggedClick, "Add to tagged||Add to tagged:\n\nThis will tag and add more faces to create a group of tagged faces.", icons, 3, infobaselink="maped.plugins.tagside.html#basic")
+        btn3 = quarkpy.qtoolbar.button(addtoTaggedClick, "Add to tagged||Add to tagged:\n\nThis will tag and add more faces to create a group of tagged faces.", icons, 3, infobaselink="maped.plugins.tagside.html#basic")
 
 
-        btn4 = qtoolbar.button(removefromTaggedClick, "Remove from tagged||Remove from tagged:\n\nThis will remove just the selected face, from the tagged group.", icons, 4, infobaselink="maped.plugins.tagside.html#basic")
+        btn4 = quarkpy.qtoolbar.button(removefromTaggedClick, "Remove from tagged||Remove from tagged:\n\nThis will remove just the selected face, from the tagged group.", icons, 4, infobaselink="maped.plugins.tagside.html#basic")
 
 
-        btn5 = qtoolbar.button(selectTaggedClick, "Select Tagged Face(s)||Select Tagged Face(s):\n\nThis will select all of the curently tagged faces.", icons, 5, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn5 = quarkpy.qtoolbar.button(selectTaggedClick, "Select Tagged Face(s)||Select Tagged Face(s):\n\nThis will select all of the curently tagged faces.", icons, 5, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn6 = qtoolbar.button(linkFaceClick, "Link face(s) to tagged||Link face(s) to tagged:\n\nIt's purpose to make 'permanent glue', so that faces that are meant to stay stuck together are more likely to do so.", icons, 6, infobaselink="maped.plugins.tagside.html#linking")
+        btn6 = quarkpy.qtoolbar.button(linkFaceClick, "Link face(s) to tagged||Link face(s) to tagged:\n\nIt's purpose to make 'permanent glue', so that faces that are meant to stay stuck together are more likely to do so.", icons, 6, infobaselink="maped.plugins.tagside.html#linking")
 
 
-        btn7 = qtoolbar.button(glueLinkedClick, "Glue linked||Glue linked:\n\nIt's purpose to make 'permanent glue', so that faces that are meant to stay stuck together are more likely to do so.\n\nTo use this function:\n1) Tag a single face,\n\n2) Select another single face and use the 'Link to tagged' function,\n\n3) With the same face in step 2) still selected, now use this function.", icons, 7, infobaselink="maped.plugins.tagside.html#linking")
+        btn7 = quarkpy.qtoolbar.button(glueLinkedClick, "Glue linked||Glue linked:\n\nIt's purpose to make 'permanent glue', so that faces that are meant to stay stuck together are more likely to do so.\n\nTo use this function:\n1) Tag a single face,\n\n2) Select another single face and use the 'Link to tagged' function,\n\n3) With the same face in step 2) still selected, now use this function.", icons, 7, infobaselink="maped.plugins.tagside.html#linking")
 
 
-        btn8 = qtoolbar.button(unlinkFaceClick, "Unlink face||Unlink face:\n\nThe selected face is detached from the others it's linked to.\n\nTo use this function:\n1) Select and tag one of the linked faces,\n\n2)  Now select the face you want to unlink and click this button.", icons, 8, infobaselink="maped.plugins.tagside.html#linking")
+        btn8 = quarkpy.qtoolbar.button(unlinkFaceClick, "Unlink face||Unlink face:\n\nThe selected face is detached from the others it's linked to.\n\nTo use this function:\n1) Select and tag one of the linked faces,\n\n2)  Now select the face you want to unlink and click this button.", icons, 8, infobaselink="maped.plugins.tagside.html#linking")
 
 
-        btn9 = qtoolbar.button(selectClick, "Select linked faces||Select linked faces:\n\nThis selects all the faces linked to this face.\n\nSo that you can for example drag or shear them as a multiselection, rather than first move one and then glue the others to it.", icons, 9, infobaselink="maped.plugins.tagside.html#linking")
+        btn9 = quarkpy.qtoolbar.button(selectClick, "Select linked faces||Select linked faces:\n\nThis selects all the faces linked to this face.\n\nSo that you can for example drag or shear them as a multiselection, rather than first move one and then glue the others to it.", icons, 9, infobaselink="maped.plugins.tagside.html#linking")
 
 
-        btn10 = qtoolbar.button(unlinkAllClick, "Unlink all||Unlink all:\n\nThis will unlink and cancel the linked settings for all of the faces linked to this face.", icons, 10, infobaselink="maped.plugins.tagside.html#linking")
+        btn10 = quarkpy.qtoolbar.button(unlinkAllClick, "Unlink all||Unlink all:\n\nThis will unlink and cancel the linked settings for all of the faces linked to this face.", icons, 10, infobaselink="maped.plugins.tagside.html#linking")
 
 
-        btn11 = qtoolbar.button(maptagside.WrapMultClick, "Texture Wrapping Multiplier||Texture Wrapping Multiplier:\n\nThis is for texture wrapping functions only.\n\nEnter how many times you want the texture pattern repeated as it is wrapped. You can also use decimals like .5 for half. If you enter 0, the multiplier is not set and will have no effect.\n\nDo not close the multiplier until you have completed your wrapping functions or it will also have no effect.", icons, 11, infobaselink="maped.plugins.tagside.html#texture")
+        btn11 = quarkpy.qtoolbar.button(maptagside.WrapMultClick, "Texture Wrapping Multiplier||Texture Wrapping Multiplier:\n\nThis is for texture wrapping functions only.\n\nEnter how many times you want the texture pattern repeated as it is wrapped. You can also use decimals like .5 for half. If you enter 0, the multiplier is not set and will have no effect.\n\nDo not close the multiplier until you have completed your wrapping functions or it will also have no effect.", icons, 11, infobaselink="maped.plugins.tagside.html#texture")
 
 
-        btn12 = qtoolbar.button(maptagside.AlignTexClick, "Wrap texture from tagged||Wrap texture from tagged:\n\nThis is primarily for column brushes only (although it can be used for other shapes with parallel sides as well).\n\nIt wraps the texture from one tag face to the next tagged face.", icons, 12, infobaselink="maped.plugins.tagside.html#texture")
+        btn12 = quarkpy.qtoolbar.button(maptagside.AlignTexClick, "Wrap texture from tagged||Wrap texture from tagged:\n\nThis is primarily for column brushes only (although it can be used for other shapes with parallel sides as well).\n\nIt wraps the texture from one tag face to the next tagged face.", icons, 12, infobaselink="maped.plugins.tagside.html#texture")
 
 
-        btn13 = qtoolbar.button(taggedWrapClick, "Across tagged||Across tagged:\n\nThis is primarily for column brushes only (although it can be used for other shapes with parallel sides as well).\n\nIt wraps (copies) the texture from one tag face to all the other tagged faces.\n\nIf you want to 'spread' the texture of one face\nacross all the tagged faces,\nopen the 'Texture Wrapping Multiplier'\n(do NOT close it until you are done),\nset it for how many times you want the pattern repeated,\nsellect the face with the texture you want to use\nand click this button to do your wrapping.\nIn either case, be sure the texture you want to use is at one end or the other. Other wise an error will occur.", icons, 13, infobaselink="maped.plugins.tagside.html#texture")
+        btn13 = quarkpy.qtoolbar.button(taggedWrapClick, "Across tagged||Across tagged:\n\nThis is primarily for column brushes only (although it can be used for other shapes with parallel sides as well).\n\nIt wraps (copies) the texture from one tag face to all the other tagged faces.\n\nIf you want to 'spread' the texture of one face\nacross all the tagged faces,\nopen the 'Texture Wrapping Multiplier'\n(do NOT close it until you are done),\nset it for how many times you want the pattern repeated,\nsellect the face with the texture you want to use\nand click this button to do your wrapping.\nIn either case, be sure the texture you want to use is at one end or the other. Other wise an error will occur.", icons, 13, infobaselink="maped.plugins.tagside.html#texture")
 
 
-        btn14 = qtoolbar.button(pillarWrapClick, "Around pillar||Around pillar:\n\nThis will copy and duplicate the texture of the tagged face, to each face around the pillar in the direction of the selected face, scaling to eliminate seams.\n\nIf you want to 'spread' the texture around the pillar, open the 'Texture Wrapping Multiplier', set it to how many times you want the texture pattern repeated as it is wrapped and leave it open until you are done with the wrapping process. Select one of the faces beside the tagged one and click the 'Around pillar' button again.\n\nIf you select a face that is NOT beside the tagged face, an error will occur.\n\nWon't work if the edges to be wrapped around aren't all parallel, and scales texture minimally to fit.  `preserve aspect ratio' option controls whether one or both texture dimensions are scaled.", icons, 14, infobaselink="maped.plugins.tagside.html#texture")
+        btn14 = quarkpy.qtoolbar.button(pillarWrapClick, "Around pillar||Around pillar:\n\nThis will copy and duplicate the texture of the tagged face, to each face around the pillar in the direction of the selected face, scaling to eliminate seams.\n\nIf you want to 'spread' the texture around the pillar, open the 'Texture Wrapping Multiplier', set it to how many times you want the texture pattern repeated as it is wrapped and leave it open until you are done with the wrapping process. Select one of the faces beside the tagged one and click the 'Around pillar' button again.\n\nIf you select a face that is NOT beside the tagged face, an error will occur.\n\nWon't work if the edges to be wrapped around aren't all parallel, and scales texture minimally to fit.  `preserve aspect ratio' option controls whether one or both texture dimensions are scaled.", icons, 14, infobaselink="maped.plugins.tagside.html#texture")
 
 
-        btn15 = qtoolbar.button(maptagside.MirrorFlipTexClick, "Mirror flip tex||Mirror flip tex:\n\nThis will flip (mirror) the texture on the selected face.", icons, 15)
+        btn15 = quarkpy.qtoolbar.button(maptagside.MirrorFlipTexClick, "Mirror flip tex||Mirror flip tex:\n\nThis will flip (mirror) the texture on the selected face.", icons, 15)
 
 
-        btn16 = qtoolbar.button(projTexClick, "Project from tagged||Project from tagged:\n\nThis will project the texture of the tagged face onto the selected one, or those in the selected item, so that a texture can be wrapped without seams over an irregular assortment of faces.\n\nTextures aren't projected onto faces that are too close to perpendicular to the projecting face.", icons, 16)
+        btn16 = quarkpy.qtoolbar.button(projTexClick, "Project from tagged||Project from tagged:\n\nThis will project the texture of the tagged face onto the selected one, or those in the selected item, so that a texture can be wrapped without seams over an irregular assortment of faces.\n\nTextures aren't projected onto faces that are too close to perpendicular to the projecting face.", icons, 16)
 
 
-        btn17 = qtoolbar.button(chooseTexture, "Choose Texture||Choose Texture:\n\nThis will open the 'Texture Browser' window (toolbox). If a brush or face is curently sellected, it will find its texture unless the item has more than one texture.", ico_dict['ico_maped'], 0, infobaselink="intro.texturebrowser.overview.html")
+        btn17 = quarkpy.qtoolbar.button(chooseTexture, "Choose Texture||Choose Texture:\n\nThis will open the 'Texture Browser' window (toolbox). If a brush or face is curently sellected, it will find its texture unless the item has more than one texture.", ico_dict['ico_maped'], 0, infobaselink="intro.texturebrowser.overview.html")
 
 
-        btn18 = qtoolbar.button(posTexClick, "Position Texture tool||Position Texture tool:\n\nThis tool will allow you to adjust the position of the texture on a single selected face.\n\nBy clicking on the keypad arrows, you can manipulate the texture in various ways by 1 unit or 1 degree at a time. Or you can enter amounts in the input boxes for finer adjustments to the texture.\n\nThe changes can be viewed in the Face-view and editor 3D view (if the textured view option is on) as they are made.", icons, 17, infobaselink="maped.plugins.tagside.html#texture")
+        btn18 = quarkpy.qtoolbar.button(posTexClick, "Position Texture tool||Position Texture tool:\n\nThis tool will allow you to adjust the position of the texture on a single selected face.\n\nBy clicking on the keypad arrows, you can manipulate the texture in various ways by 1 unit or 1 degree at a time. Or you can enter amounts in the input boxes for finer adjustments to the texture.\n\nThe changes can be viewed in the Face-view and editor 3D view (if the textured view option is on) as they are made.", icons, 17, infobaselink="maped.plugins.tagside.html#texture")
 
 
-        btn19 = qtoolbar.button(texflagsClick, "Texture flag settings||Texture flag settings:\n\nThis will open the texture flag settings window. The setting of these flags, or a combination of them, gives the selected brush unique characteristics. Each setting has a 'fly over hint' to help tell you what it does.", ico_dict['ico_maped'], 22, infobaselink="intro.texturebrowser.details.html#textureflags")
+        btn19 = quarkpy.qtoolbar.button(texflagsClick, "Texture flag settings||Texture flag settings:\n\nThis will open the texture flag settings window. The setting of these flags, or a combination of them, gives the selected brush unique characteristics. Each setting has a 'fly over hint' to help tell you what it does.", ico_dict['ico_maped'], 22, infobaselink="intro.texturebrowser.details.html#textureflags")
 
 
-        return [btn0, btn2, btn3, btn4, btn5, btn1, qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, qtoolbar.sep, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19]
+        return [btn0, btn2, btn3, btn4, btn5, btn1, quarkpy.qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, quarkpy.qtoolbar.sep, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19]
 
 
 # Now we add this toolbar, to the list of other toolbars,
@@ -400,6 +401,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.13  2013/03/17 14:15:09  danielpharos
+# Fixed a typo.
+#
 # Revision 1.12  2007/12/28 23:22:41  cdunde
 # Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
 #

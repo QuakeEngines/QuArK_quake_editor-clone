@@ -22,6 +22,7 @@ Info = {
 
 from quarkpy.qdictionnary import Strings
 import quarkpy.qhandles
+import quarkpy.qtoolbar
 import quarkpy.mapduplicator
 import quarkpy.maphandles
 import quarkpy.maputils
@@ -2921,6 +2922,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.30  2008/08/18 20:36:11  danielpharos
+#Fix typo
+#
 #Revision 1.29  2008/02/22 09:52:22  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #

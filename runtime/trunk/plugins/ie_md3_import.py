@@ -1354,7 +1354,6 @@ def dataformname(o):
     """
 
     from quarkpy.qeditor import ico_dict # Get the dictionary list of all icon image files available.
-    import quarkpy.qtoolbar              # Get the toolbar functions to make the button with.
     editor = quarkpy.mdleditor.mdleditor # Get the editor.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
 
@@ -1410,6 +1409,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.28  2013/10/13 06:22:39  cdunde
+# Fixed possible dupe component names from sneaking through.
+#
 # Revision 1.27  2012/10/01 20:28:57  cdunde
 # Small update.
 #

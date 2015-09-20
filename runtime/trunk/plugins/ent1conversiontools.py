@@ -11,6 +11,9 @@ using the actual game files and other .qrk files as templates.
 
 #
 #$Log$
+#Revision 1.17  2013/03/17 14:15:09  danielpharos
+#Fixed a typo.
+#
 #Revision 1.16  2010/09/01 08:11:22  cdunde
 #Added entity extraction from game map .bsp files for .qrk file creation of Conversion Tool system.
 #
@@ -65,6 +68,7 @@ using the actual game files and other .qrk files as templates.
 import os, sys
 import quarkx
 import quarkpy.qmacro
+import quarkpy.qtoolbar
 from quarkpy.qutils import *
 
 def FilesDone(gamename, hadfolder):

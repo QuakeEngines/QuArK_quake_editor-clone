@@ -22,6 +22,7 @@ Info = {
 
 
 import quarkpy.qhandles
+import quarkpy.qtoolbar
 from quarkpy.mdlmgr import *
 import quarkpy.mdleditor
 
@@ -1189,6 +1190,9 @@ Lock_Z.state = int(quarkx.setupsubset(SS_MODEL, "Options")["setLock_Z"])
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.32  2011/11/17 01:19:02  cdunde
+# Setup BBox drag toolbar button to work correctly with other toolbar buttons.
+#
 # Revision 1.31  2011/11/16 07:40:29  cdunde
 # Removed handle drawing call to stop dupe drawing of them.
 #

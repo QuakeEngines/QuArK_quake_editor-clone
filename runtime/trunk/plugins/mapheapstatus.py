@@ -5,6 +5,7 @@ import quarkx
 import quarkpy.mapmenus
 import quarkpy.mapcommands
 import quarkpy.dlgclasses
+import quarkpy.qtoolbar
 from quarkpy.maputils import *
 
 
@@ -139,6 +140,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.7  2010/02/21 20:19:00  danielpharos
+# Fixed a typo.
+#
 # Revision 1.6  2005/11/19 22:45:11  cdunde
 # To add F1 help links and update Infobase docs.
 #

@@ -21,6 +21,7 @@ Info = {
 
 
 import quarkpy.qhandles
+import quarkpy.qtoolbar
 from quarkpy.mapmgr import *
 
 
@@ -45,7 +46,7 @@ class Page3D(MPPage):
         quarkpy.qhandles.z_recenter(self.mppview3d, list)
 
     def button(self):
-        pagebtn = qtoolbar.button(self.fill3dview, "3D view||3D view:\n\nThis displays a 3D texture view of the selected objects.\n\nSee the infobase for more detail.", ico_dict['ico_maped'], 21, "3D view", infobaselink='intro.mapeditor.dataforms.html#3dview')
+        pagebtn = quarkpy.qtoolbar.button(self.fill3dview, "3D view||3D view:\n\nThis displays a 3D texture view of the selected objects.\n\nSee the infobase for more detail.", ico_dict['ico_maped'], 21, "3D view", infobaselink='intro.mapeditor.dataforms.html#3dview')
         pagebtn.pc = [self.bs_3Dview(self.panel)]
         return pagebtn
 
@@ -59,6 +60,9 @@ mppages.append(Page3D)
 #
 #
 # $Log$
+# Revision 1.11  2006/11/30 01:17:48  cdunde
+# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
+#
 # Revision 1.10  2006/11/29 06:58:35  cdunde
 # To merge all runtime files that had changes from DanielPharos branch
 # to HEAD for QuArK 6.5.0 Beta 1.

@@ -21,6 +21,7 @@ import time, math, os, os.path, struct, operator, sys as osSys, chunk
 from math import *
 import quarkx
 import quarkpy.qmacro
+import quarkpy.qtoolbar
 from quarkpy.qutils import *
 import quarkpy.mdleditor
 from types import *
@@ -1165,6 +1166,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2012/01/30 03:37:25  cdunde
+# To allow MOHAA model format to be exported as MD5 files.
+#
 # Revision 1.19  2012/01/15 04:39:32  cdunde
 # Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
 #

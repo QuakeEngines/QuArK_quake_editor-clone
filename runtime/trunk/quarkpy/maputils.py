@@ -12,6 +12,7 @@ Various Map editor utilities.
 
 
 import quarkx
+import qtoolbar
 from qeditor import *
 from qdictionnary import Strings
 
@@ -387,6 +388,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.29  2011/03/13 00:41:47  cdunde
+#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
+#
 #Revision 1.28  2008/11/17 19:10:23  danielpharos
 #Centralized and fixed BSP file detection.
 #

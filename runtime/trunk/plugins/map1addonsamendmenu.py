@@ -21,6 +21,7 @@ Info = {
 
 from quarkpy.maputils import *
 import quarkpy.qmacro
+import quarkpy.qtoolbar
 
 # ****************** Add Menu Items Dialog ******************
 
@@ -892,6 +893,9 @@ AmendMenuCmds = [quarkpy.qmenu.popup("&Add \ Delete menu items", [], ViewAmendMe
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.7  2010/02/21 15:42:49  danielpharos
+#Fixed orangebox compiler not finishing compile.
+#
 #Revision 1.6  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #

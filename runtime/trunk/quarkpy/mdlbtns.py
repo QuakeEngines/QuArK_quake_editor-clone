@@ -11,7 +11,6 @@ Model Editor Buttons and implementation of editing commands
 #$Header$
 
 import quarkx
-import qtoolbar
 from qdictionnary import Strings
 import qutils
 from mdlutils import *
@@ -737,6 +736,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.45  2012/07/10 02:04:16  cdunde
+#Fix for error when making a dupe copy of a model's baseframe.
+#
 #Revision 1.44  2011/03/13 00:41:47  cdunde
 #Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

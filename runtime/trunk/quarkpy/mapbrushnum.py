@@ -12,7 +12,6 @@ Map editor brush-from-number finder
 
 import quarkx
 import qmacro
-import qtoolbar
 from maputils import *
 import mapeditor
 
@@ -140,6 +139,9 @@ def LoadBrushNums(editor, filename):
         quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%info)
        
 #$Log$
+#Revision 1.5  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.2  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #

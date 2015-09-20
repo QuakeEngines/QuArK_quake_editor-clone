@@ -23,6 +23,7 @@ Info = {
 import quarkx
 import quarkpy.qmenu
 import quarkpy.qmacro
+import quarkpy.qtoolbar
 import quarkpy.mapsearch
 import quarkpy.mapentities
 from quarkpy.maputils import *
@@ -78,8 +79,8 @@ class SearchDlg(quarkpy.qmacro.dialogbox):
 
 
         quarkpy.qmacro.dialogbox.__init__(self, quarkx.clickform, src,
-          ok = qtoolbar.button(self.search, "search for the given classname", ico_editor, 1, " Search ", 1),
-          cancel = qtoolbar.button(self.close, "close this box", ico_editor, 0, " Cancel ", 1))
+          ok = quarkpy.qtoolbar.button(self.search, "search for the given classname", ico_editor, 1, " Search ", 1),
+          cancel = quarkpy.qtoolbar.button(self.close, "close this box", ico_editor, 0, " Cancel ", 1))
         self.editor = editor
 
     def search(self, reserved):
@@ -238,6 +239,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
+# Revision 1.13  2009/09/25 22:55:56  danielpharos
+# Added some missing import-statements.
+#
 # Revision 1.12  2005/10/15 00:51:24  cdunde
 # To reinstate headers and history
 #

@@ -26,6 +26,7 @@ from quarkpy.maputils import *
 import quarkpy.qmenu
 import quarkpy.mapcommands
 import quarkpy.qmacro
+import quarkpy.qtoolbar
 
 
 class TFTGDlg (quarkpy.qmacro.dialogbox):
@@ -185,6 +186,9 @@ quarkpy.mapcommands.items.append(
 #
 #
 # $Log$
+# Revision 1.8  2005/10/15 00:49:51  cdunde
+# To reinstate headers and history
+#
 # Revision 1.5  2003/09/14 05:57:08  cdunde
 # Typ separator correction
 #

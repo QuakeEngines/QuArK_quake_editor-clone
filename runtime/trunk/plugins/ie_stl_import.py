@@ -26,7 +26,6 @@ import struct
 import quarkx
 import quarkpy.qutils
 import quarkpy.qhandles
-import quarkpy.qtoolbar
 import quarkpy.mdlhandles
 import quarkpy.mdlutils
 import ie_utils
@@ -289,6 +288,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".StL Importer", ".StL file", "*.stl", load
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2015/04/11 16:05:28  danielpharos
+# Added binary StL importing.
+#
 # Revision 1.1  2015/01/11 14:26:07  danielpharos
 # Added experimental StL model importing (ASCII format only).
 #

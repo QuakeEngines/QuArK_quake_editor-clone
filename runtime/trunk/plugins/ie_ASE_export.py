@@ -21,6 +21,7 @@ Info = {
 import time, math, os, os.path, struct, operator, sys as osSys, chunk
 import quarkx
 import quarkpy.qmacro
+import quarkpy.qtoolbar
 from quarkpy.qutils import *
 import quarkpy.mdleditor
 from types import *
@@ -1709,6 +1710,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2009/08/09 23:41:40  cdunde
+# Fix to remove work folder name from collision model.
+#
 # Revision 1.5  2009/08/01 05:31:13  cdunde
 # Update.
 #

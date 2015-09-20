@@ -24,6 +24,7 @@ Info = {
 
 import time, os, struct, math
 import quarkx
+import quarkpy.qtoolbar
 from quarkpy.qutils import *
 import quarkpy.mdleditor
 import ie_utils
@@ -735,6 +736,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2011/03/31 16:13:17  cdunde
+# Small comments corrections.
+#
 # Revision 1.2  2010/03/16 19:25:37  cdunde
 # Update to activate the rest of the export dialog items.
 #

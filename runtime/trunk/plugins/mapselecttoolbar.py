@@ -20,6 +20,7 @@ Info = {
 
 
 import quarkx
+import quarkpy.qtoolbar
 from quarkpy.maputils import *
 import quarkpy.mapselection    # need
 import mapmadsel               # need
@@ -217,67 +218,67 @@ class SelectModesBar(ToolBar):
 
 
 # See the quarkpy/qtoolbar.py file for the class button: definition
-# which gives the layout for each of the  " "  attribut
+# which gives the layout for each of the  " "  attribute
 # assignments below.
 
-# Now we can assign an opperation to each buttons attributes
+# Now we can assign an operation to each buttons attributes
 # which are "onclick" (what function to perform),
 # "hint" (what to display for the flyover and F1 popup window text),
 # "iconlist" (the icon.bmp file to use),
 # "iconindex" (a number attribute, which is the place holder
 # for each icon in the icon.bmp file.
-# and "infobaselink" (the infobase HTML page address and ancor,
-# which is a locator for a spacific place on the page)
+# and "infobaselink" (the infobase HTML page address and anhcor,
+# which is a locator for a specific place on the page)
  
 
-        btn0 = qtoolbar.button(quarkpy.mapselection.EscClick, "Cancel Selections||Cancel Selections:\n\n'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.", icons, 0, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn0 = quarkpy.qtoolbar.button(quarkpy.mapselection.EscClick, "Cancel Selections||Cancel Selections:\n\n'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.", icons, 0, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn1 = qtoolbar.button(parentclick, "Select Parent||Select Parent:\n\n  The Parent is collapsed in the treeview unless 'S' is depressed.", icons,1, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn1 = quarkpy.qtoolbar.button(parentclick, "Select Parent||Select Parent:\n\n  The Parent is collapsed in the treeview unless 'S' is depressed.", icons,1, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn2 = qtoolbar.button(childclick, "Select Child||Select Child:\n\nSelects first child.", icons, 2, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn2 = quarkpy.qtoolbar.button(childclick, "Select Child||Select Child:\n\nSelects first child.", icons, 2, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn3 = qtoolbar.button(getnext, "Select Next||Select Next:\n\nThis selects the next item in the group.\n\nCycling - Depress 'S' to constrain your selection to the next item of the same type.", icons, 3, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn3 = quarkpy.qtoolbar.button(getnext, "Select Next||Select Next:\n\nThis selects the next item in the group.\n\nCycling - Depress 'S' to constrain your selection to the next item of the same type.", icons, 3, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn4 = qtoolbar.button(getnext, "Select Previous||Select Previous:\n\nSelects the previous item in the group.\n\nCycling - Depress 'S' to constrain your selection to the next item of the same type.", icons, 4, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn4 = quarkpy.qtoolbar.button(getnext, "Select Previous||Select Previous:\n\nSelects the previous item in the group.\n\nCycling - Depress 'S' to constrain your selection to the next item of the same type.", icons, 4, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
         btn3.succ = quarkpy.mapselection.getNext
         btn4.succ = quarkpy.mapselection.getPrevious
 
-        btn5 = qtoolbar.button(freezeclick, "Freeze Selection||Freeze Selection:\n\nIf the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it.", icons, 5, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn5 = quarkpy.qtoolbar.button(freezeclick, "Freeze Selection||Freeze Selection:\n\nIf the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it.", icons, 5, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn6 = qtoolbar.button(quarkpy.mapselection.UnfreezeClick, "Unfreeze Selection||Unfreeze Selection:\n\nIf the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it.", icons, 6, infobaselink="intro.mapeditor.menu.html#selectionmenu")
+        btn6 = quarkpy.qtoolbar.button(quarkpy.mapselection.UnfreezeClick, "Unfreeze Selection||Unfreeze Selection:\n\nIf the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it.", icons, 6, infobaselink="intro.mapeditor.menu.html#selectionmenu")
 
 
-        btn7 = qtoolbar.button(InvertFaceSelClick, "Invert Face Selection||Invert Face Selection:\n\nThis is for polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces.", icons, 7, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn7 = quarkpy.qtoolbar.button(InvertFaceSelClick, "Invert Face Selection||Invert Face Selection:\n\nThis is for polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces.", icons, 7, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn8 = qtoolbar.button(extendSelClick, "Extend Selection from Face||Extend Selection from Face:\n\nExtends the selection from this face to all the faces that make a single unbroken sheet with this one.\n\nSo you can for example move the bottom of a ceiling brush, and have the tops of the wall brushes follow, if they're on the same plane as the bottom of the ceiling.\n\nYou can also Link the selected faces, so that all of them can be snapped to the position of one of them with one click.", icons, 8, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn8 = quarkpy.qtoolbar.button(extendSelClick, "Extend Selection from Face||Extend Selection from Face:\n\nExtends the selection from this face to all the faces that make a single unbroken sheet with this one.\n\nSo you can for example move the bottom of a ceiling brush, and have the tops of the wall brushes follow, if they're on the same plane as the bottom of the ceiling.\n\nYou can also Link the selected faces, so that all of them can be snapped to the position of one of them with one click.", icons, 8, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn9 = qtoolbar.button(BrowseSelClick, "Browse Multiple Selection||Browse Multiple Selection:\n\nMakes a dialog for browsing the selected elements.", icons, 9, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn9 = quarkpy.qtoolbar.button(BrowseSelClick, "Browse Multiple Selection||Browse Multiple Selection:\n\nMakes a dialog for browsing the selected elements.", icons, 9, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn10 = qtoolbar.button(unrestrictClick, "Unrestrict Selection||Unrestrict Selection:\n\nWhen selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.", icons, 10, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn10 = quarkpy.qtoolbar.button(unrestrictClick, "Unrestrict Selection||Unrestrict Selection:\n\nWhen selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.", icons, 10, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn11 = qtoolbar.button(restSelClick, "Restrict to Selection||Restrict to Selection:\n\nThis restricts the map editor to working only on what is selected.", icons, 11, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn11 = quarkpy.qtoolbar.button(restSelClick, "Restrict to Selection||Restrict to Selection:\n\nThis restricts the map editor to working only on what is selected.", icons, 11, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn12 = qtoolbar.button(zoomToMe, "Zoom to selection||Zoom to selection:\n\nThis zooms the map 2D views in to the selection(s).\n\nIf there is a 3D view open, it will also look at or zoom to the selection(s) in that view as well.\n\nSee 'Look and Zoom in 3D views' under the 'Options' menu for more detail on how it works with this function.", icons, 12, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn12 = quarkpy.qtoolbar.button(zoomToMe, "Zoom to selection||Zoom to selection:\n\nThis zooms the map 2D views in to the selection(s).\n\nIf there is a 3D view open, it will also look at or zoom to the selection(s) in that view as well.\n\nSee 'Look and Zoom in 3D views' under the 'Options' menu for more detail on how it works with this function.", icons, 12, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn13 = qtoolbar.button(stashMe, "Mark selection||Mark selection:\n\nThis command designates the selection as a special element for other (mostly somewhat advanced) commands, such as 'Lift face to marked group' on the face RMB, or the 'Reorganize Tree' commands on various map object RMB's.", icons, 13, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn13 = quarkpy.qtoolbar.button(stashMe, "Mark selection||Mark selection:\n\nThis command designates the selection as a special element for other (mostly somewhat advanced) commands, such as 'Lift face to marked group' on the face RMB, or the 'Reorganize Tree' commands on various map object RMB's.", icons, 13, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn14 = qtoolbar.button(clearMarkClick, "Clear Mark||Clear Mark:\n\nThis cancels the Mark selection.", icons, 14, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn14 = quarkpy.qtoolbar.button(clearMarkClick, "Clear Mark||Clear Mark:\n\nThis cancels the Mark selection.", icons, 14, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        return [btn0, btn1, btn2, btn3, btn4, btn5, qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, qtoolbar.sep, btn11, btn12, btn13, btn14]
+        return [btn0, btn1, btn2, btn3, btn4, btn5, quarkpy.qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, quarkpy.qtoolbar.sep, btn11, btn12, btn13, btn14]
 
 
 # Now we add this toolbar, to the list of other toolbars,
@@ -296,6 +297,9 @@ quarkpy.maptools.toolbars["tb_selectmodes"] = SelectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.9  2013/03/17 14:15:09  danielpharos
+# Fixed a typo.
+#
 # Revision 1.8  2005/10/15 00:51:24  cdunde
 # To reinstate headers and history
 #

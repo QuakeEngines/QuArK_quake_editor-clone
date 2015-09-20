@@ -19,6 +19,7 @@ Info = {
    "quark":         "Version 6.4" }
 
 import quarkpy.mapmenus
+import quarkpy.qtoolbar
 from quarkpy.maputils import *
 
 
@@ -128,6 +129,9 @@ def LoadMapClick(m):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.5  2005/10/15 00:49:51  cdunde
+#To reinstate headers and history
+#
 #Revision 1.2  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #

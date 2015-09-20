@@ -42,6 +42,7 @@ import quarkpy.mapeditor
 import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.mapbtns
+import quarkpy.qtoolbar
 import mapsnapobject
 import mergepolys
 import quarkpy.maphandles
@@ -2369,6 +2370,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.29  2015/01/09 20:22:27  danielpharos
+# Typo fixes.
+#
 # Revision 1.28  2008/07/24 23:34:11  cdunde
 # To fix non-ASCII character from causing python depreciation errors.
 #

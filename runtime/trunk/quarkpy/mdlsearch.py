@@ -18,6 +18,7 @@ from maputils import *
 from mdlutils import *
 import qmenu
 import qmacro
+import qtoolbar
 import dlgclasses
 import mdleditor
 import mdlentities
@@ -890,6 +891,9 @@ MapHotKeyList("Full3DPrevShot", WindowPrevShot, shortcuts)
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.7  2011/03/27 22:26:25  cdunde
+#InfoBase and links update.
+#
 #Revision 1.6  2011/03/26 23:35:16  cdunde
 #Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
 #kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.

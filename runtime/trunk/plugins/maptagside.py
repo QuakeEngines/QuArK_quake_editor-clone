@@ -48,6 +48,7 @@ import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.qhandles
 import quarkpy.mapbtns
+import quarkpy.qtoolbar
 import mapsnapobject
 import mergepolys
 from quarkpy.maputils import *
@@ -1936,6 +1937,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.44  2013/03/17 14:15:09  danielpharos
+#Fixed a typo.
+#
 #Revision 1.43  2008/08/21 12:40:38  danielpharos
 #Fixed cut poly menu item disappearing from menu when having a face tagged that can't be cut.
 #

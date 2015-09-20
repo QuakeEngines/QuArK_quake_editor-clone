@@ -17,7 +17,6 @@ Python macros available for direct call by QuArK
 
 
 import quarkx
-import qtoolbar
 import qutils
 
 #
@@ -385,6 +384,9 @@ def MACRO_mdl_pythonexporter(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.33  2012/03/08 20:37:21  danielpharos
+#Produce error instead of crash if gamedir not found.
+#
 #Revision 1.32  2009/03/04 23:32:13  cdunde
 #For proper importer exporter listing one menus, code by DanielPharos.
 #

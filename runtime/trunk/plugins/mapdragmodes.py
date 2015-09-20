@@ -22,6 +22,7 @@ Info = {
 
 
 import quarkx
+import quarkpy.qeditor
 import quarkpy.qtoolbar
 import quarkpy.qhandles
 from quarkpy.maputils import *
@@ -395,11 +396,11 @@ def select1(btn, toolbar, editor):
             view.handlecursor = CR_CROSS
 
 
-class DragModesBar(ToolBar):
+class DragModesBar(quarkpy.qeditor.ToolBar):
     "The new toolbar with DragModes buttons."
 
     Caption = "Mouse modes"
-    DefaultPos = ((0, 0, 0, 0), 'topdock', 200, 0, 1)
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 262, 0, 1)
 
     def buildbuttons(self, layout):
         btns = []
@@ -426,6 +427,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.20  2008/07/24 23:34:11  cdunde
+# To fix non-ASCII character from causing python depreciation errors.
+#
 # Revision 1.19  2006/11/30 01:17:48  cdunde
 # To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
