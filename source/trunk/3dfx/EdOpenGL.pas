@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.102  2015/09/20 13:03:28  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.101  2015/05/24 09:27:10  danielpharos
 Moved three strings to the dictionary.
 
@@ -362,6 +365,7 @@ type
  TGLSceneObject = class(TSceneObject)
  private
    RC: HGLRC;
+   WorkaroundGDI: Boolean;
    DoubleBuffered: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
@@ -1118,17 +1122,21 @@ begin
       TextureFiltering := tfNone;
   end;
   DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
+  if AllowsGDI then
+    WorkaroundGDI:=Setup.Specifics.Values['WorkaroundGDI']<>''
+  else
+    WorkaroundGDI:=false;
 
   SetViewDC(True);
   try
     GetMem(PixelFormat, SizeOf(TPixelFormatDescriptor));
     PixelFormat^:=FillPixelFormat(ViewDC);
     if ExtensionSupported('GL_WIN_swap_hint') then
-      if (DisplayMode=dmFullScreen) then
+      if (DisplayMode=dmFullScreen) then //@ Why? Also, disable AllowsGDI for fullscreen?
         PixelFormat^.dwFlags:=PixelFormat^.dwFlags or PFD_SWAP_EXCHANGE
       else
         PixelFormat^.dwFlags:=PixelFormat^.dwFlags or PFD_SWAP_COPY;
-    ChangedViewDC; //To set the pixelformat:
+    ChangedViewDC; //To set the pixelformat //@Need to changed base on WorkaroundGDI!!!
 
     if RC = 0 then
     begin
@@ -1269,9 +1277,54 @@ procedure TGLSceneObject.Draw3DView(Synch: Boolean);
 var
   SwapHintX, SwapHintY: GLint;
   SwapHintWidth, SwapHintHeight: GLsizei;
+  bmiHeader: TBitmapInfoHeader;
+  BmpInfo: TBitmapInfo;
+  Bits: Pointer;
+  DIBSection: HGDIOBJ;
 begin
   if not OpenGlLoaded then
     Exit;
+
+  if WorkaroundGDI then
+  begin
+    FillChar(bmiHeader, SizeOf(bmiHeader), 0);
+    FillChar(BmpInfo, SizeOf(BmpInfo), 0);
+    with bmiHeader do
+    begin
+      biWidth:=DrawRect.Right-DrawRect.Left;
+      biHeight:=DrawRect.Bottom-DrawRect.Top;
+      biSize:=SizeOf(TBitmapInfoHeader);
+      biPlanes:=1;
+      biBitCount:=24;
+      biCompression:=BI_RGB;
+    end;
+    BmpInfo.bmiHeader:=bmiHeader;
+
+    SetViewDC(True);
+    try
+      if wglMakeCurrent(ViewDC, RC) = false then
+        raise EError(6310);
+      try
+        DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+        if DIBSection = 0 then
+          Raise EErrorFmt(6309, ['CreateDIBSection']);
+        try
+          glReadPixels(DrawRect.Left, ScreenY - DrawRect.Bottom, DrawRect.Right - DrawRect.Left, DrawRect.Bottom - DrawRect.Top, GL_BGR, GL_UNSIGNED_BYTE, Bits);
+          CheckOpenGLError('glReadPixels');
+
+          if SetDIBitsToDevice(ViewDC, DrawRect.Left, ScreenY - DrawRect.Bottom, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+            Raise EErrorFmt(6309, ['SetDIBitsToDevice']);
+        finally
+          DeleteObject(DIBSection);
+        end;
+      finally
+        wglMakeCurrent(0, 0);
+      end;
+    finally
+      SetViewDC(False);
+    end;
+    exit;
+  end;
 
   if DoubleBuffered then
   begin

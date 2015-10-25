@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.556  2015/09/20 13:03:06  danielpharos
+//Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+//
 //Revision 1.555  2015/08/29 22:08:18  danielpharos
 //Removed a double-slash in a path.
 //
@@ -1875,7 +1878,7 @@ QQRKSRC1
         Resolution = "7"
         Mirror = "0"
         AdapterNo = "0"
-        DisableDWM = "1"
+        DisableDWM = ""
         Form = "GeneralGlide"
       }
       OpenGL:config =
@@ -1897,7 +1900,8 @@ QQRKSRC1
         LightingQuality = "4"
         StillQuality = "0"
         MovingQuality = "2"
-        DisableDWM = "1"
+        DisableDWM = ""
+        WorkaroundGDI = "1"
         Form = "GeneralOpenGL"
       }
       DirectX:config =
@@ -1913,7 +1917,8 @@ QQRKSRC1
         VCorrection = '0.92'
         Culling = "1"
         HighPrecision = ""
-        DisableDWM = "1"
+        DisableDWM = ""
+        WorkaroundGDI = "1"
         Form = "GeneralDirectX"
       }
       Memory:config =
@@ -9732,6 +9737,7 @@ QQRKSRC1
       }
       DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
                                 $0D"If the views are not drawing correctly, try checking this box." }
+      WorkaroundGDI: = {Typ="X" Txt="Workaround GDI" Cap="Enabled" Hint="Due to a Windows limitation, GDI is not allowed to draw in OpenGL windows. Enable this option to switch to compliant (but slower) drawing."}
     }
     GeneralDirectX:form =
     {
@@ -9804,6 +9810,7 @@ QQRKSRC1
       HighPrecision: = { Typ="X" Txt="High floating point precision" Cap="Enabled" Hint="Enables high precision floating point calculations. Improves accuracy, but decreases performance."}
       DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
                                 $0D"If the views are not drawing correctly, try checking this box." }
+      WorkaroundGDI: = {Typ="X" Txt="Workaround GDI" Cap="Enabled" Hint="Due to a Windows limitation, GDI is not allowed to draw in Direct3D windows. Enable this option to switch to compliant (but slower) drawing."}
     }
     GeneralMemory:form =
     {

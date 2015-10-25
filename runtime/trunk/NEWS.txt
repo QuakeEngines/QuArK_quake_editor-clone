@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added the GDI workaround to OpenGL. This fixes the drawing of GDI on OpenGL views
+          - on more modern Windows machines.
+
 * [DanielPharos]: Brought back the fullscreen view window! Also, added a toolbar that allows you to
           - select the renderer to use for new windows. (Work in progress.) Added an experimental
           - fancy fullscreen mode, with a tight-ish message pump.
