@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.7  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -107,8 +110,8 @@ begin
     CloseConnect;
   if InternetCloseHandle(InetHandle)=false then
   begin
-    //@
-    Exit;
+    Log(LOG_WARNING, 'Online Update: Failed to close internet handle!');
+    //Exit;
   end;
   Online:=False;
   InetHandle:=nil;
@@ -130,8 +133,8 @@ begin
     Exit;
   if InternetCloseHandle(InetConnection)=false then
   begin
-    //@
-    Exit;
+    Log(LOG_WARNING, 'Online Update: Failed to close internet connection handle!');
+    //Exit;
   end;
   Connected:=False;
   InetConnection:=nil;
@@ -156,8 +159,8 @@ begin
     Exit;
   if InternetCloseHandle(InetResource)=false then
   begin
-    //@
-    Exit;
+    Log(LOG_WARNING, 'Online Update: Failed to close internet resource handle!');
+    //Exit;
   end;
   Requesting:=False;
   InetResource:=nil;
@@ -170,19 +173,21 @@ var
   HeaderIndex: DWORD;
 begin
   GetMem(StatusBuffer, StatusBufferLength);
-  HeaderIndex:=0;
-  BufferLength:=StatusBufferLength;
-
-  if HttpQueryInfo(InetResource, Flag, StatusBuffer, BufferLength, HeaderIndex)=false then
-    raise exception.create('HttpQueryInfo failed!');
-
   try
-    Result:=StrToInt(LeftStr(StatusBuffer, BufferLength));
-  except
-    Result:=Default;
-  end;
+    HeaderIndex:=0;
+    BufferLength:=StatusBufferLength;
 
-  FreeMem(StatusBuffer);
+    if HttpQueryInfo(InetResource, Flag, StatusBuffer, BufferLength, HeaderIndex)=false then
+      raise exception.create('HttpQueryInfo failed!');
+
+    try
+      Result:=StrToInt(LeftStr(StatusBuffer, BufferLength));
+    except
+      Result:=Default;
+    end;
+  finally
+    FreeMem(StatusBuffer);
+  end;
 end;
 
 procedure THTTPConnection.ReadFile(FileData: TMemoryStream; DataStart, DataLength: cardinal);
@@ -239,10 +244,10 @@ begin
 
   FileRequest(FileName);
   try
-    StatusValue:=FileQueryInfo(HTTP_QUERY_STATUS_CODE, 200);;
+    StatusValue:=FileQueryInfo(HTTP_QUERY_STATUS_CODE, 200);
     if StatusValue<>200 then
     begin
-      //@Proces StatusValue!
+      //FIXME: Properly handle StatusValue!
       raise exception.create('Cannot download file: file info query failed.');
     end;
 
