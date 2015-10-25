@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2015/09/20 13:03:28  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 
 }
 
@@ -147,7 +150,7 @@ begin
     FillChar(FullScreenWindowClass, SizeOf(FullScreenWindowClass), 0);
     FullScreenWindowClass.cbSize:=SizeOf(FullScreenWindowClass);
     FullScreenWindowClass.style:=CS_HREDRAW or CS_VREDRAW or CS_OWNDC;
-    FullScreenWindowClass.hbrBackground:=nil;
+    FullScreenWindowClass.hbrBackground:=0;
     FullScreenWindowClass.hInstance:=hInstance;
     //@ We must set hCursor...?
     FullScreenWindowClass.lpszClassName:=PChar(FullScreenWindowClassName);
