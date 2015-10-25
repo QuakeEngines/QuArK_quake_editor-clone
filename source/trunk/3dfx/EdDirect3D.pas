@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2015/09/20 13:03:28  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.50  2015/08/29 17:00:54  danielpharos
 Automated a confusing setting.
 
@@ -213,6 +216,7 @@ type
 
   TDirect3DSceneObject = class(TSceneObject)
   private
+    WorkaroundGDI: Boolean;
     Fog: Boolean;
     Transparency: Boolean;
     Lighting: Boolean;
@@ -591,6 +595,10 @@ begin
     if (l_Res <> D3D_OK) then
       raise EErrorFmt(6403, ['SetSamplerState(D3DSAMP_MIPFILTER)', DXGetErrorString9(l_Res)]);
   end;
+  if AllowsGDI then
+    WorkaroundGDI:=Setup.Specifics.Values['WorkaroundGDI']<>''
+  else
+    WorkaroundGDI:=false;
 
   MaxLights := D3DCaps.MaxActiveLights;
   if MaxLights <= 0 then
@@ -1253,9 +1261,62 @@ end;
 procedure TDirect3DSceneObject.Draw3DView(Synch: Boolean);
 var
   l_Res: HResult;
+  pBackBuffer: IDirect3DSurface9;
+  bmiHeader: TBitmapInfoHeader;
+  BmpInfo: TBitmapInfo;
+  Bits: Pointer;
+  SurfaceRect: D3DLOCKED_RECT;
+  DIBSection: HGDIOBJ;
 begin
   if not Direct3DLoaded then
     Exit;
+
+  if WorkaroundGDI then
+  begin
+    FillChar(bmiHeader, SizeOf(bmiHeader), 0);
+    FillChar(BmpInfo, SizeOf(BmpInfo), 0);
+    with bmiHeader do
+    begin
+      biWidth:=DrawRect.Right-DrawRect.Left;
+      biHeight:=DrawRect.Bottom-DrawRect.Top;
+      biSize:=SizeOf(TBitmapInfoHeader);
+      biPlanes:=1;
+      biBitCount:=24;
+      biCompression:=BI_RGB;
+    end;
+    BmpInfo.bmiHeader:=bmiHeader;
+
+    SetViewDC(True);
+    try
+      DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
+      if DIBSection = 0 then
+        Raise EErrorFmt(6404, ['CreateDIBSection']);
+      try
+        l_Res:=SwapChain.GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, pBackBuffer);
+        if (l_Res <> D3D_OK) then
+          raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
+
+        l_Res:=pBackBuffer.LockRect(SurfaceRect, nil, D3DLOCK_READONLY);
+        if (l_Res <> D3D_OK) then
+          raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
+        try
+          CopyMemory(Bits, SurfaceRect.pBits, bmiHeader.biWidth * bmiHeader.biHeight * 3); //@FIXME: Convert to proper format...!   * 4
+        finally
+          l_Res:=pBackBuffer.UnlockRect();
+          if (l_Res <> D3D_OK) then
+            raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
+        end;
+
+        if SetDIBitsToDevice(ViewDC, DrawRect.Left, ScreenY - DrawRect.Bottom, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
+          Raise EErrorFmt(6404, ['SetDIBitsToDevice']);
+      finally
+        DeleteObject(DIBSection);
+      end;
+    finally
+      SetViewDC(False);
+    end;
+    exit;
+  end;
 
   if (DisplayMode=dmFullScreen) then
     l_Res:=SwapChain.Present(nil, nil, 0, nil, 0)

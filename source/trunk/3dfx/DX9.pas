@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2015/09/12 13:19:19  danielpharos
+Changed TimesLoaded into Cardinal.
+
 Revision 1.16  2014/10/05 15:25:14  danielpharos
 Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
 
@@ -82,7 +85,6 @@ var
 begin
   if TimesLoaded = 0 then
   begin
-    //DanielPharos: We need to check for changes, and force a rebuild if needed!
     Result := False;
     try
       if LoadDirect3D9=false then
@@ -119,10 +121,6 @@ begin
       Setup:=SetupSubSet(ssGeneral, 'DirectX');
       if Setup.Specifics.Values['HighPrecision']<>'' then
         BehaviorFlags:=BehaviorFlags or D3DCREATE_FPU_PRESERVE;
-
-      //FIXME: What about:    http://msdn.microsoft.com/en-us/library/bb172527(VS.85).aspx
-      //D3DCREATE_MIXED_VERTEXPROCESSING
-      //D3DCREATE_MULTITHREADED
 
       //Check for software/hardware vertex processing
       if (D3DCaps.DevCaps and D3DDEVCAPS_HWTRANSFORMANDLIGHT)<>0 then
@@ -168,7 +166,7 @@ begin
         StencilBufferBits := 0;
       end;
 
-      //DanielPharos: We're going to need to check if the settings here are OK.
+      //DanielPharos: We're going to need to check if the settings here are OK
       //using calls in DirectX. That way, we can do a nice error and shutdown, without
       //needing a restart of QuArK.
 
@@ -205,7 +203,10 @@ begin
         Log(LOG_WARNING, LoadStr1(6400), ['StencilBufferBits']);
         Exit;
       end;
-      PresParm.Flags := 0;
+      if Setup.Specifics.Values['WorkaroundGDI']<>'' then
+        PresParm.Flags := D3DPRESENTFLAG_LOCKABLE_BACKBUFFER
+      else
+        PresParm.Flags := 0;
       PresParm.FullScreen_RefreshRateInHz := 0;
       PresParm.PresentationInterval := D3DPRESENT_INTERVAL_DEFAULT;
 
