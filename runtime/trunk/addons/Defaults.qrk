@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.558  2015/12/05 14:48:08  danielpharos
+//Set the update notification correctly, and improved the wording of the GDI workaround option.
+//
 //Revision 1.557  2015/10/25 15:03:22  danielpharos
 //Added the GDI workaround to OpenGL. This fixes the drawing of GDI on OpenGL views on more modern Windows machines.
 //
@@ -1430,7 +1433,6 @@ QQRKSRC1
 //Revision 1.120  2001/04/10 08:58:36  tiglari
 //grid specific for brush bevel/cap/arch (force vertexes to grid)
 //
-
 //Revision 1.105.4.1  2001/04/06 10:41:28  tiglari
 //stupidbuildtoolkludges as checkable option; on by default for Q3A
 //   (merge in from REL_62)
