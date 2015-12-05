@@ -1076,6 +1076,7 @@ Strings = {
     6306: "OpenGL texture filtering setting missing or invalid!",
     6307: "OpenGL is lying about GL_MAX_LIGHTS! Lighting disabled out of safety.",
     6308: "OpenGL anisotropic texture filtering not support. Falling back to trilinear texture filtering.",
+    6309: "Error with the OpenGL drivers//%s failed",
 
     6310: "Unable to make OpenGL context current. Try updating your video card drivers. If that doesn't work, use another renderer",
     6311: "Unable to create OpenGL context. Try updating your video card drivers. If that doesn't work, use another renderer",
@@ -1092,6 +1093,7 @@ Strings = {
     6401: "Error in DirectX uninitialization//'%s'",
     6402: "Could not load the DirectX drivers//Error code %d",
     6403: "Error using DirectX//Function '%s' failed with '%s'",
+    6404: "Error with the DirectX drivers//%s failed",
 
     6410: "Internal driver error in DirectX. Try updating your video card drivers and DirectX. If that doesn't work, use another renderer",
     6411: "Unable to load DirectX 9. Make sure DirectX 9.0c is installed",
@@ -1122,6 +1124,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.170  2015/09/20 13:03:06  danielpharos
+#Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+#
 #Revision 1.169  2015/09/05 17:13:24  danielpharos
 #Moved new logging strings to dictionary.
 #
