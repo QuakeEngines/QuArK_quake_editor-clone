@@ -4,6 +4,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2008/05/21 18:14:51  cdunde
+//To add and\or activate Half-Life 2 functions: (all original code by Alexander)
+//1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
+//      func_breakable_glass and func_breakable_surf functions
+//      (lowerleft, upperleft, lowerright and upperright)
+//2) to draw special light entity lines for functions like light_spot that have the Specifics
+//      (angles, _cone, spotlightwidth and\or _inner_cone)
+//3) face displacement. Commented out at this time. believe bezier type code should be used instead.
+//
 //Revision 1.2  2008/05/14 20:38:20  cdunde
 //Fixed basic lighting in all games and a few other small typo errors.
 //
@@ -645,24 +654,19 @@ QQRKSRC1
       }
       item.qtxfolder =
       {
-        item_cashbaglarge:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-        }
-        item_health_sm:e =
+        item_adrenaline:e =
         {
           origin = "0 0 0"
           ;desc = ""
           angle = "360"
         }
-        item_pack:e =
+        item_armor_helmet:e =
         {
           origin = "0 0 0"
           ;desc = ""
           angle = "360"
         }
-        item_cashbagsmall:e =
+        item_armor_helmet_heavy:e =
         {
           origin = "0 0 0"
           ;desc = ""
@@ -674,13 +678,62 @@ QQRKSRC1
           ;desc = ""
           angle = "360"
         }
-        item_adrenaline:e =
+        item_armor_jacket_heavy:e =
         {
           origin = "0 0 0"
           ;desc = ""
           angle = "360"
         }
-        item_valve:e =
+        item_armor_legs:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        item_armor_legs_heavy:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        item_battery:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_cashbagsmall:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        item_cashbaglarge:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_cashroll:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_coil:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_flashlight:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+        }
+        item_health_lg:e =
+        {
+          origin = "0 0 0"
+          ;desc = ""
+          angle = "360"
+        }
+        item_health_sm:e =
         {
           origin = "0 0 0"
           ;desc = ""
@@ -692,81 +745,37 @@ QQRKSRC1
           ;desc = ""
           angle = "360"
         }
-        item_watch:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Watch for Lenny"
-        }
         item_oilcan:e =
         {
           origin = "0 0 0"
           ;desc = ""
         }
-        item_armor_legs_heavy:e =
+        item_pack:e =
         {
           origin = "0 0 0"
           ;desc = ""
           angle = "360"
-        }
-        item_health_lg:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
-        }
-        item_battery:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-        }
-        item_armor_helmet:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
-        }
-        item_armor_jacket_heavy:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
-        }
-        item_whiskey:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Whiskey for the bum"
         }
         item_safedocs:e =
         {
           origin = "0 0 0"
           ;desc = ""
         }
-        item_cashroll:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-        }
-        item_flashlight:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-        }
-        item_coil:e =
-        {
-          origin = "0 0 0"
-          ;desc = ""
-        }
-        item_armor_legs:e =
+        item_valve:e =
         {
           origin = "0 0 0"
           ;desc = ""
           angle = "360"
         }
-        item_armor_helmet_heavy:e =
+        item_watch:e =
         {
           origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
+          ;desc = "Watch for Lenny"
+        }
+        item_whiskey:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Whiskey for the bum"
         }
       }
       unknown.qtxfolder =
@@ -1429,7 +1438,7 @@ QQRKSRC1
         props2_barrels_fallB:e =
         {
           origin = "0 0 0"
-          ;desc = "Another set of barrels that  you can trigger to fall  "
+          ;desc = "Another set of barrels that you can trigger to fall"
           angle = "360"
         }
         props2_flag:b =
@@ -1748,6 +1757,9 @@ QQRKSRC1
 
   Entity forms.fctx =
   {
+    // Definition of "includes"
+    t_ammo_size:incl = { bbox = '-16 -16 -16 16 16 16' }
+
     ai_boundary:form =
     {
       help ="Character will abort pursuing player when touching this brush. Will take cover until the player is out of view, then return to guarding position (if character has been assigned one)."
@@ -1884,79 +1896,51 @@ QQRKSRC1
     ammo_308:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/hmgclip/tris.md2"
-        values = "models/pu_icon/hmgclip/tris.md2"
-      }
+      mdl = "models/pu_icon/hmgclip/tris.md2"
     }
     ammo_bullets:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/pclip/tris.md2"
-        values = "models/pu_icon/pclip/tris.md2"
-      }
+      mdl = "models/pu_icon/pclip/tris.md2"
     }
     ammo_cylinder:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/tgclip/tris.md2"
-        values = "models/pu_icon/tgclip/tris.md2"
-      }
+      mdl = "models/pu_icon/tgclip/tris.md2"
     }
     ammo_flametank:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/flametank/tris.md2"
-        values = "models/pu_icon/flametank/tris.md2"
-      }
+      mdl = "models/pu_icon/flametank/tris.md2"
     }
     ammo_grenades:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
@@ -1967,19 +1951,12 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/grenade/tris.md2"
-        values = "models/pu_icon/grenade/tris.md2"
-      }
+      mdl = "models/pu_icon/grenade/tris.md2"
     }
     ammo_rockets:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
@@ -1990,32 +1967,18 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/rocket/tris.md2"
-        values = "models/pu_icon/rocket/tris.md2"
-      }
+      mdl = "models/pu_icon/rocket/tris.md2"
     }
     ammo_shells:form =
     {
       help =""
-      bbox ='-16 -16 -16 16 16 16'
+      t_ammo_size = !
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/shotgun_shell/tris.md2"
-        values = "models/pu_icon/shotgun_shell/tris.md2"
-      }
+      mdl = "models/pu_icon/shotgun_shell/tris.md2"
     }
     cast_bitch:form =
     {
@@ -2097,7 +2060,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       currentcash: =
       {
@@ -2122,14 +2085,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\bitch\"
-        values = "models\actors\bitch\"
-      }
+      mdl = "models\actors\bitch\"
       moral: =
       {
         Txt = "&"
@@ -2183,7 +2139,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	neutral They should only be neutrals"
+        Hint = "0 = neutral"$0D"They should only be neutrals"
       }
       health: =
       {
@@ -2195,14 +2151,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\bum_sit\"
-        values = "models\actors\bum_sit\"
-      }
+      mdl = "models\actors\bum_sit\"
       name: =
       {
         Txt = "&"
@@ -2218,27 +2167,13 @@ QQRKSRC1
     {
       help ="Bum "
       bbox ='-30 -16 -25 31 43 13'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\bum_seg"
-        values = "models\actors\bum_seg"
-      }
+      mdl = "models\actors\bum_seg"
     }
     cast_bumb:form =
     {
       help ="Bum "
       bbox ='-30 -16 -25 31 43 13'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\bum_seg"
-        values = "models\actors\bum_seg"
-      }
+      mdl = "models\actors\bum_seg"
     }
     cast_dog:form =
     {
@@ -2264,7 +2199,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       currentcash: =
       {
@@ -2291,14 +2226,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\dog\"
-        values = "models\actors\dog\"
-      }
+      mdl = "models\actors\dog\"
       moral: =
       {
         Txt = "&"
@@ -2413,7 +2341,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       currentcash: =
       {
@@ -2448,14 +2376,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\punk\"
-        values = "models\actors\punk\"
-      }
+      mdl = "models\actors\punk\"
       moral: =
       {
         Txt = "&"
@@ -2580,7 +2501,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       count: =
       {
@@ -2640,14 +2561,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\runt\"
-        values = "models\actors\runt\"
-      }
+      mdl = "models\actors\runt\"
       moral: =
       {
         Txt = "&"
@@ -2762,7 +2676,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       count: =
       {
@@ -2812,14 +2726,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\shorty\"
-        values = "models\actors\shorty\"
-      }
+      mdl = "models\actors\shorty\"
       moral: =
       {
         Txt = "&"
@@ -2924,7 +2831,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       combattarget: =
       {
@@ -2951,14 +2858,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\thug\"
-        values = "models\actors\thug\"
-      }
+      mdl = "models\actors\thug\"
       moral: =
       {
         Txt = "&"
@@ -3043,16 +2943,9 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\thug_sit\"
-        values = "models\actors\thug_sit\"
-      }
+      mdl = "models\actors\thug_sit\"
     }
     cast_whore:form =
     {
@@ -3134,7 +3027,7 @@ QQRKSRC1
       cast_group: =
       {
         Txt = "&"
-        Hint = "	0=neutral 1=friendly 2+ =enemy"
+        Hint = "0 = neutral"$0D"1 = friendly"$0D"2+ = enemy"
       }
       currentcash: =
       {
@@ -3174,14 +3067,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\actors\whore\"
-        values = "models\actors\whore\"
-      }
+      mdl = "models\actors\whore\"
       moral: =
       {
         Txt = "&"
@@ -3245,14 +3131,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\flag\flag1.md2"
-        values = "models\props\flag\flag1.md2"
-      }
+      mdl = "models\props\flag\flag1.md2"
       scale: =
       {
         Txt = "&"
@@ -3301,7 +3180,7 @@ QQRKSRC1
     }
     elements_snowcloud:form =
     {
-      help ="Snow falls from this invisable cloud at random points   center of cloud to ground trace determines the flake fall distancecloud can be any recatangle size"
+      help ="Snow falls from this invisible cloud at random points"$0D"center of cloud to ground trace determines the flake fall distance"$0D"cloud can be any rectangle size"
       fxdensity: =
       {
         Txt = "&"
@@ -3310,7 +3189,7 @@ QQRKSRC1
     }
     func_areaportal:form =
     {
-      help ="This is a non-visible object that divides the world intoareas that are seperated when this portal is not activated.Usually enclosed in the middle of a door."
+      help ="This is a non-visible object that divides the world into areas that are separated when this portal is not activated.Usually enclosed in the middle of a door."
       style: =
       {
         Txt = "&"
@@ -3327,7 +3206,7 @@ QQRKSRC1
     }
     func_button:form =
     {
-      help =" When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again."
+      help = "When a button is touched, it moves some distance in the direction of its angle, triggers all of its targets, waits some time, then returns to its original position where it can be triggered again."
       spawnflags: =
       {
         Typ = "X1"
@@ -3343,22 +3222,22 @@ QQRKSRC1
       angle: =
       {
         Txt = "&"
-        Hint = "		determines the opening direction"
+        Hint = "determines the opening direction"
       }
       health: =
       {
         Txt = "&"
-        Hint = "	if set, the button must be killed instead of touched"
+        Hint = "if set, the button must be killed instead of touched"
       }
       lip: =
       {
         Txt = "&"
-        Hint = "	override the default 4 pixel lip remaining at end of move"
+        Hint = "override the default 4 pixel lip remaining at end of move"
       }
       sounds: =
       {
         Txt = "&"
-        Hint = "  1) silent 2) steam metal 3) wooden clunk 4) metallic click 5) in-out"
+        Hint = "1) silent 2) steam metal 3) wooden clunk 4) metallic click 5) in-out"
         Typ = "C"
         Items = "1"$0D"4"$0D"5"$0D"7"
         values = "1"$0D"4"$0D"5"$0D"7"
@@ -3366,7 +3245,7 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = "	override the default 40 speed"
+        Hint = "override the default 40 speed"
       }
       style: =
       {
@@ -3379,7 +3258,7 @@ QQRKSRC1
       target: =
       {
         Txt = "&"
-        Hint = "	all entities with a matching targetname will be used"
+        Hint = "all entities with a matching targetname will be used"
       }
       target2: =
       {
@@ -3394,12 +3273,12 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "	override the default 1 second wait (-1 = never return)"
+        Hint = "override the default 1 second wait (-1 = never return)"
       }
     }
     func_clock:form =
     {
-      help ="target a target_string with thisThe default is to be a time of day clockTIMER_UP and TIMER_DOWN run for count seconds and the fire pathtargetIf START_OFF, this entity must be used before it starts"
+      help ="target a target_string with this"$0D"The default is to be a time of day clockTIMER_UP and TIMER_DOWN run for count seconds and the fire pathtarget"$0D"If START_OFF, this entity must be used before it starts"
       bbox ='-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -3428,7 +3307,7 @@ QQRKSRC1
       style: =
       {
         Txt = "&"
-        Hint = "	0=xx	1=xxxx 2=xxxxxx"
+        Hint = "0=xx	1=xxxx 2=xxxxxx"
         Typ = "C"
         Items = ""
         values = ""
@@ -3514,17 +3393,17 @@ QQRKSRC1
       angle: =
       {
         Txt = "&"
-        Hint = "	determines the opening direction"
+        Hint = "determines the opening direction"
       }
       dmg: =
       {
         Txt = "&"
-        Hint = "	damage to inflict when blocked (2 default)"
+        Hint = "damage to inflict when blocked (2 default)"
       }
       health: =
       {
         Txt = "&"
-        Hint = "	if set, door must be shot open"
+        Hint = "if set, door must be shot open"
       }
       key: =
       {
@@ -3534,17 +3413,17 @@ QQRKSRC1
       lip: =
       {
         Txt = "&"
-        Hint = "	lip remaining at end of move (8 default)"
+        Hint = "lip remaining at end of move (8 default)"
       }
       message: =
       {
         Txt = "&"
-        Hint = "	is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
+        Hint = "is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
       }
       sounds: =
       {
         Txt = "&"
-        Hint = "  default = 2; 1)	silent 2)	Medium metal sliding rollup door 3)	Wooden swinging door  4)	Metal swinging door 5)	Metal light sliding TRAIN door 6)	Very large rolling metal door 7)  Metal swing-up garage door"
+        Hint = "default = 2; 1)	silent 2)	Medium metal sliding rollup door 3)	Wooden swinging door  4)	Metal swinging door 5)	Metal light sliding TRAIN door 6)	Very large rolling metal door 7)  Metal swing-up garage door"
         Typ = "C"
         Items = "1"$0D"10"$0D"2"$0D"5"$0D"6"$0D"9"
         values = "1"$0D"10"$0D"2"$0D"5"$0D"6"$0D"9"
@@ -3552,7 +3431,7 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = "	movement speed (100 default)"
+        Hint = "movement speed (100 default)"
       }
       target: =
       {
@@ -3562,7 +3441,7 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-        Hint = " if set, no touch field will be spawned and a remote button or trigger field activates the door."
+        Hint = "if set, no touch field will be spawned and a remote button or trigger field activates the door."
       }
       team: =
       {
@@ -3572,7 +3451,7 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "	wait before returning (3 default, -1 = never return)"
+        Hint = "wait before returning (3 default, -1 = never return)"
       }
     }
     func_door_rotating:form =
@@ -3639,22 +3518,22 @@ QQRKSRC1
       angle: =
       {
         Txt = "&"
-        Hint = "	determines the opening direction"
+        Hint = "determines the opening direction"
       }
       distance: =
       {
         Txt = "&"
-        Hint = " is how many degrees the door will be rotated."
+        Hint = "is how many degrees the door will be rotated."
       }
       dmg: =
       {
         Txt = "&"
-        Hint = "	damage to inflict when blocked (2 default)"
+        Hint = "damage to inflict when blocked (2 default)"
       }
       health: =
       {
         Txt = "&"
-        Hint = "	if set, door must be shot open"
+        Hint = "if set, door must be shot open"
       }
       key: =
       {
@@ -3664,12 +3543,12 @@ QQRKSRC1
       message: =
       {
         Txt = "&"
-        Hint = "	is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
+        Hint = "is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
       }
       sounds: =
       {
         Txt = "&"
-        Hint = "  default = 2; 1)	silent 2)	Medium metal sliding rollup door 3)	Wooden swinging door  4)Metal swinging door  3)	Metal light sliding TRAIN door 6)	Very large rolling metal door 7)  Metal swing-up garage door"
+        Hint = "default = 2; 1)	silent 2)	Medium metal sliding rollup door 3)	Wooden swinging door  4)Metal swinging door  3)	Metal light sliding TRAIN door 6)	Very large rolling metal door 7)  Metal swing-up garage door"
         Typ = "C"
         Items = "1"$0D"3"$0D"4"$0D"6"
         values = "1"$0D"3"$0D"4"$0D"6"
@@ -3677,12 +3556,12 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = "	movement speed (100 default)"
+        Hint = "movement speed (100 default)"
       }
       style: =
       {
         Txt = "&"
-        Hint = "		0 = rotate away from it's activator, 1 = fixed rotation (default 0)"
+        Hint = "0 = rotate away from it's activator, 1 = fixed rotation (default 0)"
         Typ = "C"
         Items = "0"$0D"1"
         values = "0"$0D"1"
@@ -3700,7 +3579,7 @@ QQRKSRC1
       targetname: =
       {
         Txt = "&"
-        Hint = " if set, no touch field will be spawned and a remote button or trigger field activates the door."
+        Hint = "if set, no touch field will be spawned and a remote button or trigger field activates the door."
       }
       team: =
       {
@@ -3710,7 +3589,7 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "	wait before returning (3 default, -1 = never return)"
+        Hint = "wait before returning (3 default, -1 = never return)"
       }
     }
     func_door_secret:form =
@@ -3737,22 +3616,22 @@ QQRKSRC1
       angle: =
       {
         Txt = "&"
-        Hint = "		determines the direction"
+        Hint = "determines the direction"
       }
       dmg: =
       {
         Txt = "&"
-        Hint = "	damage to inflic when blocked (default 2)"
+        Hint = "damage to inflict when blocked (default 2)"
       }
       wait: =
       {
         Txt = "&"
-        Hint = "	how long to hold in the open position (default 5, -1 means hold)"
+        Hint = "how long to hold in the open position (default 5, -1 means hold)"
       }
     }
     func_explosive:form =
     {
-      help ="Any brush that you want to explode or break apart.  If you want anexplosion, set dmg and it will do a radius explosion of that amountat the center of the bursh.If targeted it will not be shootable."
+      help ="Any brush that you want to explode or break apart.  If you want an explosion, set dmg and it will do a radius explosion of that amount at the center of the brush. If targeted it will not be shootable."
       spawnflags: =
       {
         Typ = "X1"
@@ -3780,17 +3659,17 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = " how much radius damage should be done, defaults to 0"
+        Hint = "how much radius damage should be done, defaults to 0"
       }
       fxdensity: =
       {
         Txt = "&"
-        Hint = " size of explosion 1 - 100 (default is 10)"
+        Hint = "size of explosion 1 - 100 (default is 10)"
       }
       health: =
       {
         Txt = "&"
-        Hint = " defaults to 100."
+        Hint = "defaults to 100."
       }
       killtarget: =
       {
@@ -3800,7 +3679,7 @@ QQRKSRC1
       mass: =
       {
         Txt = "&"
-        Hint = " defaults to 75.  This determines how much debris is emitted when it explodes.  You get one large chunk per 100 of mass (up to 8) and one small chunk per 25 of mass (up to 16).  So 800 gives the most."
+        Hint = "defaults to 75.  This determines how much debris is emitted when it explodes.  You get one large chunk per 100 of mass (up to 8) and one small chunk per 25 of mass (up to 16).  So 800 gives the most."
       }
       target: =
       {
@@ -3815,7 +3694,7 @@ QQRKSRC1
       type: =
       {
         Txt = "&"
-        Hint = " type of debris (glass, wood or metal) type default is glass"
+        Hint = "type of debris (glass, wood or metal) type default is glass"
       }
       volume: =
       {
@@ -3860,17 +3739,17 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "		default	2"
+        Hint = "default 2"
       }
       noise: =
       {
         Txt = "&"
-        Hint = "	looping sound to play when the train is in motion"
+        Hint = "looping sound to play when the train is in motion"
       }
       speed: =
       {
         Txt = "&"
-        Hint = "	default 100"
+        Hint = "default 100"
       }
       target: =
       {
@@ -3922,7 +3801,7 @@ QQRKSRC1
       accel: =
       {
         Txt = "&"
-        Hint = " overrides default 500"
+        Hint = "overrides default 500"
       }
       distance: =
       {
@@ -3937,12 +3816,12 @@ QQRKSRC1
       lip: =
       {
         Txt = "&"
-        Hint = " overrides default 8 pixel lip"
+        Hint = "overrides default 8 pixel lip"
       }
       sounds: =
       {
         Txt = "&"
-        Hint = " 1= base fast 2= chain slow"
+        Hint = "1= base fast 2= chain slow"
         Typ = "C"
         Items = "1"
         values = "1"
@@ -3950,12 +3829,12 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = "	overrides default 200."
+        Hint = "overrides default 200."
       }
     }
     func_rotating:form =
     {
-      help =" You need to have an origin brush as part of this entity.  The center of that brush will be the point around which it is rotated. It will rotate around the Z axis by default.  You can check either the X_AXIS or Y_AXIS box to change that.REVERSE will cause the it to rotate in the opposite direction.STOP mean it will stop moving instead of pushing entities"
+      help =" You need to have an origin brush as part of this entity. The center of that brush will be the point around which it is rotated. It will rotate around the Z axis by default. You can check either the X_AXIS or Y_AXIS box to change that.REVERSE will cause the it to rotate in the opposite direction.STOP mean it will stop moving instead of pushing entities"
       spawnflags: =
       {
         Typ = "X1"
@@ -4012,7 +3891,7 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = " damage to inflict when blocked (2 default)"
+        Hint = "damage to inflict when blocked (2 default)"
       }
       light: =
       {
@@ -4022,7 +3901,7 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = " determines how fast it moves; default value is 100."
+        Hint = "determines how fast it moves; default value is 100."
       }
       targetname: =
       {
@@ -4032,7 +3911,7 @@ QQRKSRC1
     }
     func_subdoor_base:form =
     {
-      help ="The func_subdoor_handle1 will rotate 90 deg then the door will open with func_subdoor_handle2.TOGGLE causes the door to wait in both the start and end states for a trigger event.NOMONSTER	monsters will not trigger this doorYou need to have an origin brush as part of this entity.  The center of that brush will be the point around which it is rotated. It will rotate around the Z axis by default. You can check either the X_AXIS or Y_AXIS box to change that.You also need a func_subdoor_handle1 - Handle with origin in the center, func_subdoor_handle2 - Handle with origin at the door origin. Both handles are in the same area in level spaceREVERSE will cause the door to rotate in the opposite direction."
+      help ="The func_subdoor_handle1 will rotate 90 deg then the door will open with func_subdoor_handle2."$0D"TOGGLE causes the door to wait in both the start and end states for a trigger event."$0D"NOMONSTER	monsters will not trigger this doorYou need to have an origin brush as part of this entity.  The center of that brush will be the point around which it is rotated. It will rotate around the Z axis by default. You can check either the X_AXIS or Y_AXIS box to change that.You also need a func_subdoor_handle1 - Handle with origin in the center, func_subdoor_handle2 - Handle with origin at the door origin. Both handles are in the same area in level space"$0D"REVERSE will cause the door to rotate in the opposite direction."
       spawnflags: =
       {
         Typ = "X1"
@@ -4090,32 +3969,32 @@ QQRKSRC1
       angle: =
       {
         Txt = "&"
-        Hint = "	determines the opening direction"
+        Hint = "determines the opening direction"
       }
       distance: =
       {
         Txt = "&"
-        Hint = " is how many degrees the door will be rotated."
+        Hint = "is how many degrees the door will be rotated."
       }
       dmg: =
       {
         Txt = "&"
-        Hint = "	damage to inflict when blocked (2 default)"
+        Hint = "damage to inflict when blocked (2 default)"
       }
       health: =
       {
         Txt = "&"
-        Hint = "	if set, door must be shot open"
+        Hint = "if set, door must be shot open"
       }
       message: =
       {
         Txt = "&"
-        Hint = "	is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
+        Hint = "is printed when the door is touched if it is a trigger door and it hasn't been fired yet"
       }
       sounds: =
       {
         Txt = "&"
-        Hint = " 1)	silent 2)	light 3)	medium 4)	heavy"
+        Hint = "1)	silent 2)	light 3)	medium 4)	heavy"
         Typ = "C"
         Items = ""
         values = ""
@@ -4123,22 +4002,22 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = "	movement speed (100 default)"
+        Hint = "movement speed (100 default)"
       }
       targetname: =
       {
         Txt = "&"
-        Hint = " if set, no touch field will be spawned and a remote button or trigger field activates the door."
+        Hint = "if set, no touch field will be spawned and a remote button or trigger field activates the door."
       }
       wait: =
       {
         Txt = "&"
-        Hint = "	wait before returning (3 default, -1 = never return)"
+        Hint = "wait before returning (3 default, -1 = never return)"
       }
     }
     func_subdoor_handle1:form =
     {
-      help ="Will rotate 90 deg with the func_subdoor_base.You need to have an origin brush in the center of this entity. The center of that brush will bethe point around which it is rotated. It will rotate around the Z axis by default. You cancheck either the X_AXIS or Y_AXIS box to change that.REVERSE will cause the handle to rotate in the opposite direction."
+      help ="Will rotate 90 deg with the func_subdoor_base.You need to have an origin brush in the center of this entity. The center of that brush will be the point around which it is rotated. It will rotate around the Z axis by default. You can check either the X_AXIS or Y_AXIS box to change that.REVERSE will cause the handle to rotate in the opposite direction."
       spawnflags: =
       {
         Typ = "X1"
@@ -4190,7 +4069,7 @@ QQRKSRC1
       duration: =
       {
         Txt = "&"
-        Hint = " is how long the rotation will take place."
+        Hint = "is how long the rotation will take place."
       }
     }
     func_subdoor_handle2:form =
@@ -4210,7 +4089,7 @@ QQRKSRC1
       delay: =
       {
         Txt = "&"
-        Hint = "		delay before first firing when turned on, default is 0"
+        Hint = "delay before first firing when turned on, default is 0"
       }
       noise: =
       {
@@ -4220,12 +4099,12 @@ QQRKSRC1
       pausetime: =
       {
         Txt = "&"
-        Hint = "		additional delay used only the very first time	and only if spawned with START_ON"
+        Hint = "additional delay used only the very first time	and only if spawned with START_ON"
       }
       random: =
       {
         Txt = "&"
-        Hint = "		wait variance, default is 0"
+        Hint = "wait variance, default is 0"
       }
       target: =
       {
@@ -4240,12 +4119,12 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "		base time between triggering all targets, default is 1"
+        Hint = "base time between triggering all targets, default is 1"
       }
     }
     func_train:form =
     {
-      help ="Trains are moving platforms that players can ride.The targets origin specifies the min point of the train at each corner.The train spawns at the first target it is pointing at.If the train is the target of a button or trigger, it will not begin moving until activated."
+      help ="Trains are moving platforms that players can ride. The targets origin specifies the min point of the train at each corner. The train spawns at the first target it is pointing at. If the train is the target of a button or trigger, it will not begin moving until activated."
       spawnflags: =
       {
         Typ = "X1"
@@ -4277,12 +4156,12 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "		default	2"
+        Hint = "default 2"
       }
       noise: =
       {
         Txt = "&"
-        Hint = "	looping sound to play when the train is in motion"
+        Hint = "looping sound to play when the train is in motion"
       }
       reactdelay: =
       {
@@ -4300,7 +4179,7 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = " default 100"
+        Hint = "default 100"
       }
       target: =
       {
@@ -4353,12 +4232,12 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "	 default	2"
+        Hint = "default 2"
       }
       noise: =
       {
         Txt = "&"
-        Hint = "	 looping sound to play when the train is in motion"
+        Hint = "looping sound to play when the train is in motion"
       }
       reactdelay: =
       {
@@ -4388,7 +4267,7 @@ QQRKSRC1
     }
     func_wall:form =
     {
-      help ="This is just a solid wall if not inhibitedTRIGGER_SPAWN	the wall will not be present until triggered it will then blink in to existance; it will kill anything that was in it's wayTOGGLE	only valid for TRIGGER_SPAWN walls this allows the wall to be turned on and offSTART_ON only valid for TRIGGER_SPAWN walls the wall will initially be present"
+      help ="This is just a solid wall if not inhibited"$0D"TRIGGER_SPAWN	the wall will not be present until triggered it will then blink in to existence; it will kill anything that was in its way"$0D"TOGGLE	only valid for TRIGGER_SPAWN walls this allows the wall to be turned on and off"$0D"START_ON only valid for TRIGGER_SPAWN walls the wall will initially be present"
       spawnflags: =
       {
         Typ = "X1"
@@ -4454,7 +4333,7 @@ QQRKSRC1
     }
     func_water:form =
     {
-      help ="func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk.START_OPEN causes the water to move to its destination when spawned and operate in reverse."
+      help ="func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk."$0D"START_OPEN causes the water to move to its destination when spawned and operate in reverse."
       spawnflags: =
       {
         Typ = "X1"
@@ -4475,7 +4354,7 @@ QQRKSRC1
       angle: =
       {
         Txt = "&"
-        Hint = "	determines the opening direction (up or down only)"
+        Hint = "determines the opening direction (up or down only)"
       }
       dmg: =
       {
@@ -4485,12 +4364,12 @@ QQRKSRC1
       lip: =
       {
         Txt = "&"
-        Hint = "	lip remaining at end of move (0 default)"
+        Hint = "lip remaining at end of move (0 default)"
       }
       sounds: =
       {
         Txt = "&"
-        Hint = "	(yes, these need to be changed) 0)	no sound 1)	water 2)	lava"
+        Hint = "(yes, these need to be changed) 0)	no sound 1)	water 2)	lava"
         Typ = "C"
         Items = "1"
         values = "1"
@@ -4498,7 +4377,7 @@ QQRKSRC1
       speed: =
       {
         Txt = "&"
-        Hint = "	movement speed (25 default)"
+        Hint = "movement speed (25 default)"
       }
       targetname: =
       {
@@ -4508,7 +4387,7 @@ QQRKSRC1
       wait: =
       {
         Txt = "&"
-        Hint = "	wait before returning (-1 default, -1 = TOGGLE)"
+        Hint = "wait before returning (-1 default, -1 = TOGGLE)"
       }
     }
     hmg_mod_cooling:form =
@@ -4617,11 +4496,13 @@ QQRKSRC1
     item_adrenaline:form =
     {
       help =""
+      bbox ='-16 -16 -16 16 16 16'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
+      mdl = "models/pu_icon/adrenaline/adrenaline.md2"
     }
     item_armor_helmet:form =
     {
@@ -4632,14 +4513,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/armor_head/armor_head.md2"
-        values = "models/pu_icon/armor_head/armor_head.md2"
-      }
+      mdl = "models/pu_icon/armor_head/armor_head.md2"
     }
     item_armor_helmet_heavy:form =
     {
@@ -4650,14 +4524,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/armor_head/armor_head_hd.md2"
-        values = "models/pu_icon/armor_head/armor_head_hd.md2"
-      }
+      mdl = "models/pu_icon/armor_head/armor_head_hd.md2"
     }
     item_armor_jacket:form =
     {
@@ -4668,14 +4535,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/armor/tris.md2"
-        values = "models/pu_icon/armor/tris.md2"
-      }
+      mdl = "models/pu_icon/armor/tris.md2"
     }
     item_armor_jacket_heavy:form =
     {
@@ -4686,14 +4546,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/armor/armorhdtop.md2"
-        values = "models/pu_icon/armor/armorhdtop.md2"
-      }
+      mdl = "models/pu_icon/armor/armorhdtop.md2"
     }
     item_armor_legs:form =
     {
@@ -4704,14 +4557,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/armor_lo/armor_lo.md2"
-        values = "models/pu_icon/armor_lo/armor_lo.md2"
-      }
+      mdl = "models/pu_icon/armor_lo/armor_lo.md2"
     }
     item_armor_legs_heavy:form =
     {
@@ -4722,27 +4568,13 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/armor_lo/armor_lo_hd.md2"
-        values = "models/pu_icon/armor_lo/armor_lo_hd.md2"
-      }
+      mdl = "models/pu_icon/armor_lo/armor_lo_hd.md2"
     }
     item_battery:form =
     {
       help =""
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/battery/tris.md2"
-        values = "models/pu_icon/battery/tris.md2"
-      }
+      mdl = "models/pu_icon/battery/tris.md2"
       target: =
       {
         Txt = "&"
@@ -4758,14 +4590,7 @@ QQRKSRC1
         Txt = "&"
         Hint = " - set amount of cash in the bag  "
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/money/money_lg.md2"
-        values = "models/pu_icon/money/money_lg.md2"
-      }
+      mdl = "models/pu_icon/money/money_lg.md2"
     }
     item_cashbagsmall:form =
     {
@@ -4781,14 +4606,7 @@ QQRKSRC1
         Txt = "&"
         Hint = " - set amount of cash in the bag  "
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/money/money_sm.md2"
-        values = "models/pu_icon/money/money_sm.md2"
-      }
+      mdl = "models/pu_icon/money/money_sm.md2"
     }
     item_cashroll:form =
     {
@@ -4804,40 +4622,19 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/cash/tris.md2"
-        values = "models/pu_icon/cash/tris.md2"
-      }
+      mdl = "models/pu_icon/cash/tris.md2"
     }
     item_coil:form =
     {
       help =""
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/coil/tris.md2"
-        values = "models/pu_icon/coil/tris.md2"
-      }
+      mdl = "models/pu_icon/coil/tris.md2"
     }
     item_flashlight:form =
     {
       help =""
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/f_light/tris.md2"
-        values = "models/pu_icon/f_light/tris.md2"
-      }
+      mdl = "models/pu_icon/f_light/tris.md2"
     }
     item_health_lg:form =
     {
@@ -4848,14 +4645,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/health/tris.md2"
-        values = "models/pu_icon/health/tris.md2"
-      }
+      mdl = "models/pu_icon/health/tris.md2"
     }
     item_health_sm:form =
     {
@@ -4866,14 +4656,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/health_s/tris.md2"
-        values = "models/pu_icon/health_s/tris.md2"
-      }
+      mdl = "models/pu_icon/health_s/tris.md2"
     }
     item_lizzyhead:form =
     {
@@ -4924,27 +4707,13 @@ QQRKSRC1
     {
       help ="Watch for Lenny"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/watch/tris.md2"
-        values = "models/pu_icon/watch/tris.md2"
-      }
+      mdl = "models/pu_icon/watch/tris.md2"
     }
     item_whiskey:form =
     {
       help ="Whiskey for the bum"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/whiskey/tris.md2"
-        values = "models/pu_icon/whiskey/tris.md2"
-      }
+      mdl = "models/pu_icon/whiskey/tris.md2"
     }
     junior:form =
     {
@@ -5018,74 +4787,40 @@ QQRKSRC1
     {
       help ="Will allow player to unlock doors with a value of key 1"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/key/key_a.md2"
-        values = "models/pu_icon/key/key_a.md2"
-      }
+      mdl = "models/pu_icon/key/key_a.md2"
     }
     key_key2:form =
     {
       help ="Will allow player to unlock doors with a value of key 2"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/key/key_a.md2"
-        values = "models/pu_icon/key/key_a.md2"
-      }
+      mdl = "models/pu_icon/key/key_a.md2"
     }
     key_key3:form =
     {
       help ="Will allow player to unlock doors with a value of key 3"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/key/key_a.md2"
-        values = "models/pu_icon/key/key_a.md2"
-      }
+      mdl = "models/pu_icon/key/key_a.md2"
     }
     key_key4:form =
     {
       help ="Will allow player to unlock doors with a value of key 4"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/key/key_a.md2"
-        values = "models/pu_icon/key/key_a.md2"
-      }
+      mdl = "models/pu_icon/key/key_a.md2"
     }
     key_key5:form =
     {
       help ="Will allow player to unlock doors with a value of key 5"
       bbox ='-16 -16 -16 16 16 16'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models/pu_icon/key/key_a.md2"
-        values = "models/pu_icon/key/key_a.md2"
-      }
+      mdl = "models/pu_icon/key/key_a.md2"
     }
     light:form =
     {
-      help ="Non-displayed light.Default light value is 300."$0D
-            "Default style is 0.If targeted, will toggle between"$0D
-            "on and off. Default _cone value is 10 (used to set size of light for spotlights)"$0D
-            "movedir will be the color of the flare health is size for lightflare dmg will"$0D
-            "specify the flare type"$0D
+      help ="Non-displayed light."$0D"Default light value is 300."$0D
+            "Default style is 0."$0D"If targeted, will toggle between on and off."$0D
+            "Default _cone value is 10 (used to set size of light for spotlights)"$0D
+            "movedir will be the color of the flare"$0D
+            "health is size for lightflare"$0D
+            "dmg will specify the flare type"$0D
             "FLARE_WHITE    0"$0D
             "FLARE_SUN      1"$0D
             "FLARE_AMBER    2"$0D
@@ -6913,14 +6648,7 @@ QQRKSRC1
     {
       help ="An an train that animates when trigger  "
       bbox ='-65 -259 -129 65 255 139'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\air_train\beam.mdx"$0D"models\props\air_train\bottom.mdx"$0D"models\props\air_train\frontfront.mdx"$0D"models\props\air_train\frontside.mdx"$0D"models\props\air_train\middle.mdx"$0D"models\props\air_train\middle2.mdx"$0D"models\props\air_train\propeler.mdx"$0D"models\props\air_train\top.mdx"
-        values = "models\props\air_train\beam.mdx"$0D"models\props\air_train\bottom.mdx"$0D"models\props\air_train\frontfront.mdx"$0D"models\props\air_train\frontside.mdx"$0D"models\props\air_train\middle.mdx"$0D"models\props\air_train\middle2.mdx"$0D"models\props\air_train\propeler.mdx"$0D"models\props\air_train\top.mdx"
-      }
+      mdl = "models\props\air_train\beam.mdx;models\props\air_train\bottom.mdx;models\props\air_train\frontfront.mdx;models\props\air_train\frontside.mdx;models\props\air_train\middle.mdx;models\props\air_train\middle2.mdx;models\props\air_train\propeler.mdx;models\props\air_train\top.mdx"
     }
     props2_ashtray:form =
     {
@@ -6931,32 +6659,18 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\ashtray_set\tris.md2"
-        values = "models\props\ashtray_set\tris.md2"
-      }
+      mdl = "models\props\ashtray_set\tris.md2"
     }
     props2_barrels_PV_A:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-90 -32 -48 90 32 48'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pv_barl1\barrel_v2.mdx"$0D"models\props\pv_barl1\barrel_v4.mdx"$0D"models\props\pv_barl1\barrel_v4last.mdx"$0D"models\props\pv_barl1\top_barrel_v2.mdx"$0D"models\props\pv_barl1\top_barrel_v4.mdx"
-        values = "models\props\pv_barl1\barrel_v2.mdx"$0D"models\props\pv_barl1\barrel_v4.mdx"$0D"models\props\pv_barl1\barrel_v4last.mdx"$0D"models\props\pv_barl1\top_barrel_v2.mdx"$0D"models\props\pv_barl1\top_barrel_v4.mdx"
-      }
+      mdl = "models\props\pv_barl1\barrel_v2.mdx;models\props\pv_barl1\barrel_v4.mdx;models\props\pv_barl1\barrel_v4last.mdx;models\props\pv_barl1\top_barrel_v2.mdx;models\props\pv_barl1\top_barrel_v4.mdx"
       targetname: =
       {
         Txt = "&"
@@ -6965,21 +6679,14 @@ QQRKSRC1
     }
     props2_barrels_PV_B:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-17 -77 -49 17 77 49'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pv_barl7\barrel_v2.mdx"$0D"models\props\pv_barl7\barrel_v4.mdx"$0D"models\props\pv_barl7\top_barrel_v2.mdx"$0D"models\props\pv_barl7\top_barrel_v4.mdx"
-        values = "models\props\pv_barl7\barrel_v2.mdx"$0D"models\props\pv_barl7\barrel_v4.mdx"$0D"models\props\pv_barl7\top_barrel_v2.mdx"$0D"models\props\pv_barl7\top_barrel_v4.mdx"
-      }
+      mdl = "models\props\pv_barl7\barrel_v2.mdx;models\props\pv_barl7\barrel_v4.mdx;models\props\pv_barl7\top_barrel_v2.mdx;models\props\pv_barl7\top_barrel_v4.mdx"
       targetname: =
       {
         Txt = "&"
@@ -6988,21 +6695,14 @@ QQRKSRC1
     }
     props2_barrels_PV_C:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-68 -50 -48 68 50 48'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pv_barl3\barrel_v2.mdx"$0D"models\props\pv_barl3\barrel_v4.mdx"$0D"models\props\pv_barl3\top_barrel_v2.mdx"$0D"models\props\pv_barl3\top_barrel_v4.mdx"
-        values = "models\props\pv_barl3\barrel_v2.mdx"$0D"models\props\pv_barl3\barrel_v4.mdx"$0D"models\props\pv_barl3\top_barrel_v2.mdx"$0D"models\props\pv_barl3\top_barrel_v4.mdx"
-      }
+      mdl = "models\props\pv_barl3\barrel_v2.mdx;models\props\pv_barl3\barrel_v4.mdx;models\props\pv_barl3\top_barrel_v2.mdx;models\props\pv_barl3\top_barrel_v4.mdx"
       targetname: =
       {
         Txt = "&"
@@ -7011,21 +6711,14 @@ QQRKSRC1
     }
     props2_barrels_PV_D:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-20 -52 -48 20 52 48'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pv_barl4\barrel_v2.mdx"$0D"models\props\pv_barl4\barrel_v4.mdx"$0D"models\props\pv_barl4\top_barrel_v2.mdx"$0D"models\props\pv_barl4\top_barrel_v4.mdx"
-        values = "models\props\pv_barl4\barrel_v2.mdx"$0D"models\props\pv_barl4\barrel_v4.mdx"$0D"models\props\pv_barl4\top_barrel_v2.mdx"$0D"models\props\pv_barl4\top_barrel_v4.mdx"
-      }
+      mdl = "models\props\pv_barl4\barrel_v2.mdx;models\props\pv_barl4\barrel_v4.mdx;models\props\pv_barl4\top_barrel_v2.mdx;models\props\pv_barl4\top_barrel_v4.mdx"
       targetname: =
       {
         Txt = "&"
@@ -7034,21 +6727,14 @@ QQRKSRC1
     }
     props2_barrels_PV_E:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-24 -64 -48 24 64 48'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pv_barl5\barrel_v2.mdx"$0D"models\props\pv_barl5\barrel_v4.mdx"$0D"models\props\pv_barl5\top_barrel_v2.mdx"$0D"models\props\pv_barl5\top_barrel_v4.mdx"
-        values = "models\props\pv_barl5\barrel_v2.mdx"$0D"models\props\pv_barl5\barrel_v4.mdx"$0D"models\props\pv_barl5\top_barrel_v2.mdx"$0D"models\props\pv_barl5\top_barrel_v4.mdx"
-      }
+      mdl = "models\props\pv_barl5\barrel_v2.mdx;models\props\pv_barl5\barrel_v4.mdx;models\props\pv_barl5\top_barrel_v2.mdx;models\props\pv_barl5\top_barrel_v4.mdx"
       targetname: =
       {
         Txt = "&"
@@ -7057,34 +6743,20 @@ QQRKSRC1
     }
     props2_barrels_PV_F:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-20 -32 -24 20 32 24'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\pv_barl6\barrel_v2.mdx"$0D"models\props\pv_barl6\top_barrel_v2.mdx"
-        values = "models\props\pv_barl6\barrel_v2.mdx"$0D"models\props\pv_barl6\top_barrel_v2.mdx"
-      }
+      mdl = "models\props\pv_barl6\barrel_v2.mdx;models\props\pv_barl6\top_barrel_v2.mdx"
     }
     props2_barrels_fallA:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-69 -33 -49 69 33 49'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\barl1\barrels.mdx"$0D"models\props\barl1\tops.mdx"
-        values = "models\props\barl1\barrels.mdx"$0D"models\props\barl1\tops.mdx"
-      }
+      mdl = "models\props\barl1\barrels.mdx;models\props\barl1\tops.mdx"
       targetname: =
       {
         Txt = "&"
@@ -7093,21 +6765,14 @@ QQRKSRC1
     }
     props2_barrels_fallB:form =
     {
-      help ="Another set of barrels that  you can trigger to fall  "
+      help ="Another set of barrels that you can trigger to fall"
       bbox ='-33 -81 -49 33 81 49'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\barl2\barrels2.mdx"$0D"models\props\barl2\tops2.mdx"
-        values = "models\props\barl2\barrels2.mdx"$0D"models\props\barl2\tops2.mdx"
-      }
+      mdl = "models\props\barl2\barrels2.mdx;models\props\barl2\tops2.mdx"
       targetname: =
       {
         Txt = "&"
@@ -7116,21 +6781,14 @@ QQRKSRC1
     }
     props2_barrels_fall_ST:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-89 -48 -56 89 48 56'
       angle: =
       {
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\barl_steel\barrels.mdx"$0D"models\props\barl_steel\door.mdx"$0D"models\props\barl_steel\tops.mdx"
-        values = "models\props\barl_steel\barrels.mdx"$0D"models\props\barl_steel\door.mdx"$0D"models\props\barl_steel\tops.mdx"
-      }
+      mdl = "models\props\barl_steel\barrels.mdx;models\props\barl_steel\door.mdx;models\props\barl_steel\tops.mdx"
       targetname: =
       {
         Txt = "&"
@@ -7141,14 +6799,7 @@ QQRKSRC1
     {
       help ="A boat  The bounding box can be rotated in angles of 90 deg and block properly"
       bbox ='-80 -160 -38 80 160 38'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\boat\boat.mdx"$0D"models\props\boat\glass.mdx"
-        values = "models\props\boat\boat.mdx"$0D"models\props\boat\glass.mdx"
-      }
+      mdl = "models\props\boat\boat.mdx;models\props\boat\glass.mdx"
     }
     props2_boat_animate:form =
     {
@@ -7159,53 +6810,25 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\boata\boat.mdx"
-        values = "models\props\boata\boat.mdx"
-      }
+      mdl = "models\props\boata\boat.mdx"
     }
     props2_boatphone:form =
     {
       help ="A boat phone"
       bbox ='-5 -9 -12 5 9 12'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\boatphone\tris.md2"
-        values = "models\props\boatphone\tris.md2"
-      }
+      mdl = "models\props\boatphone\tris.md2"
     }
     props2_buoy:form =
     {
       help ="A buoy"
       bbox ='-41 -41 -75 41 41 75'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\buoy\buoy.mdx"
-        values = "models\props\buoy\buoy.mdx"
-      }
+      mdl = "models\props\buoy\buoy.mdx"
     }
     props2_buoy_animate:form =
     {
       help ="An animated buoy"
       bbox ='-41 -41 -75 41 41 75'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\buoya\buoy.mdx"
-        values = "models\props\buoya\buoy.mdx"
-      }
+      mdl = "models\props\buoya\buoy.mdx"
       option: =
       {
         Txt = "&"
@@ -7226,14 +6849,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\buoyside\buoy.mdx"
-        values = "models\props\buoyside\buoy.mdx"
-      }
+      mdl = "models\props\buoyside\buoy.mdx"
       option: =
       {
         Txt = "&"
@@ -7267,14 +6883,7 @@ QQRKSRC1
     {
       help ="A car with top downThe bounding box can be rotated in angles of 90 deg and block properly"
       bbox ='-50 -102 -33 50 102 33'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\car\car_td.md2"
-        values = "models\props\car\car_td.md2"
-      }
+      mdl = "models\props\car\car_td.md2"
     }
     props2_car_topup:form =
     {
@@ -7285,14 +6894,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\car\car_up.md2"
-        values = "models\props\car\car_up.md2"
-      }
+      mdl = "models\props\car\car_up.md2"
     }
     props2_chair_conf:form =
     {
@@ -7303,14 +6905,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\confchair\"
-        values = "models\props\confchair\"
-      }
+      mdl = "models\props\confchair\"
     }
     props2_chair_push:form =
     {
@@ -7326,14 +6921,7 @@ QQRKSRC1
         Txt = "&"
         Hint = " - default 25"
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\chair\chair.mdx"
-        values = "models\props\chair\chair.mdx"
-      }
+      mdl = "models\props\chair\chair.mdx"
       option: =
       {
         Txt = "&"
@@ -7360,44 +6948,23 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\clothes\"
-        values = "models\props\clothes\"
-      }
+      mdl = "models\props\clothes\"
     }
     props2_clubchair:form =
     {
       help ="A pushable chair"
       bbox ='-32 -32 -24 32 32 24'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\clubchair\"
-        values = "models\props\clubchair\"
-      }
+      mdl = "models\props\clubchair\"
     }
     props2_clubcouch:form =
     {
       help ="A couchThe bounding box can be rotated in angles of 90 deg and block properly"
       bbox ='-32 -64 -24 32 64 24'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\clubcouch\"
-        values = "models\props\clubcouch\"
-      }
+      mdl = "models\props\clubcouch\"
     }
     props2_deadgal_headless:form =
     {
-      help ="A female dead body you can shoot that has no headThe bounding box can be rotated in angles of 90 deg and block properly"
+      help ="A female dead body you can shoot that has no head"$0D"The bounding box can be rotated in angles of 90 deg and block properly"
       bbox ='-32 -26 -7 32 26 7'
       angle: =
       {
@@ -7409,14 +6976,7 @@ QQRKSRC1
         Txt = "&"
         Hint = " pre-gib hit points for the dead body (50 default)"
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\dead_fem\body.mdx"$0D"models\props\dead_fem\legs.mdx"
-        values = "models\props\dead_fem\body.mdx"$0D"models\props\dead_fem\legs.mdx"
-      }
+      mdl = "models\props\dead_fem\body.mdx;models\props\dead_fem\legs.mdx"
     }
     props2_deadguy:form =
     {
@@ -7576,14 +7136,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\flag\flag1.md2"
-        values = "models\props\flag\flag1.md2"
-      }
+      mdl = "models\props\flag\flag1.md2"
     }
     props2_gargoyle:form =
     {
@@ -7599,14 +7152,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\gargoyle\"
-        values = "models\props\gargoyle\"
-      }
+      mdl = "models\props\gargoyle\"
     }
     props2_helicopter_animate:form =
     {
@@ -7640,14 +7186,7 @@ QQRKSRC1
         Txt = "&"
         Hint = " -88, -85 25 -40"
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\litecone\litecone.mdx"
-        values = "models\props\litecone\litecone.mdx"
-      }
+      mdl = "models\props\litecone\litecone.mdx"
       option: =
       {
         Txt = "&"
@@ -7668,14 +7207,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\lunch_set\tris.md2"
-        values = "models\props\lunch_set\tris.md2"
-      }
+      mdl = "models\props\lunch_set\tris.md2"
       option: =
       {
         Txt = "&"
@@ -7732,14 +7264,7 @@ QQRKSRC1
     {
       help ="A plant"
       bbox ='-12 -9 -20 12 9 20'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\plants\plant_sm.md2"
-        values = "models\props\plants\plant_sm.md2"
-      }
+      mdl = "models\props\plants\plant_sm.md2"
     }
     props2_plant_XL:form =
     {
@@ -7750,14 +7275,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\plants\plant_xl.md2"
-        values = "models\props\plants\plant_xl.md2"
-      }
+      mdl = "models\props\plants\plant_xl.md2"
       option: =
       {
         Txt = "&"
@@ -7768,14 +7286,7 @@ QQRKSRC1
     {
       help ="A bush like plant"
       bbox ='-9 -11 -32 9 11 32'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\bush\tris.md2"
-        values = "models\props\bush\tris.md2"
-      }
+      mdl = "models\props\bush\tris.md2"
     }
     props2_plant_fern:form =
     {
@@ -7786,14 +7297,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\fern\tris.md2"
-        values = "models\props\fern\tris.md2"
-      }
+      mdl = "models\props\fern\tris.md2"
     }
     props2_shelf_metal_A_fall:form =
     {
@@ -7861,27 +7365,13 @@ QQRKSRC1
     {
       help ="A vase"
       bbox ='-16 -16 -24 16 16 24'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\vase1\"
-        values = "models\props\vase1\"
-      }
+      mdl = "models\props\vase1\"
     }
     props2_vaseB:form =
     {
       help ="A vase"
       bbox ='-16 -16 -24 16 16 24'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\vase2\"
-        values = "models\props\vase2\"
-      }
+      mdl = "models\props\vase2\"
       option: =
       {
         Txt = "&"
@@ -7892,18 +7382,11 @@ QQRKSRC1
     {
       help ="A fish on the wall The bounding box can be rotated in angles of 90 deg and block properly"
       bbox ='-2 -40 -12 2 40 12'
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\fish\tris.md2"
-        values = "models\props\fish\tris.md2"
-      }
+      mdl = "models\props\fish\tris.md2"
     }
     props3_barrels_fall_nikki_A:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-44 -60 -49 44 60 49'
       angle: =
       {
@@ -7926,7 +7409,7 @@ QQRKSRC1
     }
     props3_barrels_fall_nikki_B:form =
     {
-      help ="A set of barrels that you can trigger to fall  "
+      help ="A set of barrels that you can trigger to fall"
       bbox ='-24 -48 -24 24 48 24'
       angle: =
       {
@@ -7961,14 +7444,7 @@ QQRKSRC1
         Txt = "&"
         Hint = ""
       }
-      model: =
-      {
-        Txt = "&"
-        Hint = "The model"
-        Typ = "C"
-        Items = "models\props\cash\cashstack.mdx"
-        values = "models\props\cash\cashstack.mdx"
-      }
+      mdl = "models\props\cash\cashstack.mdx"
     }
     props3_cash_counter_animate:form =
     {
