@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2014/10/24 16:16:11  danielpharos
+Added a verbose log statement.
+
 Revision 1.93  2014/08/09 10:21:58  danielpharos
 Added a missing space.
 
@@ -767,7 +770,7 @@ begin
  end;
 
  { DanielPharos: It's safer to do the update-check BEFORE loading Python,
-   but then then option in the Defaults will have to be removed, since it
+   but then the option in the Defaults will have to be removed, since it
    won't be loaded yet. Change this when the update-screen isn't a nag-screen
    anymore! (Store data in registry?) }
  //Check for updates...
