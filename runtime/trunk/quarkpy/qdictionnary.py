@@ -14,7 +14,7 @@ Dictionary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.6 Beta 6", #This is also used for version number checks between executable and Python scripts
+    0: "QuArK 6.6 Beta 7", #This is also used for version number checks between executable and Python scripts
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -1124,6 +1124,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.171  2015/12/05 14:42:38  danielpharos
+#Forgot to upload these changes 5 weeks ago.
+#
 #Revision 1.170  2015/09/20 13:03:06  danielpharos
 #Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 #
@@ -1610,6 +1613,4 @@ Strings = {
 #
 #Revision 1.13  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
-#
 #

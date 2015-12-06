@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.559  2015/12/05 16:20:42  danielpharos
+//Removed a script-confusing empty line.
+//
 //Revision 1.558  2015/12/05 14:48:08  danielpharos
 //Set the update notification correctly, and improved the wording of the GDI workaround option.
 //
@@ -1799,7 +1802,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.6 Beta 6"
+      Version = "QuArK 6.6 Beta 7"
       InternalVersion = '6.6'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
