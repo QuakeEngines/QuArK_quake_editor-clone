@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2015/09/20 13:03:13  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.54  2015/09/06 12:31:41  danielpharos
 Added a CPU vendor.
 
@@ -412,6 +415,7 @@ type
     FDAC: TStrings;
     FAcc: TStrings;
     FModes: TStrings;
+    AMDDriverDescBug: boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1776,9 +1780,24 @@ begin
     FChipset.Clear;
     FMemory.Clear;
     bdata:=stralloc(255);
-    rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
+    try
+      rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
+    except
+      on ERegistryException do
+      begin
+        AMDDriverDescBug:=True;
+        rk:='';
+      end;
+    else
+      //Not handled here
+      raise;
+    end;
     Found:=False;
-   
+
+    //Something went wrong!
+    if rk='' then
+      Exit;
+
     with TRegistry.Create(KEY_READ) do
     begin
       RootKey:=HKEY_LOCAL_MACHINE;
@@ -1873,12 +1892,9 @@ begin
       begin
         if ValueExists(rvVideoBIOSVersion) then
         begin
-          try
-            FillChar(bdata^,255,0);
-            readbinarydata(rvVideoBIOSVersion,bdata^,255);
-            FBIOSVersion:=strpas(pchar(bdata));
-          except
-          end;
+          FillChar(bdata^,255,0);
+          readbinarydata(rvVideoBIOSVersion,bdata^,255);
+          FBIOSVersion:=strpas(pchar(bdata));
         end;
         if ValueExists(rvVideoBIOSDate) then
           FBIOSDate:=ReadString(rvVideoBIOSDate);
@@ -1888,7 +1904,18 @@ begin
     end;
    
     FAcc.Clear;
-    GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
+    try
+      GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
+    except
+      on ERegistryException do
+      begin
+        AMDDriverDescBug:=True;
+        FAcc.Clear;
+      end;
+    else
+      //Not handled here
+      raise;
+    end;
     FModes.Clear;
     i:=0;
     while EnumDisplaySettings(nil,i,Devmode) do
@@ -1908,6 +1935,7 @@ end;
 constructor TDisplay.Create;
 begin
   inherited;
+  AMDDriverDescBug:=False;
   FAdapter:=TStringList.Create;
   FDevices:=TStringList.Create;
   FModes:=TStringList.Create;
@@ -1932,7 +1960,19 @@ end;
 procedure TDisplay.Report(var sl: TStringList);
 var
   i :integer;
+  S: String;
 begin
+  if AMDDriverDescBug then
+  begin
+    S:='Registry corruption detected! The most probable cause is a known bad AMD driver. Please contact your video card manufacturer for a corrected driver.';
+    S:=S+#13#10#13#10'Technical details:'#13#10;
+    S:=S+'This bad AMD Graphics driver gives the "DriverDesc" key the wrong data-type (REG_BINARY instead of REG_SZ).'#13#10;
+    S:=S+'This can be manually corrected, but this is not recommended.';
+    S:=S+'QuArK will continue to run, but some graphical options may be disabled.'#13#10;
+    S:=S+'For more information, see: http://quark.sourceforge.net/forums/index.php?topic=1064';
+    MessageBox(0, PChar(S), 'QuArK', MB_TASKMODAL or MB_ICONWARNING or MB_OK);
+  end;
+
   with sl do
   begin
     for i:=0 to Devices.count-1 do

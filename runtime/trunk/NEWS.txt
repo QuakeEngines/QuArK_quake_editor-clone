@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added detection of corrupt AMD driver registry key.
+
 * [DanielPharos]: Added the GDI workaround to OpenGL. This fixes the drawing of GDI on OpenGL views
           - on more modern Windows machines.
 
