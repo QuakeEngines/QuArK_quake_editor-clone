@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2015/05/23 16:00:11  danielpharos
+Moved two strings to dictionary, and fixed a typo in one of them.
+
 Revision 1.21  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -415,8 +418,8 @@ begin
   Spr:= GetSprite;
   if (Spr = nil) then
     raise EError(5502);
-  for i:=0 to  spr.SubElements.Count-1 do begin
-    SizeTemp:=QPcx(spr.SubElements.Items[i]).GetSize;
+  for i:=0 to spr.SubElements.Count-1 do begin
+    SizeTemp:=QPcx(spr.SubElements.Items1[i]).GetSize;
     WTemp:=Max(SizeTemp.X,WTemp);
     HTemp:=Max(SizeTemp.X,HTemp);
   end;
