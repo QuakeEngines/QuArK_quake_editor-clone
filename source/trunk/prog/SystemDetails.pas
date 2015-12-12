@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2015/12/06 20:19:57  danielpharos
+Added detection of corrupt AMD driver registry key.
+
 Revision 1.55  2015/09/20 13:03:13  danielpharos
 Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 
@@ -1435,6 +1438,8 @@ var
   bdata: pchar;
   KeyState: TKeyBoardState;
 const
+  bdatasize = 255;
+
   cBIOSName = $FE061;
   cBIOSDate = $FFFF5;
   cBIOSExtInfo = $FEC71;
@@ -1460,13 +1465,14 @@ begin
           FBiosName:=ReadString(rvBIOSID);
         if ValueExists(rvBIOSVersion) then
         begin
-          bdata:=stralloc(255);
+          bdata:=stralloc(bdatasize + 1); //Note: One larger for null-terminator
           try
-            FillChar(bdata^,255,0);
-            readbinarydata(rvBIOSVersion,bdata^,255);
+            FillChar(bdata^,bdatasize+1,0);
+            readbinarydata(rvBIOSVersion,bdata^,bdatasize);
             FBIOSCopyright:=strpas(pchar(bdata));
           except
           end;
+          strdispose(bdata);
         end;
         if ValueExists(rvBIOSDate) then
           FBIOSDate:=ReadString(rvBIOSDate);
@@ -1588,11 +1594,14 @@ var
   idata :integer;
   sl :tstringlist;
   i :integer;
+  j :DWORD;
   DevMode :TDevMode;
   Found: Boolean;
   l_hdc: HDC;
   ClassKey: string;
 const
+  bdatasize = 255;
+
   rkVideoHardware = {HKEY_LOCAL_MACHINE\}'HARDWARE\DEVICEMAP\VIDEO';
   rvVideoKey1 = '\Device\Video0';
   rvVideoKey2 = '\\Device\\Video0';
@@ -1619,7 +1628,10 @@ const
 
   DescValue = 'DriverDesc';
 begin
+  Log(LOG_VERBOSE, 'Starting gathering of DISPLAY system information...');
   l_hdc := GetDC(0);
+  if l_hdc = 0 then
+    raise exception.Create('Unable to get DC of entire screen');
   try
 
     FHorzRes:=GetDeviceCaps(l_hdc,windows.HORZRES);
@@ -1779,7 +1791,7 @@ begin
     FDAC.Clear;
     FChipset.Clear;
     FMemory.Clear;
-    bdata:=stralloc(255);
+    Log(LOG_VERBOSE, 'Gathering of display driver information...');
     try
       rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
     except
@@ -1798,6 +1810,8 @@ begin
     if rk='' then
       Exit;
 
+    Log(LOG_VERBOSE, 'Enumerating of display driver information...');
+    bdata:=stralloc(bdatasize+1); //Note: One larger for null-terminator
     with TRegistry.Create(KEY_READ) do
     begin
       RootKey:=HKEY_LOCAL_MACHINE;
@@ -1857,28 +1871,28 @@ begin
             begin
               if ValueExists(rvHardware+'.'+rvHWVideo) then
                 try
-                  FillChar(bdata^,255,0);
-                  readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,255);
+                  FillChar(bdata^,bdatasize+1,0);
+                  readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,bdatasize);
                   FAdapter.Add(getstrfrombuf(pchar(bdata)));
                 except
                 end;
               if ValueExists(rvHardware+'.'+rvHWDAC) then
                 try
-                  FillChar(bdata^,255,0);
-                  readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,255);
+                  FillChar(bdata^,bdatasize+1,0);
+                  readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,bdatasize);
                   FDAC.Add(getstrfrombuf(pchar(bdata)));
                 except
                 end;
               if ValueExists(rvHardware+'.'+rvHWChip) then
                 try
-                  FillChar(bdata^,255,0);
-                  readbinarydata(rvHardware+'.'+rvHWChip,bdata^,255);
+                  FillChar(bdata^,bdatasize+1,0);
+                  readbinarydata(rvHardware+'.'+rvHWChip,bdata^,bdatasize);
                   FChipset.Add(getstrfrombuf(pchar(bdata)));
                 except
                 end;
               if ValueExists(rvHardware+'.'+rvHWMem) then
                 try
-                  FillChar(bdata^,255,0);
+                  FillChar(bdata^,bdatasize+1,0);
                   readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
                   FMemory.Add(inttostr(idata));
                 except
@@ -1888,12 +1902,13 @@ begin
           end;
         end;
       end;
+      Log(LOG_VERBOSE, 'Gathering of video bios information...');
       if OpenKey(rkBIOS,false) then
       begin
         if ValueExists(rvVideoBIOSVersion) then
         begin
-          FillChar(bdata^,255,0);
-          readbinarydata(rvVideoBIOSVersion,bdata^,255);
+          FillChar(bdata^,bdatasize+1,0);
+          readbinarydata(rvVideoBIOSVersion,bdata^,bdatasize);
           FBIOSVersion:=strpas(pchar(bdata));
         end;
         if ValueExists(rvVideoBIOSDate) then
@@ -1902,7 +1917,9 @@ begin
       end;
       free;
     end;
+    strdispose(bdata);
    
+    Log(LOG_VERBOSE, 'Gathering of 3D accelerator information...');
     FAcc.Clear;
     try
       GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
@@ -1916,17 +1933,18 @@ begin
       //Not handled here
       raise;
     end;
+   
+    Log(LOG_VERBOSE, 'Gathering of display modes information...');
     FModes.Clear;
-    i:=0;
-    while EnumDisplaySettings(nil,i,Devmode) do
+    j:=0;
+    while EnumDisplaySettings(nil,j,Devmode) do
     begin
       with Devmode do
       begin
         FModes.Add(Format('%d x %d - %d bit',[dmPelsWidth,dmPelsHeight,dmBitsPerPel]));
-        Inc(i);
+        Inc(j);
       end;
     end;
-    strdispose(bdata);
   finally
     sl.free;
   end;
@@ -2007,6 +2025,8 @@ var
   sl :tstringlist;
   i :integer;
 const
+  bdatasize = 255;
+
   rkDirectX = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectX';
   rvDXVersion = 'Version';
   rvDXInstalledVersion = 'InstalledVersion';
@@ -2015,24 +2035,25 @@ const
   rkDirectMusic = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectMusic\SoftwareSynths';
   rvDesc = 'Description';
 begin
+  Log(LOG_VERBOSE, 'Starting gathering of DIRECTX system information...');
   with TRegistry.Create(KEY_READ) do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
     if OpenKey(rkDirectX,false) then
     begin
-      bdata:=stralloc(255);
+      bdata:=stralloc(bdatasize+1); //Note: One larger for null-terminator
       FVersion:=ReadString(rvDXVersion);
       if FVersion='' then
       begin
         if ValueExists(rvDXInstalledVersion) then
           try
-            FillChar(bdata^,255,0);
+            FillChar(bdata^,bdatasize+1,0);
             readbinarydata(rvDXInstalledVersion,bdata^,4);
             FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
           except
             {$IFDEF Delphi4orNewerCompiler}
             try
-              FillChar(bdata^,255,0);
+              FillChar(bdata^,bdatasize+1,0);
               readbinarydata(rvDXInstalledVersion,bdata^,8);
               FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
             except
@@ -2325,7 +2346,7 @@ var
   s: TStringlist;
   i: integer;
 begin
-  Log(LOG_VERBOSE, 'Now logging system details...');
+  Log(LOG_INFO, 'Now logging system details...');
   s:=TStringList.Create;
   try
     s.add('CPU:');
