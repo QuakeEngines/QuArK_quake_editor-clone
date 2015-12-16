@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2015/12/12 14:02:19  danielpharos
+Added a bunch of logging, fixed a null-terminating fault, and fixed a variable type.
+
 Revision 1.56  2015/12/06 20:19:57  danielpharos
 Added detection of corrupt AMD driver registry key.
 
@@ -194,13 +197,9 @@ interface
 {$I DelphiVer.inc}
 
 uses
-  SysUtils, StrUtils, Windows, Classes, Registry, ExtraFunctionality;
-
-var
-  g_CxScreen, g_CyScreen: Integer;
+  SysUtils, StrUtils, Windows, Classes, ExtraFunctionality;
 
 function CheckWindowsNT: Boolean;
-function CheckWindowsVista: Boolean;
 function ProcessExists(const exeFileName: string): Boolean;
 function WindowExists(const WindowName: String): Boolean;
 function RetrieveModuleFilename(ModuleHandle: HMODULE): String;
@@ -213,7 +212,6 @@ type
      Int64 = TLargeInteger;
      LongWord = DWORD;
   {$ENDIF}
-  TStrBuf = array[0..11] of char;
 
   TCPU = class(TPersistent)
   private
@@ -467,11 +465,13 @@ type
 
 implementation
 
-uses ShlObj, TlHelp32, Psapi, Logging, QkExceptions;
+uses ShlObj, TlHelp32, Psapi, Registry, Logging, QkExceptions;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
-  TPlatform = (osWin95, osWin98, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin2008, osWin2008R2, osWin7);
+  TPlatform = (osWin95, osWin98, osWin98SE, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin7, osWin8, osWin81, osWin2008, osWin2008R2, osWin2012, osWin2012R2); //Note: Not all are currently detected!
+
+  TStrBuf = array[0..11] of char;
 
 var
   VLevel, VFamily, VModel, VStepping, VTyp: Byte;
@@ -572,7 +572,7 @@ function TCPU.GetCPUIDLevel: integer;
 begin
   VLevel:=0;
   asm
-	MOV eax, 0	    //  Get Level
+	MOV eax, 0      //  Get Level
 	DB 0Fh,0a2h     //  CPUID opcode
 	MOV VLevel,al
 	//RET
@@ -680,6 +680,7 @@ var
   end;
 
 begin
+  Log(LOG_VERBOSE, 'Getting CPU vendor information...');
   i:=0;
   result:='';
   s:=_GetCPUVendor;
@@ -712,11 +713,11 @@ begin
                5: result:='i80486SX2';
                7: result:='i80486DX2WB';
                8: result:='i80486DX4';
-	             9: result:='i80486DX4WB';
+               9: result:='i80486DX4WB';
              end;
           1: case Model of
                1: result:='U5D(486DX)';
-	             2: result:='U5S(486SX)';
+               2: result:='U5S(486SX)';
              end;
           2: case Model of
                3: result:='80486DX2WT';
@@ -740,18 +741,18 @@ begin
                4: result:='P55C';
                5: result:='DX4 OverDrive?';
                6: result:='P5 OverDrive?';
-	             7: result:='P54C';
+               7: result:='P54C';
                8: result:='P55C(0,25µm)MMX';
              end;
           2: case Model of
-	             0: result:='SSA5';
+               0: result:='SSA5';
                1: result:='5k86';
                2: result:='5k86';
                3: result:='5k86';
                6: result:='K6';
                7: result:='K6';
                8: result:='K6-3D';
-	             9: result:='K6PLUS-3D';
+               9: result:='K6PLUS-3D';
              end;
           3: case Model of
                0: result:='Pentium Cx6X86 GXm';
@@ -763,7 +764,7 @@ begin
                result:='Nx586';
              if FVendorNo=5 then
                result:='IDT C6 (WinChip)';
-	        end;
+          end;
      6: case FVendorNo of
           0: case Model of
                0: result:='PentiumPro A-step';
@@ -781,11 +782,11 @@ begin
                14: result:='Intel Core';
                15: result:='Intel Core 2';
              end;
-	        2: case Model of
+          2: case Model of
                6: result:='K6';
                7: result:='K6';
                8: result:='K6-3D';
-       	       9: result:='K6PLUS-3D';
+               9: result:='K6PLUS-3D';
              end;
           3: if Model=0 then
                result:='Cx6x86 MX/MII';
@@ -889,6 +890,7 @@ procedure TCPU.GetInfo;
 var
   SI :TSystemInfo;
 begin
+  Log(LOG_VERBOSE, 'Starting gathering CPU information...');
   ZeroMemory(@SI,SizeOf(SI));
   GetSystemInfo(SI);
   Count:=SI.dwNumberOfProcessors;
@@ -944,6 +946,7 @@ var
   b :pchar;
   s :string;
 begin
+  Log(LOG_VERBOSE, 'Gathering environment information...');
   FEnv.Clear;
   c:=1024;
   b:=GetEnvironmentStrings;
@@ -972,12 +975,15 @@ var
 begin
   Result:='';
   Path:=StrAlloc(MAX_PATH);
-  SHGetSpecialFolderLocation(Handle, nFolder, PIDL);
+  try
+    SHGetSpecialFolderLocation(Handle, nFolder, PIDL);
 
-  if SHGetPathFromIDList(PIDL, Path) then
-    Result:=StrPas(Path);
+    if SHGetPathFromIDList(PIDL, Path) then
+      Result:=StrPas(Path);
 
-  StrDispose(Path);
+  finally
+    StrDispose(Path);
+  end;
 end;
 
 procedure TOperatingSystem.GetInfo;
@@ -1005,6 +1011,7 @@ const
   cUserProfileRec = {HKEY_CURRENT_USER\}'SOFTWARE\Microsoft\Windows\CurrentVersion\ProfileReconciliation';
   cProfileDir = 'ProfileDirectory';
 begin
+  Log(LOG_VERBOSE, 'Starting gathering OS information...');
   FDirs.Clear;
   Extended:=False;
   ZeroMemory(@OS,SizeOf(OS));
@@ -1106,6 +1113,12 @@ begin
       end;
     VER_PLATFORM_WIN32_NT:
       case MajorVersion of
+      (*3:
+       begin
+        Platform:='Windows NT 3.51';
+        WindowsPlatform:=osWinNT351;
+        WindowsPlatformCompatibility:=osWinNTComp;
+       end;*)
       4:
        begin
         case MinorVersion of
@@ -1161,10 +1174,20 @@ begin
           Platform:='Windows 7 or Windows Server 2008 R2';
           WindowsPlatform:=osWin7;
          end;
+        2:
+         begin
+          Platform:='Windows 8 or Windows Server 2012';
+          WindowsPlatform:=osWin8;
+         end;
+        3:
+         begin
+          Platform:='Windows 8.1 or Windows Server 2012 R2';
+          WindowsPlatform:=osWin81;
+         end;
         else
          begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWin7;
+          WindowsPlatform:=osWinVista;
          end;
         end;
         WindowsPlatformCompatibility:=osWinNTComp;
@@ -1174,7 +1197,7 @@ begin
         if MajorVersion>6 then
         begin
           Platform:='Unknown (Probably OK)';
-          WindowsPlatform:=osWin7;
+          WindowsPlatform:=osWin81;
           WindowsPlatformCompatibility:=osWinNTComp;
         end
         else
@@ -1343,6 +1366,7 @@ var
   SI :TSystemInfo;
   MS :TMemoryStatus;
 begin
+  Log(LOG_VERBOSE, 'Starting gathering memory information...');
   ZeroMemory(@MS,SizeOf(MS));
   MS.dwLength:=SizeOf(MS);
   GlobalMemoryStatus(MS);
@@ -1403,6 +1427,7 @@ const
   rkMachine = {HKEY_LOCAL_MACHINE\}'SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName';
   rvMachine = 'ComputerName';
 begin
+  Log(LOG_VERBOSE, 'Gathering machine information...');
   n:=254;
   SetLength(buf,n);
   GetComputerName(PChar(buf),n);
@@ -1426,6 +1451,7 @@ var
   n: dword;
   buf: string;
 begin
+  Log(LOG_VERBOSE, 'Gathering user information...');
   n:=254;
   SetLength(buf,n);
   GetUserName(PChar(buf),n);
@@ -1451,6 +1477,7 @@ const
   rvBiosVersion = 'SystemBiosVersion';
 
 begin
+  Log(LOG_VERBOSE, 'Starting gathering workstation information...');
   FSystemUpTime:=GetSystemUpTime;
   FName:=GetMachine;
   FUser:=GetUser;
@@ -1937,14 +1964,21 @@ begin
     Log(LOG_VERBOSE, 'Gathering of display modes information...');
     FModes.Clear;
     j:=0;
-    while EnumDisplaySettings(nil,j,Devmode) do
+    FillChar(DevMode, sizeof(DevMode), 0);
+    DevMode.dmSize:=sizeof(DevMode);
+    Log(LOG_VERBOSE, 'Special Debug Log Point 1');
+    while EnumDisplaySettings(nil,j,DevMode) do
     begin
+      Log(LOG_VERBOSE, 'Special Debug Log Point 2');
       with Devmode do
       begin
+        Log(LOG_VERBOSE, 'Special Debug Log Point 3');
         FModes.Add(Format('%d x %d - %d bit',[dmPelsWidth,dmPelsHeight,dmBitsPerPel]));
         Inc(j);
+        Log(LOG_VERBOSE, 'Special Debug Log Point 4');
       end;
     end;
+    Log(LOG_VERBOSE, 'Special Debug Log Point 5');
   finally
     sl.free;
   end;
@@ -2004,6 +2038,10 @@ begin
       add('    DAC: '       +DAC[i]);
       add('    Memory: '    +Memory[i] + ' Bytes');
     end;
+    (*for i:=0 to Modes.Count-1 do
+    begin
+      add(format('[Mode %d] %s', [i+1,Modes[i]]));
+    end;*)
   end;
 end;
 
@@ -2035,7 +2073,7 @@ const
   rkDirectMusic = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectMusic\SoftwareSynths';
   rvDesc = 'Description';
 begin
-  Log(LOG_VERBOSE, 'Starting gathering of DIRECTX system information...');
+  Log(LOG_VERBOSE, 'Starting gathering of DirectX system information...');
   with TRegistry.Create(KEY_READ) do
   begin
     rootkey:=HKEY_LOCAL_MACHINE;
@@ -2066,19 +2104,22 @@ begin
     end;
     FDirect3D.Clear;
     sl:=tstringlist.create;
-    if OpenKey(rkDirect3D,false) then
-    begin
-      getkeynames(sl);
-      CloseKey;
-      for i:=0 to sl.count-1 do
-        if OpenKey(rkDirect3D+'\'+sl[i],false) then
-        begin
-          if ValueExists(rvDesc) then
-            FDirect3D.Add(ReadString(rvDesc));
-          CloseKey;
-        end;
+    try
+      if OpenKey(rkDirect3D,false) then
+      begin
+        getkeynames(sl);
+        CloseKey;
+        for i:=0 to sl.count-1 do
+          if OpenKey(rkDirect3D+'\'+sl[i],false) then
+          begin
+            if ValueExists(rvDesc) then
+              FDirect3D.Add(ReadString(rvDesc));
+            CloseKey;
+          end;
+      end;
+    finally
+      sl.free;
     end;
-    sl.free;
     free;
   end;
 end;
@@ -2188,6 +2229,7 @@ var
   v: string;
   installed: boolean;
 begin
+  Log(LOG_VERBOSE, 'Starting gathering Python information...');
   R:=TRegistry.Create(KEY_READ);
   try
     R.RootKey:=HKEY_LOCAL_MACHINE;
@@ -2317,28 +2359,21 @@ end;
 
 function RetrieveModuleFilename(ModuleHandle: HMODULE) : String;
 var
-  Buffer: PChar;
-  ReturnSize: Cardinal;
+  Path: LPSTR;
 begin
-  GetMem(Buffer, 255);
+  Path:=StrAlloc(MAX_PATH);
   try
-    ReturnSize := GetModuleFileName(ModuleHandle, Buffer, 255);
-    if ReturnSize = 0 then
+    if GetModuleFileName(ModuleHandle, Path, MAX_PATH) = 0 then
       raise exception.create('Unable to retrieve filename of a module!');
-    Result := Copy(Buffer, 0, ReturnSize);
+    Result := StrPas(Path);
   finally
-    FreeMem(Buffer);
+    StrDispose(Path);
   end;
 end;
 
 function CheckWindowsNT: Boolean;
 begin
   Result:=(WindowsPlatformCompatibility=osWinNTComp);
-end;
-
-function CheckWindowsVista: Boolean;
-begin
-  Result:=((WindowsPlatform = osWinVista) or (WindowsPlatform = osWin2008) or (WindowsPlatform = osWin2008R2) or (WindowsPlatform = osWin7));
 end;
 
 Procedure LogSystemDetails;
@@ -2397,4 +2432,3 @@ begin
 end;
 
 end.
-
