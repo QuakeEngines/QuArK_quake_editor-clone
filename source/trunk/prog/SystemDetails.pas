@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2015/12/16 19:43:10  danielpharos
+Fixed a bug with an improperly initialized struct, and performed some old-code clean-up.
+
 Revision 1.57  2015/12/12 14:02:19  danielpharos
 Added a bunch of logging, fixed a null-terminating fault, and fixed a variable type.
 
@@ -1966,19 +1969,14 @@ begin
     j:=0;
     FillChar(DevMode, sizeof(DevMode), 0);
     DevMode.dmSize:=sizeof(DevMode);
-    Log(LOG_VERBOSE, 'Special Debug Log Point 1');
     while EnumDisplaySettings(nil,j,DevMode) do
     begin
-      Log(LOG_VERBOSE, 'Special Debug Log Point 2');
       with Devmode do
       begin
-        Log(LOG_VERBOSE, 'Special Debug Log Point 3');
         FModes.Add(Format('%d x %d - %d bit',[dmPelsWidth,dmPelsHeight,dmBitsPerPel]));
         Inc(j);
-        Log(LOG_VERBOSE, 'Special Debug Log Point 4');
       end;
     end;
-    Log(LOG_VERBOSE, 'Special Debug Log Point 5');
   finally
     sl.free;
   end;
