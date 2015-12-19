@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Workaround for another unexpected Windows Registry key or value problem in the
+          - video hardware enumeration.
+
 * [DanielPharos]: Fixed a long-standing bug that could cause a runtime error on startup when
           - enumerating the video hardware and display settings.
 

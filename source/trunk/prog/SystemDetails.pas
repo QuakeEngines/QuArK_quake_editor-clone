@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2015/12/18 23:33:06  danielpharos
+Fixed a long-standing bug that could cause a runtime error on startup when enumerating the video hardware and display settings.
+
 Revision 1.58  2015/12/16 19:43:10  danielpharos
 Fixed a bug with an improperly initialized struct, and performed some old-code clean-up.
 
@@ -1900,33 +1903,56 @@ begin
             if OpenKey(rk,false) then
             begin
               if ValueExists(rvHardware+'.'+rvHWVideo) then
+              begin
+                FillChar(bdata^,bdatasize+1,0);
                 try
-                  FillChar(bdata^,bdatasize+1,0);
                   readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,bdatasize);
-                  FAdapter.Add(getstrfrombuf(pchar(bdata)));
                 except
+                  Log(LOG_WARNING, 'Could not retrieve adapter name!');
+                  bdata^:=#0;
                 end;
+                FAdapter.Add(getstrfrombuf(pchar(bdata)));
+              end
+              else
+                FAdapter.Add('Unknown');
               if ValueExists(rvHardware+'.'+rvHWDAC) then
+              begin
+                FillChar(bdata^,bdatasize+1,0);
                 try
-                  FillChar(bdata^,bdatasize+1,0);
                   readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,bdatasize);
-                  FDAC.Add(getstrfrombuf(pchar(bdata)));
                 except
+                  Log(LOG_WARNING, 'Could not retrieve DAC name!');
+                  bdata^:=#0;
                 end;
+                FDAC.Add(getstrfrombuf(pchar(bdata)));
+              end
+              else
+                FDAC.Add('Unknown');
               if ValueExists(rvHardware+'.'+rvHWChip) then
+              begin
+                FillChar(bdata^,bdatasize+1,0);
                 try
-                  FillChar(bdata^,bdatasize+1,0);
                   readbinarydata(rvHardware+'.'+rvHWChip,bdata^,bdatasize);
-                  FChipset.Add(getstrfrombuf(pchar(bdata)));
                 except
+                  Log(LOG_WARNING, 'Could not retrieve Chipset name!');
+                  bdata^:=#0;
                 end;
+                FChipset.Add(getstrfrombuf(pchar(bdata)));
+              end
+              else
+                FChipset.Add('Unknown');
               if ValueExists(rvHardware+'.'+rvHWMem) then
+              begin
                 try
-                  FillChar(bdata^,bdatasize+1,0);
                   readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
-                  FMemory.Add(inttostr(idata));
                 except
+                  Log(LOG_WARNING, 'Could not retrieve Video Hardware Memory size!');
+                  idata:=0;
                 end;
+                FMemory.Add(inttostr(idata));
+              end
+              else
+                FMemory.Add('Unknown');
               CloseKey;
             end;
           end;
