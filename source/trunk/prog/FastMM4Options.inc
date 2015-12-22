@@ -84,7 +84,7 @@ Set the default options for FastMM here.
 {Enable this option to suppress the generation of debug info for the
  FastMM4.pas unit. This will prevent the integrated debugger from stepping into
  the memory manager code.}
-{.$define NoDebugInfo}
+{$define NoDebugInfo}
 
 {Enable this option to suppress the display of all message dialogs. This is
  useful in service applications that should not be interrupted.}
@@ -135,7 +135,7 @@ Set the default options for FastMM here.
    object. Note that this will disable the checking of blocks modified after
    being freed (the two are not compatible). This option has no effect if
    FullDebugMode is not also enabled.}
-  {.$define CatchUseOfFreedInterfaces}
+  {$define CatchUseOfFreedInterfaces}
 
   {Set this option to log all errors to a text file in the same folder as the
    application. Memory errors (with the FullDebugMode option set) will be
