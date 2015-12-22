@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2015/09/20 13:03:28  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.60  2015/09/06 12:35:31  danielpharos
 Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 
@@ -332,13 +335,6 @@ type
  {------------------------}
 
 type
- PVertex3D = ^TVertex3D;
- TVertex3D = record
-              st: array[0..1] of Single;
-              xyz: vec3_t;
-             end;
-
-type
  TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
 
  TSceneObject = class
@@ -355,6 +351,7 @@ type
    FInitialized: Boolean;
    DWMLoaded: Boolean;
    procedure ClearPList;
+   procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); virtual;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
@@ -544,8 +541,6 @@ end;
 procedure TSceneObject.ClearPList;
 var
  P: PSurfaces;
- Surf: PSurface3D;
- SurfEnd: PChar;
 begin
  while Assigned(FListSurfaces) do
   begin
@@ -553,38 +548,15 @@ begin
    FListSurfaces:=P^.Next;
    if Assigned(P^.Surf) then
     begin
-     if (self is TGLSceneObject) then
-     begin
-       Surf:=P^.Surf;
-       SurfEnd:=PChar(Surf)+P^.SurfSize;
-       while (Surf<SurfEnd) do
-        begin
-         with Surf^ do
-          begin
-           Inc(Surf);
-           if OpenGLLightList<>nil then
-           begin
-             FreeMem(OpenGLLightList);
-             OpenGLLightList:=nil;
-             OpenGLLights:=0;
-           end;
-           if Direct3DLightList<>nil then
-           begin
-             FreeMem(Direct3DLightList);
-             Direct3DLightList:=nil;
-             OpenGLLights:=0;
-           end;
-           if VertexCount>=0 then
-             Inc(PVertex3D(Surf), VertexCount)
-           else
-             Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
-          end;
-        end;
-      end;
+     ClearSurfaces(P^.Surf, P^.SurfSize);
      FreeMem(P^.Surf);
    end;
    Dispose(P);
   end;
+end;
+
+procedure TSceneObject.ClearSurfaces(Surf: PSurface3D; SurfSize: Integer);
+begin
 end;
 
 procedure TSceneObject.ClearFrame;

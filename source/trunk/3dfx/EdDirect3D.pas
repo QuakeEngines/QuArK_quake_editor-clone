@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2015/10/25 15:40:15  danielpharos
+Added the GDI workaround to Direct3D. Still broken due to missing format conversion.
+
 Revision 1.51  2015/09/20 13:03:28  danielpharos
 Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 
@@ -235,6 +238,7 @@ type
     SwapChain: IDirect3DSwapChain9;
     DepthStencilSurface: IDirect3DSurface9;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+    procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); override;
   protected
     ScreenResized: Boolean;
     TextureFiltering: TTextureFiltering;
@@ -801,6 +805,37 @@ begin
   inherited;
 end;
 
+procedure TDirect3DSceneObject.ClearSurfaces(Surf: PSurface3D; SurfSize: Integer);
+var
+  SurfEnd: PChar;
+begin
+  SurfEnd:=PChar(Surf)+SurfSize;
+  while (Surf<SurfEnd) do
+  begin
+    with Surf^ do
+    begin
+      Inc(Surf);
+      if OpenGLLightList<>nil then
+      begin
+        FreeMem(OpenGLLightList);
+        OpenGLLightList:=nil;
+        OpenGLLights:=0;
+      end;
+      if Direct3DLightList<>nil then
+      begin
+        FreeMem(Direct3DLightList);
+        Direct3DLightList:=nil;
+        OpenGLLights:=0;
+      end;
+      if VertexCount>=0 then
+        Inc(EdDirect3D.PVertex3D(Surf), VertexCount)
+      else
+        Inc(PChar(Surf), VertexCount*(-(SizeOf(EdDirect3D.TVertex3D)+SizeOf(vec3_t))));
+    end;
+  end;
+  inherited;
+end;
+
 function TDirect3DSceneObject.StartBuildScene(var VertexSize: Integer) : TBuildMode;
 begin
   VertexSize:=SizeOf(TVertex3D);
@@ -974,11 +1009,11 @@ begin
             PL:=PL^.Next;
           end;
           NumberOfLightsInList:=0;
-          if OpenGLLightList<>nil then
+          if Direct3DLightList<>nil then
           begin
-            FreeMem(OpenGLLightList);
-            OpenGLLightList := nil;
-            OpenGLLights := 0;
+            FreeMem(Direct3DLightList);
+            Direct3DLightList := nil;
+            OpenGLLights := 0; //@Rename!
           end;
           // We make the surface's list of lights as large as possible for now...
           OpenGLLights := MaxLights;

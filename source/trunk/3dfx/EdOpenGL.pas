@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.103  2015/10/25 15:03:19  danielpharos
+Added the GDI workaround to OpenGL. This fixes the drawing of GDI on OpenGL views on more modern Windows machines.
+
 Revision 1.102  2015/09/20 13:03:28  danielpharos
 Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 
@@ -390,6 +393,7 @@ type
    PixelFormat: PPixelFormatDescriptor;
    Extensions: TGLExtensionList;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+   procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); virtual;
  protected
    TextureFiltering: TTextureFiltering;
    ScreenX, ScreenY: Integer;
@@ -1376,6 +1380,37 @@ begin
     Dispose(PL);
   end;
   NumberOfLights:=0;
+  inherited;
+end;
+
+procedure TGLSceneObject.ClearSurfaces(Surf: PSurface3D; SurfSize: Integer);
+var
+  SurfEnd: PChar;
+begin
+  SurfEnd:=PChar(Surf)+SurfSize;
+  while (Surf<SurfEnd) do
+  begin
+    with Surf^ do
+    begin
+      Inc(Surf);
+      if OpenGLLightList<>nil then
+      begin
+        FreeMem(OpenGLLightList);
+        OpenGLLightList:=nil;
+        OpenGLLights:=0;
+      end;
+      if Direct3DLightList<>nil then
+      begin
+        FreeMem(Direct3DLightList);
+        Direct3DLightList:=nil;
+        OpenGLLights:=0;
+      end;
+      if VertexCount>=0 then
+        Inc(EdOpenGL.PVertex3D(Surf), VertexCount)
+      else
+        Inc(PChar(Surf), VertexCount*(-(SizeOf(EdOpenGL.TVertex3D)+SizeOf(vec3_t))));
+    end;
+  end;
   inherited;
 end;
 
