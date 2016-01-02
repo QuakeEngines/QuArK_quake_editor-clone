@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.95  2015/12/05 14:43:29  danielpharos
+Fixed a typo.
+
 Revision 1.94  2014/10/24 16:16:11  danielpharos
 Added a verbose log statement.
 
@@ -359,7 +362,6 @@ type
                     DoSplash: Boolean;
                     DoUpdate: Boolean;
                     OnlineUpdate: Boolean;
-                    FileNR: Cardinal;
                     Files: array of string;
                    end;
 
@@ -593,9 +595,8 @@ begin
    g_CmdOptions.DoUpdate := false
   else
   begin
-   g_CmdOptions.FileNR := g_CmdOptions.FileNR + 1;
-   SetLength(g_CmdOptions.Files, g_CmdOptions.FileNR);
-   g_CmdOptions.Files[g_CmdOptions.FileNR - 1] := ParamStr(I);
+   SetLength(g_CmdOptions.Files, Length(g_CmdOptions.Files) + 1);
+   g_CmdOptions.Files[Length(g_CmdOptions.Files) - 1] := ParamStr(I);
   end;
  end;
 end;
@@ -717,7 +718,6 @@ begin
  g_CmdOptions.DoSplash := true;
  g_CmdOptions.DoUpdate := true;
  g_CmdOptions.OnlineUpdate := true;
- g_CmdOptions.FileNR := 0;
  ProcessCmdLine;
 
  //This is the mutex for single-instance checking
@@ -1028,7 +1028,7 @@ begin
   AbortIdleJob(nControl);
  {Call the soon-to-become-idlejob's event function with count=-1, which is like
   asking "Hey! Do you actually have so much work to do, that you should be
-  added to the IdleJobs chain?". If the answer is >=0 then its put in the chain}
+  added to the IdleJobs chain?". If the answer is >=0 then it's put in the chain}
  I:=nEvent(-1);
  if I>=0 then
   begin
@@ -2182,10 +2182,12 @@ end;
 function TForm1.ExecuteCmdLine(Counter: Integer) : Integer;
 begin
  Inc(Counter);
- if Counter>Integer(g_CmdOptions.FileNR) then //DanielPharos: A little bit overflow dangerous...
+ if Counter>Length(g_CmdOptions.Files) then
   begin
+   //Done loading all (if any) files from the commandline. Now process the last remaining things to-do...
    RefreshAssociations(False);
    RestoreAutoSaved('.qkm');
+   RestoreAutoSaved('.qkl');
    Counter:=-1;
   end
  else
