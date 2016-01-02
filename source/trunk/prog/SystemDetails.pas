@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2015/12/19 08:59:50  danielpharos
+Workaround for another unexpected Windows Registry key or value problem in the video hardware enumeration.
+
 Revision 1.59  2015/12/18 23:33:06  danielpharos
 Fixed a long-standing bug that could cause a runtime error on startup when enumerating the video hardware and display settings.
 
@@ -1993,7 +1996,7 @@ begin
     Log(LOG_VERBOSE, 'Gathering of display modes information...');
     FModes.Clear;
     j:=0;
-    FillChar(DevMode, sizeof(DevMode), 0);
+    ZeroMemory(@DevMode,SizeOf(DevMode));
     DevMode.dmSize:=sizeof(DevMode);
     while EnumDisplaySettings(nil,j,DevMode) do
     begin
