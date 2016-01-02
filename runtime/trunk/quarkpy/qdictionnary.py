@@ -999,6 +999,8 @@ Strings = {
     5741: "Unable to load the %s library!",
     5742: "%s library version mismatch!",
     5743: "API call '%s' not found in the %s library!",
+    5744: "Unable to create Windows event. %s",
+    5745: "SpecName too short: %s",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
     5750: "Material '%s' has no image to display",
@@ -1124,6 +1126,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.172  2015/12/06 11:07:06  danielpharos
+#Switching version number to 6.6 Beta 7.
+#
 #Revision 1.171  2015/12/05 14:42:38  danielpharos
 #Forgot to upload these changes 5 weeks ago.
 #

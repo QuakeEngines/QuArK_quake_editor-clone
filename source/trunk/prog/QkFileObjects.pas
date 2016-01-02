@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2014/08/26 12:29:35  danielpharos
+Fixed compilation errors introduced by prev changes.
+
 Revision 1.74  2014/08/26 10:12:21  danielpharos
 Added fixed a possible buffer overflow in file version check.
 
@@ -445,6 +448,9 @@ type
                     TotalFileLength: LongInt;
                     InfoType: array[0..19] of Byte;
                    end;
+
+var
+ AutoRestoreEvent: THandle;
 
 function ExactFileLink(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 var
@@ -1108,7 +1114,7 @@ begin
            end;
           Lu(1);
           if Length(NameSpec)<2 then
-           Raise EErrorFmt(5193, [Filename, Ligne, Format('SpecName to small: %s', [NameSpec])]);
+           Raise EErrorFmt(5193, [Filename, Ligne, FmtLoadStr1(5745, [NameSpec])]);
           NameSpec:=IntSpecNameOf(NameSpec);
           {if IgnoreLevel=0 then}
            Level.Specifics.Add(NameSpec+'='+Arg);
@@ -1385,7 +1391,7 @@ begin
 
  // SilverPaladin - 12/1/03 - Changed the error messages to a warning so that
  // the save of multiple files is not interupted for one file that is not yet
- // supported. 
+ // supported.
  try
    SaveInFile(RecommendFormat, '');
  except
@@ -2187,7 +2193,7 @@ begin   { resizes the list of recently opened files to the correct number of fil
  end;
 end;
 
-procedure RestoreAutoSaved;
+procedure RestoreAutoSaved(const Ext: String);
 const
  TagAtom = '~QuArK-tag-auto-save-%x';
 var
@@ -2197,6 +2203,8 @@ var
  OldId: Cardinal;
  H: THandle;
 begin
+ if AutoRestoreEvent<>0 then
+  Exit;
  SetLength(S, MAX_PATH);
  S[1]:=#0;
  GetTempPath(MAX_PATH, PChar(S));
@@ -2218,8 +2226,13 @@ begin
       if OldId<>0 then
        begin
         H:=CreateEvent(Nil, False, True, PChar(Format(TagAtom, [OldId])));
-        OldId:=WaitForSingleObject(H, 0);
-        CloseHandle(H);
+        if H=0 then
+         raise EErrorFmt(5744, [GetSystemErrorMessage(GetLastError)]);
+        try
+         OldId:=WaitForSingleObject(H, 0);
+        finally
+         CloseHandle(H);
+        end;
         if OldId=0 then
          begin
           S1:=ConcatPaths([S, Rec.Name]);
@@ -2244,10 +2257,7 @@ begin
  finally
   FindClose(Rec);
  end;
- // No comments as to why close handle is commented out...
- // H:=
- CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
-// CloseHandle(H);
+ AutoRestoreEvent:=CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
 end;
 
 function GetFileRoot(Q: QObject) : QFileObject;
@@ -2955,4 +2965,12 @@ begin
  FFileObject:=New;
 end;
 
+initialization
+finalization
+ //See: https://groups.yahoo.com/neo/groups/quark-python/conversations/topics/4485
+ //DanielPharos: I can't guarantee that doing this doesn't introduce a race-condition.
+ //I mean, it probably doesn't, but I'm currently not 100% sure.
+ //So let's stick with the old (leaking) behavior.
+ (*if AutoRestoreEvent<>0 then
+  CloseHandle(AutoRestoreEvent);*)
 end.
