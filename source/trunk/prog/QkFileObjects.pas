@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2016/01/02 19:29:46  danielpharos
+Properly document a currently leaking Win32 event.
+
 Revision 1.75  2014/08/26 12:29:35  danielpharos
 Fixed compilation errors introduced by prev changes.
 
@@ -392,6 +395,7 @@ type
                        procedure SaveFile(Format: Integer; F: TStream); override;
                      end;}
   EQObjectFileNotFound = class(Exception);
+  EQObjectSavingNotSupported = class(Exception);
 
  {------------------------}
 
@@ -1395,6 +1399,7 @@ begin
  try
    SaveInFile(RecommendFormat, '');
  except
+  on EQObjectSavingNotSupported do
    ShowMessage(FmtLoadStr1(5219, [Filename]));
  end;
 {while EnumObjectWindow(F) do

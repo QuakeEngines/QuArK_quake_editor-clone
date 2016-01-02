@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2015/12/06 11:17:48  danielpharos
+Fixed an unsafe typecast warning.
+
 Revision 1.22  2015/05/23 16:00:11  danielpharos
 Moved two strings to dictionary, and fixed a typo in one of them.
 
@@ -579,7 +582,7 @@ begin
         else if fg=mjHalfLife then
           WriteHLSpr(Info.F)
         else
-          Exception.CreateFmt('Invalid Format (Only Quake 1 & Half-Life) ~ (%s)',[fg]);
+          raise Exception.CreateFmt('Invalid format (Only Quake 1 & Half-Life) ~ (%s)',[fg]);
        end;
     else
       inherited;

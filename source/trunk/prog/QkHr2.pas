@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2011/02/11 19:07:53  cdunde
+Fixed upside down texture display.
+
 Revision 1.20  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -374,7 +377,7 @@ begin
      end;
 
   1: begin  { write the .fm file }
-      Raise Exception.Create('Cannot save Heretic II models yet, sorry');
+      raise EQObjectSavingNotSupported.Create('Saving Heretic II models is currently not supported.');
      end;
  else inherited;
  end;

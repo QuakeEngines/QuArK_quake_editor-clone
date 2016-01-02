@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2010/10/16 22:36:08  danielpharos
+Fixed bug in HLLib error message displaying.
+
 Revision 1.31  2010/10/16 22:11:44  danielpharos
 Fixed suble underflow crash, and remove PackageList: buggy, and unneeded.
 
@@ -343,7 +346,7 @@ begin
         HLLoaded:=true;
       end;
 
-      {tbd: save to gcf}
+      raise EQObjectSavingNotSupported.Create('Saving GCF files is currently not supported.');
      end;
  else inherited;
  end;

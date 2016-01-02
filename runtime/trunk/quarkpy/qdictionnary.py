@@ -1033,6 +1033,12 @@ Strings = {
     5776: "Couldn't find model root in model %s.",
     5777: "Error in texture browser: %s",
     5778: "Error calling %s, defaulting to %s.",
+    5779: "Syntax error in RMF file: %s",
+    5780: "incompatible version",
+    5781: "header mismatch",
+    5782: "got %s, expected %s",
+    5783: "LoadPoints array size too large!",
+    5784: "unknown object type %s",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1126,6 +1132,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.173  2016/01/02 19:29:37  danielpharos
+#Properly document a currently leaking Win32 event.
+#
 #Revision 1.172  2015/12/06 11:07:06  danielpharos
 #Switching version number to 6.6 Beta 7.
 #

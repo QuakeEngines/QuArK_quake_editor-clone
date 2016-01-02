@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2012/03/22 12:56:04  danielpharos
+Clear MapError.
+
 Revision 1.3  2011/08/13 22:13:02  danielpharos
 Added texture name importing (no texture coordinates (yet?))
 
@@ -122,7 +125,7 @@ procedure QRmfMapFile.LoadFile(F: TStream; FSize: Integer);
     FillChar(StringLength, SizeOf(Byte), 0);
     F.ReadBuffer(StringLength, 1); //1 = SizeOf(Byte)
     if StringLength > 128 then
-      Log(LOG_INFO, 'RMF: String longer than 128 characters. This will overflow most other editors!');
+      Log(LOG_INFO, 'RMF: String longer than 128 characters. This will overflow most other editors!'); //@@@
     SetLength(Result, StringLength);
     if StringLength>0 then
     begin
@@ -273,7 +276,7 @@ var
    end;
    F.ReadBuffer(DummyInteger, SizeOf(Integer)); //size
    if DummyInteger>256 then
-     raise exception.create('LoadPoints array size too large!');
+     Raise EErrorFmt(5779, [LoadStr1(5783)]);
    F.ReadBuffer(LoadPoints[0][0], DummyInteger*3*SizeOf(Single));
    if RMFVersion < 2.2 then
      for i := 0 to DummyInteger-1 do
@@ -355,7 +358,7 @@ var
      else if DummyString = 'CMapSolid' then
        LoadMapSolid
      else
-       raise exception.create('Unknown object type');
+       Raise EErrorFmt(5779, [FmtLoadStr1(5784, [DummyString])]);
    end;
  end;
 
@@ -374,7 +377,7 @@ var
    F.ReadBuffer(DummyInteger, SizeOf(Integer)); //Angle
    F.ReadBuffer(DummyInteger, SizeOf(Integer)); //Spawnflags
    if DummyString[1] = #0 then
-     Log(LOG_INFO, 'RMF: Invalid EditGameClass name.');
+     Log(LOG_INFO, 'RMF: Invalid EditGameClass name.'); //@
    F.ReadBuffer(DummyInteger, SizeOf(Integer)); //Size
    for i := 0 to DummyInteger-1 do
    begin
@@ -422,76 +425,73 @@ begin
       Racine:=TTreeMapBrush.Create('', Self);
       Racine.AddRef(+1);
       try
-      ModeJeu:=mjHalfLife;
-      g_MapError.Clear;
+        ModeJeu:=mjHalfLife;
+        g_MapError.Clear;
 
-      Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
-      Racine.SubElements.Add(Entities);
-      MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
-      Racine.SubElements.Add(MapStructure);
+        Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
+        Racine.SubElements.Add(Entities);
+        MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
+        Racine.SubElements.Add(MapStructure);
 
-      //LoadMapWorld:
-      if FSize<SizeOf(RMFVersion) then
-        Raise EError(5519);
-      F.ReadBuffer(RMFVersion, SizeOf(RMFVersion));
-      if (RMFVersion < RMFLastCompatVersion) or (RMFVersion > RMFVersion) then
-        raise exception.create('Cannot load RMF file: Incompatible version.');
-      if RMFVersion >= 0.8 then
-      begin
-        F.ReadBuffer(RMFHeader, SizeOf(RMFHeader));
-        if not CompareMem(@RMFHeader, @RmfID, SizeOf(RmfID)) then
-          raise exception.create('Header mismatch'); //@ Move to dict!
-      end;
-
-      // load groups
-      if RMFVersion >= 1.0 then
-      begin
-        F.ReadBuffer(DummyInteger, SizeOf(Integer));
-        for i := 0 to DummyInteger-1 do
+        //LoadMapWorld:
+        if FSize<SizeOf(RMFVersion) then
+          Raise EError(5519);
+        F.ReadBuffer(RMFVersion, SizeOf(RMFVersion));
+        if (RMFVersion < RMFLastCompatVersion) or (RMFVersion > RMFVersion) then
+          Raise EErrorFmt(5779, [LoadStr1(5780)]);
+        if RMFVersion >= 0.8 then
         begin
-          F.ReadBuffer(VisGroup, SizeOf(VisGroup));
-          //@ Read in "visgroups"
+          F.ReadBuffer(RMFHeader, SizeOf(RMFHeader));
+          if not CompareMem(@RMFHeader, @RmfID, SizeOf(RmfID)) then
+            Raise EErrorFmt(5779, [LoadStr1(5781)]);
         end;
-      end;
 
-      // make sure it's a CMapWorld
-      DummyString:=ReadRMFString(F, FSize);
-      if DummyString<>'CMapWorld' then
-        raise exception.create('Unsupported mapworld type!');    //FIXME: GOT %S EXPECTED %S
-      Racine.Name:=DummyString;
-      Entite:=Racine;
-      EntitePoly:=MapStructure;
+        // load groups
+        if RMFVersion >= 1.0 then
+        begin
+          F.ReadBuffer(DummyInteger, SizeOf(Integer));
+          for i := 0 to DummyInteger-1 do
+          begin
+            F.ReadBuffer(VisGroup, SizeOf(VisGroup));
+            //@ Read in "visgroups"
+          end;
+        end;
 
-      // load children & local data
-      LoadMapClass;
+        // make sure it's a CMapWorld
+        DummyString:=ReadRMFString(F, FSize);
+        if DummyString<>'CMapWorld' then
+          Raise EErrorFmt(5779, [FmtLoadStr1(5782, [DummyString, 'CMapWorld'])]);
+        Racine.Name:=DummyString;
+        Entite:=Racine;
+        EntitePoly:=MapStructure;
 
-      // load ceditgameclass & CMapClass
-      LoadEditGameClass;
+        // load children & local data
+        LoadMapClass;
 
-      if RMFVersion < 1.0 then
-      begin
-        //Not supported at all; skip this data
-        F.ReadBuffer(DummyInteger, SizeOf(Integer));
-        F.Seek(old_group_bytes * DummyInteger, 1);
-      end;
+        // load ceditgameclass & CMapClass
+        LoadEditGameClass;
 
-      // load paths
-      if RMFVersion >= 1.1 then
-      begin
-        F.ReadBuffer(DummyInteger, SizeOf(Integer));
-        for i := 0 to DummyInteger-1 do
-          LoadMapPath;
-      end;
+        if RMFVersion < 1.0 then
+        begin
+          //Not supported at all; skip this data
+          F.ReadBuffer(DummyInteger, SizeOf(Integer));
+          F.Seek(old_group_bytes * DummyInteger, 1);
+        end;
 
-      // read camera
-      if RMFVersion < 1.4 then
-      begin
-        F.ReadBuffer(DummyVector[0], 3*SizeOf(Single)); //unused
-        F.ReadBuffer(DummyVector[0], 3*SizeOf(Single)); //unused
-      end;
+        // load paths
+        if RMFVersion >= 1.1 then
+        begin
+          F.ReadBuffer(DummyInteger, SizeOf(Integer));
+          for i := 0 to DummyInteger-1 do
+            LoadMapPath;
+        end;
 
-      //FIXME
-//      raise exception.create('Loading RMF files is currently not supported.');
+        // read camera
+        if RMFVersion < 1.4 then
+        begin
+          F.ReadBuffer(DummyVector[0], 3*SizeOf(Single)); //unused
+          F.ReadBuffer(DummyVector[0], 3*SizeOf(Single)); //unused
+        end;
 
         SubElements.Add(Racine);
         Specifics.Values['Root']:=Racine.Name+Racine.TypeInfo;
@@ -512,7 +512,7 @@ procedure QRmfMapFile.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      raise exception.create('Saving RMF files is currently not supported.');
+      raise EQObjectSavingNotSupported.Create('Saving RMF files is currently not supported.');
      end;
  else
   inherited;

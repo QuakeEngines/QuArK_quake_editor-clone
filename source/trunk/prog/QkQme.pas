@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.18  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -727,7 +730,7 @@ procedure QQme.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      Raise EError(5554);   { not implemented }
+      Raise EQObjectSavingNotSupported.Create(LoadStr1(5554));   { not implemented }
      end;
  else inherited;
  end;

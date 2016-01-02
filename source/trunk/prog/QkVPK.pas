@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2010/10/16 22:36:08  danielpharos
+Fixed bug in HLLib error message displaying.
+
 Revision 1.2  2010/10/16 22:31:03  danielpharos
 Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
 
@@ -254,7 +257,7 @@ begin
         HLLoaded:=true;
       end;
 
-      {tbd: save to vpk}
+      raise EQObjectSavingNotSupported.Create('Saving VPK files is currently not supported.');
      end;
  else inherited;
  end;

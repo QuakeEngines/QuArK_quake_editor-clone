@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.9  2009/02/21 17:09:53  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -335,7 +338,7 @@ begin
   with Info do begin
     case Format of
       1: begin  { write the .3ds file }
-        raise exception.create('Unsupported!');
+        raise EQObjectSavingNotSupported.Create('Saving 3DS files is currently not supported.');
       end;
       else
         inherited;
