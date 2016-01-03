@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.18  2009/02/27 12:37:51  danielpharos
 Added missing FormatName's to some QImage descendants, and fixed VTF reading JPG settings (copy-paste bug).
 
@@ -89,6 +92,7 @@ type
           class function FormatName : String; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
+          procedure CheckTexName(const nName: String); //FIXME: Should probably inherit from QTexture...
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -96,21 +100,39 @@ type
 
 implementation
 
-uses Windows, Travail, Quarkx, QkPixelSet, QkObjectClassList;
+uses StrUtils, Windows, Setup, Travail, Quarkx, QkExceptions,
+     QkPixelSet, QkObjectClassList, ExtraFunctionality;
+
+const
+ MIP32_VERSION = 4;
+ MIPLEVELS = 16;
+ MAX_OSPATH = 128; //max length of a filesystem pathname
 
 type
- TM32Header = packed record                     // offset
-                Id: LongInt;                    // $0   - $4 bytes of id
-                Name: array[0..$1FF] of Char;   // $4   - $200 bytes of path+filename (zero-terminated)
-                Width: Word;                    // $204 - $2 bytes of width
-                _filler1: array[0..$3D] of Byte;// $206 - $3E bytes of unknown data
-                Height: Word;                   // $244 - $2 bytes of height
-                _filler2: array[0..$7D] of Byte;// $246 - $7E bytes of unknown data
-                Flags: LongInt;                 // $2C4 - $4 bytes of flag-bits
-                Contents: LongInt;              // $2C8 - $4 bytes of contents-bits
-                Value: LongInt;                 // $2CC - $4 bytes of value
-                _filler3: array[0..$F7] of Byte;// $2D0 - $F8 bytes of unknown data
-                                                // $3C8 - beginning of RGBA data
+ TM32Header = packed record
+                Id: LongInt;                                // id / version
+                Name: array[0..MAX_OSPATH-1] of Char;       // texture name
+                Altname: array[0..MAX_OSPATH-1] of Char;    // texture substitution
+                Animname: array[0..MAX_OSPATH-1] of Char;   // next frame in animation chain
+                Damagename: array[0..MAX_OSPATH-1] of Char; // image that should be shown when damaged
+                Width, Height, Offsets: array[0..MIPLEVELS-1] of LongInt; //width, height, offsets of all miplevels
+                Flags: LongInt;
+                Contents: LongInt;
+                Value: LongInt;
+                Scale_x, Scale_y: Single;
+                Mip_scale: LongInt;
+
+                // detail texturing info
+                dt_name: array[0..MAX_OSPATH-1] of Char; // detailed texture name
+                dt_scale_x, dt_scale_y: Single;
+                dt_u, dt_v: Single;
+                dt_alpha: Single;
+                dt_src_blend_mode, dt_dst_blend_mode: LongInt;
+
+                flags2: LongInt;
+                damage_health: Single;
+
+                unused: array[0..17] of LongInt; // future expansion to maintain compatibility with h2
               end;
 
 Procedure QM32.SaveFile(Info: TInfoEnreg1);
@@ -122,27 +144,16 @@ const
   spec2='Alpha=';
 var
   LineWidth, J, K: Integer;
-  sig, h, w: longint;
-  contents,flags,value:longint;
-  Aname: string;
-  ScanLine, AlphaScanLine: PChar;
+  m32header: TM32Header;
+  ScanLine, AlphaScanLine: PByte;
   PSD,OldPSD: TPixelSetDescription;
-  PBaseLineBuffer,PLineBuffer: PChar;
+  PBaseLineBuffer,PLineBuffer: PByte;
   SourceRGB: PRGB;
-  InitialStreamPos : longint;
-
-  Procedure WriteZerosTillFileOffset(F: TStream; tilloffset: longint);
-  Var
-    zero : byte;
-  begin
-    zero:=0;
-    while tilloffset > F.position - InitialStreamPos do
-      F.WriteBuffer(zero, 1);
-  end;
-
+  SourceAlpha: PByte;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
+    FillChar(m32header, sizeOf(m32header), 0);
     PSD.Init;
     OldPSD:=Description;
     try
@@ -151,46 +162,47 @@ begin
       PSDConvert(PSD, OldPSD, ccTemporary);
      { use PSD here, it is guaranteed to be 24bpp + 8bpp alpha }
 
-      InitialStreamPos:=F.Position; {save where we are (needed pak file)}
+      m32header.Id:=MIP32_VERSION;
+      StrPCopy(m32header.Name, Name); //@Need to verify string length!
+      StrPCopy(m32header.Altname, Specifics.Values['Texture_Substitution_Path']);
+      StrPCopy(m32header.Animname, Specifics.Values['Next_Frame_Path']);
+      StrPCopy(m32header.Damagename, Specifics.Values['Damage_Texture_Path']);
+      m32header.scale_x:=1.0;
+      m32header.scale_y:=1.0;
+      m32header.Contents:=StrToIntDef(Specifics.Values['Contents'], 0);
+      m32header.Flags   :=StrToIntDef(Specifics.Values['Flags'], 0);
+      m32header.Value   :=StrToIntDef(Specifics.Values['Value'], 0);
 
-      Contents:=StrToIntDef(Specifics.Values['Contents'], 0);
-      Flags   :=StrToIntDef(Specifics.Values['Flags'], 0);
-      Value   :=StrToIntDef(Specifics.Values['Value'], 0);
-
-      sig:=0004; // 04 00 00 00 header
-      F.WriteBuffer(sig,4);
-      AName:=Name;
-      F.WriteBuffer(AName[1], length(aname));
-      WriteZerosTillFileOffset(F, $204);
-      with PSD.Size do begin
-        W:=X;
-        H:=Y;
+      with PSD.Size do
+      begin
+        m32header.Width[0]:=X;
+        m32header.Height[0]:=Y;
+        m32header.Offsets[0]:=sizeOf(m32header);
       end;
-      F.WriteBuffer(W, 2);
-      WriteZerosTillFileOffset(F, $244);
-      F.WriteBuffer(H, 2);
-      WriteZerosTillFileOffset(F, $2C4);
-      F.WriteBuffer(flags, 4);
-      F.WriteBuffer(contents , 4);
-      F.WriteBuffer(value, 4);
-      WriteZerosTillFileOffset(F, $3C8);
-      LineWidth:= W * 4;  { 4 bytes per line (32 bit)}
-      ScanLine:=PSD.StartPointer;
-      AlphaScanLine:=PSD.AlphaStartPointer;
+      F.WriteBuffer(m32header, sizeOf(m32header));
+
+      LineWidth:= m32header.Width[0] * 4;  { 4 bytes per line (32 bit)}
+      ScanLine:=PByte(PSD.StartPointer);
+      AlphaScanLine:=PByte(PSD.AlphaStartPointer);
       GetMem(PBaseLineBuffer, LineWidth);
       try
-        for J:=1 to h do {iterate lines}
+        for J:=1 to m32header.Height[0] do {iterate lines}
         begin
           PLineBuffer:=PBaseLineBuffer;
           SourceRGB:=PRGB(ScanLine);
-          SourceRGB[2]:=PRGB(ScanLine)^[0];  {rgb -> bgr  }
-          SourceRGB[1]:=PRGB(ScanLine)^[1];  {rgb -> bgr  }
-          SourceRGB[0]:=PRGB(ScanLine)^[2];  {rgb -> bgr  }
-          for K:=0 to W-1 do begin  { mix color and alpha line-by-line }
-            PRGB(PLineBuffer)^:=SourceRGB^;
+          SourceAlpha:=PByte(AlphaScanLine);
+          for K:=1 to m32header.Width[0] do { mix color and alpha line-by-line }
+          begin
+            PLineBuffer^:=SourceRGB^[2];  {rgb -> bgr  }
+            Inc(PLineBuffer, 1);
+            PLineBuffer^:=SourceRGB^[1];  {rgb -> bgr  }
+            Inc(PLineBuffer, 1);
+            PLineBuffer^:=SourceRGB^[0];  {rgb -> bgr  }
+            Inc(PLineBuffer, 1);
             Inc(SourceRGB);
-            PLineBuffer[3]:=AlphaScanLine[K]; {inject alpha after RGB}
-            Inc(PLineBuffer, 4);
+            PLineBuffer^:=SourceAlpha^; {inject alpha after RGB}
+            Inc(PLineBuffer, 1);
+            Inc(SourceAlpha);
           end;
           F.WriteBuffer(PBaseLineBuffer^, LineWidth);
           Inc(ScanLine, PSD.ScanLine);
@@ -207,38 +219,22 @@ begin
  end;
 end;
 
-{
-header hex : 04 00 00 00
-then the pak path where the file is place .. eg pics/menus/
-then 00 to offset 204 (hex not byte) then hi lo byte height of image
-then 00 to offset 244 (hex) then hi lo byte width of image
-i'am not sure whether it first height or width...
-then 00 to offset (hex) 3C8
-then you take width * height so you can get texsize
-then do a cache i think char buffer[texsize]
-read in 4 byte blocks
-1byte is the red value (0..255)
-2byte is the green value
-3byte is the blue value
-
-in some files (shapes) the 4 byte is a alpha value
-}
-
-function ReadPath(F: TStream): string;
+procedure QM32.CheckTexName;
 var
-  ch: char;
+  TexName: String;
 begin
-  result:='';
-  while true do begin
-    F.Readbuffer(ch,1);
-    if ch<>#0 then
-      result:=result+ch
-    else
-      exit;
+  //Copied and slightly modified from QkTextures!
+  if SetupSubSet(ssFiles, 'Textures').Specifics.Values['TextureNameCheck']<>'' then
+  begin
+    TexName := Name;
+    if ((nName = '') or (TexName = '')) and (SetupSubSet(ssFiles, 'Textures').Specifics.Values['TextureEmptyNameValid']<>'') then
+      Exit;
+    if CompareText(nName, TexName)<>0 then
+      GlobalWarning(FmtLoadStr1(5569, [nName, TexName]));
   end;
 end;
 
-Procedure ReadRGBA(F: TStream; var rgb, a: string; height, width: integer);
+Procedure ReadRGBA(F: TStream; var rgb, a: string; width, height: integer);
 type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
@@ -299,43 +295,51 @@ end;
 
 Procedure QM32.LoadFile(F: TStream; FSize: Integer);
 var
-  sig, org: Longint;
-  tex: string;
+  m32header: TM32Header;
+  org: Int64;
+  S: string;
+  I: Integer;
   rgb, a: string;
-  hi, wi: smallint;
-  flags,content,value: longint;
   V: array[1..2] of Single;
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-       org:=F.Position;
-       F.readbuffer(sig, 4);
-       if sig<>4 then
-         raise Exception.Create('Not a valid m32 file!');
-       tex:=ReadPath(F);
-       Specifics.Add(format('Texture_Path=%s',[tex]));
-       F.Position:=org+$204;
-       F.ReadBuffer(wi, 2);
-       F.Position:=org+$244;
-       F.ReadBuffer(hi, 2);
-       F.Position:=org+$2c4;
-       F.ReadBuffer(flags, 4);
-       F.ReadBuffer(content, 4);
-       F.ReadBuffer(value, 4);
-       F.Position:=org+$3C8;
-       V[1]:=wi;
-       V[2]:=hi;
-       SetFloatsSpec('Size', V);
+     org:=F.Position;
+     F.readbuffer(m32header, sizeof(m32header));
+     if m32header.Id <> MIP32_VERSION then
+       raise Exception.Create('Not a valid m32 file!');
+     Specifics.Add(format('Texture_Path=%s',[m32header.Name]));
 
-       ReadRGBA(f, rgb, a, hi, wi);
-
-       specifics.add(rgb);
-       specifics.add(a);
-
-       Specifics.Add(format('Contents=%d',[content]));
-       Specifics.Add(format('Flags=%d',[flags]));
-       Specifics.Add(format('Value=%d',[value]));
+     //Verify if the texturename matches the filename
+     S:=m32header.Name;
+     for I:=Length(S) downto 1 do
+     begin
+       if S[I]='/' then
+       begin
+         Specifics.Add('Path='+Copy(S,1,I-1));
+         S:=RightStr(S, Length(S)-I);
+         Break;
+       end;
      end;
+     CheckTexName(S);
+
+     Specifics.Add(format('Texture_Substitution_Path=%s',[m32header.Altname]));
+     Specifics.Add(format('Next_Frame_Path=%s',[m32header.Animname]));
+     Specifics.Add(format('Damage_Texture_Path=%s',[m32header.Damagename]));
+     Specifics.Add(format('Contents=%d',[m32header.contents]));
+     Specifics.Add(format('Flags=%d',[m32header.flags]));
+     Specifics.Add(format('Value=%d',[m32header.value]));
+
+     V[1]:=m32header.Width[0];
+     V[2]:=m32header.Height[0];
+     SetFloatsSpec('Size', V);
+
+     F.Position:=org+m32header.Offsets[0];
+     ReadRGBA(f, rgb, a, m32header.Width[0], m32header.Height[0]);
+
+     specifics.add(rgb);
+     specifics.add(a);
+  end;
  else inherited;
  end;
 end;
@@ -361,4 +365,3 @@ end;
 initialization
   RegisterQObject(QM32, 'l');
 end.
-

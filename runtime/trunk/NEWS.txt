@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Many fixes for .m32 texture saving. It will now produce something that at least
+          - has a chance of working...
+
 * [DanielPharos]: Generate proper error if something went wrong trying to save files, instead of
           - always displaying a message about "save" not being supported.
 
