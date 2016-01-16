@@ -277,6 +277,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
         else:
             comp.currentskin = None
 
+        # Set it up in the ModelComponentList.
+        editor.ModelComponentList[Component.name] = {'bonevtxlist': {}, 'colorvtxlist': {}, 'weightvtxlist': {}}
+    
         editor = None   #Reset the global again
 
 ### To register this Python plugin and put it on the importers menu.
@@ -288,6 +291,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".StL Importer", ".StL file", "*.stl", load
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2016/01/16 19:18:59  danielpharos
+# Fixed an error on import directly from the Model Editor.
+#
 # Revision 1.3  2015/09/20 12:59:58  danielpharos
 # Added a missing import statement.
 #
