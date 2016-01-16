@@ -3151,7 +3151,6 @@ def BuildCommonHandles(editor, explorer, option=1):
         return bh
 
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
-
         bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
         if len(bones) != 0:
             # Checks if something has changed the frame selection.
@@ -3315,8 +3314,7 @@ def BuildHandles(editor, explorer, view, option=1):
         return bh
 
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
-        if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
-
+        if quarkx.setupsubset(SS_MODEL, "Options")['HideBones'] is None:
             bones = editor.Root.dictitems['Skeleton:bg'].findallsubitems("", ':bone') # Get all bones.
             if len(bones) != 0:
                 # Checks if something has changed the frame selection.
@@ -3402,20 +3400,15 @@ def BuildHandles(editor, explorer, view, option=1):
                         h = vh + ModelEditorLinHandlesManager(MapColor("LinearHandleCircle", SS_MODEL), box, vtxlist, view).BuildHandles() + bh
                 except:
                     pass
-    try:
-        if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
-            h = h + eye_handles
-    except:
-        pass
+
+    if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] is not None:
+        h = h + eye_handles
 
     for item in explorer.sellist:
         if item.type == ':g' or item.type == ':d':
             h = h + mdlentities.CallManager("handles", item, editor, view)
 
-    try:
-        return qhandles.FilterHandles(h, SS_MODEL)
-    except:
-        pass
+    return qhandles.FilterHandles(h, SS_MODEL)
 
 
 #
@@ -6604,6 +6597,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.237  2013/02/26 02:57:29  cdunde
+#Linear handle instruction correction.
+#
 #Revision 1.236  2012/04/01 07:50:58  cdunde
 #Additional changes to previous changes.
 #
