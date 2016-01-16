@@ -375,13 +375,7 @@ class ModelEditor(BaseEditor):
                     viewhandles = mdlhandles.BuildHandles(self, self.layout.explorer, self.layout.views[0])
                 v.handles = viewhandles
 
-         #   delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
-         # linux issue with single quote
-        try:
-            delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
-        except:
-            delay = 0.5 # linux issue with single quote
-
+        delay, = quarkx.setupsubset(SS_MODEL, "Display")["HandlesDelay"]
         if delay <= 0.0:
             commonhandles(self, 0)
         else:
@@ -1366,6 +1360,7 @@ def paintframefill(self, v):
 def commonhandles(self, redraw=1):
     if quarkx.setupsubset(SS_MODEL, "Options")['AnimationActive'] == "1" or quarkx.setupsubset(SS_MODEL, "Options")['AnimationCFGActive'] == "1":
         return
+
     from qbaseeditor import flagsmouse, currentview
 
     if flagsmouse == 2072 and isinstance(self.dragobject, mdltoolbars.FaceCutter): # Cancels face cutting.
@@ -1706,7 +1701,7 @@ def commonhandles(self, redraw=1):
         else:
             hlist = mdlhandles.BuildCommonHandles(self, self.layout.explorer)   # model handles common to all views
 
-### Draw Needed Views GrigScale and AxisIcons Section:
+### Draw Needed Views GridScale and AxisIcons Section:
 ### =================================================
     for v in self.layout.views:
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
@@ -1867,6 +1862,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.168  2015/09/20 13:00:51  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.167  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #
