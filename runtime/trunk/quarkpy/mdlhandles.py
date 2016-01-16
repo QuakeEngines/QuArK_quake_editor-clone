@@ -3238,10 +3238,7 @@ def BuildCommonHandles(editor, explorer, option=1):
         if item.type == ':g' or item.type == ':d':
             h = h + mdlentities.CallManager("handles", item, editor)
 
-    try:
-        return qhandles.FilterHandles(h, SS_MODEL)
-    except:
-        pass
+    return qhandles.FilterHandles(h, SS_MODEL)
 
 
 
@@ -6597,6 +6594,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.238  2016/01/16 19:18:07  danielpharos
+#Removed several try-except-passes that should never be needed.
+#
 #Revision 1.237  2013/02/26 02:57:29  cdunde
 #Linear handle instruction correction.
 #
