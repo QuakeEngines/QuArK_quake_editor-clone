@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.129  2014/10/31 15:26:26  danielpharos
+Improved indentation, and fixed a comment typo.
+
 Revision 1.128  2012/09/05 18:06:10  danielpharos
 Move implementation of FloatSpec internally to QkObjects.
 
@@ -559,8 +562,8 @@ type
   PQStreamRef = ^TQStreamRef;
   TQStreamRef = record
                   Self: TQStream;
-                  Position: Integer;
-                  StreamSize: Integer;
+                  Position: Longint;
+                  StreamSize: Longint;
  {AiV}            OnAccess: Function (Ref: PQStreamRef; var S: TStream) : Integer;
                   PUserData: Pointer;
                 end;
@@ -750,7 +753,7 @@ type
    {destructor Destroy; override;}
     procedure AddRef;
     procedure Release;
-    function AddRefNode(a_StreamSize: Integer): PQStreamRef;
+    function AddRefNode(a_StreamSize: Longint): PQStreamRef;
     procedure TemporaryClose;
     function ReopenAs(const FileName: String) : Boolean;
   end;
@@ -1081,7 +1084,7 @@ begin
   Result:=Ref^.StreamSize;
 end;
 
-function TQStream.AddRefNode(a_StreamSize: Integer): PQStreamRef;
+function TQStream.AddRefNode(a_StreamSize: Longint): PQStreamRef;
 begin
   Inc(RefCount1);
   New(Result);
