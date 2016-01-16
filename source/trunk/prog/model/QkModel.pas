@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2009/07/15 10:38:06  danielpharos
+Updated website link.
+
 Revision 1.10  2009/05/20 20:17:43  danielpharos
 Stop annoying gamemode warning for models.
 
@@ -145,9 +148,11 @@ begin
   S:=ConcatPaths([GameModelPath, S+TypeInfo]);
   SaveInFile(rf_Default, OutputFile(S));
   filename:=PyString_FromString(PChar(S));
-  PyList_Append(extracted, filename);
-  Py_DECREF(filename);
+  try
+    PyList_Append(extracted, filename);
+  finally
+    Py_DECREF(filename);
+  end;
 end;
 
 end.
-
