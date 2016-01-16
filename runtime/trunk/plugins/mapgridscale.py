@@ -72,7 +72,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                     vlink[1].scrollto(None, y)
                 else:
                     vlink[1].scrollto(y, None)
-            if not MapOption("AxisXYZ") and not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("XviewScale") and not MapOption("XyScaleCentered") and not MapOption("XzScaleCentered") and not MapOption("YviewScale") and not MapOption("YxScaleCentered") and not MapOption("YzScaleCentered") and not MapOption("ZviewScale") and not MapOption("ZxScaleCentered") and not MapOption("ZyScaleCentered"):
+            if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("XviewScale") and not MapOption("XyScaleCentered") and not MapOption("XzScaleCentered") and not MapOption("YviewScale") and not MapOption("YxScaleCentered") and not MapOption("YzScaleCentered") and not MapOption("ZviewScale") and not MapOption("ZxScaleCentered") and not MapOption("ZyScaleCentered"):
                 view.update()
             else:
                 view.repaint()
@@ -676,6 +676,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.15  2007/09/16 00:38:46  cdunde
+#Fixed both editors from not drawing gridscale and ruler when grid is inactive.
+#
 #Revision 1.14  2006/11/30 01:17:48  cdunde
 #To fix for filtering purposes, we do NOT want to use capital letters for cvs.
 #
