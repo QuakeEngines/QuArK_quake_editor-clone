@@ -266,9 +266,9 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
         # This needs to be done for each component or bones will not work if used in the editor.
         quarkpy.mdlutils.make_tristodraw_dict(editor, Component)
-        editor.ok(undo, str(len(RetComponentList)) + " .StL Components imported") # Let the ok finish the new components before going on.
+        editor.ok(undo, "1 .StL Components imported") # Let the ok finish the new components before going on.
 
-        editor.Root.currentcomponent = RetComponentList[0]  # Sets the current component.
+        editor.Root.currentcomponent = Component  # Sets the current component.
         comp = editor.Root.currentcomponent
         skins = comp.findallsubitems("", ':sg')      # Gets the skin group.
         if len(skins[0].subitems) != 0:
@@ -288,6 +288,9 @@ quarkpy.qmdlbase.RegisterMdlImporter(".StL Importer", ".StL file", "*.stl", load
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2015/09/20 12:59:58  danielpharos
+# Added a missing import statement.
+#
 # Revision 1.2  2015/04/11 16:05:28  danielpharos
 # Added binary StL importing.
 #
