@@ -4530,7 +4530,7 @@ def Update_Skin_View(editor, option=1):
 
 
 def Update_Editor_Views(editor, option=4):
-    "Updates the Editors views once something has chaged in the Skin-view,"
+    "Updates the Editors views once something has changed in the Skin-view,"
     "such as synchronized or added 'skin mesh' vertex selections."
     "It can also be used to just update all of the Editor's views or just its 2D views."
     "Various 'option' items are shown below in their proper order of sequence."
@@ -4938,6 +4938,9 @@ def SubdivideFaces(editor, pieces=None):
 #
 #
 #$Log$
+#Revision 1.174  2015/01/09 20:22:26  danielpharos
+#Typo fixes.
+#
 #Revision 1.173  2013/02/13 03:28:42  cdunde
 #Code cleanup.
 #
