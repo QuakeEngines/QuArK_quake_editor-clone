@@ -197,10 +197,7 @@ class BaseLayout:
          #
         return [Mod1, Mod2, Mod3, New3D, NewFull3D, NewFancyFull3D, qmenu.sep, DrM1, DrM2,
          DrM3, qmenu.sep, PanelRight], {"Ctrl+1":Mod1, "Ctrl+2":Mod2,
-         "Ctrl+3":Mod3, "Ctrl+4": New3D}
-        #return [Mod1, Mod2, Mod3, New3D, NewOGL, NewF3D, qmenu.sep, DrM1, DrM2,
-        # DrM3, qmenu.sep, PanelRight], {"Ctrl+1":Mod1, "Ctrl+2":Mod2,
-        # "Ctrl+3":Mod3, "Ctrl+4": New3D, "Ctrl+5": NewOGL, "Ctrl+6": NewF3D} Daniel
+         "Ctrl+3":Mod3, "Ctrl+4": New3D, "Ctrl+5": NewFull3D, "Ctrl+6": NewFancyFull3D}
 
     def layoutmenuclick(self, menu):
         common = None
@@ -214,9 +211,9 @@ class BaseLayout:
         for m in menu.items[0:3]: # position of (self.getlayoutmenu) Mod1, Mod2 and Mod3
             m.state = (m.mode == common) and qmenu.radiocheck
         #menu.items[4].state = (self is BaseLayout.CurrentRendererOwner) and qmenu.checked  #DanielPharos: CurrentRendererOwner is not used anymore anyway...
-        for m in menu.items[5:8]: # position of (self.getlayoutmenu) DrM1, DrM2 and DrM3
+        for m in menu.items[7:10]: # position of (self.getlayoutmenu) DrM1, DrM2 and DrM3
             m.state = (m.mode == (self.editor.drawmode&DM_MASKOOV)) and qmenu.radiocheck
-        menu.items[9].state = (self.leftpanel.align=="right") and qmenu.checked # position of (self.getlayoutmenu) PanelRight
+        menu.items[11].state = (self.leftpanel.align=="right") and qmenu.checked # position of (self.getlayoutmenu) PanelRight
 
     def setviewmode(self, menu):
         for v in self.baseviews:
@@ -664,6 +661,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.43  2015/09/20 13:03:06  danielpharos
+#Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+#
 #Revision 1.42  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #
