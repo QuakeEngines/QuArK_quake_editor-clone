@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2015/12/22 14:21:55  danielpharos
+Fixed a memory leak and other related issues for the Direct3D lighting list.
+
 Revision 1.52  2015/10/25 15:40:15  danielpharos
 Added the GDI workaround to Direct3D. Still broken due to missing format conversion.
 
@@ -238,11 +241,11 @@ type
     SwapChain: IDirect3DSwapChain9;
     DepthStencilSurface: IDirect3DSurface9;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
-    procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); override;
   protected
     ScreenResized: Boolean;
     TextureFiltering: TTextureFiltering;
     ScreenX, ScreenY: Integer;
+    procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); override;
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
     procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
@@ -1302,6 +1305,12 @@ var
   Bits: Pointer;
   SurfaceRect: D3DLOCKED_RECT;
   DIBSection: HGDIOBJ;
+  PaddingSize: Integer;
+  X, Y: Integer;
+  Source32: PLongword;
+  Source16: PWord;
+  Source: PByte;
+  Dest: PByte;
 begin
   if not Direct3DLoaded then
     Exit;
@@ -1321,6 +1330,8 @@ begin
     end;
     BmpInfo.bmiHeader:=bmiHeader;
 
+    PaddingSize:=((((bmiHeader.biWidth*bmiHeader.biBitCount)+31) and not 31) shr 3) - (bmiHeader.biWidth*3);
+
     SetViewDC(True);
     try
       DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
@@ -1331,11 +1342,155 @@ begin
         if (l_Res <> D3D_OK) then
           raise EErrorFmt(6403, ['GetBackBuffer', DXGetErrorString9(l_Res)]);
 
-        l_Res:=pBackBuffer.LockRect(SurfaceRect, nil, D3DLOCK_READONLY);
+        l_Res:=pBackBuffer.LockRect(SurfaceRect, @DrawRect, D3DLOCK_READONLY);
         if (l_Res <> D3D_OK) then
           raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
         try
-          CopyMemory(Bits, SurfaceRect.pBits, bmiHeader.biWidth * bmiHeader.biHeight * 3); //@FIXME: Convert to proper format...!   * 4
+          Source:=SurfaceRect.pBits;
+          Inc(Source, SurfaceRect.Pitch*(pPresParm.BackBufferHeight - 1)); //Vertically flip
+          Dest:=Bits;
+          case PresParm.BackBufferFormat of
+          D3DFMT_A2R10G10B10:
+          begin
+            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            begin
+              Source32:=Pointer(Source);
+              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              begin
+                Dest^:=((Source32^) and $000003FF);
+                Inc(Dest);
+                Dest^:=((Source32^) and $000FFC00) shr 10;
+                Inc(Dest);
+                Dest^:=((Source32^) and $3FF00000) shr 20;
+                Inc(Dest);
+                Inc(Source32);
+              end;
+              for X:=0 to PaddingSize - 1 do
+              begin
+                Dest^:=0;
+                Inc(Dest);
+              end;
+              Dec(Source, SurfaceRect.Pitch);
+            end;
+          end;
+          D3DFMT_A8R8G8B8:
+          begin
+            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            begin
+              Source32:=Pointer(Source);
+              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              begin
+                Dest^:=(Source32^) and $FF;
+                Inc(Dest);
+                Dest^:=((Source32^) shr 8) and $FF;
+                Inc(Dest);
+                Dest^:=((Source32^) shr 16) and $FF;
+                Inc(Dest);
+                Inc(Source32);
+              end;
+              for X:=0 to PaddingSize - 1 do
+              begin
+                Dest^:=0;
+                Inc(Dest);
+              end;
+              Dec(Source, SurfaceRect.Pitch);
+            end;
+          end;
+          D3DFMT_X8R8G8B8:
+          begin
+            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            begin
+              Source32:=Pointer(Source);
+              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              begin
+                Dest^:=(Source32^) and $FF;
+                Inc(Dest);
+                Dest^:=((Source32^) shr 8) and $FF;
+                Inc(Dest);
+                Dest^:=((Source32^) shr 16) and $FF;
+                Inc(Dest);
+                Inc(Source32);
+              end;
+              for X:=0 to PaddingSize - 1 do
+              begin
+                Dest^:=0;
+                Inc(Dest);
+              end;
+              Dec(Source, SurfaceRect.Pitch);
+            end;
+          end;
+          D3DFMT_A1R5G5B5:
+          begin
+            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            begin
+              Source16:=Pointer(Source);
+              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              begin
+                Dest^:=(Source16^) and $1F;
+                Inc(Dest);
+                Dest^:=((Source16^) shr 5) and $1F;
+                Inc(Dest);
+                Dest^:=((Source16^) shr 10) and $1F;
+                Inc(Dest);
+                Inc(Source16);
+              end;
+              for X:=0 to PaddingSize - 1 do
+              begin
+                Dest^:=0;
+                Inc(Dest);
+              end;
+              Dec(Source, SurfaceRect.Pitch);
+            end;
+          end;
+          D3DFMT_X1R5G5B5:
+          begin
+            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            begin
+              Source16:=Pointer(Source);
+              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              begin
+                Dest^:=(Source16^) and $1F;
+                Inc(Dest);
+                Dest^:=((Source16^) shr 5) and $1F;
+                Inc(Dest);
+                Dest^:=((Source16^) shr 10) and $1F;
+                Inc(Dest);
+                Inc(Source16);
+              end;
+              for X:=0 to PaddingSize - 1 do
+              begin
+                Dest^:=0;
+                Inc(Dest);
+              end;
+              Dec(Source, SurfaceRect.Pitch);
+            end;
+          end;
+          D3DFMT_R5G6B5:
+          begin
+            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            begin
+              Source16:=Pointer(Source);
+              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              begin
+                Dest^:=(Source16^) and $1F;
+                Inc(Dest);
+                Dest^:=((Source16^) shr 5) and $3F;
+                Inc(Dest);
+                Dest^:=((Source16^) shr 11) and $1F;
+                Inc(Dest);
+                Inc(Source16);
+              end;
+              for X:=0 to PaddingSize - 1 do
+              begin
+                Dest^:=0;
+                Inc(Dest);
+              end;
+              Dec(Source, SurfaceRect.Pitch);
+            end;
+          end;
+          else
+            raise InternalE('Unknown backbuffer format!');
+          end;
         finally
           l_Res:=pBackBuffer.UnlockRect();
           if (l_Res <> D3D_OK) then
