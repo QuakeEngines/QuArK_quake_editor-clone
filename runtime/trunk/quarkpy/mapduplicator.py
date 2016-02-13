@@ -71,8 +71,8 @@ class DuplicatorManager:
 def is_digit(s):
     if len(s)==1:
         if '0123456789'.find(s)>=0:
-            return 1
-    return 0
+            return True
+    return False
 
 def get_suffix(s):
     l = len(s)
@@ -88,7 +88,7 @@ def poolitems(item):
     #         the Entity-class. Not easy to fix in the QuArK.EXE, so the solution here is to not
     #         search for ":e" types, but have them found when searching for ":d" types.
  #   return item.findallsubitems("",":b")+item.findallsubitems("",":d") #+item.findallsubitems("",":e")
-    # cdunde 8-11-05: Reversed to allow entities to work again, apparetly fixed else ware to correct above.
+    # cdunde 8-11-05: Reversed to allow entities to work again, apparently fixed elsewhere to correct above.
     return item.findallsubitems("",":b")+item.findallsubitems("",":d")+item.findallsubitems("",":e")
 
 def pool_specs(list):
@@ -713,6 +713,9 @@ DupCodes = {"dup origin" : OriginDuplicator,
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29  2007/12/21 20:39:23  cdunde
+#Added new Templates functions and Templates.
+#
 #Revision 1.28  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #
