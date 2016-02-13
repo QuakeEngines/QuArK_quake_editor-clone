@@ -708,7 +708,7 @@ class BaseEditor:
             nlayout.editor = self
             nlayout.buildscreen(form)
             if nlayout.explorer is None:
-                raise "Invalid layout, missing Explorer"
+                raise RuntimeError("Invalid layout, missing Explorer")
             nlayout.explorer.onselchange = self.explorerselchange
             nlayout.explorer.onrootchange = self.explorerrootchange
             nlayout.explorer.onmenu = self.explorermenu
@@ -1799,6 +1799,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.154  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.153  2015/08/09 16:30:06  danielpharos
 #Added mousewheel scrolling support in the 2D views.
 #

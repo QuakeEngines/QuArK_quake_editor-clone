@@ -199,7 +199,7 @@ def prepareobjecttodrop(editor, obj):
             # minimum values are "8x8x8"
             if (defpolysize[0] < 8) or (defpolysize[1] < 8) or (defpolysize[2] < 8):
                 # Silent exception, since the next 'except' will catch it.
-                raise "Problem with 'Default polyhedron size'"
+                raise RuntimeError("Problem with 'Default polyhedron size'")
         except:
             defpolysize = [64, 64, 64] # must be an array of three values
         oldincl = oldincl.lower()
@@ -745,6 +745,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.38  2015/09/20 13:00:28  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.37  2011/03/13 00:41:47  cdunde
 #Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

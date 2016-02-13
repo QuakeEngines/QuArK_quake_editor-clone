@@ -272,7 +272,7 @@ def loadmapeditor(what=None):
         if (beziersupport is not None) and (beziersupport == "1"):
             pluginprefixes = quarkx.setupsubset()["BezierPatchPluginPrefixes"]
             if (pluginprefixes is None) or (pluginprefixes == ""):
-                raise "Serious failure in quarkpy.qutils.loadmapeditor: Missing specific-value 'BezierPatchPluginPrefixes' in Defaults.QRK"
+                raise RuntimeError("Serious failure in quarkpy.qutils.loadmapeditor: Missing specific-value 'BezierPatchPluginPrefixes' in Defaults.QRK")
             loadmapeditor = lambda: None # next calls to loadmapeditor() do nothing. Everything is now loaded!
             import mapbezier
             for prefix in pluginprefixes.split():
@@ -977,6 +977,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.58  2011/05/26 22:59:26  cdunde
+#DanielPharos fix to change bbox icons when hidden.
+#
 #Revision 1.57  2011/03/27 06:30:56  cdunde
 #Icon updates.
 #

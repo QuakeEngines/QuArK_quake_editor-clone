@@ -30,7 +30,7 @@ quarkx.Setup1(qdictionnary.Strings)   # don't change this !
 if qdictionnary.Strings[0] != quarkx.version:
     print "QuArK", quarkx.version
     print "Python code (from quarkpy\\qdictionnary.py)", qdictionnary.Strings[0]
-    raise "QuArK program and Python code versions don't match! Please reinstall QuArK."
+    raise RuntimeError("QuArK program and Python code versions don't match! Please reinstall QuArK.")
 
 # ------- start-up code ends here --------
 
@@ -120,6 +120,9 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2011/05/26 22:59:26  cdunde
+#DanielPharos fix to change bbox icons when hidden.
+#
 #Revision 1.17  2010/04/30 18:22:08  danielpharos
 #Improved error message displayed on version conflict.
 #

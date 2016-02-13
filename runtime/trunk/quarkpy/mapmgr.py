@@ -770,7 +770,7 @@ class MapLayout(BaseLayout):
             if mapeditor() is not self.editor: return
             flist = quarkx.getqctxlist(":form", "TextureFlags")
             if not len(flist):
-                raise "TextureFlags form not found"
+                raise RuntimeError("TextureFlags form not found")
             form = flist[-1]
             ff = quarkx.clickform.newfloating(0, "Face Flags")
             x1,y1,x2,y2 = quarkx.screenrect()
@@ -898,6 +898,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.29  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.28  2014/03/08 14:12:15  danielpharos
 #Fix console error for texture-flags RMB menu if game paths are not configured.
 #
