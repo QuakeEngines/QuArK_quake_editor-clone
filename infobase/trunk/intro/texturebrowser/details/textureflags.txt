@@ -11,6 +11,6 @@ Very briefly, Brush says what the object looks liks, such as water, slime,
 playerclip (player cannot see it), monsterclip (monster cannot see it), ladder
 (player can climb up it).  Flowing indicates whether the texture moves, like
 the surface of a river, and the direction in which it moves.  Face hold
-properties of the face, such as whether it emits light of it's own, whether it
+properties of the face, such as whether it emits light of its own, whether it
 warps (the swirling effect on liquid surface), if it is slick (like an ice
 rink) and so on.
