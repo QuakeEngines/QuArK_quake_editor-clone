@@ -392,16 +392,16 @@ def texturebrowser(reserved=None):
         UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
  #       if quarkx.setupsubset()["ShadersPath"] is not None:
  #           try:
- #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
- #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
+ #               GameFilesPath = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+ #               UsedTexture["a"] = GameFilesPath+"/"+quarkx.setupsubset()["ShadersPath"]+"sky.shader"+"[textures/"+UsedTextureName+("]")
  #           except:
- #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+ #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
  #       else:
  #           try:
- #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+ #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
  #           except:
  #               NoImageFile = 1
-        UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
         UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
         Folder.appenditem(UsedTexture)
  #   if NoImageFile is not None:
@@ -745,6 +745,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.39  2016/02/13 12:32:56  danielpharos
+#Raise a proper exception.
+#
 #Revision 1.38  2015/09/20 13:00:28  danielpharos
 #Added a missing import statement.
 #

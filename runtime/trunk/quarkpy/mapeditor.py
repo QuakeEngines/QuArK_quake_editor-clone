@@ -94,18 +94,18 @@ class MapEditor(BaseEditor):
     #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
         #       if quarkx.setupsubset()["ShadersPath"] is not None:
         #           try:
-        #               GameFilesPath = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-        #               UsedTexture["a"] = (GameFilesPath+("/")+quarkx.setupsubset()["ShadersPath"]+("sky.shader")+("[textures/")+UsedTextureName+("]"))
-        #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #               GameFilesPath = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+        #               UsedTexture["a"] = GameFilesPath+"/"+quarkx.setupsubset()["ShadersPath"]+"sky.shader"+"[textures/"+UsedTextureName+("]")
+        #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
         #           except:
-        #               UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
         #       else:
-        #           UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+        #           UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
         #           try:
-        #               print "mapeditor line 106 the image path",(UsedTexture["a"]+("/")+quarkx.setupsubset()["TexturesPath"]+("/")+UsedTextureName)
+        #               print "mapeditor line 106 the image path",(UsedTexture["a"]+"/"+quarkx.setupsubset()["TexturesPath"]+"/"+UsedTextureName)
         #           except:
         #               NoImageFile = 1
-                UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
+                UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
                 UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
                 Folder.appenditem(UsedTexture)
     #     if NoImageFile is not None:
@@ -404,6 +404,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.27  2015/09/06 12:35:40  danielpharos
+#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
+#
 #Revision 1.26  2012/07/01 12:24:12  danielpharos
 #Improved MapError error message.
 #
