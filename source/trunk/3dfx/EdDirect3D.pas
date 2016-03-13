@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2016/02/13 13:48:40  danielpharos
+Added the backbuffer to DIB conversion; GDI workaround is now fully operational!
+
 Revision 1.53  2015/12/22 14:21:55  danielpharos
 Fixed a memory leak and other related issues for the Direct3D lighting list.
 
@@ -272,7 +275,7 @@ type
  *)
     procedure SetViewSize(SX, SY: Integer); override;
     procedure Render3DView; override;
-    procedure Draw3DView(Synch: Boolean); override;
+    procedure Draw3DView(ToScreen: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
     function ChangeQuality(nQuality: Integer) : Boolean; override;
   end;
@@ -1296,7 +1299,7 @@ begin
 
 end;
 
-procedure TDirect3DSceneObject.Draw3DView(Synch: Boolean);
+procedure TDirect3DSceneObject.Draw3DView(ToScreen: Boolean);
 var
   l_Res: HResult;
   pBackBuffer: IDirect3DSurface9;

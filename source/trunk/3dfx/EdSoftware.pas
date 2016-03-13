@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2015/09/20 13:03:29  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.22  2014/03/08 14:39:25  danielpharos
 Stop access violation and other weird errors if Glide library wasn't initialized properly.
 
@@ -278,7 +281,7 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
-   procedure Draw3DView(Synch: Boolean); override;
+   procedure Draw3DView(ToScreen: Boolean); override;
    procedure ClearFrame; override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
@@ -1875,7 +1878,7 @@ begin
   end;
 end;
 
-procedure TSoftwareSceneObject.Draw3DView(Synch: Boolean);
+procedure TSoftwareSceneObject.Draw3DView(ToScreen: Boolean);
 var
  L, R, T, B: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1895,7 +1898,7 @@ var
   end;
 
 begin
- //Note: No support for doublebuffering, so ignoring Synch
+ //Note: No support for doublebuffering, so ignoring ToScreen
 
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
  FillChar(BmpInfo, SizeOf(BmpInfo), 0);

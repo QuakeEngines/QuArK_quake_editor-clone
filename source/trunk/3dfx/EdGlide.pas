@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2015/09/20 13:03:29  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.23  2014/03/08 14:39:25  danielpharos
 Stop access violation and other weird errors if Glide library wasn't initialized properly.
 
@@ -261,7 +264,7 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
-   procedure Draw3DView(Synch: Boolean); override;
+   procedure Draw3DView(ToScreen: Boolean); override;
    procedure ClearFrame; override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
@@ -598,13 +601,13 @@ begin
       
      grSstSelect(AdapterNo);
      if GlideTimesLoaded=1 then
-       //Glide only only supports 1 window at a time. So we can't use ViewWnd here!
+       //Glide 2 only only supports 1 window at a time. So we can't use ViewWnd here!
        if not grSstWinOpen(GetGlideDummyHwnd,
-                         Resolution, //@FIXME: GR_RESOLUTION_NONE for windowed mode!!!
+                         Resolution,
                          GR_REFRESH_60HZ,
                          GR_COLORFORMAT_ARGB,
                          Origin,
-                         2, 1) then
+                         2, 1) then //Note: Glide 2 doesn't support single buffering
         Raise EErrorFmt(6200, ['grSstWinOpen']);
     finally
      RestoreIntelPrecision;
@@ -1946,7 +1949,7 @@ begin
   end;
 end;
 
-procedure TGlideSceneObject.Draw3DView(Synch: Boolean);
+procedure TGlideSceneObject.Draw3DView(ToScreen: Boolean);
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1967,13 +1970,14 @@ var
   end;
 
 begin
- if Synch then  //@>@@>>@>@>@
+ (* In case of hardware drawing:
+ if ToScreen then
   begin
    grBufferSwap(0);
-   if Synch then
-    grSstIdle;
+   grSstIdle;
    Exit;
   end;
+ *)
 
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
  FillChar(BmpInfo, SizeOf(BmpInfo), 0);
@@ -1993,7 +1997,9 @@ begin
    if DIBSection = 0 then
      Raise EErrorFmt(6200, ['CreateDIBSection']);
    try
-    if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_ANY, FXFALSE, info) then
+    FillChar(info, SizeOf(info), 0);
+    info.size := sizeof(GrLfbInfo_t);
+    if not grLfbLock(GR_LFB_READ_ONLY or GR_LFB_IDLE, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_ANY, FXFALSE, info) then
       Raise EErrorFmt(6200, ['grLfbLock']);
     try
       I:=bmiHeader.biHeight;

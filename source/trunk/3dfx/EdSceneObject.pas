@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2015/12/22 14:21:55  danielpharos
+Fixed a memory leak and other related issues for the Direct3D lighting list.
+
 Revision 1.61  2015/09/20 13:03:28  danielpharos
 Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 
@@ -391,7 +394,7 @@ type
    procedure SetCoords(nCoord: TCoordinates);
    procedure BuildScene(ProgressDC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
-   procedure Draw3DView(Synch: Boolean); virtual; abstract;
+   procedure Draw3DView(ToScreen: Boolean); virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddPolyFace(const a_PolyFace: PSurface);
