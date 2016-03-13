@@ -638,7 +638,7 @@ Strings = {
     5197: "'=' expected",
     5198: "unexpected end of line, unbalanced quotes",
     5199: "hexadecimal code expected",
-    5200: "// This file has been written by QuArK %s\n// It's the text version of file: %s\n",
+    5200: "// This file has been written by %s\n// It's the text version of file: %s\n",
     5201: "Could not open '%s' : Unknown file extension",
     5202: "'%s' cannot be opened in a new window",
     5203: "File not found : %s//Current directory is %s",
@@ -1132,6 +1132,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.174  2016/01/02 20:00:59  danielpharos
+#Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+#
 #Revision 1.173  2016/01/02 19:29:37  danielpharos
 #Properly document a currently leaking Win32 event.
 #
