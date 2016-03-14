@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.560  2015/12/06 11:07:06  danielpharos
+//Switching version number to 6.6 Beta 7.
+//
 //Revision 1.559  2015/12/05 16:20:42  danielpharos
 //Removed a script-confusing empty line.
 //
@@ -1885,6 +1888,8 @@ QQRKSRC1
         Fog = "1"
         Resolution = "7"
         Mirror = "0"
+        Dither = "2"
+        Culling = "1"
         AdapterNo = "0"
         DisableDWM = ""
         Form = "GeneralGlide"
@@ -9665,6 +9670,14 @@ QQRKSRC1
         Values = "0"            $0D "1"
         Hint = "Flips the screen around. Change this option if your view is upside down"
       }
+      Dither: = {
+        Txt="Color dithering"
+        Typ="CL"
+        Items  = "None" $0D "2x2 order dither matrix" $0D "4x4 order dither matrix"
+        Values =    "0" $0D                       "1" $0D                       "2"
+        Hint = ""
+      }
+      Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."}
       DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
                                 $0D"If the views are not drawing correctly, try checking this box." }
     }

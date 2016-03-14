@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2015/09/12 13:19:19  danielpharos
+Changed TimesLoaded into Cardinal.
+
 Revision 1.26  2015/09/05 17:13:26  danielpharos
 Moved new logging strings to dictionary.
 
@@ -860,10 +863,7 @@ var
                 FxBool invert ); stdcall;
   *)
   grColorMask: procedure (rgb, a: FxBool); stdcall;
-  (*
-  procedure
-  grCullMode( GrCullMode_t mode ); stdcall;
-  *)
+  grCullMode: procedure(mode: GrCullMode_t); stdcall;
   grConstantColorValue: procedure (value: GrColor_t); stdcall;
   (*
   procedure
@@ -882,10 +882,9 @@ var
   (*
   procedure
   grDisableAllEffects( void ); stdcall;
-
-  procedure
-  grDitherMode( GrDitherMode_t mode ); stdcall;
   *)
+
+  grDitherMode: procedure(mode: GrDitherMode_t); stdcall;
 
   grFogColorValue: procedure(fogcolor: GrColor_t); stdcall;
 
@@ -1235,7 +1234,7 @@ type
       inBoth  );      { must exist in BOTH }
 
 const
-  GlideDLL_FuncList : array[0..39] of
+  GlideDLL_FuncList : array[0..41] of
     record
       FuncPtr: Pointer;
       FuncReq: TFuncRequirement;
@@ -1256,10 +1255,12 @@ const
    ,(FuncPtr: @@grAlphaCombine;                 FuncReq: inGlide;  FuncName: '_grAlphaCombine@20'               )
    ,(FuncPtr: @@grClipWindow;                   FuncReq: inBoth;   FuncName: '_grClipWindow@16'                 )
    ,(FuncPtr: @@grColorMask;                    FuncReq: inGlide;  FuncName: '_grColorMask@8'                   )
+   ,(FuncPtr: @@grCullMode;                     FuncReq: inGlide;  FuncName: '_grCullMode@4'                    )
    ,(FuncPtr: @@grConstantColorValue;           FuncReq: inBoth;   FuncName: '_grConstantColorValue@4'          )
    ,(FuncPtr: @@grDepthBufferFunction;          FuncReq: inGlide;  FuncName: '_grDepthBufferFunction@4'         )
    ,(FuncPtr: @@grDepthBufferMode;              FuncReq: inGlide;  FuncName: '_grDepthBufferMode@4'             )
    ,(FuncPtr: @@grDepthMask;                    FuncReq: inGlide;  FuncName: '_grDepthMask@4'                   )
+   ,(FuncPtr: @@grDitherMode;                   FuncReq: inGlide;  FuncName: '_grDitherMode@4'                  )
    ,(FuncPtr: @@grFogColorValue;                FuncReq: inGlide;  FuncName: '_grFogColorValue@4'               )
    ,(FuncPtr: @@grFogMode;                      FuncReq: inGlide;  FuncName: '_grFogMode@4'                     )
    ,(FuncPtr: @@grFogTable;                     FuncReq: inGlide;  FuncName: '_grFogTable@4'                    )

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2016/03/13 16:14:40  danielpharos
+Small fixes for Glide's drawing to the screen.
+
 Revision 1.24  2015/09/20 13:03:29  danielpharos
 Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 
@@ -469,7 +472,7 @@ var
  Setup: QObject;
  SetupResolution: Integer;
  Resolution: GrScreenResolution_t;
- SetupMirror: Integer;
+ SetupMirror, SetupDither: Integer;
  Origin: GrOriginLocation_t;
 begin
  ClearScene;
@@ -626,6 +629,19 @@ begin
   end;
  if (DisplayMode=dmFullScreen) then
    Raise InternalE(LoadStr1(6220));
+
+ SetupDither:=StrToInt(Setup.Specifics.Values['Dither']);
+ case SetupDither of
+ 0: grDitherMode(GR_DITHER_DISABLE);
+ 1: grDitherMode(GR_DITHER_2x2);
+ 2: grDitherMode(GR_DITHER_4x4);
+ else
+   raise InternalE('Invalid Glide dithering value!');
+ end;
+ if Setup.Specifics.Values['Culling']<>'' then
+  grCullMode(GR_CULL_NEGATIVE)
+ else
+   grCullMode(GR_CULL_DISABLE);
 
  Coord:=nCoord;
  TTextureManager.AddScene(Self);
