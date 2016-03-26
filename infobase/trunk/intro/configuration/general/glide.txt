@@ -1,9 +1,9 @@
-title: Glide (3dfx)
+title: Glide (3Dfx)
 author: Decker, DanielPharos
 
 <img align=right>glide.png</img>
-Settings in this folder are only usable if you have a true Glide
-graphics-card.
+Settings in this folder are only usable if you have a Glide 2.4
+or compatible graphics-card.
 
 3D-accelerators like 3dfx, Voodoo, Voodoo-II and other low-price cards, are
 <u>not</u> true OpenGL compatible, they only emulates it through a

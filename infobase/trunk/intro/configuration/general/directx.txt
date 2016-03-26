@@ -2,8 +2,8 @@ title: DirectX
 author: DanielPharos
 
 <img align=right>directx.png</img>
-Settings in this folder are only usable if you have a DirectX
-graphics-card.
+Settings in this folder are only usable if you have a DirectX 9 or
+compatible graphics-card.
 
 <i>Over-the-scene lines+icons</i>. This will draw all the lines and
 icons over the scene.
@@ -39,7 +39,7 @@ performance.
 <i>Face culling</i>. Speeds up rendering by making all the backsides of
 faces invisible.
 
-<i>High floating point precision</i>. Enabled high precision in floating
+<i>High floating point precision</i>. Enables high precision in floating
 point calculations. Setting this increases rendering accuracy, but also
 degrades performance.
 
