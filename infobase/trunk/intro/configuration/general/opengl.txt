@@ -5,6 +5,9 @@ author: Decker, DanielPharos
 Settings in this folder are only usable if you have a true OpenGL
 graphics-card.
 
+<i>Over-the-scene lines+icons</i>. This will draw all the lines and
+icons over the scene.
+
 <i>Fade</i>. With this you can enable and disable the fading fog.
 
 <i>Transparency</i>. With this you can enable and disable transparency.
@@ -13,20 +16,6 @@ graphics-card.
 
 
 <u>Additional options</u>
-
-<i>Texture filtering</i>. This improved the texture quality, mainly under
-high angles. It will make the textures appear less blocky and pixelated.
-The higher the settings, the better the quality, but also the lower the
-performance.
-
-<i>Double buffering</i>. When enabled, OpenGL will render the image
-offscreen, and then copy it. This will prevent any weird triangular
-flickering from the rendering being visible.
-
-<i>Color dithering</i>. When enabled, OpenGL will dither colors.
-
-<i>Over-the-scene lines+icons</i>. This will draw all the lines and
-icons over the scene.
 
 <i>Color bits</i>. The amount of bits per pixel. The higher the number,
 the better colors will look. Not all numbers are supported. 16, 24 and
@@ -42,13 +31,25 @@ wireframe lines over it. For example, Windows NT's software OpenGL is
 known to require a correction of about 0.92 instead of 1; otherwise, the
 textured images are smaller than the wireframes.
 
+<i>Double buffering</i>. When enabled, OpenGL will render the image
+offscreen, and then copy it. This will prevent any weird triangular
+flickering from the rendering being visible.
+
+<i>Color dithering</i>. Reduces color banding when downscaling colors,
+at the cost of some additional noise.
+
 <i>Display lists</i>. When enabled, OpenGL will use display lists.
 Display lists speed up rendering. However, slight slowdowns might be
 noticed when changes to the map/model are made, because the lists then
 need to be rebuild with the updated information.
 
 <i>Face culling</i>. Speeds up rendering by making all the backsides of
-faces invisible. This doesn't apply to transparent faces.
+faces invisible.
+
+<i>Texture filtering</i>. This improved the texture quality, mainly under
+high angles. It will make the textures appear less blocky and pixelated.
+The higher the settings, the better the quality, but also the lower the
+performance.
 
 <i>Ambient lighting brightness</i>. The ambient lighting brightness. The
 higher the number, the brighter the ambient lighting. Settings this high
@@ -71,6 +72,14 @@ moving', but now when moving the camera. Rendering light can take much
 time, especially in larger scenes with many lights. Disabling lighting
 when moving will speed up rendering when the camera is moving, and thus
 make the movement much less jerky.
+
+<i>Disable desktop composition</i>. On some systems, the desktop
+composition feature may corrupt the rendered viewport. Enable this
+option to automatically disable the desktop composition feature when a
+viewport opens.
+
+<i>Workaround for GDI</i>. Some systems allows direct GDI drawing onto
+rendered viewports. More modern systems do not support this anymore.
 
 Note: Use a utility like <a target="_blank" href="http://www.realtech-vr.com/glview/">OpenGL Viewer</a>
 to make sure your video card and video drivers support all the OpenGL

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.561  2016/03/14 19:31:05  danielpharos
+//Added Glide face culling and color dithering settings.
+//
 //Revision 1.560  2015/12/06 11:07:06  danielpharos
 //Switching version number to 6.6 Beta 7.
 //
@@ -1896,19 +1899,19 @@ QQRKSRC1
       }
       OpenGL:config =
       {
+        AllowsGDI = "1"
         Fog = "1"
         Transparency = "1"
         Lights = "1"
-        Dither = "1"
-        //Bilinear = "1" OLD SETTING, use TextureFiltering instead!
-        TextureFiltering = "1"
-        DoubleBuffer = "1"
-        AllowsGDI = "1"
         ColorBits = '0'
         DepthBits = '16'
         VCorrection = '0.92'
+        DoubleBuffer = "1"
+        Dither = "1"
         GLLists = "1"
         Culling = "1"
+        //Bilinear = "1" OLD SETTING, use TextureFiltering instead!
+        TextureFiltering = "1"
         Ambient = '0.4'
         LightingQuality = "4"
         StillQuality = "0"
@@ -1919,15 +1922,15 @@ QQRKSRC1
       }
       DirectX:config =
       {
+        AllowsGDI = "1"
         Fog = "1"
         Transparency = "1"
         Lights = "1"
-        Dither = ""
-        TextureFiltering = "1"
-        AllowsGDI = "1"
         BackBufferFormat = "1"
         StencilBufferBits = "0"
         VCorrection = '0.92'
+        Dither = ""
+        TextureFiltering = "1"
         Culling = "1"
         HighPrecision = ""
         DisableDWM = ""
@@ -9611,7 +9614,7 @@ QQRKSRC1
       Speed: = {Txt="Movement speed" Typ="EF1" Hint="How fast you move, in pixels/second"}
       RunSpeed: = {Txt="Running speed" Typ="EF1" Hint="How fast you move when you hold down the run key, in pixels/second"}
       RotateSpeed: = {Txt="Rotation speed" Typ="EF1" Hint="How fast you turn left/right or look up/down, in degrees/second"}
-      AccelDelay: = {Txt="Acceleration delay" Typ="EF1" Hint="How much time it takes until you reach full speed (``0´´ allowed)"}
+      AccelDelay: = {Txt="Acceleration delay" Typ="EF1" Hint="How much time it takes until you reach full speed (zero allowed)"}
       RunAccelDelay: = {Txt="Running acceleration delay" Typ="EF1" Hint="As above but while the run key is down"}
       Sep4: = {Typ="S" Txt = ""}
       L2: = {Typ="S" Txt="Additional settings"}
@@ -9653,9 +9656,9 @@ QQRKSRC1
       FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen Glide mode only"}
       FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="Rendering resolution is set below, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
+      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
       Sep0: = {Typ="S" Txt = ""}
       L1: = {Typ="S" Txt="---- additional options ----"}
-      Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
       Resolution: = {
         Txt="Resolution"
         Typ="CL"
@@ -9685,6 +9688,7 @@ QQRKSRC1
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
+      AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled" Hint = "Enables fading for distant objects."}
       Transparency: = {
         Txt="Transparency"
@@ -9709,16 +9713,6 @@ QQRKSRC1
       L2: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
       L3: = {Typ="S" Txt="---- additional options ----"}
-      TextureFiltering: = {
-        Txt="Texture filtering"
-        Typ="CL"
-        Items  = "None" $0D "Bilinear" $0D "Trilinear" $0D "Anisotropic"
-        Values = "0"    $0D "1"        $0D "2"         $0D "3"
-        Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
-      }
-      DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
-      Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
-      AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       ColorBits: = { Typ="EF1" Txt="Color bits (0=current)" Hint="The amount of bits per pixel. The higher, the better the quality."
                                 $0D"Not all numbers are supported. Most common are 16, 24 and 32." }
       DepthBits: = { Typ="EF1" Txt="Depth buffer bits" Hint="The amount of bits per pixel in the depth buffer. The higher,"
@@ -9727,10 +9721,19 @@ QQRKSRC1
       VCorrection: = { Typ="EF1" Txt="Size correction" Hint="Corrects misalignments between the image and the wireframe lines over it."
                                                          $0D"For example, Windows NT's software OpenGL is known to require a correction of about 0.92 instead of 1;"
                                                          $0D"otherwise, the textured images are smaller than the wireframes." }
+      DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" Hint="Reduces the flickering noticed when the view redraws."}
+      Dither: = { Typ="X" Txt="Color dithering" Cap="Enabled" }
       GLLists: = { Typ="X" Txt="Display lists" Cap="Enabled" Hint="Speeds up rendering. However, slight slowdowns might be noticed when changes to the map/model are made,"
                                                                $0D"because the list then needs to be rebuild with the updated information." }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                                              $0D"This doesn't apply to transparent faces." }
+      TextureFiltering: = {
+        Txt="Texture filtering"
+        Typ="CL"
+        Items  = "None" $0D "Bilinear" $0D "Trilinear" $0D "Anisotropic"
+        Values = "0"    $0D "1"        $0D "2"         $0D "3"
+        Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
+      }
       Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
       LightingQuality: = {
         Txt="Lighting quality on faces"
@@ -9764,6 +9767,7 @@ QQRKSRC1
     {
       Style = "3"
       L0: = {Typ="S" Txt="---- DirectX 9.0c hardware owners only ----"}
+      AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled" Hint = "Enables fading for distant objects."}
       Transparency: = {
         Txt="Transparency"
@@ -9825,7 +9829,6 @@ QQRKSRC1
         Values = "0"    $0D "1"        $0D "2"         $0D "3"
         Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
       }
-      AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                 $0D"This doesn't apply to transparent faces." }
       HighPrecision: = { Typ="X" Txt="High floating point precision" Cap="Enabled" Hint="Enables high precision floating point calculations. Improves accuracy, but decreases performance."}

@@ -1,11 +1,11 @@
-title: Glide (3DFX)
+title: Glide (3dfx)
 author: Decker, DanielPharos
 
 <img align=right>glide.png</img>
 Settings in this folder are only usable if you have a true Glide
 graphics-card.
 
-3D-accelerators like 3Dfx, Voodoo, Voodoo-II and other low-price cards, are
+3D-accelerators like 3dfx, Voodoo, Voodoo-II and other low-price cards, are
 <u>not</u> true OpenGL compatible, they only emulates it through a
 Glide-driver.
 
@@ -17,16 +17,27 @@ Glide-driver.
 
 <i>Isometric transparent fraction</i>.
 
+<i>Fade</i>. With this you can enable and disable the fading fog.
+
 
 <u>Additional options</u>
-
-<i>Fade</i>. With this you can enable and disable the fading fog.
 
 <i>Resolution</i>. This is the resolution Glide renders at. The higher
 this setting, the higher the quality, but also the slower the
 rendering.
 
 <i>Mirroring</i>. Allows you to flip the viewport around. Use this if everything renders upside-down.
+
+<i>Color dithering</i>. Reduces color banding when downscaling colors,
+at the cost of some additional noise.
+
+<i>Face culling</i>. Speeds up rendering by making all the backsides of
+faces invisible.
+
+<i>Disable desktop composition</i>. On some systems, the desktop
+composition feature may corrupt the rendered viewport. Enable this
+option to automatically disable the desktop composition feature when a
+viewport opens.
 
 Note: Usage of emulators (such as <a target="_blank" href="http://dege.freeweb.hu/">dgVoodoo</a>)
 might produce weird effects, and is generally not supported.

@@ -5,6 +5,9 @@ author: DanielPharos
 Settings in this folder are only usable if you have a DirectX
 graphics-card.
 
+<i>Over-the-scene lines+icons</i>. This will draw all the lines and
+icons over the scene.
+
 <i>Fade</i>. With this you can enable and disable the fading fog.
 
 <i>Transparency</i>. With this you can enable and disable transparency.
@@ -22,14 +25,30 @@ the quality, but not all formats might be supported.
 buffer. The higher the number, the less chance of objects being rendered
 overlapping while they're not. Not all modes might supported.
 
-<i>Color dithering</i>. When enabled, DirectX will dither colors.
+<i>Size correction</i>. Corrects misalignments between the image and the
+wireframe lines over it.
+
+<i>Color dithering</i>. Reduces color banding when downscaling colors,
+at the cost of some additional noise.
+
+<i>Texture filtering</i>. This improved the texture quality, mainly under
+high angles. It will make the textures appear less blocky and pixelated.
+The higher the settings, the better the quality, but also the lower the
+performance.
 
 <i>Face culling</i>. Speeds up rendering by making all the backsides of
-faces invisible. This doesn't apply to transparent faces.
+faces invisible.
 
 <i>High floating point precision</i>. Enabled high precision in floating
 point calculations. Setting this increases rendering accuracy, but also
 degrades performance.
 
-Note: Use the <a target="_blank" href="http://support.microsoft.com/kb/157730">DirectX Diagnostic Tool</a> to make sure you have the right
-version of DirectX installed. See <a target="_blank" href="http://support.microsoft.com/kb/157730">this article</a>.
+<i>Disable desktop composition</i>. On some systems, the desktop
+composition feature may corrupt the rendered viewport. Enable this
+option to automatically disable the desktop composition feature when a
+viewport opens.
+
+<i>Workaround for GDI</i>. Some systems allows direct GDI drawing onto
+rendered viewports. More modern systems do not support this anymore.
+
+Note: Use the <a target="_blank" href="http://support.microsoft.com/kb/157730">DirectX Diagnostic Tool</a> to make sure you have the right version of DirectX installed. See <a target="_blank" href="http://support.microsoft.com/kb/157730">this article</a>.
