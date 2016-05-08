@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.117  2015/05/23 16:10:26  danielpharos
+Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
+
 Revision 1.116  2015/05/19 17:31:04  danielpharos
 Small improvement of previous commit, and remove its debugging code.
 
@@ -601,10 +604,6 @@ begin
       else if GameCode>=mjQ3A then
         //DanielPharos: This should select all Quake3 and better games.
         BrushDefVersion:=1;
-
-    //DanielPharos: At the moment, the only one supported!
-    if BrushDefVersion>1 then
-      BrushDefVersion:=1;
 
     //Resolve PatchDefVersion
     PatchDefVersion:=2;
@@ -3868,15 +3867,20 @@ begin
  DecimalPlaces := MapSaveSettings.DecimalPlaces;
  
  F:=TFace(ObjectToSave);
- if F.GetThreePoints(P[1], P[3], P[2]) and F.LoadData then
+ if MapSaveSettings.BrushDefVersion < 2 then
+  begin
+   if not F.GetThreePoints(P[1], P[3], P[2]) or not F.LoadData then
+    begin
+     Log(LOG_WARNING, 'Unable to retrieve face data!'); //@MOVE TO DICT!
+     exit;
+    end;
 {
      if BrushPrim then
        F.GetThreePointsBP(P[1], P[3], P[2]);
 }
-  begin
 
    if (MapSaveSettings.MapFormat=QetpType) or (MapSaveSettings.MapFormat=V220Type) then
-   begin
+    begin
      F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
 
 {
@@ -3888,16 +3892,16 @@ begin
      end;
 }
 
-   end;
-   
-    { these means brutally round off the threepoints, whatever they are }
- WriteIntegers:=Flags2 and soDisableFPCoord <> 0;
+    end;
 
-// UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
-// ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
+   { these means brutally round off the threepoints, whatever they are }
+   WriteIntegers:=Flags2 and soDisableFPCoord <> 0;
 
- UseIntegralVertices:=(MapSaveSettings.MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
- ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
+//   UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
+//   ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
+
+   UseIntegralVertices:=(MapSaveSettings.MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
+   ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
    idea was to force threepoints to integers with less distortion, in aid
    of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
 
@@ -3915,13 +3919,12 @@ begin
        P[I].Z:=P[I].Z-Delta1.Z;
       end;
     end;
-   S:='  ';
+
    { experiment }
    if UseIntegralVertices then
-   begin
+    begin
      { wacko crap to get the vertexes }
-     { FS is first of a linked list of structures
-        specifying vertex cycles }
+     { FS is first of a linked list of structures specifying vertex cycles }
      FS:=F.FaceOfPoly;
      K:=1;
      while Assigned(FS) do {FS is not Nil, why not say it that way?
@@ -3946,19 +3949,18 @@ begin
        if K>3 then break;
        FS:=FS^.NextF;
      end;
-     if K>3 then {we got some nearly integral threepoints
-       so lets usem }
+     if K>3 then {we got some nearly integral threepoints so lets usem }
      begin
        P[1]:=VT[1];
        { if normal would be wrong, exchange }
        if Dot(Cross(VecDiff(VT[2],VT[1]),VecDiff(VT[3],VT[1])),F.Normale)>0 then
        begin
-          P[2]:=VT[3]; P[3]:=VT[2];
+         P[2]:=VT[3]; P[3]:=VT[2];
        end
        else
        begin
          P[2]:=VT[2]; P[3]:=VT[3]
-       end
+       end;
      end
 (* We could use 1 or two integral ones if they are found, but
    atm I'm not convinced it's worth it.
@@ -3974,26 +3976,35 @@ begin
          else
          begin
            P[2]:=VT[2]; P[3]:=VT[3]
-         end
-     end
+         end;
+     end;
 *)
-   else if ExpandThreePoints then
-   (* slower but more accurate alternative, suggested by gage144
-      on Quake3World editing forum: make a 2d grid of points on
-      the axis plane closest to the face plane, project them onto
-      the face, then use the three projected points that are nearest
-      to being integral, rounded to integral *)
-   begin
-      P[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
-      P[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
-   end
-   end;
+     else if ExpandThreePoints then
+     (* slower but more accurate alternative, suggested by gage144
+        on Quake3World editing forum: make a 2d grid of points on
+        the axis plane closest to the face plane, project them onto
+        the face, then use the three projected points that are nearest
+        to being integral, rounded to integral *)
+     begin
+       P[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
+       P[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
+     end;
+    end
+  else
+   if not F.LoadData then
+    begin
+     Log(LOG_WARNING, 'Unable to retrieve face data!'); //@MOVE TO DICT!
+     exit;
+    end;
+  end;
 
-   {start writing out a face}
+ {start writing out a face}
+ S:='  ';
+ if MapSaveSettings.MapFormat=HL2Type then
+   S:= S+ '  "plane" "';
 
-   if MapSaveSettings.MapFormat=HL2Type then
-     S:= S+ '  "plane" "';
-
+ if MapSaveSettings.BrushDefVersion < 2 then
+  begin
    for I:=1 to 3 do
     with P[I] do
      begin
@@ -4002,240 +4013,249 @@ begin
       else
         S:=S+'( ';
       R:=Round(X);
-
+ 
       if WriteIntegers or (Abs(X-R) < rien) then
        S:=S+IntToStr(R)+' '
       else
        S:=S+FloatToStrF(X, ffFixed, 20, DecimalPlaces)+' ';
       R:=Round(Y);
-
+ 
       if WriteIntegers or (Abs(Y-R) < rien) then
        S:=S+IntToStr(R)+' '
       else
        S:=S+FloatToStrF(Y, ffFixed, 20, DecimalPlaces)+' ';
       R:=Round(Z);
-
+ 
       if WriteIntegers or (Abs(Z-R) < rien) then
        S:=S+IntToStr(R)
       else
        S:=S+FloatToStrF(Z, ffFixed, 20, DecimalPlaces);
-
+ 
       if MapSaveSettings.MapFormat=HL2Type then
         S:=S+') '
       else
         S:=S+' ) ';
-
+ 
      end;
-
+ 
    if MapSaveSettings.MapFormat=HL2Type then
      S[Length(S)]:='"'; //Change last space into quote
-
-   {start writing out a texture coordinates}
-   if MapSaveSettings.MapFormat=BPType then
-    with F do
-     begin
-      GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
-      GetPXPY(Normale, PT, PX, PY, Dist);
-      S:=S+'( ';
-      write3vect(PX,S);
-      write3vect(PY,S);
-      S:=S+') ';
-     end;
-
-
-   {start writing out a texture name and tx coordinates}
-   with F do
-    begin
-
-     {texture name}
-     TextureName:=NomTex;
-     if MapSaveSettings.MapFormat=HL2Type then
-       S:= S+#13#10'    "material" "';
-
-     if MapSaveSettings.MapVersion>1 then
-       TextureName:='"'+ConcatPaths([GameTexturesPath, TextureName])+'"';
-
-     if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
-       TextureName:=UpperCase(TextureName);
-     if not (SetupGameSet.Specifics.Values['TextureNameDontReverseSlashes']<>'') then
-       TextureName:=ReverseSlashes(TextureName);
-
-     S:=S+TextureName;
-
-     if MapSaveSettings.MapFormat=HL2Type then
-       S:= S+'"';
-
-     {texture coordinates}
-     case MapSaveSettings.MapFormat of
-      V220Type:
-        Valve220MapParams(MapSaveSettings,False,Normale, F, S);
-      HL2Type:
-        Valve220MapParams(MapSaveSettings,True,Normale, F, S);
-      CoD2Type:
-        CoD2MapParams(MapSaveSettings,Normale, F, S);
-
-      else {case}
-        if not (MapSaveSettings.MapFormat=BPType) then
-        begin
-          SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
-
-          ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
-
-          if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
-          begin
-            //DanielPharos: Normalize the texture shift. If we don't do this,
-            //this causes a *lot* of texture info entries in the BSP file.
-            Q:=GlobalFindTexture(NomTex, Nil);
-            if Q<>Nil then
-             try
-              Size:=Q.GetSize;
-             except
-              Log(LOG_WARNING, LoadStr1(5465), [NomTex]);
-              Q:=Nil;
-             end;
-            if Q<>Nil then
-            begin
-              //We're going to round later anyway, and we need integers here!
-              Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
-              Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
-              if Params[1] < 0 then
-                Params[1]:=Params[1] + Size.X;
-              if Params[2] < 0 then
-                Params[2]:=Params[2] + Size.Y;
-            end;
-          end;
-
-          for I:=1 to 2 do
-            S:=S+' '+IntToStr(Round(Params[I]));
-          for I:=3 to 5 do
-          begin
-            R:=Round(Params[I]);
-            if Abs(R-Params[I])<rien then
-              S:=S+' '+IntToStr(R)
-            else
-              S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, DecimalPlaces);
-          end;
-      end;
-     end;{case MapFormat}
-   end; {with f}
-
-   if MapSaveSettings.GameCode=mjHexen then
-     S:=S+' -1'
-   else
-   if MapSaveSettings.GameCode=mjSin then
-   { tiglari: Sin/KP/SOF/Q2 code below manages the content/
-      flags/value information in textures.  It's complicated
-      because there is in general default info in the textures
-      which can be overridden in the faces, Sin is the most
-      complex. }
-   begin
-      Q := GlobalFindTexture(F.NomTex,Nil);
-      if Q<>Nil then
-      begin { see comments to QkMap on what's going on here }
-       Q:=Q.LoadPixelSet;
-       if not (Q is QTextureSin) then
-         Q:=Nil;
-      end;
-      if Q=Nil then
-        Q:=QTextureSin.Create('', Nil);
-      Q.AddRef(+1);
-      try
-       { these function below updates S }
-       StashFloatFlag('friction',2);     { for flags stored as floats }
-       StashFloatFlag('restitution',2);
-       StashIntFlag('direct');        { stash string as float }
-       StashIntFlag('directangle');
-       StashStrFlag('directstyle');   { stash string as string }
-       StashFloatFlag('translucence',2);
-       StashFloatFlag('trans_mag',2);
-       StashFloatFlag('animtime', 2);
-       StashIntFlag('trans_angle');
-       StashStrFlag('color');
-       WriteNonDefaultFlags(F.Specifics.Values['Flags'],StrToInt(Q.Specifics.Values['Flags']), FlagsTable);
-       WriteNonDefaultFlags(F.Specifics.Values['Contents'],StrToInt(Q.Specifics.Values['Flags']), ContentsTable);
-       { maybe the internal storage of these should be changed to fit
-         the Sin file format }
-       S1:=F.Specifics.Values['Value'];
-       if S1<>'' then
-         if Q.Specifics.Values['Value']<>S1 then
-           S:=S+' lightvalue '+F.Specifics.Values['Value'];
-     {  StashFloatFlag('nonlitvalue', 2);   { Nun functiona }
-       rval:=F.GetFloatSpec('nonlit', -1);
-       if rval >= 0 then
-         if Q.GetFloatSpec('nonlit', -1)<>rval then
-           S:=S+' nonlitvalue '+FloatToStrF(rval, ffFixed, 7, 2);
-      finally
-        Q.AddRef(-1);
-      end;
-   end
-   else  { kp seems to need field values
-             written into the map.  Alex write code to
-             put the c, f, v flags into the texture link }
-   if (MapSaveSettings.GameCode=mjKingPin) then
-   begin
-     Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
-     if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
-     S1:=CheckFieldDefault('Contents','c', Q);
-     S2:=CheckFieldDefault('Flags','f', Q);
-     S3:=CheckFieldDefault('Value','v', Q);
-     S:=S+' '+S1+' '+S2+' '+S3;
-   end
-   else {for me, SOF seems to behave like Q2, but for other
-      people, default flags seem to be written into the map
-      to work, so that's what happens here }
-   if (MapSaveSettings.GameCode=mjSOF) then
-   begin
-      Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
-      if Q<>Nil then Q:=Q.LoadPixelSet;      { load it, since the default flags
-              are in the actual texture, not the link.) }
-      S1:=CheckFieldDefault('Contents','Contents', Q);
-      S2:=CheckFieldDefault('Flags','Flags', Q);
-      S3:=CheckFieldDefault('Value','Value', Q);
-      S:=S+' '+S1+' '+S2+' '+S3;
-   end
-   else
-   if (MapSaveSettings.GameCode=mjCOD) then
-   begin
-     //FIXME: Output right flags
-     S:=S+' 0 0 0 0';
-   end
-   else
-   if (MapSaveSettings.GameCode=mjCOD2) then
-   begin
-     //FIXME: Output right flags
-     S:=S+' X 0 0 0 0 0 0';
-   end
-   else
-    { and in Q2, default flags get written into the map
-      automatically, no wuccaz (<- wuccin furries) }
-    {\tiglari}
-    {Decker - FIXME: Until we figure out how to clearly handle
-     MOHAA's face-flags, we now just write them to the .MAP so
-     the MOHAA-Q3MAP.EXE will be happy.}
-   begin
-      S1:=F.Specifics.Values['Contents'];
-      S2:=F.Specifics.Values['Flags'];
-      S3:=F.Specifics.Values['Value'];
-      if (SetupGameSet.Specifics.Values['ForceFaceFlags']='1')
-      or (S1<>'') or (S2<>'') or (S3<>'') then
-      //Decker - force write face-flags for certain games (MOHAA and EF2)
-      begin
-        if S1='' then S1:='0';
-        if S2='' then S2:='0';
-        if S3='' then S3:='0';
-        S:=S+' '+S1+' '+S2+' '+S3;
-
-        if MapSaveSettings.GameCode=mjMOHAA then
-          MohaaSurfaceParms(F, S);
-
-      end;
-   end;
-
-   if (MapSaveSettings.MapFormat=QetpType) then
-     S:=S+TxField[(MapSaveSettings.GameCode>='A') and (MapSaveSettings.GameCode<='Z'), EtpMirror];
-
-   Brush.Add(S);
+  end
+ else
+  begin
+   S:=S+'( ';
+   S:=S+FloatToStrF(F.Normale.X, ffFixed, 20, DecimalPlaces)+' ';
+   S:=S+FloatToStrF(F.Normale.Y, ffFixed, 20, DecimalPlaces)+' ';
+   S:=S+FloatToStrF(F.Normale.Z, ffFixed, 20, DecimalPlaces)+' ';
+   S:=S+FloatToStrF(-F.Dist, ffFixed, 20, DecimalPlaces)+' ';
+   S:=S+' ) ';
   end;
+ 
+ {start writing out a texture coordinates}
+ if MapSaveSettings.MapFormat=BPType then
+  with F do
+   begin
+    GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
+    GetPXPY(Normale, PT, PX, PY, Dist);
+    S:=S+'( ';
+    write3vect(PX,S);
+    write3vect(PY,S);
+    S:=S+') ';
+   end;
+ 
+ 
+ {start writing out a texture name and tx coordinates}
+ with F do
+  begin
+ 
+   {texture name}
+   TextureName:=NomTex;
+   if MapSaveSettings.MapFormat=HL2Type then
+     S:= S+#13#10'    "material" "';
+ 
+   if MapSaveSettings.MapVersion>1 then
+     TextureName:='"'+ConcatPaths([GameTexturesPath, TextureName])+'"';
+ 
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     TextureName:=UpperCase(TextureName);
+   if not (SetupGameSet.Specifics.Values['TextureNameDontReverseSlashes']<>'') then
+     TextureName:=ReverseSlashes(TextureName);
+ 
+   S:=S+TextureName;
+ 
+   if MapSaveSettings.MapFormat=HL2Type then
+     S:= S+'"';
+ 
+   {texture coordinates}
+   case MapSaveSettings.MapFormat of
+    V220Type:
+      Valve220MapParams(MapSaveSettings,False,Normale, F, S);
+    HL2Type:
+      Valve220MapParams(MapSaveSettings,True,Normale, F, S);
+    CoD2Type:
+      CoD2MapParams(MapSaveSettings,Normale, F, S);
+ 
+    else {case}
+      if not (MapSaveSettings.MapFormat=BPType) then
+      begin
+        SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
+ 
+        ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
+ 
+        if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
+        begin
+          //DanielPharos: Normalize the texture shift. If we don't do this,
+          //this causes a *lot* of texture info entries in the BSP file.
+          Q:=GlobalFindTexture(NomTex, Nil);
+          if Q<>Nil then
+           try
+            Size:=Q.GetSize;
+           except
+            Log(LOG_WARNING, LoadStr1(5465), [NomTex]);
+            Q:=Nil;
+           end;
+          if Q<>Nil then
+          begin
+            //We're going to round later anyway, and we need integers here!
+            Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
+            Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
+            if Params[1] < 0 then
+              Params[1]:=Params[1] + Size.X;
+            if Params[2] < 0 then
+              Params[2]:=Params[2] + Size.Y;
+          end;
+        end;
+ 
+        for I:=1 to 2 do
+          S:=S+' '+IntToStr(Round(Params[I]));
+        for I:=3 to 5 do
+        begin
+          R:=Round(Params[I]);
+          if Abs(R-Params[I])<rien then
+            S:=S+' '+IntToStr(R)
+          else
+            S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, DecimalPlaces);
+        end;
+    end;
+   end;{case MapFormat}
+ end; {with f}
+
+ if MapSaveSettings.GameCode=mjHexen then
+   S:=S+' -1'
+ else
+ if MapSaveSettings.GameCode=mjSin then
+ { tiglari: Sin/KP/SOF/Q2 code below manages the content/
+    flags/value information in textures.  It's complicated
+    because there is in general default info in the textures
+    which can be overridden in the faces, Sin is the most
+    complex. }
+ begin
+   Q := GlobalFindTexture(F.NomTex,Nil);
+   if Q<>Nil then
+   begin { see comments to QkMap on what's going on here }
+    Q:=Q.LoadPixelSet;
+    if not (Q is QTextureSin) then
+      Q:=Nil;
+   end;
+   if Q=Nil then
+     Q:=QTextureSin.Create('', Nil);
+   Q.AddRef(+1);
+   try
+    { these function below updates S }
+    StashFloatFlag('friction',2);     { for flags stored as floats }
+    StashFloatFlag('restitution',2);
+    StashIntFlag('direct');        { stash string as float }
+    StashIntFlag('directangle');
+    StashStrFlag('directstyle');   { stash string as string }
+    StashFloatFlag('translucence',2);
+    StashFloatFlag('trans_mag',2);
+    StashFloatFlag('animtime', 2);
+    StashIntFlag('trans_angle');
+    StashStrFlag('color');
+    WriteNonDefaultFlags(F.Specifics.Values['Flags'],StrToInt(Q.Specifics.Values['Flags']), FlagsTable);
+    WriteNonDefaultFlags(F.Specifics.Values['Contents'],StrToInt(Q.Specifics.Values['Flags']), ContentsTable);
+    { maybe the internal storage of these should be changed to fit
+      the Sin file format }
+    S1:=F.Specifics.Values['Value'];
+    if S1<>'' then
+      if Q.Specifics.Values['Value']<>S1 then
+        S:=S+' lightvalue '+F.Specifics.Values['Value'];
+  {  StashFloatFlag('nonlitvalue', 2);   { Nun functiona }
+    rval:=F.GetFloatSpec('nonlit', -1);
+    if rval >= 0 then
+      if Q.GetFloatSpec('nonlit', -1)<>rval then
+        S:=S+' nonlitvalue '+FloatToStrF(rval, ffFixed, 7, 2);
+   finally
+     Q.AddRef(-1);
+   end;
+  end
+  else  { kp seems to need field values
+            written into the map.  Alex write code to
+            put the c, f, v flags into the texture link }
+  if (MapSaveSettings.GameCode=mjKingPin) then
+  begin
+    Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+    if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
+    S1:=CheckFieldDefault('Contents','c', Q);
+    S2:=CheckFieldDefault('Flags','f', Q);
+    S3:=CheckFieldDefault('Value','v', Q);
+    S:=S+' '+S1+' '+S2+' '+S3;
+  end
+  else {for me, SOF seems to behave like Q2, but for other
+     people, default flags seem to be written into the map
+     to work, so that's what happens here }
+  if (MapSaveSettings.GameCode=mjSOF) then
+  begin
+     Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+     if Q<>Nil then Q:=Q.LoadPixelSet;      { load it, since the default flags
+             are in the actual texture, not the link.) }
+     S1:=CheckFieldDefault('Contents','Contents', Q);
+     S2:=CheckFieldDefault('Flags','Flags', Q);
+     S3:=CheckFieldDefault('Value','Value', Q);
+     S:=S+' '+S1+' '+S2+' '+S3;
+  end
+  else
+  if (MapSaveSettings.GameCode=mjCOD) then
+  begin
+    //FIXME: Output right flags
+    S:=S+' 0 0 0 0';
+  end
+  else
+  if (MapSaveSettings.GameCode=mjCOD2) then
+  begin
+    //FIXME: Output right flags
+    S:=S+' X 0 0 0 0 0 0';
+  end
+  else
+   { and in Q2, default flags get written into the map
+     automatically, no wuccaz (<- wuccin furries) }
+   {\tiglari}
+   {Decker - FIXME: Until we figure out how to clearly handle
+    MOHAA's face-flags, we now just write them to the .MAP so
+    the MOHAA-Q3MAP.EXE will be happy.}
+  begin
+    S1:=F.Specifics.Values['Contents'];
+    S2:=F.Specifics.Values['Flags'];
+    S3:=F.Specifics.Values['Value'];
+    if (SetupGameSet.Specifics.Values['ForceFaceFlags']='1')
+    or (S1<>'') or (S2<>'') or (S3<>'') then
+    //Decker - force write face-flags for certain games (MOHAA and EF2)
+    begin
+      if S1='' then S1:='0';
+      if S2='' then S2:='0';
+      if S3='' then S3:='0';
+      S:=S+' '+S1+' '+S2+' '+S3;
+  
+      if MapSaveSettings.GameCode=mjMOHAA then
+        MohaaSurfaceParms(F, S);
+  
+    end;
+  end;
+
+  if (MapSaveSettings.MapFormat=QetpType) then
+    S:=S+TxField[(MapSaveSettings.GameCode>='A') and (MapSaveSettings.GameCode<='Z'), EtpMirror];
+
+  Brush.Add(S);
 end;
 
 procedure SaveAsMapTextTBezier(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
