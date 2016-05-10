@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.118  2016/05/08 17:43:28  danielpharos
+Added brushDef2 and brushDef3 saving support.
+
 Revision 1.117  2015/05/23 16:10:26  danielpharos
 Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
 
@@ -4265,7 +4268,7 @@ var
  S: String;
  Value: PSingle;
  TextureName: String;
- SubDivisions: Array of Single;
+ SubDivisions: array[0..1] of Single;
  HorzSubDiv, VertSubDiv: Integer;
  DecimalPlaces: Integer;
 begin
