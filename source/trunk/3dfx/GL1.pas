@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2015/09/12 13:19:19  danielpharos
+Changed TimesLoaded into Cardinal.
+
 Revision 1.48  2015/08/29 17:00:54  danielpharos
 Automated a confusing setting.
 
@@ -1279,7 +1282,7 @@ begin
   while I>0 do
   begin
     Ext:=MidStr(S, OldPos+1, I - OldPos - 1);
-    Log(LOG_VERBOSE, 'OpenGL extension found: ' + Ext); //MOVE to dict!
+    Log(LOG_VERBOSE, FmtLoadStr1(6316, [Ext]));
     GLExtensions.Add(Ext);
     OldPos:=I;
     I:=PosEx(' ', S, OldPos + 1);
@@ -1288,7 +1291,7 @@ begin
   if (OldPos<>Length(S)) and (OldPos<>0) then
   begin
     Ext := RightStr(S, Length(S) - OldPos);
-    Log(LOG_VERBOSE, 'OpenGL extension found: ' + Ext); //MOVE to dict!
+    Log(LOG_VERBOSE, FmtLoadStr1(6316, [Ext]));
     GLExtensions.Add(Ext);
   end;
   Result:=True;

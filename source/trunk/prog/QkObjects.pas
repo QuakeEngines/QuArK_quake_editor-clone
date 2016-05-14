@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.131  2016/05/14 13:36:33  danielpharos
+Consted a TStrings object.
+
 Revision 1.130  2016/01/16 13:25:04  danielpharos
 Corrected a variable-type.
 
@@ -1281,7 +1284,7 @@ begin
   FSubElements:=TQList.Create;
 
   if not IsAllowedParent(nParent) then
-    Log(LOG_WARNING, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!'); //@MOVE TO DICT!
+    Log(LOG_WARNING, FmtLoadStr1(5786, [nName]));
 end;
 
 destructor QObject.Destroy;

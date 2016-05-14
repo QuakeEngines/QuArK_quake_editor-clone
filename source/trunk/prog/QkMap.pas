@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.119  2016/05/10 13:50:47  danielpharos
+Fixed a bug where the patchDef2 and patchDef3 subdivisions were both set to 1 on export.
+
 Revision 1.118  2016/05/08 17:43:28  danielpharos
 Added brushDef2 and brushDef3 saving support.
 
@@ -3874,7 +3877,7 @@ begin
   begin
    if not F.GetThreePoints(P[1], P[3], P[2]) or not F.LoadData then
     begin
-     Log(LOG_WARNING, 'Unable to retrieve face data!'); //@MOVE TO DICT!
+     Log(LOG_WARNING, LoadStr1(5785));
      exit;
     end;
 {

@@ -1039,6 +1039,8 @@ Strings = {
     5782: "got %s, expected %s",
     5783: "LoadPoints array size too large!",
     5784: "unknown object type %s",
+    5785: "Unable to retrieve face data!",
+    5786: "Object %s is being created in a non-allowed parent! This might produce errors!",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1092,6 +1094,7 @@ Strings = {
     6313: "Out of OpenGL display lists. Try updating your video card drivers. If that doesn't work, disable the display lists option in the Configuration dialog box",
     6314: "Out of OpenGL texture numbers. Try updating your video card drivers. If that doesn't work, use another renderer",
     6315: "Failed to swap buffers. Try updating your video card drivers. If that doesn't work, disable the double buffering option in the Configuration dialog box",
+    6316: "OpenGL extension found: %s",
 
     6320: "OpenGL renderer does not support fullscreen views (yet)",
     6321: "An error occurred in the OpenGL routines: CurrentSurf is nil!",
@@ -1112,6 +1115,7 @@ Strings = {
     6422: "Direct3D: Software vertex processing selected",
     6423: "Direct3D: Pure device enabled",
     6424: "Direct3D: Pure device disabled",
+    6425: "Direct3D Init: Zero lights supported! Lighting disabled out of safety.",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -1132,6 +1136,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.175  2016/03/13 16:13:29  danielpharos
+#Fixed a double QuArK appearing in the file header comment.
+#
 #Revision 1.174  2016/01/02 20:00:59  danielpharos
 #Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
 #

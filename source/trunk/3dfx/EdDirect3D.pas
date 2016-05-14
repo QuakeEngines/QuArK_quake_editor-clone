@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2016/03/13 16:14:40  danielpharos
+Small fixes for Glide's drawing to the screen.
+
 Revision 1.54  2016/02/13 13:48:40  danielpharos
 Added the backbuffer to DIB conversion; GDI workaround is now fully operational!
 
@@ -613,7 +616,7 @@ begin
   MaxLights := D3DCaps.MaxActiveLights;
   if MaxLights <= 0 then
   begin
-    Log(LOG_WARNING, 'Direct3D Init: Zero lights supported! Lighting disabled out of safety.'); //FIXME: MOVE to dict!
+    Log(LOG_WARNING, LoadStr1(6425));
     Lighting:=false;
   end;
 
