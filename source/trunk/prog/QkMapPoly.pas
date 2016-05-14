@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.102  2014/01/18 14:56:57  danielpharos
+Added a missing newline.
+
 Revision 1.101  2012/09/05 18:18:58  danielpharos
 Moved some map options around to make them more findable, and to make them work again.
 
@@ -2219,7 +2222,6 @@ end;
 
 function GameSupportsBrushPrim : Boolean;
 begin
-  (* ShowMessage(SetupGameSet.Specifics.Values['SupportsBrushPrim']); *)
   Result:=(SetupGameSet.Specifics.Values['SupportsBrushPrim']<>'');
 end;
 
