@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.104  2015/12/22 14:21:55  danielpharos
+Fixed a memory leak and other related issues for the Direct3D lighting list.
+
 Revision 1.103  2015/10/25 15:03:19  danielpharos
 Added the GDI workaround to OpenGL. This fixes the drawing of GDI on OpenGL views on more modern Windows machines.
 
@@ -393,7 +396,6 @@ type
    PixelFormat: PPixelFormatDescriptor;
    Extensions: TGLExtensionList;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
-   procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); virtual;
  protected
    TextureFiltering: TTextureFiltering;
    ScreenX, ScreenY: Integer;
@@ -402,6 +404,7 @@ type
    procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
+   procedure ClearSurfaces(Surf: PSurface3D; SurfSize: Integer); override;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
    procedure ReleaseResources;
