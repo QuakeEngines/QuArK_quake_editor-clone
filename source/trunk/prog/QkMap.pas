@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.120  2016/05/14 13:46:50  danielpharos
+Moved some strings to the dictionary.
+
 Revision 1.119  2016/05/10 13:50:47  danielpharos
 Fixed a bug where the patchDef2 and patchDef3 subdivisions were both set to 1 on export.
 
@@ -3708,7 +3711,7 @@ var
  I, R, J, K : Integer;
  P, PT, VT: TThreePoints;
  Params: TFaceParams;
- Delta1, V, V2: TVect;
+ Delta1, V, V2, V3: TVect;
  Facteur: TDouble;
  FS: PSurface;
  PX, PY: array[1..3] of Double;
@@ -3995,13 +3998,33 @@ begin
        P[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
        P[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
      end;
-    end
-  else
-   if not F.LoadData then
-    begin
-     Log(LOG_WARNING, 'Unable to retrieve face data!'); //@MOVE TO DICT!
-     exit;
     end;
+   end
+  else
+   begin
+    if not F.LoadData then
+     begin
+      Log(LOG_WARNING, LoadStr1(5785));
+      exit;
+     end;
+
+    if OriginBrush<>Nil then
+     begin
+      Delta1:=OriginBrush^;
+      Facteur:=Dot(F.Normale, Delta1);
+      Delta1.X:=Delta1.X - F.Normale.X*Facteur;
+      Delta1.Y:=Delta1.Y - F.Normale.Y*Facteur;    { force Delta1 in the plane of the face }
+      Delta1.Z:=Delta1.Z - F.Normale.Z*Facteur;
+
+      //Make a temporary clone that we move about
+      F:=F.CloneFaceTmp;
+      F.GetThreePoints(V, V2, V3);
+      VecSum(V, Delta1);
+      VecSum(V2, Delta1);
+      VecSum(V3, Delta1);
+      F.SetThreePoints(V, V2, V3);
+      F.LoadData; //Refresh the Normale and Dist
+     end;
   end;
 
  {start writing out a face}
@@ -4053,7 +4076,7 @@ begin
    S:=S+FloatToStrF(F.Normale.X, ffFixed, 20, DecimalPlaces)+' ';
    S:=S+FloatToStrF(F.Normale.Y, ffFixed, 20, DecimalPlaces)+' ';
    S:=S+FloatToStrF(F.Normale.Z, ffFixed, 20, DecimalPlaces)+' ';
-   S:=S+FloatToStrF(-F.Dist, ffFixed, 20, DecimalPlaces)+' ';
+   S:=S+FloatToStrF(-F.Dist, ffFixed, 20, DecimalPlaces);
    S:=S+' ) ';
   end;
  
