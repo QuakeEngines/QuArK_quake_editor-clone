@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.130  2016/01/16 13:25:04  danielpharos
+Corrected a variable-type.
+
 Revision 1.129  2014/10/31 15:26:26  danielpharos
 Improved indentation, and fixed a comment typo.
 
@@ -785,7 +788,7 @@ function IsFloatSpec(const Name: String) : Boolean;
 (*function NormalSpecOfIntSpec(const Name: String) : String;*)
 function NormalSpecOfFloatSpec(const Name: String) : String;
 procedure CheckValidSpec(var Spec: String);
-function StringListConcatWithSeparator(theStringList: TStrings; theStringSeparator: Byte) : String;
+function StringListConcatWithSeparator(const theStringList: TStrings; theStringSeparator: Byte) : String;
 {procedure FreeOldObjects;}
 {AiV}function QStreamAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 {procedure QStreamRelease(Ref: TTreeNode);}
@@ -1278,7 +1281,7 @@ begin
   FSubElements:=TQList.Create;
 
   if not IsAllowedParent(nParent) then
-    Log(LOG_WARNING, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!');
+    Log(LOG_WARNING, 'Object '+nName+' is being created in a non-allowed parent! This might produce errors!'); //@MOVE TO DICT!
 end;
 
 destructor QObject.Destroy;
@@ -2680,7 +2683,7 @@ begin
   end;
 end;
 
-function StringListConcatWithSeparator(theStringList: TStrings; theStringSeparator: Byte) : String;
+function StringListConcatWithSeparator(const theStringList: TStrings; theStringSeparator: Byte) : String;
 { (Comment by Decker 2001-02-23)
  Takes 'theStringList' and concatenates it into one huge string, where each
  item from 'StringList' is separated by a 'theStringSeparator'.
