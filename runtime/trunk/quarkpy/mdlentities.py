@@ -18,7 +18,6 @@ import qeditor
 from mdlutils import *
 import mdlhandles
 import dlgclasses
-import mdleditor
 from qeditor import ico_dict # Get the dictionary list of all icon image files available.
 import qtoolbar              # Get the toolbar functions to make buttons with.
 SS_MODEL = 3 # The Model Editor mode.
@@ -49,6 +48,7 @@ MT_MISCGROUP   = 6      # AiV
 ###############################
 
 def ShowHideBBoxes(x):
+    import mdleditor
     editor = mdleditor.mdleditor
     if editor is None: return
     templist = editor.layout.explorer.sellist
@@ -71,6 +71,7 @@ def HideTheseBBoxes(m):
 
 
 def ShowHideTags(x):
+    import mdleditor
     editor = mdleditor.mdleditor
     if editor is None: return
     templist = editor.layout.explorer.sellist
@@ -89,6 +90,7 @@ def HideTheseTags(m):
 
 
 def ShowHideBones(x):
+    import mdleditor
     editor = mdleditor.mdleditor
     if editor is None: return
     templist = editor.layout.explorer.sellist
@@ -112,6 +114,7 @@ def HideTheseBones(m):
 
 
 def ShowHideComp(x):
+    import mdleditor
     editor = mdleditor.mdleditor
     if editor is None: return
     editor.ModelFaceSelList = []
@@ -263,6 +266,7 @@ apply(SetupRoutines.append, setupchanged1)
 # Funcitons for AnimationCFG Module ONLY.
 
 def CFGfileLines():
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if len(editor.layout.explorer.sellist) == 0:
         return
@@ -347,6 +351,7 @@ def UseAnimationCFG():
 # Funcitons for Shader Module ONLY.
 
 def ShaderLines():
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if len(editor.layout.explorer.sellist) == 0:
         return
@@ -462,6 +467,7 @@ def UseExternalSkinEditor():
 
 ### Used by more then one module above.
 def macro_opentexteditor(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if btn.name == "edit_skin:":
         if editor.Root.currentcomponent.currentskin is None:
@@ -568,6 +574,7 @@ def UseVertexUVColors():
     return vtx_UVcolor_dialog_plugin
 
 def macro_apply_vtx_color(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if len(editor.ModelVertexSelList) == 0:
         quarkx.beep() # Makes the computer "Beep" once .
@@ -591,6 +598,7 @@ def macro_apply_vtx_color(btn):
     editor.ok(undo, 'applied vertex color')
 
 def macro_remove_vtx_color(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if len(editor.ModelVertexSelList) == 0:
         quarkx.beep() # Makes the computer "Beep" once .
@@ -660,6 +668,7 @@ def vtxpaintcursor(editor):
             view.cursor = CR_BRUSH
 
 def vtxpaintclick(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
@@ -674,6 +683,7 @@ def paintclick(btn):
     global vtxpaint
     if vtxpaint == 0:
         vtxpaint = 1
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if not quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] or quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "0":
         quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] = "1"
@@ -1062,6 +1072,7 @@ def WeightsClick(editor):
     WeightsDlg(quarkx.clickform, 'weightsdlg', editor, setup, action, onclosing)
 
 def vtxweightsclick(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     comp = editor.Root.currentcomponent
     try: # Updates the dialog.
@@ -1086,6 +1097,7 @@ def vtxweightsclick(btn):
             editor.linear1click(btn)
         
 def macro_selectvtxs(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         quarkx.beep() # Makes the computer "Beep" once.
@@ -1126,6 +1138,7 @@ def macro_selectvtxs(btn):
         Update_Editor_Views(editor)
 
 def macro_updatedialog(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     comp = editor.Root.currentcomponent
     for key in SRCsList.keys():
@@ -1141,6 +1154,7 @@ def macro_updatedialog(btn):
     editor.weightsdlg.df.setdata(editor.weightsdlg.src, editor.weightsdlg.f)
 
 def macro_applychanges(btn):
+    import mdleditor
     editor = mdleditor.mdleditor # Get the editor.
     foundframe = 0
     for item in editor.layout.explorer.sellist:
@@ -2143,6 +2157,7 @@ class TagType(EntityManager):
 
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a :tag) to use for the Specific/Args page."
+        import mdleditor
         editor = mdleditor.mdleditor # Get the editor.
         # Next line calls for the Animation Configuration Module above in this file.
         Weapons = ""
@@ -2708,6 +2723,7 @@ class BoneType(EntityManager):
     def dataforminput(o):
         "Returns the default settings or input data for this type of object 'o' (a bone) to use for the Specific/Args page."
 
+        import mdleditor
         editor = mdleditor.mdleditor # Get the editor.
         if not o.dictspec.has_key("comp_list"):
             o['comp_list'] = editor.Root.currentcomponent.name
@@ -2778,6 +2794,7 @@ class ComponentType(EntityManager):
     def dataformname(o):
         "Returns the data form for this type of object 'o' (a model component) to use for the Specific/Args page."
 
+        import mdleditor
         editor = mdleditor.mdleditor # Get the editor.
         BoneControls = """ """
         keys = o.dictspec.keys()
@@ -3339,6 +3356,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.93  2012/10/13 21:54:20  cdunde
+#To correct and update model settings.
+#
 #Revision 1.92  2012/10/09 06:10:24  cdunde
 #Forgot to remove print statements...My Bad!
 #

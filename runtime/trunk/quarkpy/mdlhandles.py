@@ -23,7 +23,6 @@ from mdlutils import *
 import mdlentities
 import qmenu
 import qbaseeditor
-import mdleditor
 
 #py2.4 indicates upgrade change for python 2.4
 
@@ -285,6 +284,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                     itemcount = itemcount + 1
                     if self.index == item:
                         editor.ModelVertexSelList.remove(item)
+                        import mdleditor
                         for v in editor.layout.views:
                             mdleditor.setsingleframefillcolor(editor, v)
                             v.repaint()
@@ -301,6 +301,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
 
         def pick_cleared(m, editor=editor, view=view):
             editor.ModelVertexSelList = []
+            import mdleditor
             for v in editor.layout.views:
                 mdleditor.setsingleframefillcolor(editor, v)
                 v.repaint()
@@ -401,6 +402,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
                 pass
             else:
                 if faceremoved != 0 or itemsremoved != 0:
+                    import mdleditor
                     if v.info["viewname"] == "XY":
                         fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
                         comp.filltris = mdleditor.faceselfilllist(v, fillcolor)
@@ -518,6 +520,7 @@ class ModelFaceHandle(qhandles.GenericHandle):
             vtxs[self.index] = vtxs[self.index] + delta
             new.vertices = vtxs
         if flags == 1032:             ## To stop drag starting lines from being erased.
+            import mdleditor
             mdleditor.setsingleframefillcolor(editor, view) ## Sets the modelfill color.
             view.repaint()            ## Repaints the view to clear the old lines.
             plugins.mdlgridscale.gridfinishdrawing(editor, view)
@@ -558,6 +561,7 @@ class TagHandle(qhandles.GenericHandle):
         self.tagframe = tagframe
         self.cursor = CR_CROSSH
         self.undomsg = "mesh tag move"
+        import mdleditor
         self.editor = mdleditor.mdleditor
         if not ico_dict.has_key('ico_objects'):
             ico_dict['ico_objects'] = LoadIconSet("images\\objects", 16)
@@ -920,6 +924,7 @@ class FaceHandle(qhandles.GenericHandle):
                     for spec in self.newpoly.dictspec.keys():
                         poly[spec] = self.newpoly.dictspec[spec]
                     # Updates what the tree-view selections, expanded folders and objects are so oldpoly.flags are current.
+                    import mdleditor
                     RestoreTreeView(mdleditor.mdleditor)
                     # Passes the current updated oldpoly.flags to our work poly.
                     poly.flags = oldpoly.flags
@@ -1782,6 +1787,7 @@ class VertexHandle(qhandles.GenericHandle):
         qhandles.GenericHandle.__init__(self, pos)
         self.cursor = CR_CROSSH
         self.undomsg = "mesh vertex move"
+        import mdleditor
         self.editor = mdleditor.mdleditor
         self.selection = []
 
@@ -1931,6 +1937,7 @@ class VertexHandle(qhandles.GenericHandle):
             return menulist
 
         def align_vert_ops_click(m):
+            import mdleditor
             editor = mdleditor.mdleditor
             m.items = AlignVertOpsMenu(editor)
 
@@ -2169,6 +2176,7 @@ class VertexHandle(qhandles.GenericHandle):
                     cv.brushcolor = vertexdotcolor
                     cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 
+            import mdleditor
             editor = mdleditor.mdleditor
             if editor is not None:
                 if editor.ModelVertexSelList != []:
@@ -2268,6 +2276,7 @@ class VertexHandle(qhandles.GenericHandle):
                         newlist = newlist + [new]
                     # Drag handle drawing section using only the 1st frame of the 'sellist' for speed.
                     if flags == 1032:             ## To stop drag starting lines from being erased.
+                        import mdleditor
                         mdleditor.setsingleframefillcolor(editor, view)
                         view.repaint()            ## Repaints the view to clear the old lines.
                         plugins.mdlgridscale.gridfinishdrawing(editor, view) ## Sets the modelfill color.
@@ -2312,6 +2321,7 @@ class SkinHandle(qhandles.GenericHandle):
     size = (3,3)
     def __init__(self, pos, tri_index, ver_index, comp, texWidth, texHeight, triangle):
         qhandles.GenericHandle.__init__(self, pos)
+        import mdleditor
         self.editor = mdleditor.mdleditor
         self.cursor = CR_CROSSH
         self.tri_index = tri_index
@@ -2568,11 +2578,13 @@ class SkinHandle(qhandles.GenericHandle):
             if quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] == "1":
                 quarkx.setupsubset(SS_MODEL, "Options")['SFSISV'] = None
             editor.SkinFaceSelList = []
+            import mdleditor
             mdleditor.ModelEditor.finishdrawing(editor, view)
 
         def TicksViewingMenu(editor):
             # Rectangle Drag Ticks_Method 1
             def mRDT_M1(m):
+                import mdleditor
                 editor = mdleditor.mdleditor
                 if not MdlOption("RDT_M1"):
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M1'] = "1"
@@ -2582,6 +2594,7 @@ class SkinHandle(qhandles.GenericHandle):
 
             # Rectangle Drag Ticks_Method 2
             def mRDT_M2(m):
+                import mdleditor
                 editor = mdleditor.mdleditor
                 if not MdlOption("RDT_M2"):
                     quarkx.setupsubset(SS_MODEL, "Options")['RDT_M2'] = "1"
@@ -2601,6 +2614,7 @@ class SkinHandle(qhandles.GenericHandle):
             return menulist
 
         def TicksViewingClick(m):
+            import mdleditor
             editor = mdleditor.mdleditor
             m.items = TicksViewingMenu(editor)
 
@@ -3760,7 +3774,7 @@ class ModelEditorLinHandlesManager:
     "the Linear Handle by calling its other related classes below this one."
 
     def __init__(self, color, bbox, list, view=None):
-
+        import mdleditor
         self.editor = mdleditor.mdleditor
         self.color = color
         self.bbox = bbox
@@ -4400,6 +4414,7 @@ class LinearHandle(qhandles.GenericHandle):
         else:
             view.repaint()
             editor = self.mgr.editor
+            import mdleditor
             mdleditor.setsingleframefillcolor(editor, view)
             plugins.mdlgridscale.gridfinishdrawing(editor, view)
             plugins.mdlaxisicons.newfinishdrawing(editor, view)
@@ -4543,6 +4558,7 @@ class LinRedHandle(LinearHandle): # for LinRedHandle, the center handle.
             dragcolor = MapColor("Drag3DLines", SS_MODEL)
             view.repaint()
             cv.pencolor = dragcolor
+            import mdleditor
             mdleditor.setsingleframefillcolor(editor, view)
             plugins.mdlgridscale.gridfinishdrawing(editor, view)
             plugins.mdlaxisicons.newfinishdrawing(editor, view)
@@ -6594,6 +6610,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.239  2016/01/16 20:01:32  danielpharos
+#Removed several try-except-passes that should never be needed.
+#
 #Revision 1.238  2016/01/16 19:18:07  danielpharos
 #Removed several try-except-passes that should never be needed.
 #
