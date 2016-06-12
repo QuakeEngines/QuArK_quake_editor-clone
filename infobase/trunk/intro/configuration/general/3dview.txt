@@ -78,3 +78,6 @@ applied to views that are already open.
 floating 3D windows. When disabled, clicking the 3D button will just toggle one view
 open/closed. Opening more than several windows will slow QuArK down, so use multiple
 windows with care!
+
+<i>Allow Escape closing</i>. When enabled, you can use the Escape key to close the
+floating window that currently has focus.

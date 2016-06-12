@@ -242,7 +242,10 @@ class BaseLayout:
         if setup["Warning3D"]:
             if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
                 raise quarkx.abort
-        floating = quarkx.clickform.newfloating(0, "3D view") #@@@ FWF_NOESCCLOSE?
+        if setup["AllowESCClose"]:
+            floating = quarkx.clickform.newfloating(0, "3D view")
+        else:
+            floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "3D view")
         if self.renderer:
             view = floating.mainpanel.newmapview(self.renderer)
         else:
@@ -661,6 +664,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.44  2016/02/10 18:57:27  danielpharos
+#Fixed a Python error due to the new 3D options when opening the layout menu, and added shortcuts for the same new 3D options.
+#
 #Revision 1.43  2015/09/20 13:03:06  danielpharos
 #Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 #

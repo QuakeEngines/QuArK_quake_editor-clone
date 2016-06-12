@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.562  2016/03/26 10:41:02  danielpharos
+//Sorted graphics options, and updated infobase.
+//
 //Revision 1.561  2016/03/14 19:31:05  danielpharos
 //Added Glide face culling and color dithering settings.
 //
@@ -1868,6 +1871,7 @@ QQRKSRC1
         CloseOnGame = "1"
         CloseOnSetup = "1"
         AllowMultiple = ""
+        AllowESCClose = "1"
         // The following options are currently hidden:
         DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
         SelGroupColor = $FF80FF
@@ -9622,6 +9626,7 @@ QQRKSRC1
       CloseOnGame: = {Typ="X" Txt="Close views when the game is run" Cap="Enabled" Hint="If checked, this can save system resources so the game runs smoother"}
       CloseOnSetup: = {Typ="X" Txt="Close views when the configurations are changed" Cap="Enabled" Hint="If checked, this could prevent problems when changing renderers"}
       AllowMultiple: = {Typ="X" Txt="Allow multiple 3D windows" Cap="Enabled" Hint="If checked, this allows multiple 3D windows to be opened"}
+      AllowESCClose: = {Typ="X" Txt="Allow Escape closing" Cap="Enabled" Hint="If checked, hitting the Escape key closes the floating window with focus."}
     }
     GeneralSoftware3D:form =
     {
