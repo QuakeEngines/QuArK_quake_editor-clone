@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.4  2012/03/22 12:56:04  danielpharos
 Clear MapError.
 
@@ -125,7 +128,7 @@ procedure QRmfMapFile.LoadFile(F: TStream; FSize: Integer);
     FillChar(StringLength, SizeOf(Byte), 0);
     F.ReadBuffer(StringLength, 1); //1 = SizeOf(Byte)
     if StringLength > 128 then
-      Log(LOG_INFO, 'RMF: String longer than 128 characters. This will overflow most other editors!'); //@@@
+      Log(LOG_INFO, LoadStr1(5787));
     SetLength(Result, StringLength);
     if StringLength>0 then
     begin

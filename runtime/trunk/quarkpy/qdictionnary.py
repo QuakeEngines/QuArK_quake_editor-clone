@@ -1041,6 +1041,7 @@ Strings = {
     5784: "unknown object type %s",
     5785: "Unable to retrieve face data!",
     5786: "Object %s is being created in a non-allowed parent! This might produce errors!",
+    5787: "RMF: String longer than 128 characters. This will overflow most other editors!",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1136,6 +1137,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.176  2016/05/14 13:46:48  danielpharos
+#Moved some strings to the dictionary.
+#
 #Revision 1.175  2016/03/13 16:13:29  danielpharos
 #Fixed a double QuArK appearing in the file header comment.
 #
