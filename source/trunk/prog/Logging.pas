@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2015/02/01 16:06:21  danielpharos
+Make sure LogLevel is set to something.
+
 Revision 1.32  2010/04/16 20:07:23  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -179,7 +182,7 @@ var
   filename: string;
 begin
   result:='';
-  //filename:=GetQPath(pQuArKLog)+LogPatchname;
+  //filename:=GetQPath(pQuArK)+LogPatchname; //This should be in pQuArKLog, but older version of QuArK put it in the main directory.
   filename:=LogPatchname;
   if fileexists(filename) then
   begin
