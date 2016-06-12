@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.563  2016/06/12 13:02:55  danielpharos
+//Made an option for floating 3D view Escape-key closing.
+//
 //Revision 1.562  2016/03/26 10:41:02  danielpharos
 //Sorted graphics options, and updated infobase.
 //
@@ -1890,7 +1893,6 @@ QQRKSRC1
         //3DfxLogo = ""
         TwoMonitors = ""
         FullScreenGamma = '1.3'
-        FullScreenSize = '560 420' //@
         TranspFactor = '0.3'  // in isometric views, an additional 30% of the normal depth is visible but transparent
         Fog = "1"
         Resolution = "7"
@@ -9659,7 +9661,6 @@ QQRKSRC1
         Hint="If you have two monitors (two screens), you can connect one on the Glide card and one on the 2D card"
       }
       FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen Glide mode only"}
-      FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="Rendering resolution is set below, but a lower screen size will accelerate rendering by displaying black bands on the sides"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
       Fog: = {Typ="X" Txt="Fade" Cap="Enabled"}
       Sep0: = {Typ="S" Txt = ""}

@@ -321,7 +321,6 @@ class BaseLayout:
             view = fullscreen.mainpanel.newmapview(self.renderer)
         else:
             view = fullscreen.mainpanel.newmapview()
-        #fullscreen.rect = view.setup["FullScreenSize"] @@@
         view.info = {"type": "3D", "viewname": "3Dwindow"}
         #view.info = {"type": "3D", "noclick": None, "viewname": "full3Dview"}
         view.viewmode = "tex"
