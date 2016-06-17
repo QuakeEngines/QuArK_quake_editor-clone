@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.121  2016/05/14 13:48:24  danielpharos
+Added brushDef2 and brushDef3 OriginBrush support.
+
 Revision 1.120  2016/05/14 13:46:50  danielpharos
 Moved some strings to the dictionary.
 
@@ -4041,20 +4044,20 @@ begin
         S:=S+'('
       else
         S:=S+'( ';
+
       R:=Round(X);
- 
       if WriteIntegers or (Abs(X-R) < rien) then
        S:=S+IntToStr(R)+' '
       else
        S:=S+FloatToStrF(X, ffFixed, 20, DecimalPlaces)+' ';
+
       R:=Round(Y);
- 
       if WriteIntegers or (Abs(Y-R) < rien) then
        S:=S+IntToStr(R)+' '
       else
        S:=S+FloatToStrF(Y, ffFixed, 20, DecimalPlaces)+' ';
+
       R:=Round(Z);
- 
       if WriteIntegers or (Abs(Z-R) < rien) then
        S:=S+IntToStr(R)
       else
@@ -4072,6 +4075,7 @@ begin
   end
  else
   begin
+   //FIXME: Add support for WriteIntegers?
    S:=S+'( ';
    S:=S+FloatToStrF(F.Normale.X, ffFixed, 20, DecimalPlaces)+' ';
    S:=S+FloatToStrF(F.Normale.Y, ffFixed, 20, DecimalPlaces)+' ';
