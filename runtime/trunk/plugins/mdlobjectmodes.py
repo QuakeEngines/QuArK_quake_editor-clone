@@ -40,7 +40,7 @@ import quarkpy.mapentities
 import plugins.mapcsg
 
 #
-# Additionnal Quick Object Maker modes (other plug-ins may add other Quick Object Maker modes).
+# Additional Quick Object Maker modes (other plug-ins may add other Quick Object Maker modes).
 #
 
 parent = quarkpy.qhandles.RectangleDragObject
@@ -5626,6 +5626,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2015/01/09 20:22:26  danielpharos
+# Typo fixes.
+#
 # Revision 1.21  2011/11/17 01:19:02  cdunde
 # Setup BBox drag toolbar button to work correctly with other toolbar buttons.
 #

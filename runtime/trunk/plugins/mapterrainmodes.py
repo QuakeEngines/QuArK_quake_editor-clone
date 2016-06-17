@@ -553,7 +553,7 @@ def viewsingleface(editor, view, vertex, poly):
 
 ########### start of buttons and their funcitons ############
 #
-# Additionnal drag modes (other plug-ins may add other drag modes).
+# Additional drag modes (other plug-ins may add other drag modes).
 #
 
 ### This selects polys only and bases for creating red select square ##
@@ -2370,6 +2370,9 @@ quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.30  2015/09/20 12:59:58  danielpharos
+# Added a missing import statement.
+#
 # Revision 1.29  2015/01/09 20:22:27  danielpharos
 # Typo fixes.
 #

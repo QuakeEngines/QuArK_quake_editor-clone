@@ -38,7 +38,7 @@ from quarkpy.qdictionnary import Strings
 
 
 #
-# Additionnal Paint modes (other plug-ins may add other Paint modes).
+# Additional Paint modes (other plug-ins may add other Paint modes).
 #
 
 parent = quarkpy.qhandles.RectangleDragObject
@@ -5627,6 +5627,9 @@ quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.14  2015/01/09 20:22:27  danielpharos
+# Typo fixes.
+#
 # Revision 1.13  2012/03/11 05:26:38  cdunde
 # Updated Model Editor texture paint functions to do gray-scale and blue-scale
 # for texture mapping and greatly improved airbrush function quality for fade in effect.

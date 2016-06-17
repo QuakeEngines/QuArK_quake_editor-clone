@@ -2021,7 +2021,7 @@ LayoutsList = []
 
 
 #
-# List of additionnal pages of the Multi-Pages-Panel
+# List of additional pages of the Multi-Pages-Panel
 # This list can be filled by plug-ins.
 #
 mppages = []
@@ -2030,6 +2030,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.138  2013/01/28 04:00:45  cdunde
+#Fix for Skin-view tristodraw and view handles not being stored in .qkl file.
+#
 #Revision 1.137  2012/10/09 05:31:55  cdunde
 #To add dictspec items for Model Root that apply to Quake1 and HexenII models.
 #

@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Additionnal mouse dragging modes (entity selecter, brush cutter, cube maker)
+Additional mouse dragging modes (entity selecter, brush cutter, cube maker)
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -35,7 +35,7 @@ ico_dict['ico_dragmodes'] = LoadIconSet1("mapdrm", 1.0)
 
 
 #
-# Additionnal drag modes (other plug-ins may add other drag modes).
+# Additional drag modes (other plug-ins may add other drag modes).
 #
 
 parent = quarkpy.qhandles.RectangleDragObject
@@ -427,6 +427,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.21  2015/09/20 12:59:58  danielpharos
+# Added a missing import statement.
+#
 # Revision 1.20  2008/07/24 23:34:11  cdunde
 # To fix non-ASCII character from causing python depreciation errors.
 #

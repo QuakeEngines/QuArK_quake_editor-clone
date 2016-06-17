@@ -377,7 +377,7 @@ class BaseEditor:
                 DrawGrid()
 
         #
-        # Additionnal drawings will appear in wireframe over the solid or texture image.
+        # Additional drawings will appear in wireframe over the solid or texture image.
         # In our case, we simply draw the selected objects again.
         #
         if isinstance(self, mdleditor.ModelEditor):
@@ -424,7 +424,7 @@ class BaseEditor:
 
 
     def finishdrawing(self, view):
-        "Additionnal map view drawings, e.g. handles."
+        "Additional map view drawings, e.g. handles."
         #
         # Which handle is the user currently dragging ?
         #
@@ -1799,6 +1799,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.155  2016/02/13 12:36:20  danielpharos
+#Raise a proper exception.
+#
 #Revision 1.154  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #

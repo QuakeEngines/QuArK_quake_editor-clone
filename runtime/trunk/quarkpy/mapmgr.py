@@ -889,7 +889,7 @@ LayoutsList = []
 
 
 #
-# List of additionnal pages of the Multi-Pages-Panel
+# List of additional pages of the Multi-Pages-Panel
 # This list can be filled by plug-ins. (see mappage3d.py)
 #
 mppages = []
@@ -898,6 +898,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.30  2016/02/13 12:36:20  danielpharos
+#Raise a proper exception.
+#
 #Revision 1.29  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #

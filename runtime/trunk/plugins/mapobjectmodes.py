@@ -41,7 +41,7 @@ import plugins.mapcsg
 #py2.4 indicates upgrade change for python 2.4
 
 #
-# Additionnal Quick Object Maker modes (other plug-ins may add other Quick Object Maker modes).
+# Additional Quick Object Maker modes (other plug-ins may add other Quick Object Maker modes).
 #
 
 parent = quarkpy.qhandles.RectangleDragObject
@@ -4914,6 +4914,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2015/01/09 20:22:26  danielpharos
+# Typo fixes.
+#
 # Revision 1.14  2008/09/12 19:08:40  cdunde
 # Minor code cleanup.
 #

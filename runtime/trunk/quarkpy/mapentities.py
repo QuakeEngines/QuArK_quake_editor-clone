@@ -1098,7 +1098,7 @@ EntityLinesMapping = {
 }
 
 def drawentitylines(editor, processentities, view):
-    "According to the choosen game, draw additionnal lines and arrows (e.g. target to targetname)"
+    "According to the choosen game, draw additional lines and arrows (e.g. target to targetname)"
     entities = editor.AllEntities()
     try:
         mgr = EntityLinesMapping[quarkx.setupsubset().shortname] # DECKER - Find a drawentitylines-mgr for this game
@@ -1157,6 +1157,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.62  2011/10/06 20:13:37  danielpharos
+#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
+#
 #Revision 1.61  2008/07/08 18:27:48  cdunde
 #More new entity line drawing features by X7.
 #
