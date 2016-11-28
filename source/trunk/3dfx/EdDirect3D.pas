@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2016/05/14 13:46:50  danielpharos
+Moved some strings to the dictionary.
+
 Revision 1.55  2016/03/13 16:14:40  danielpharos
 Small fixes for Glide's drawing to the screen.
 
@@ -1358,10 +1361,10 @@ begin
           case PresParm.BackBufferFormat of
           D3DFMT_A2R10G10B10:
           begin
-            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            for Y:=DrawRect.Top to DrawRect.Bottom - 1 do
             begin
               Source32:=Pointer(Source);
-              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
                 Dest^:=((Source32^) and $000003FF);
                 Inc(Dest);
@@ -1381,10 +1384,10 @@ begin
           end;
           D3DFMT_A8R8G8B8:
           begin
-            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            for Y:=DrawRect.Top to DrawRect.Bottom - 1 do
             begin
               Source32:=Pointer(Source);
-              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
                 Dest^:=(Source32^) and $FF;
                 Inc(Dest);
@@ -1404,10 +1407,10 @@ begin
           end;
           D3DFMT_X8R8G8B8:
           begin
-            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            for Y:=DrawRect.Top to DrawRect.Bottom - 1 do
             begin
               Source32:=Pointer(Source);
-              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
                 Dest^:=(Source32^) and $FF;
                 Inc(Dest);
@@ -1427,10 +1430,10 @@ begin
           end;
           D3DFMT_A1R5G5B5:
           begin
-            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            for Y:=DrawRect.Top to DrawRect.Bottom - 1 do
             begin
               Source16:=Pointer(Source);
-              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
                 Dest^:=(Source16^) and $1F;
                 Inc(Dest);
@@ -1450,10 +1453,10 @@ begin
           end;
           D3DFMT_X1R5G5B5:
           begin
-            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            for Y:=DrawRect.Top to DrawRect.Bottom - 1 do
             begin
               Source16:=Pointer(Source);
-              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
                 Dest^:=(Source16^) and $1F;
                 Inc(Dest);
@@ -1473,10 +1476,10 @@ begin
           end;
           D3DFMT_R5G6B5:
           begin
-            for Y:=0 to pPresParm.BackBufferHeight - 1 do
+            for Y:=DrawRect.Top to DrawRect.Bottom - 1 do
             begin
               Source16:=Pointer(Source);
-              for X:=0 to pPresParm.BackBufferWidth - 1 do
+              for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
                 Dest^:=(Source16^) and $1F;
                 Inc(Dest);
@@ -1627,7 +1630,7 @@ begin
             Currentf[2]:=Currentf[2]*CurrentfTMP[2];
             Currentf[3]:=Currentf[3];
           end;
-          //SwapColors?!?
+          //@SwapColors?!?
 
           material.Diffuse := D3DXCOLOR(Currentf[0], Currentf[1], Currentf[2], Currentf[3]);
           //material.Ambient := D3DXCOLOR(1.0, 1.0, 1.0, 1.0);
@@ -1679,7 +1682,6 @@ begin
           if (l_Res <> D3D_OK) then
             raise EErrorFmt(6403, ['RenderPList_Lock', DXGetErrorString9(l_Res)]);
           try
-            //FIXME: This is probably wrong!
             PVBase:=PV;
             for I:=0 to NTriangles-1 do
             begin
