@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.105  2016/05/14 13:53:09  danielpharos
+Corrected inheritance bug.
+
 Revision 1.104  2015/12/22 14:21:55  danielpharos
 Fixed a memory leak and other related issues for the Direct3D lighting list.
 
@@ -362,9 +365,6 @@ type
                Brightness: scalar_t;
                Color: TColorRef;
               end;
- TLightParams = record
-                 ZeroLight, BrightnessSaturation, LightFactor: scalar_t;
-                end;
 
  TTextureFiltering = (tfNone, tfBilinear, tfTrilinear, tfAnisotropic);
 
@@ -556,7 +556,7 @@ begin
       if Light[K] >= LightParams.BrightnessSaturation then
         Point1.light_rgb[K]:=Currentf[K]
       else
-        Point1.light_rgb[K]:=(LightParams.ZeroLight + (Light[K]*LightParams.LightFactor)) * Currentf[K];
+        Point1.light_rgb[K]:=(LightParams.ZeroLight + (Light[K]*LightParams.SoftwareRange)) * Currentf[K];
   end;
 end;
 
@@ -566,7 +566,7 @@ procedure RenderQuad(PV1, PV2, PV3, PV4: PVertex3D;
                      const NormalePlan: vec3_t;
                      Dist: scalar_t;
                      const LightParams: TLightParams;
-                     GLLightingQuality: Integer);
+                     LightingQuality: Integer);
 const
  StandardSectionSize = 77.0;
  SectionsI = 32;
@@ -581,7 +581,7 @@ var
  light: GLfloat4;
  NormalVector: array[0..2] of GLfloat;
 begin
-  if GLLightingQuality=0 then
+  if LP=nil then
   begin
     glBegin(GL_QUADS);
     try
@@ -662,15 +662,15 @@ begin
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[SectionsJ,0].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[SectionsJ,0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[SectionsJ,0].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-    if (GLLightingQuality>=2) and (DistToSource>StandardSectionSize) then
+    if (LightingQuality>=2) and (DistToSource<16*StandardSectionSize) then
     begin
-      if (GLLightingQuality>=3) and (DistToSource>2*StandardSectionSize) then
+      if (LightingQuality>=3) and (DistToSource<8*StandardSectionSize) then
       begin
-        if (GLLightingQuality>=4) and (DistToSource>4*StandardSectionSize) then
+        if (LightingQuality>=4) and (DistToSource<4*StandardSectionSize) then
         begin
-          if (GLLightingQuality>=5) and (DistToSource>8*StandardSectionSize) then
+          if (LightingQuality>=5) and (DistToSource<2*StandardSectionSize) then
           begin
-            if (GLLightingQuality>=6) and (DistToSource>16*StandardSectionSize) then
+            if (LightingQuality>=6) and (DistToSource<1*StandardSectionSize) then
               StepI:=1
             else
               StepI:=2;
@@ -693,15 +693,15 @@ begin
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[0,SectionsI].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[0,SectionsI].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
     Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[0,SectionsI].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-    if (GLLightingQuality>=2) and (DistToSource>StandardSectionSize) then
+    if (LightingQuality>=2) and (DistToSource<16*StandardSectionSize) then
     begin
-      if (GLLightingQuality>=3) and (DistToSource>2*StandardSectionSize) then
+      if (LightingQuality>=3) and (DistToSource<8*StandardSectionSize) then
       begin
-        if (GLLightingQuality>=4) and (DistToSource>4*StandardSectionSize) then
+        if (LightingQuality>=4) and (DistToSource<4*StandardSectionSize) then
         begin
-          if (GLLightingQuality>=5) and (DistToSource>8*StandardSectionSize) then
+          if (LightingQuality>=5) and (DistToSource<2*StandardSectionSize) then
           begin
-            if (GLLightingQuality>=6) and (DistToSource>16*StandardSectionSize) then
+            if (LightingQuality>=6) and (DistToSource<1*StandardSectionSize) then
               StepJ:=1
             else
               StepJ:=2
@@ -1089,9 +1089,7 @@ begin
     Lighting:=Setup.Specifics.Values['Lights']<>'';
     Culling:=Setup.Specifics.Values['Culling']<>'';
     GLLightingQuality:=StrToIntDef(Setup.Specifics.Values['LightingQuality'], 4);
-    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.4);
-    LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256);
-    LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
+    LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
   end
   else
   begin
@@ -1100,14 +1098,17 @@ begin
     Lighting:=False;
     Culling:=False;
     GLLightingQuality:=0;
-    LightParams.ZeroLight:=1;
-    LightParams.BrightnessSaturation:=256;
-    LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
+    LightParams.ZeroLight:=1.0;
   end;
+  LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256);
+  LightParams.SoftwareRange:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
+  LightParams.IntensityScale:=SetupGameSet.GetFloatSpec('LightIntensityScale', 7500.0);
+  FullBright.ZeroLight:=1.0;
+  FullBright.BrightnessSaturation:=0.0;
+  FullBright.SoftwareRange:=0.0;
+  FullBright.IntensityScale:=1.0;  
+
   Dithering:=Setup.Specifics.Values['Dither']<>'';
-  FullBright.ZeroLight:=1;
-  FullBright.BrightnessSaturation:=0;
-  FullBright.LightFactor:=0;
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
   AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
   DisplayLists:=Setup.Specifics.Values['GLLists']<>'';
@@ -1801,7 +1802,6 @@ begin
   end;
   CheckOpenGLError('Render3DView: RenderMode');
 
-
   if Lighting and (LightingQuality=0) then
     glEnable(GL_LIGHTING)
   else
@@ -2486,7 +2486,7 @@ begin
           CheckOpenGLError('RenderPList: glLightf: GL_CONSTANT_ATTENUATION');
           glLightf(GL_LIGHT0+LightNR, GL_LINEAR_ATTENUATION, 0.0);
           CheckOpenGLError('RenderPList: glLightf: GL_LINEAR_ATTENUATION');
-          glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 5.0 / (PL.Brightness * PL.Brightness));
+          glLightf(GL_LIGHT0+LightNR, GL_QUADRATIC_ATTENUATION, 1.0 / (LightParams.IntensityScale * PL.Brightness));
           CheckOpenGLError('RenderPList: glLightf: GL_QUADRATIC_ATTENUATION');
 
           glEnable(GL_LIGHT0+LightNR);
@@ -2566,15 +2566,15 @@ begin
           If Byte(Ptr(LongWord(@AlphaColor)+3)^)<>0 then
             Case TextureMode of
             0:
-              if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, LightingQuality)
+              if Lighting and (LightingQuality<>2) then
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, GLLightingQuality)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, LightingQuality);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, 0);
             4:
-              if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, LightingQuality)
+              if Lighting and (LightingQuality<>2) then
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, GLLightingQuality)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, LightingQuality);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, 0);
             else
             begin
               if TextureMode=5 then
@@ -2583,17 +2583,17 @@ begin
                 Currentf[1]:=Currentf[0];
                 Currentf[2]:=Currentf[0];
               end;
-              if Lighting and (LightingQuality=1) then
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, LightingQuality)
+              if Lighting and (LightingQuality<>2) then
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams, GLLightingQuality)
               else
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, LightingQuality);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright, 0);
             end;
           end;
         end;
       end
       else
       begin { strip }
-        if Lighting and (LightingQuality=1) then
+        if Lighting and (LightingQuality<>2) then
           RenderQuadStrip(PV, -VertexCount, Currentf, Lights, Normale, LightParams)
         else
           RenderQuadStrip(PV, -VertexCount, Currentf, nil, Normale, FullBright);

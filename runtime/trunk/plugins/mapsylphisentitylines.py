@@ -41,6 +41,12 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
                 radius = quarkx.vect(float(o[0]), float(o[1]), float(o[2]))
             except:
                 radius = quarkx.vect(10.0, 10.0, 10.0)
+
+            lightentityscale, = quarkx.setupsubset()['LightEntityScale']
+            radius.x = radius.x * lightentityscale
+            radius.y = radius.y * lightentityscale
+            radius.z = radius.z * lightentityscale
+
             cx, cy = [], []
             up = view.proj(quarkx.vect(org.x, org.y, org.z + radius.z))
             down = view.proj(quarkx.vect(org.x, org.y, org.z - radius.z))
@@ -59,9 +65,6 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
             maxY = max(cy)
             minY = min(cy)
 
-            lightfactor, = quarkx.setupsubset()['LightFactor']
-
-            radius = 100
             try:
                 color = quakecolor(quarkx.vect(entity["color"]))
             except:
@@ -102,6 +105,9 @@ quarkpy.mapentities.EntityLinesMapping.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2011/10/06 20:13:37  danielpharos
+#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
+#
 #Revision 1.4  2006/01/30 08:20:00  cdunde
 #To commit all files involved in project with Philippe C
 #to allow QuArK to work better with Linux using Wine.

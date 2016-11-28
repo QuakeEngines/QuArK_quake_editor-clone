@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2016/03/13 16:14:40  danielpharos
+Small fixes for Glide's drawing to the screen.
+
 Revision 1.62  2015/12/22 14:21:55  danielpharos
 Fixed a memory leak and other related issues for the Direct3D lighting list.
 
@@ -338,6 +341,13 @@ type
  {------------------------}
 
 type
+ TLightParams = record
+                 ZeroLight: scalar_t; //Minimum lighting (ambient)
+                 BrightnessSaturation: scalar_t; //Maximum brightness cut-off for software lighting
+                 SoftwareRange: scalar_t; //Range for software lighting (starting at 0, which is ambient)
+                 IntensityScale: scalar_t; //Game-dependant multiplication factor for the 'light' specific
+                end;
+
  TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
 
  TSceneObject = class

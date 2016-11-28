@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.60  2015/08/15 13:12:35  danielpharos
+Moved all the light and color specs to constants.
+
 Revision 1.59  2015/06/20 15:35:55  danielpharos
 Allow loading multiple models for map entities. (Needed for Kingpin.)
 
@@ -1644,7 +1647,7 @@ begin
  (*S:=Specifics.Values[SpecLight];
    if S<>'' then
     try
-     Rayon:=StrToFloat(S)*pProjZ*SetupGameSet.GetFloatSpec('LightFactor', 0.9);
+     Rayon:=StrToFloat(S)*pProjZ*SetupGameSet.GetFloatSpec('LightEntityScale', 0.9);
      if (Rayon > 1.5) and (Rayon < 8192) then
       begin
        Pts[1].X:=Round(Rayon);

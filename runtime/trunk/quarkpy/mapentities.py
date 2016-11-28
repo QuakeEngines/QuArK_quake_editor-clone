@@ -830,122 +830,102 @@ class DefaultDrawEntityLines:
             L4 = entity["falloff2"]
             L5 = entity["spotlightlength"]
             if L1 or L2 or L3 or L4 or L5:
-            # Rowdy: cdunde reported that Torque uses falloff1 (minimum radius) and falloff2
-            #        (maximum radius) for lights, and does not have a 'light' specific
-                try:
-                    if L5:
-                         radius = float(L5)
-                         if entity["rendercolor"]:
-                             try:
-                                 color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
-                             except:
-                                 pass
-                    elif L1:
-                        #### SHINE support code start
-                        if entity["radius"] and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
-                            try:
-                                radius = float(entity["radius"])
-                            except:
-                                radius = float(L1)
-                        #### SHINE support code end
-                        else:
-                            radius = float(L1)
-                        if entity["_color"]:
-                            try:
-                                color = quakecolor(quarkx.vect(entity["_color"]))
-                            except:
-                                pass
-                    elif L2:
-                        L2 = readfloats(L2)
-                        radius = L2[3]
-                        color = makeRGBcolor(L2[0], L2[1], L2[2])
-                    else:
-                        if L3:
-                            radius = float(L3)
-                            if entity["color"]:
-                                try:
-                                    color = vectorRGBcolor(quarkx.vect(entity["color"]))
-                                except:
-                                    pass
-                        else:
-                            radius = float(L4)
-                            if entity["color"]:
-                                try:
-                                    color = vectorRGBcolor(quarkx.vect(entity["color"]))
-                                except:
-                                    pass
-
-                        #L3 = readfloats(L3)
-                        #radius = L3[3]
-                        #color = makeRGBcolor(L3[0], L3[1], L3[2])
-
-                    lightfactor, = quarkx.setupsubset()["LightFactor"]
-
-                    radius = radius * view.scale(org) * lightfactor
-                    radius = int(radius)   #py2.4
-                    cv = view.canvas()
+                if L5:
+                    radius = float(L5)
                     if entity["rendercolor"]:
                         color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
-                        cv.pencolor = color
-                    elif quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]]:
-                        cv.pencolor = color + (color*.5)
-                    else:
-                        cv.pencolor = color
-                    cv.penwidth = mapoptions.getThinLineThickness()
-                    cv.brushstyle = BS_CLEAR
-
-                    ### Section below draws the cone(s) for "light" spot entities.
-                    if entity["target"] and entity["angles"] and entity["origin"]:
-                        editor = mapeditor()
-                        for e in tuple(entities):
-                            if e["targetname"] == entity["target"] and e["origin"]:
-                                u = 1
-                                p0 = entity["origin"].split(" ")
-                                p0 = quarkx.vect(float(p0[0]), float(p0[1]), float(p0[2]))
-                                p1 = e["origin"].split(" ")
-                                p1 = quarkx.vect(float(p1[0]), float(p1[1]), float(p1[2]))
-                                # Line below converts single vector to "angles" specific values as a string.
-                                netangles = qhandles.vec2angles(p1-p0)
-
-                                if netangles != entity["angles"]:
-                                    entity["angles"] = netangles
-                                    entityform = editor.layout.dataform.linkedobjects[0] # A list of "dictspec" items, the Specifics and their Arguments.
-                                    editor.layout.dataform.setdata(entityform, editor.layout.dataform.form)
-                                    editor.buildhandles()
-
-                    if entity["angles"] and ((quarkx.setupsubset()["LightingInnerConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]) or (quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]])):
-                        direct = quarkx.vect(entity["angles"])
-                        # 'pitch' below for HL2 only.
-                        if entity['pitch']:
-                            entity['pitch'] = '%f' % - direct.x
-                        ### Draws the outer cone lines.
-                        if quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]]:
-                            cone = float(entity[quarkx.setupsubset()["LightingOuterConeKeyword"]])
-                            if not entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]:
-                                cv.pencolor = color
-                        elif entity['spotlightwidth']:
-                            cone = float(entity['spotlightwidth'])/2.0
+                elif L1:
+                    #### SHINE support code start
+                    if entity["radius"] and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
                         try:
-                            for i in range(18):
-                                phi = i*2.0*3.14159/18
-                                dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
-                                cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
+                            radius = float(entity["radius"])
                         except:
-                            pass
-                        ### Draws the inner cone lines.
-                        if quarkx.setupsubset()["LightingInnerConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]:
-                            cone = float(entity[quarkx.setupsubset()["LightingInnerConeKeyword"]])
-                            cv.pencolor = color
-                            for i in range(9):
-                                phi = i*2.0*3.14159/9
-                                dirvectn = qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
-                                cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
-                    ### Section above draws the cone(s) for "light" spot entities.
+                            radius = float(L1)
+                    #### SHINE support code end
                     else:
-                        ### Line below draws normal light full radius.
-                        cv.ellipse(int(org1.x)-radius, int(org1.y)-radius, int(org1.x)+radius, int(org1.y)+radius)
-                except:
-                    pass
+                        radius = float(L1)
+                    if entity["_color"]:
+                        color = quakecolor(quarkx.vect(entity["_color"]))
+                elif L2:
+                    L2 = readfloats(L2)
+                    radius = L2[3]
+                    color = makeRGBcolor(L2[0], L2[1], L2[2])
+                else:
+                    if L3:
+                        radius = float(L3)
+                        if entity["color"]:
+                            color = vectorRGBcolor(quarkx.vect(entity["color"]))
+                    else:
+                        radius = float(L4)
+                        if entity["color"]:
+                            color = vectorRGBcolor(quarkx.vect(entity["color"]))
+
+                    #L3 = readfloats(L3)
+                    #radius = L3[3]
+                    #color = makeRGBcolor(L3[0], L3[1], L3[2])
+
+                lightentityscale, = quarkx.setupsubset()["LightEntityScale"]
+
+                radius = radius * view.scale(org) * lightentityscale
+                cv = view.canvas()
+                if entity["rendercolor"]:
+                    color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
+                    cv.pencolor = color
+                elif quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]]:
+                    cv.pencolor = color + (color*.5)
+                else:
+                    cv.pencolor = color
+                cv.penwidth = mapoptions.getThinLineThickness()
+                cv.brushstyle = BS_CLEAR
+
+                ### Section below draws the cone(s) for "light" spot entities.
+                if entity["target"] and entity["angles"] and entity["origin"]:
+                    editor = mapeditor()
+                    for e in tuple(entities):
+                        if e["targetname"] == entity["target"] and e["origin"]:
+                            u = 1
+                            p0 = entity["origin"].split(" ")
+                            p0 = quarkx.vect(float(p0[0]), float(p0[1]), float(p0[2]))
+                            p1 = e["origin"].split(" ")
+                            p1 = quarkx.vect(float(p1[0]), float(p1[1]), float(p1[2]))
+                            # Line below converts single vector to "angles" specific values as a string.
+                            netangles = qhandles.vec2angles(p1-p0)
+
+                            if netangles != entity["angles"]:
+                                entity["angles"] = netangles
+                                entityform = editor.layout.dataform.linkedobjects[0] # A list of "dictspec" items, the Specifics and their Arguments.
+                                editor.layout.dataform.setdata(entityform, editor.layout.dataform.form)
+                                editor.buildhandles()
+
+                if entity["angles"] and ((quarkx.setupsubset()["LightingInnerConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]) or (quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]])):
+                    ### Draws the cone(s) for "light" spot entities.
+                    direct = quarkx.vect(entity["angles"])
+                    # 'pitch' below for HL2 only.
+                    if entity['pitch']:
+                        entity['pitch'] = '%f' % - direct.x
+                    ### Draws the outer cone lines.
+                    if quarkx.setupsubset()["LightingOuterConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingOuterConeKeyword"]]:
+                        cone = float(entity[quarkx.setupsubset()["LightingOuterConeKeyword"]])
+                        if not entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]:
+                            cv.pencolor = color
+                    elif entity['spotlightwidth']:
+                        cone = float(entity['spotlightwidth'])/2.0
+                    for i in range(18):
+                        phi = i*2.0*math.pi/18
+                        dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
+                        cv.line(view.proj(org+dirvectn*radius),org1)
+                    ### Draws the inner cone lines.
+                    if quarkx.setupsubset()["LightingInnerConeKeyword"] != "" and entity[quarkx.setupsubset()["LightingInnerConeKeyword"]]:
+                        cone = float(entity[quarkx.setupsubset()["LightingInnerConeKeyword"]])
+                        cv.pencolor = color
+                        for i in range(9):
+                            phi = i*2.0*math.pi/9
+                            dirvectn = qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
+                            cv.line(view.proj(org+dirvectn*radius),org1)
+                else:
+                    ### Line below draws normal light full radius.
+                    cv.ellipse(int(org1.x - radius), int(org1.y - radius), int(org1.x + radius), int(org1.y + radius))
+
 ############ SHINE support code start
         if entity["pivot"] is not None and quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
            self.drawentityarrows("pivotname", entity["pivot"], org, 1, RED, view, entities, processentities)
@@ -1157,6 +1137,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.63  2016/06/17 19:27:27  danielpharos
+#Fixed a typo.
+#
 #Revision 1.62  2011/10/06 20:13:37  danielpharos
 #Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
 #

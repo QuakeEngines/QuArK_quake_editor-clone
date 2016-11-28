@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.564  2016/06/12 13:05:11  danielpharos
+//Removed the fullscreen size option for Glide.
+//
 //Revision 1.563  2016/06/12 13:02:55  danielpharos
 //Made an option for floating 3D view Escape-key closing.
 //
@@ -1918,7 +1921,7 @@ QQRKSRC1
         Culling = "1"
         //Bilinear = "1" OLD SETTING, use TextureFiltering instead!
         TextureFiltering = "1"
-        Ambient = '0.4'
+        Ambient = '0.2'
         LightingQuality = "4"
         StillQuality = "0"
         MovingQuality = "2"
@@ -2200,7 +2203,7 @@ QQRKSRC1
         MapExt = ".hmf"
         Console = "1"
         Form = "Game6DX"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
       }
@@ -2276,7 +2279,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
 
@@ -2352,7 +2355,7 @@ QQRKSRC1
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
         Console = "1"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
@@ -2403,7 +2406,7 @@ QQRKSRC1
         AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCS.qrk"$0D"CSEntities.qrk"$0D"CSTextures.qrk"
         AlwaysPak = ""
         PakExt = ".zip"
-        LightFactor = '0.90000'
+        LightEntityScale = '0.9'
         3DLight = '512'
         Console = "1"
         Form = "GameCrystalSpace"
@@ -2457,7 +2460,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
 
         BezierPatchSupport = "1" // this game supports bezier-patches
@@ -2545,7 +2548,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
@@ -2621,7 +2624,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
 
@@ -2674,7 +2677,7 @@ QQRKSRC1
         AddOns = "DataGen3D.qrk"$0D"Gen3DEntities.qrk"$0D"Gen3DTextures.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         Console = "1"
         Form = "GameGenesis3D"
@@ -2738,7 +2741,7 @@ QQRKSRC1
 
         AlwaysPak = ""
         PakExt = ".pak"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         Console = "1"
         Form = "GameHalfLife"
@@ -2810,7 +2813,7 @@ QQRKSRC1
         MapExt = ".vmf"
         PakExt = ".gcf"
         PakFormat = "*.gcf"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         Console = "1"
         Form = "GameHalfLife2"
@@ -2865,7 +2868,7 @@ QQRKSRC1
         PakFormat = "HTIC2-#.PAK"
         Console = "1"
         Form = "GameHeretic2"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
       }
@@ -2920,7 +2923,7 @@ QQRKSRC1
         Form = "GameHexenII"
         QuakeC = "HexenC"
         MdlPath = "models/"
-        LightFactor = '0.72'
+        LightEntityScale = '0.72'
         3DLight = '640'
         HxStrings = "strings.txt"
         PlayerClass = "1"
@@ -2993,7 +2996,7 @@ QQRKSRC1
         PakMaxNumber = "99"
         Console = "1"
         Form = "GameJA"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
         DecimalPlaces = '5'
@@ -3068,7 +3071,7 @@ QQRKSRC1
         PakMaxNumber = "99"
         Console = "1"
         Form = "GameJK2"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
         DecimalPlaces = '5'
@@ -3128,7 +3131,7 @@ QQRKSRC1
         PakExt = ".pak"
         Console = "1"
         Form = "GameKingPin"
-        LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
       }
@@ -3232,7 +3235,7 @@ QQRKSRC1
         PakMaxNumber = "99"
         Console = "1"
         Form = "GameMOHAA"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
       //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
@@ -3304,7 +3307,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
 
@@ -3357,7 +3360,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
 
         BezierPatchSupport = "1" // this game supports bezier-patches
@@ -3424,7 +3427,7 @@ QQRKSRC1
         AddOns = "DataQ1.qrk"$0D"Q1Entities.qrk"$0D"Q1Textures.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         Console = "1"
         Form = "GameQuake1"
@@ -3489,7 +3492,7 @@ QQRKSRC1
         PakExt = ".pak"
         Console = "1"
         Form = "GameQuake2"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
       }
@@ -3565,8 +3568,9 @@ QQRKSRC1
         PakMaxNumber = "99"
         Console = "1"
         Form = "GameQuake3"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
+        LightIntensityScale = '500.0'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
       }
@@ -3630,7 +3634,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk4"
         PakFormat = "*.PK4"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
 
         BezierPatchSupport = "1" // this game supports bezier-patches
@@ -3718,7 +3722,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
@@ -3779,7 +3783,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
     //    PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas),  does not use aas files.
 
         BezierPatchSupport = "1" // this game supports bezier-patches
@@ -3851,7 +3855,7 @@ QQRKSRC1
         PakFormat = "PAK#.SIN"
         Console = "1"
         Form = "GameSin"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
       }
@@ -3908,7 +3912,7 @@ QQRKSRC1
         PakExt = ".pak"
         Console = "1"
         Form = "GameSOF"
-        LightFactor = '0.90000'
+        LightEntityScale = '0.9'
         3DLight = '512'
         DecimalPlaces = '5'
       }
@@ -3982,7 +3986,7 @@ QQRKSRC1
         PakMaxNumber = "99"
         Console = "1"
         Form = "GameSoF2"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
         DecimalPlaces = '5'
@@ -4077,7 +4081,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
@@ -4107,7 +4111,8 @@ QQRKSRC1
         BuildPgmsDir = "c:\sylphis\tools"
         BuildPgm1 = "mc.exe"
         BuildArgs1 = "-read %mapfile% -write"
-        LightFactor = '0.90000'
+        LightEntityScale = '1.0'
+        3DLight = '512'
         TextureFormat = ".jpg"
         TextureFileExtensions = ".png,.tga,.jpg"
         TextureWriteFormat = ".jpg"
@@ -4204,7 +4209,7 @@ QQRKSRC1
         //   PakExt = ".pk3"
         //   PakFormat = "*.PK3"
         //   PakMaxNumber = "99"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         //   PlayerClass = "X"
 
         TexturesPath = "textures"
@@ -4279,7 +4284,7 @@ QQRKSRC1
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         Console = "1"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         BrushDecimalPlaces = '5'
         Form = "GameWarsow"
@@ -4355,7 +4360,7 @@ QQRKSRC1
         PakFormat = "*.PK3"
         PakMaxNumber = "99"
         Console = "1"
-        LightFactor = '0.9'
+        LightEntityScale = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
         DecimalPlaces = '5'
@@ -9740,7 +9745,7 @@ QQRKSRC1
         Values = "0"    $0D "1"        $0D "2"         $0D "3"
         Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
       }
-      Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="-10" Max="10" Hint="The brightness of the ambient lighting." }
+      Ambient: = {Txt="Ambient lighting brightness" Typ="EF1" Min="0.0" Max="1.0" Hint="The brightness of the ambient lighting." }
       LightingQuality: = {
         Txt="Lighting quality on faces"
         Typ="CL"
