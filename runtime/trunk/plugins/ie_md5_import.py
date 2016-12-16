@@ -1602,8 +1602,8 @@ quarkpy.qmdlbase.RegisterMdlImporter(".md5anim Doom3\Quake4 Importer", ".md5anim
 # DIALOG SECTION (for Editor's Specifics/Args page)
 ######################################################
 def vtxcolorclick(btn):
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
@@ -1614,10 +1614,9 @@ def vtxcolorclick(btn):
             editor.ModelVertexSelList = []
             quarkpy.mdlutils.Update_Editor_Views(editor)
 
-
 def colorclick(btn):
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if not quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
         quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
@@ -1633,7 +1632,6 @@ def colorclick(btn):
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model's skin texture) to use for the Specific/Args page."
-    global editor
     import quarkpy.mdlentities # Used further down in a couple of places.
 
     # Next line calls for the Shader Module in mdlentities.py to be used.
@@ -1678,8 +1676,8 @@ def dataformname(o):
     }
     """
 
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
@@ -1791,6 +1789,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.50  2015/01/11 14:24:25  danielpharos
+# Removed unneeded variable, and fixed a typo in a comment.
+#
 # Revision 1.49  2012/01/15 07:08:00  cdunde
 # Change for proper bone parent setting to avoid invalid bone connections.
 #

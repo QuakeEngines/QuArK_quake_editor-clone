@@ -2548,8 +2548,8 @@ quarkpy.qmdlbase.RegisterMdlImporter(".lwo LightWave Importer", ".lwo file", "*.
 
 
 def vtxcolorclick(btn):
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
@@ -2560,10 +2560,9 @@ def vtxcolorclick(btn):
             editor.ModelVertexSelList = []
             quarkpy.mdlutils.Update_Editor_Views(editor)
 
-            
 def colorclick(btn):
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
         quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
@@ -2576,7 +2575,6 @@ def colorclick(btn):
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
-
 
 def dataformname(o):
     "Returns the data form for this type of object 'o' (a model component & others) to use for the Specific/Args page."
@@ -2628,8 +2626,8 @@ def dataformname(o):
     }
     """
 
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     ico_mdlskv = ico_dict['ico_mdlskv']  # Just to shorten our call later.
     icon_btns = {}                       # Setup our button list, as a dictionary list, to return at the end.
@@ -2666,8 +2664,8 @@ def dataformname(o):
 def dataforminput(o):
     "Returns the default settings or input data for this type of object 'o' (a model component & others) to use for the Specific/Args page."
 
+    global editor
     if editor is None:
-        global editor
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
     DummyItem = Item = o
     while (DummyItem.type != ":mc"): # Gets the object's model component.
@@ -2708,6 +2706,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.43  2011/06/03 20:29:26  danielpharos
+# Removed some bad characters from comments.
+#
 # Revision 1.42  2011/03/13 00:41:47  cdunde
 # Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #
