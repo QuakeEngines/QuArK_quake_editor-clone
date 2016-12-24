@@ -1,18 +1,22 @@
 title: Running QuArK
-author: slightcrazed, Peter Brett
+author: slightcrazed, Peter Brett, DanielPharos
 
-A note regarding running QuArK. Currently, it seems that the only way
-to run QuArK and have it function correctly is to cd into the install
-directory in a terminal and run the executables by hand.
+The QuArK installer by default will create a shortcut on your Linux
+desktop. To run QuArK manually, follow the next steps:
 
 Example: My Wine directories are located in my <tt>/home</tt> folder
 under Wine.
-
-To run QuArK:
 
 <code>
 cd /home/slight/Wine/C/QuArK\ 6.3/
 wine QuArK.exe
 </code>
 
-This is the case with many applications run under Wine.
+<b>Note</b>:
+Older versions of QuArK and Wine seem to only function correctly
+when you to cd into the install directory in a terminal and run
+the executables by hand.
+
+<b>Note</b>:
+In some distributions, the Wine folder is hidden by default. Check
+<tt>/home/user/.wine</tt> instead.

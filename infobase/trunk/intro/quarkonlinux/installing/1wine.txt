@@ -1,5 +1,5 @@
 title: Get Wine with OpenGL Support
-author: slightcrazed, Peter Brett
+author: slightcrazed, Peter Brett, DanielPharos
 
 Wine (Wine Is Not an Emulator) is a nifty bit of programming that
 allows for Windows binaries to run on a Linux/Unix platform through
@@ -18,5 +18,8 @@ support, and I am not going to take the time to re-write what has
 already been written (the article also explains how to install
 Half-Life).
 
-Make sure to check out <a target="_blank" href="http://appdb.winehq.org/objectManager.php?sClass=application&iId=1532">WineHQ's AppDB</a>
-to see what versions of QuArK have been tested to work with what version of Wine.
+<b>Update</b>: Newer versions of Wine (often distributed with your
+Linux distribution) work too, and often have OpenGL enabled by default.
+In other words, your distribution-supplied copy should work fine,
+and if you compile it yourself, just make sure that no OpenGL-libraries
+are missing (see the output of the "configure" compilation step).

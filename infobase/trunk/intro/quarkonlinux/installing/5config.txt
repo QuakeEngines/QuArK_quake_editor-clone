@@ -1,0 +1,10 @@
+title: Configuring QuArK
+author: DanielPharos
+
+Configuring QuArK under Wine works in the same way as configuring
+QuArK under Windows. As many compilers and game play tricks with
+paths, you may need to install (or symlink) them to Wine's "C" drive,
+and configure QuArK to use them from there.
+
+If you are getting weird behaviour, make sure Wine is configured to
+emulate "Windows XP".

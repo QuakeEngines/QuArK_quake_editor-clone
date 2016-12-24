@@ -1,15 +1,7 @@
 title: Install QuArK
-author: slightcrazed, Peter Brett
+author: slightcrazed, Peter Brett, DanielPharos
 
-QuArK 6.4:
-
-Open a terminal window and unzip the the file to the desired location.
-
-<code>
-$ unzip quark-win32-<blah>.zip
-</code>
-
-QuArK 6.3.0:
+<b>Using the installer</b>:
 
 Open a terminal window, move to the directory you downloaded the file
 to, and run the installer.
@@ -19,5 +11,14 @@ $ cd /path/to/quark
 $ wine quark_v6.3.0.EXE
 </code>
 
-You can put the file tree anywhere you want, but it is probably
-easiest to place it in your Wine 'C' drive.
+You can put the file anywhere you want, but it is probably
+easiest to use the default place it the installer suggests.
+
+
+<b>Using the archive</b>:
+
+Open a terminal window and unzip the the file to the desired location.
+
+<code>
+$ unzip quark-win32-<blah>.zip
+</code>

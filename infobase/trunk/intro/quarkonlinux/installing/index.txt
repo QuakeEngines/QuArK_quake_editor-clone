@@ -3,6 +3,10 @@ desc: 1wine
 desc: 2get
 desc: 3install
 desc: 4run
+desc: 5config
 
 QuArK runs pretty well on Linux systems, given a bit of patience.
+Make sure to check out <a target="_blank" href="https://appdb.winehq.org/objectManager.php?sClass=application&iId=1532">WineHQ's AppDB</a>
+to see what versions of QuArK have been tested to work with what version of Wine.
+
 Here's how to get started.
