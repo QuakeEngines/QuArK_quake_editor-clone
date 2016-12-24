@@ -19,7 +19,7 @@ with extenion .brk; then next time load that unless the .qrk is newer
 Multi-user editing over the net.  Would need somebody who
 really knows what they're doing.  Probably not a
 realistic target.  Support for collaboration via CVS might be
-more plausible.  Unlikely to be build, would need a entire
+more plausible.  Unlikely to be build, would need an entire
 rebuild of the code.  Maybe an idea for Quarkplusplus?
 
 <li>persistent edits: (?)
@@ -43,13 +43,13 @@ ur head...
 
 <li>Surf Inspectors: (?)
 <br>Laid out more like in Radiant, which I like
-better than Quark's long list.
+better than QuArK's long list.
 
 <li>More Game Formats: (?)
 <br>Unreal engine, Serious Sam, Far Cry...
-<!-- Heroes of Might and Magic (Quark was
+<!-- Heroes of Might and Magic (QuArK was
 used some internally for either the one coming out now or the one
 before it, so maybe this one has a chance). 
-DanielPharos: First of all, I think it's Might and Magic, no Heroes
+DanielPharos: First of all, I think it's Might and Magic, not Heroes
 of Might and Magic. Second, I can't find anything proving this...-->
 </ul>
