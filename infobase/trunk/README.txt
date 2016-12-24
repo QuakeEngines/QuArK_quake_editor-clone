@@ -17,7 +17,7 @@ The Infobase is the central repository for the QuArK documentation,
 covering all aspects of QuArK usage and development.
 
 In raw form, the Infobase is a tree of raw pseudo-HTML fragments (see
-'3.8. Documenting QuArK' within the Infobase).  To be to use the
+'3.9. Documenting QuArK' within the Infobase).  To be to use the
 Infobase properly, you will need to compile it.
 
 The compilation script is the file `build.py` in this directory.  You
