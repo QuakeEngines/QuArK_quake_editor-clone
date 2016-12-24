@@ -361,6 +361,7 @@ def processtext(root, self, data):
                                 elif (tag[:7] == "</table"):
                                     table_tags_added -= 1
                                     flags["prevlineempty"] = 0 #Don't paragraph this line, even if the previous line was empty
+                                tag = (line[:endchar_tag_found+1]) #Don't lowercase, as this can break URLs
                                 correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, self.kw)
                         correctedline = correctedline + correctedappend
 
@@ -644,6 +645,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.34  2015/01/26 21:33:29  danielpharos
+# Fixed some more cases where paragraphs were being wrongly added.
+#
 # Revision 1.33  2014/12/30 22:06:22  danielpharos
 # UL-tags should not be put in paragraph-tags; fixes for various html-issues that were uncovered by this additional check.
 #
