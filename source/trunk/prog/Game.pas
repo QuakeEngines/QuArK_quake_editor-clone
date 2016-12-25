@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.90  2014/12/20 22:03:52  danielpharos
+Small fixes for SteamFS.
+
 Revision 1.89  2014/08/26 10:46:24  danielpharos
 Fixed possible Find-handle leak on error code path (based on code from Game2).
 
@@ -615,7 +618,7 @@ var
  L: TQList;
  GameDir : String;
 begin
- { tiglari  }
+ { tiglari }
  L:=GetQuakeContext;
  for I:=L.Count-1 downto 0 do
   begin
