@@ -1,0 +1,32 @@
+title: Path substitution
+
+When configuring games, often you need to specify a gamepath. In
+order to not have to copy-paste this path all over the place, QuArK
+supports path substitution. For example, instead of <tt>+set fs_game C:\Quake3</tt>
+you can use <tt>+set fs_game %gamedir%</tt>. QuArK will
+substitute/expand the <tt>%gamedir%</tt> when calling the external
+tool.
+
+<b>Table of tokens</b><br/>
+<tt>%output%</tt>: The output path.<br/>
+<tt>%grouppath%</tt>: The path where files belonging to a group are stored (Torque).<br/>
+<tt>%buildpgmsdir%</tt>: The path where the tool is installed (only applicable to externel tools).<br/>
+<tt>%mappath%</tt>: The path where QuArK writes the output map file.<br/>
+<tt>%mapfile%</tt>: The path and filename with file extension of the output map file.<br/>
+<tt>%mapfile_wrongslash%</tt>: Some tools don't accept the right type of slashes in filepaths; this token is the same as <tt>%mapfile%</tt>, but with the type of slashes set incorrectly on purpose.<br/>
+<tt>%file%</tt>: The path and filename without file extension of the output map file.<br/>
+<tt>%filename%</tt>: The filename without file extension of the output map file.<br/>
+<tt>%fullfilename%</tt>: The filename with file extension of the output map file.<br/>
+<tt>%basepath%</tt>: The path where the game's content is stored.<br/>
+<tt>%gamedir%</tt>: The path where the game is installed.<br/>
+<tt>%basedir%</tt>: The directory where the game's content is stored.<br/>
+<tt>%quarkpath%</tt>: The path where QuArK is installed.<br/>
+
+If the game has Steam-support, these additional tokens are available:<br/>
+<tt>%sourcesdkdir%</tt>: The directory where the Source SDK tools are located inside the user's SteamApps directory.<br/>
+<tt>%steampath%</tt>: The path where Steam is installed.<br/>
+<tt>%steamappid%</tt>: The Steam AppID.<br/>
+<tt>%steamgamedir%</tt>: The directory where the game is located inside the user's SteamApps directory.<br/>
+<tt>%steamuser%</tt>: The Steam username.
+
+<b>Note</b>: Some of these tokens change when you enable the "Run tools from base directory" option.
