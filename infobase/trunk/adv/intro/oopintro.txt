@@ -96,7 +96,7 @@ a template for making objects.  Different circles will have different
 centers and radii, but use the same method to make them.  So we need a way to
 define both a template and a method for making things that fit it.  Templates
 for objects are what 'classes' are really supposed to be, and the methods
-for making particular objects, 'instances', are called 'constructors.
+for making particular objects, 'instances', are called 'constructors'.
 
 In Python, constructors all have the same name, '__init__': the double
 underscores on either side are a signal that something with special
@@ -199,13 +199,12 @@ but they would have a 'center' or 'origin', like all other figures.
 So we might define:
 
 <code>
-class Figure
-    def __init__(self, x, y ,z):
+class Figure:
+    def __init__(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
         
-    def origin(self):
     def origin(self):
         return self.x, self.y, self.z
 </code>
@@ -215,8 +214,8 @@ and Circle, so we might write something like this:
 class Point(Figure):
     pass
 
-class Circle(Figure)
-    def __init__(x, y, z, r):
+class Circle(Figure):
+    def __init__(self, x, y, z, r):
         Figure.__init__(self, x, y, z)
         self.radius = r
         
@@ -303,7 +302,7 @@ Extension types are types which have been defined in extensions to Python, which
 the case of QuArK Python will have been written in Delphi.  Some important extension
 types for QuArK Python are vector and qobject, created by calls such as:
 <code>
-myvector = quarkx.vect(1, 0 , 10)
+myvector = quarkx.vect(1, 0, 10)
 face = quarkx.newobj("top:f")
 </code>
 Like classes, extension types have methods (followed by ()) and data members
@@ -320,4 +319,3 @@ argument passed to quarkx.newobj (":f", ":b", etc.) determine what Delphi type
 is used to make the instance of the extension class, and this then determines what
 data members and methods are available from Python (e.g. .normal is available for
 faces (suffix ":f"), but not polys (suffix ":p").
-
