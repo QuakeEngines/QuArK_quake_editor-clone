@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.565  2016/11/28 18:30:40  danielpharos
+//Changed the way entity light is stored for easier understanding and fixed a lighting quality bug in OpenGL.
+//
 //Revision 1.564  2016/06/12 13:05:11  danielpharos
 //Removed the fullscreen size option for Glide.
 //
@@ -2769,6 +2772,7 @@ QQRKSRC1
         tmpQuArK = "%basedir%"
         SourceSDKDir = "*auto*"
         Compiler = "*auto*"
+        GameFileLayout = "common"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
         ForceFaceFlags = ""
@@ -2811,8 +2815,8 @@ QQRKSRC1
         RunMapCmdLine = "+map %filename%"
 
         MapExt = ".vmf"
-        PakExt = ".gcf"
-        PakFormat = "*.gcf"
+        PakExt = ".vpk"
+        PakFormat = "*.vpk"
         LightEntityScale = '0.9'
         3DLight = '512'
         Console = "1"
@@ -3995,7 +3999,7 @@ QQRKSRC1
       Steam:config =
       {
         SteamDirectory = "C:\Program Files\Valve\Steam"
-        SteamUser = "<Your Steam Account>"
+        SteamUser = "<Your Steam Account Username>"
         ExtractorParameters = ""
         Autostart = "1"
         UseQuArKSAS = "1"
@@ -4005,6 +4009,7 @@ QQRKSRC1
         SteamEXEName = "Steam.exe"
         ProgramDirectory = "steamapps"
         SourceSDKDirectory = "sourcesdk\bin"
+        CommonDirectory = "common"
         QuArKSASEXENameOld = "QuArKSAS.exe"
         QuArKSASEXENameSource2006 = "QuArKSAS_source2006.exe"
         QuArKSASEXENameSource2007 = "QuArKSAS_source2007.exe"
@@ -6211,6 +6216,16 @@ QQRKSRC1
              $0D"source2007"
              $0D"source2009"
              $0D"orangebox"
+      }
+      GameFileLayout: =
+      {
+        Txt = "Format and layout of the file archives"
+        Typ = "CL"   // Combobox list
+        Hint = "Specify the way Steam stores the game files"
+        Items = "Username directory"
+             $0D"Common directory"
+        Values = "username"
+              $0D"common"
       }
       Templates: =
       {

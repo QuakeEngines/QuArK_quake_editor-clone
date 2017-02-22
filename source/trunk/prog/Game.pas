@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.91  2016/12/25 09:26:51  danielpharos
+Removed an unneeded whitespace in comment.
+
 Revision 1.90  2014/12/20 22:03:52  danielpharos
 Small fixes for SteamFS.
 
@@ -1206,13 +1209,20 @@ begin
       Setup:=SetupSubSet(ssGames, 'Steam');
       PakSearchPath:=QuickResolveFilename(ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['ProgramDirectory']]));
       PakRealFileName:=PakFileName;
-      //GCF is different from PAK: Move the gamedir-part into the filename
-      I:=LastPos(PathDelim, RemoveTrailingSlash(AbsolutePath));
-      if I <> 0 then
+      if SetupGameSet.Specifics.Values['GameFileLayout']='username' then
       begin
-        RestartAliasing(ConcatPaths([RightStr(AbsolutePath,Length(AbsolutePath)-I),FileName]));
-        FilenameAlias := GetNextAlias;
-        AbsolutePath:=LeftStr(AbsolutePath,I);
+        //GCF is different from PAK: Move the gamedir-part into the filename
+        I:=LastPos(PathDelim, RemoveTrailingSlash(AbsolutePath));
+        if I <> 0 then
+        begin
+          RestartAliasing(ConcatPaths([RightStr(AbsolutePath,Length(AbsolutePath)-I),FileName]));
+          FilenameAlias := GetNextAlias;
+          AbsolutePath:=LeftStr(AbsolutePath,I);
+        end;
+      end
+      else if SetupGameSet.Specifics.Values['GameFileLayout']='common' then
+      begin
+        PakSearchPath:=ConcatPaths([PakSearchPath, Setup.Specifics.Values['CommonDirectory'], GetSteamGameDir(), GetSteamBaseDir()]);
       end;
     end
     else

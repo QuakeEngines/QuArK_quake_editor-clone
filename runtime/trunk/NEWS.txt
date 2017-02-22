@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added support for new Steam game file layout (using the 'common' directory).
+
 * [DanielPharos]: Added brushDef2 and brushDef3 saving support.
 
 * [DanielPharos]: Many fixes for .m32 texture saving. It will now produce something that at least
