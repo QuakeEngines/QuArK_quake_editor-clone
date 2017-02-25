@@ -20,7 +20,8 @@ QQRKSRC1
     Root = "Portal Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
-    t_portal:incl = { v="portal" PakFile="portal content.gcf" }
+    //t_portal:incl = { v="portal" PakFile="portal content.gcf" }
+    t_portal:incl = { v="portal" PakFile="portal_pak_dir.vpk" }
 
     Portal Textures.qtxfolder =
     {

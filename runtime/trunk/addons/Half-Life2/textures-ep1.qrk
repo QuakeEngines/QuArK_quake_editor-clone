@@ -20,7 +20,8 @@ QQRKSRC1
     Root = "HL2 Episode 1 Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
-    t_ep1:incl =      {  v="episodic" PakFile="episode 1 shared.gcf"}
+    //t_ep1:incl =      {  v="episodic" PakFile="episode 1 shared.gcf"}
+    t_ep1:incl =      {  v="episodic" PakFile="ep1_pak_dir.vpk"}
 
     HL2 Episode 1 Textures.qtxfolder =
     {

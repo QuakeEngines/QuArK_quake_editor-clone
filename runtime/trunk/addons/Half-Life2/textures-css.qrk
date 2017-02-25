@@ -20,7 +20,8 @@ QQRKSRC1
     Root = "CS Source Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
-    t_css:incl =      {  v="cstrike" PakFile="counter-strike source shared.gcf"}
+    //t_css:incl =      {  v="cstrike" PakFile="counter-strike source shared.gcf"}
+    t_css:incl =      {  v="cstrike" PakFile="cstrike_pak_dir.vpk"}
 
     CS Source Textures.qtxfolder =
     {

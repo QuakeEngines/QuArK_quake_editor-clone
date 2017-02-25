@@ -18,7 +18,8 @@ QQRKSRC1
     Root = "Common Source Textures.qtxfolder"
     HTML = "intro.texturebrowser.html"
 
-    t_hl2:incl =      {  v="hl2" PakFile="source materials.gcf"}
+    //t_hl2:incl =      {  v="hl2" PakFile="source materials.gcf"}
+    t_hl2:incl =      {  v="hl2" PakFile="hl2_textures_dir.vpk"}
 
     Common Source Textures.qtxfolder =
     {
