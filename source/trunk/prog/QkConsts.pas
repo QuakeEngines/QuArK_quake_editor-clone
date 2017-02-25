@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2015/12/06 11:07:15  danielpharos
+Switching version number to 6.6 Beta 7.
+
 Revision 1.8  2013/06/30 15:18:32  danielpharos
 Updated for 6.6 Beta 6 release.
 
@@ -89,7 +92,7 @@ const
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
-  QuArKCompileDate        = 42343;   //This is the compiled date
+  QuArKCompileDate        = 42791;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
