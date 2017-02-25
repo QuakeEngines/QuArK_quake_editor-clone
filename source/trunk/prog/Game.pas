@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.92  2017/02/22 17:12:04  danielpharos
+Added support for new Steam game file layout (using the 'common' directory).
+
 Revision 1.91  2016/12/25 09:26:51  danielpharos
 Removed an unneeded whitespace in comment.
 
@@ -396,6 +399,7 @@ function GameMapPath : String;
 function GameModelPath : String;
 function GameShaderList : String;
 function SteamAppID : String;
+function GetSteamQuakeDir : String;
 function GetSteamGameDir : String;
 function GetSteamBaseDir : String;
 function SourceSDKDir : String;
@@ -650,6 +654,8 @@ end;
 function QuakeDir : String;
 begin
  Result:=SetupGameSet.Specifics.Values['Directory'];
+ if Result='*auto*' then
+   Result:=GetSteamQuakeDir;
  if Result='' then
   Result:='.'; //FIXME: What should we do...?
  Result:=ConvertPath(Result);
@@ -832,6 +838,7 @@ var
      path:=StringReplace(path, '%steamappid%',   SteamAppID, [rfReplaceAll]);
      path:=StringReplace(path, '%steamgamedir%', GetSteamGameDir, [rfReplaceAll]);
      path:=StringReplace(path, '%steamuser%',    SteamSetup.Specifics.Values['SteamUser'], [rfReplaceAll]);
+     path:=StringReplace(path, '%steamcommon%',  SteamSetup.Specifics.Values['CommonDirectory'], [rfReplaceAll]); 
    end;
  end;
 
@@ -1127,7 +1134,6 @@ var
  AbsolutePath, AbsolutePathAndFilename: String;
  FilenameAlias: String;
  PakFile: QFileObject;
- PakRealFileName: String;
  PakSearchPath: String;
  GetPakNames: TGetPakNames;
  Setup: QObject;
@@ -1208,10 +1214,9 @@ begin
     begin
       Setup:=SetupSubSet(ssGames, 'Steam');
       PakSearchPath:=QuickResolveFilename(ConcatPaths([Setup.Specifics.Values['Directory'], Setup.Specifics.Values['ProgramDirectory']]));
-      PakRealFileName:=PakFileName;
       if SetupGameSet.Specifics.Values['GameFileLayout']='username' then
       begin
-        //GCF is different from PAK: Move the gamedir-part into the filename
+        //Move the gamedir-part into the filename
         I:=LastPos(PathDelim, RemoveTrailingSlash(AbsolutePath));
         if I <> 0 then
         begin
@@ -1222,17 +1227,17 @@ begin
       end
       else if SetupGameSet.Specifics.Values['GameFileLayout']='common' then
       begin
-        PakSearchPath:=ConcatPaths([PakSearchPath, Setup.Specifics.Values['CommonDirectory'], GetSteamGameDir(), GetSteamBaseDir()]);
+        //Archive files are scattered over multiple base directories
+        PakSearchPath:=ConcatPaths([PakSearchPath, Setup.Specifics.Values['CommonDirectory'], GetSteamGameDir(), BaseDir]);
       end;
     end
     else
     begin
-      PakRealFileName:=PakFileName;
       PakSearchPath:=AbsolutePath;
     end;
     GetPakNames:=TGetPakNames.Create;
     try
-      GetPakNames.CreatePakList(PakSearchPath, PakRealFileName, True, False);
+      GetPakNames.CreatePakList(PakSearchPath, PakFileName, True, False);
       while (FilenameAlias <> '') do
       begin
         GetPakNames.ResetIter(True);
@@ -1891,6 +1896,27 @@ begin
     begin
       //Shouldn't happen!
       Log(LOG_WARNING, 'SourceSDKDir: Unknown SteamGame value!');
+      Result := '';
+    end;
+  end;
+end;
+
+function GetSteamQuakeDir : String;
+var
+  S: String;
+begin
+  Result := SetupGameSet.Specifics.Values['Directory'];
+  if Result = '*auto*' then
+  begin
+    S := SetupGameSet.Specifics.Values['GameFileLayout'];
+    if S = 'username' then
+      Result := '%steampath%\SteamApps\%steamuser%\%steamgamedir%'
+    else if S = 'common' then
+      Result := '%steampath%\SteamApps\%steamcommon%\%steamgamedir%'
+    else
+    begin
+      //Shouldn't happen!
+      Log(LOG_WARNING, 'GetSteamQuakeDir: Unknown GameFileLayout value!');
       Result := '';
     end;
   end;

@@ -27,6 +27,7 @@ If the game has Steam-support, these additional tokens are available:<br/>
 <tt>%steampath%</tt>: The path where Steam is installed.<br/>
 <tt>%steamappid%</tt>: The Steam AppID.<br/>
 <tt>%steamgamedir%</tt>: The directory where the game is located inside the user's SteamApps directory.<br/>
-<tt>%steamuser%</tt>: The Steam username.
+<tt>%steamuser%</tt>: The Steam username.<br/>
+<tt>%steamcommon%</tt>: The Steam Common directory's name.
 
 <b>Note</b>: Some of these tokens change when you enable the "Run tools from base directory" option.

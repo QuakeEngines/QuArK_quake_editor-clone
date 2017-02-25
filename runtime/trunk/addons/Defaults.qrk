@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.566  2017/02/22 17:12:07  danielpharos
+//Added support for new Steam game file layout (using the 'common' directory).
+//
 //Revision 1.565  2016/11/28 18:30:40  danielpharos
 //Changed the way entity light is stored for easier understanding and fixed a lighting quality bug in OpenGL.
 //
@@ -2764,7 +2767,7 @@ QQRKSRC1
         Steam = "1" //This game uses Steam
 
         Program = "%steampath%\steam.exe -applaunch %steamappid% -dev -console -window -width 800 -height 600"
-        Directory = "%steampath%\SteamApps\%steamuser%\%steamgamedir%"
+        Directory = "*auto*"
         SteamGame = "HL2"
         SteamAppID = "*auto*"
         GameDir = "*auto*"
