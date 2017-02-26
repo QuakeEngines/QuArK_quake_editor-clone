@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2017/02/26 08:57:16  danielpharos
+Fixed DLL hijacking vulnerability on Windows XP SP1 and later. Also, improved speed parsing environmental block, and removed its 1024 character cut-off.
+
 Revision 1.61  2016/01/02 19:17:42  danielpharos
 Switch to using ZeroMemory, for consistency.
 
@@ -215,7 +218,7 @@ function CheckWindowsNT: Boolean;
 function ProcessExists(const exeFileName: string): Boolean;
 function WindowExists(const WindowName: String): Boolean;
 function RetrieveModuleFilename(ModuleHandle: HMODULE): String;
-procedure SetDllSearchPath();
+procedure SetDllSearchPath;
 
 type
   {$IFDEF Delphi4orNewerCompiler}
