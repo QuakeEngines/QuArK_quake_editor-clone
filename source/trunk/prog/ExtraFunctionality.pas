@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2012/09/05 18:06:10  danielpharos
+Move implementation of FloatSpec internally to QkObjects.
+
 Revision 1.26  2010/05/05 18:45:19  danielpharos
 Added logging for GetGameFileBase call.
 
@@ -134,6 +137,7 @@ const
   SM_TABLETPC = 86;
 
 var
+  SetDllDirectory: function (lpPathName : LPCTSTR) : BOOL; stdcall;
   IsWow64Process: function (hProcess : THandle; var Wow64Process : BOOL): BOOL; stdcall;
 
 {$ifndef Delphi7orNewerCompiler} // Pre-dates Delphi 7

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2016/01/02 19:17:42  danielpharos
+Switch to using ZeroMemory, for consistency.
+
 Revision 1.60  2015/12/19 08:59:50  danielpharos
 Workaround for another unexpected Windows Registry key or value problem in the video hardware enumeration.
 
@@ -212,6 +215,7 @@ function CheckWindowsNT: Boolean;
 function ProcessExists(const exeFileName: string): Boolean;
 function WindowExists(const WindowName: String): Boolean;
 function RetrieveModuleFilename(ModuleHandle: HMODULE): String;
+procedure SetDllSearchPath();
 
 type
   {$IFDEF Delphi4orNewerCompiler}
@@ -951,30 +955,24 @@ end;
 
 procedure TOperatingSystem.GetEnvironment;
 var
-  c,i :dword;
   b :pchar;
-  s :string;
+  s :pchar;
 begin
   Log(LOG_VERBOSE, 'Gathering environment information...');
   FEnv.Clear;
-  c:=1024;
   b:=GetEnvironmentStrings;
-  i:=0;
-  s:='';
-  while i<c do
-  begin
-    if b[i]<>#0 then
-      s:=s+b[i]
-    else
+  try
+    s:=b;
+    while True do
     begin
-      if s='' then
+      if StrLen(s)=0 then
         break;
       FEnv.Add(s);
-      s:='';
+      inc(s, StrLen(s) + 1);
     end;
-    inc(i);
+  finally
+    FreeEnvironmentStrings(b);
   end;
-  FreeEnvironmentStrings(b);
 end;
 
 function GetSpecialFolder(Handle: Hwnd; nFolder: Integer): string;
@@ -2401,6 +2399,39 @@ end;
 function CheckWindowsNT: Boolean;
 begin
   Result:=(WindowsPlatformCompatibility=osWinNTComp);
+end;
+
+procedure SetDllSearchPath;
+var
+  c: TOperatingSystem;
+  SetDllDirectoryPtr: Pointer;
+begin
+  //This is only available on Windows XP SP1 and later (and Windows Server 2003 and later).
+  c:=TOperatingSystem.Create; //FIXME: Don't do this twice...!
+  try
+    c.getInfo;
+    if (c.FMajorVersion > 5)
+   or ((c.FMajorVersion = 5) and (c.FMinorVersion > 1))
+   or ((c.FMajorVersion = 5) and (c.FMinorVersion = 1) and (c.ServicePackMajor >= 1)) then
+      SetDllDirectoryPtr := GetProcAddress(GetModuleHandle('kernel32'), 'SetDllDirectoryA'); //Note: Delphi7 always calls the ANSI version
+  finally
+    c.free;
+  end;
+
+  if SetDllDirectoryPtr <> nil then
+  begin
+    SetDllDirectory := SetDllDirectoryPtr;
+    if SetDllDirectory('') = false then
+    begin
+      LogWindowsError(GetLastError(), 'SetDllDirectory("")');
+      SetDllDirectoryPtr := nil;
+    end;
+  end;
+
+  if SetDllDirectoryPtr = nil then
+  begin
+    Log(LOG_WARNING, 'Failed to change the DLL search path; QuArK will be vulnerable to DLL hijacking!');
+  end;
 end;
 
 Procedure LogSystemDetails;

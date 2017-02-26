@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.96  2016/01/02 19:32:58  danielpharos
+Removed unneeded variable, and added restore-autosave functionality for .qkl files.
+
 Revision 1.95  2015/12/05 14:43:29  danielpharos
 Fixed a typo.
 
@@ -557,7 +560,7 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   ObjProp, qmath, QkInclude, Running, Output1, QkTreeView, PyProcess,
   Console, Python, Quarkx, About, {$IFDEF Debug} MemTester, {$ENDIF}
   PyMapView, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, QkConsts, Logging;
+  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, QkConsts, Logging, SystemDetails;
 
 var
   g_Mutex: THandle = 0;
@@ -719,6 +722,9 @@ begin
  g_CmdOptions.DoUpdate := true;
  g_CmdOptions.OnlineUpdate := true;
  ProcessCmdLine;
+
+ //Remove the current directory from the DLL search path
+ SetDllSearchPath();
 
  //This is the mutex for single-instance checking
  Log(LOG_VERBOSE, 'Checking mutex...');
