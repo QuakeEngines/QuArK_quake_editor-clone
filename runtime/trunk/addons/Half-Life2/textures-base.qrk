@@ -3210,9 +3210,19 @@ QQRKSRC1
             Models/Synth/synthenvmap.wl  = { t_hl2=! }
             Models/Synth/tendan.wl  = { t_hl2=! }
             Models/Synth/topant.wl  = { t_hl2=! }
+            Models/Tools/camera/camerafinal.wl  = { t_hl2_misc=! }
+            Models/Tools/camera/cameralowfinal.wl  = { t_hl2_misc=! }
+            Models/Tools/camera/lightning000.wl  = { t_hl2_misc=! }
             Models/Vortigaunt/chefhat_sheet.wl  = { t_hl2=! }
             Models/Vortigaunt/eyeball.wl  = { t_hl2=! }
+            Models/Vortigaunt/glint.wl  = { t_hl2_misc=! }
             Models/Vortigaunt/pupil.wl  = { t_hl2=! }
+            Models/Vortigaunt/shackles.wl  = { t_hl2_misc=! }
+            Models/Vortigaunt/uplefteyeball.wl  = { t_hl2_misc=! }
+            Models/Vortigaunt/upmideyeball.wl  = { t_hl2_misc=! }
+            Models/Vortigaunt/uprighteyeball.wl  = { t_hl2_misc=! }
+            Models/Vortigaunt/vort_eye.wl  = { t_hl2_misc=! }
+            Models/Vortigaunt/vortigaunt_base.wl  = { t_hl2_misc=! }
             Models/Vortigaunt/vortigaunt_sheet.wl  = { t_hl2=! }
             Models/Weapons/Flare/shellside.wl  = { t_hl2=! }
             Models/Weapons/pistol_shell/shell.wl  = { t_hl2=! }
@@ -3475,7 +3485,9 @@ QQRKSRC1
         Particle.txlist =
         {
             particle/fire.wl  = { t_hl2=! }
+            particle/particle_cloud.wl  = { t_hl2_misc=! }
             particle/particle_composite.wl  = { t_hl2=! }
+            particle/particle_crescent.wl  = { t_hl2_misc=! }
             particle/particle_noisesphere.wl  = { t_hl2=! }
             particle/particle_smokegrenade.wl  = { t_hl2=! }
             particle/particle_smokegrenade1.wl  = { t_hl2_misc=! }
@@ -3791,6 +3803,7 @@ QQRKSRC1
             shadertest/DebugModifyVertex.wl  = { t_hl2=! }
             shadertest/Eyeball.wl  = { t_hl2=! }
             shadertest/GooInGlass.wl  = { t_hl2=! }
+            shadertest/glassbrick.wl  = { t_hl2_misc=! }
             shadertest/jet.wl  = { t_hl2_misc=! }
             shadertest/Lightmap.wl  = { t_hl2=! }
             shadertest/LightmappedAlphaTestedTexture.wl  = { t_hl2=! }
@@ -4414,6 +4427,7 @@ QQRKSRC1
             VGUI/common/message_dialog.wl  = { t_hl2_misc=! }
             VGUI/common/message_dialog_error.wl  = { t_hl2_misc=! }
             VGUI/common/message_dialog_warning.wl  = { t_hl2_misc=! }
+            VGUI/dashed_line.wl  = { t_hl2_misc=! }
             VGUI/friends/icon_away.wl  = { t_hl2=! }
             VGUI/friends/icon_blocked.wl  = { t_hl2=! }
             VGUI/friends/icon_busy.wl  = { t_hl2=! }
@@ -4501,6 +4515,7 @@ QQRKSRC1
             VGUI/steam/games/icon_sourcesdk.wl  = { t_hl2=! }
             VGUI/steam/games/icon_tfc.wl  = { t_hl2=! }
             VGUI/timer.wl  = { t_hl2=! }
+            VGUI/ui_logo.wl  = { t_hl2_misc=! }
             VGUI/white.wl  = { t_hl2=! }
             VGUI/white_additive.wl  = { t_hl2=! }
             VGUI/zoom.wl  = { t_hl2=! }
