@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2012/12/29 13:41:44  danielpharos
+Fixed some log messages being empty.
+
 Revision 1.78  2011/08/13 22:17:19  danielpharos
 Simplified Steam file path handling. Should be much more uniform.
 
@@ -1285,7 +1288,7 @@ begin
             // GameMaterialsPath is the folder, or pak file folder, that the shader/material file is in.
             // Arg is the game's shader (Q3) or material (D3/Q4) full file name.
             // So the line below MaterialFile:= gives the game folder, file folder, full file name of the shader/material for the link
-            // witch is (as a Doom 3 example): base + materials/alphalabs.mtr
+            // which is (as a Doom 3 example): base + materials/alphalabs.mtr
             MaterialFile:=NeedGameFileBase(S, ConcatPaths([GameMaterialsPath, Arg]), '') as D3MaterialFile;
             MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
 
