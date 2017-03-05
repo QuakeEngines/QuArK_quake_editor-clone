@@ -64,7 +64,10 @@ def createusedtextures(ToolBox, editor=None):
  #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
  #           except:
  #               NoImageFile = 1
-        UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+        if quarkx.setupsubset().shortname == "Half-Life2":
+            UsedTexture["v"] = quarkx.getbasedir()
+        else:
+            UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
         UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
         Folder.appenditem(UsedTexture)
  #   if NoImageFile is not None:
@@ -108,4 +111,7 @@ MapEditor.CloseRoot = CloseRoot
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2017/03/05 12:48:04  danielpharos
+#Moved the "Used Textures" functionality in the map editor into a plugin.
+#
 #
