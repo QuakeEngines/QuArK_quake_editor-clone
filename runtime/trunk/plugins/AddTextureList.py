@@ -14,6 +14,9 @@
 
 #
 #$Log$
+#Revision 1.8  2008/06/25 14:32:32  danielpharos
+#Change to ASCII file property
+#
 #Revision 1.6  2008/04/11 18:33:20  cdunde
 #Changed code to try to adapt to proper version writing.
 #
@@ -39,13 +42,9 @@ import os, os.path
 
 def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, texturesfiletype):
     WorkDirectory = (QuArKpath + '\\' + gamename)  ### Sets work folder (where .qrk file will be) Path here.
-    GameFolder = gamefileslocation.split('\\')
-    GameFolder = GameFolder[len(GameFolder)-1]
+    GameFolder = gamefileslocation.split('\\')[-1]
 
-    TexFileTypeList = texturesfiletype
-    TexFileTypeList = TexFileTypeList.replace(" ","")
-    TexFileTypeList = TexFileTypeList.replace("*","")
-    TexFileTypeList = TexFileTypeList.split(";")
+    TexFileTypeList = texturesfiletype.replace(" ","").replace("*","").split(";")
 
     ### Write the textures list:
     def listfiles(basefolder, foldername, filenames):

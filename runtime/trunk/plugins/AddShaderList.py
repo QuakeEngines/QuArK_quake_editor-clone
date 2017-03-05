@@ -14,6 +14,9 @@ AddShaderList.py - Makes the GameShaders.qrk list of Shaders by folder to use as
 
 #
 #$Log$
+#Revision 1.9  2008/06/25 14:32:33  danielpharos
+#Change to ASCII file property
+#
 #Revision 1.7  2008/04/16 22:25:22  cdunde
 #Updated processing for Quake 4 type shaders.
 #
@@ -54,8 +57,7 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
     filesfoldername = filesfoldername[len(filesfoldername)-1]
     whatkind = filesfoldername.capitalize()  ### Sets what they are called here.
     ### Sets the game FOLDER name here (where the games .pak or "shaders" folder is).
-    GameFolder = gamefileslocation.split('\\')
-    GameFolder = GameFolder[len(GameFolder)-1]
+    GameFolder = gamefileslocation.split('\\')[-1]
 
     ### Write the includes list:
     def listincludes(basefolder, foldername, filenames):

@@ -527,12 +527,9 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     o.write('  }\n')
 
     ### Writes the :form section opening lines and include statements
-    GamePakFileType = gamepakfiletype.replace('.', "")
-    GamePakFileType = GamePakFileType.strip()
-    ModelFileType = modelfiletype.replace('.', "")
-    ModelFileType = ModelFileType.strip()
-    GameFolderName = gamefileslocation.split('\\')
-    GameFolderName = GameFolderName[len(GameFolderName)-1]
+    GamePakFileType = gamepakfiletype.replace('.', "").strip()
+    ModelFileType = modelfiletype.replace('.', "").strip()
+    GameFolderName = gamefileslocation.split('\\')[-1]
 
     o.write('  Entity Forms.fctx =\n')
     o.write('  {\n')
@@ -866,6 +863,9 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.5  2010/08/19 08:04:27  cdunde
+#Some small fixes for the Conversion Tool system.
+#
 #Revision 1.4  2009/02/11 15:38:57  danielpharos
 #Use correct kind of combobox.
 #

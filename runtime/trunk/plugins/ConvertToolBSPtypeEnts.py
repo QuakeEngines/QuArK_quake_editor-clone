@@ -27,12 +27,11 @@ def BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
  #   entitiesfiletype = ".bsp"    ### Set the entitiesfiletype to scan here.
 
     OutPutList = (gamename + "Entities")  ### Changes the output list name here to what you want.
-    GameFolder = gamefileslocation.split("\\") # "Base"   ### Sets the game folder name here.
-    GameFolder = GameFolder[len(GameFolder)-1]
-    PakFile = gamepakfiletype.replace(".", "") # "pk3"    ### Sets the Pak file type (no period) to call here.
-    ModelType = modelfiletype.replace(".", "") # "tik"    ### Sets the model file type (no period) to call here.
-    SoundType = soundfiletype.replace(".", "") # "wav"    ### Sets the sound file type (no period) to call here to play a sound.
-    MusicType = musicfiletype.replace(".", "") # "mus"    ### Sets the model file type (no period) to call here to play music.
+    GameFolder = gamefileslocation.split("\\")[-1] # "Base"   ### Sets the game folder name here.
+    PakFile = gamepakfiletype.replace(".", "")     # "pk3"    ### Sets the Pak file type (no period) to call here.
+    ModelType = modelfiletype.replace(".", "")     # "tik"    ### Sets the model file type (no period) to call here.
+    SoundType = soundfiletype.replace(".", "")     # "wav"    ### Sets the sound file type (no period) to call here to play a sound.
+    MusicType = musicfiletype.replace(".", "")     # "mus"    ### Sets the model file type (no period) to call here to play music.
     entitiy_count = 0
     form_count = 0
 
@@ -584,4 +583,7 @@ def BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
     
 #
 #$Log$
+#Revision 1.1  2010/09/01 08:11:22  cdunde
+#Added entity extraction from game map .bsp files for .qrk file creation of Conversion Tool system.
+#
 #

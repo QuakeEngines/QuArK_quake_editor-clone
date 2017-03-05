@@ -15,6 +15,9 @@
 
 #
 #$Log$
+#Revision 1.7  2008/06/25 14:32:32  danielpharos
+#Change to ASCII file property
+#
 #Revision 1.5  2008/04/06 06:47:41  cdunde
 #Added file back without version control to stop overwriting of internal code.
 #
@@ -68,12 +71,9 @@ def AddSpecifics(QuArKpath, gamename, gamefileslocation, gamepakfiletype,
     #            - Adding something to "ModelHint" will display that hint, other wise if one exist it will be used instead.
     #            -    If "UseDefaultModelHint" is set to 1 then that hint will be used.
     #            -    What ever hint method is used for one entity, that same method will be used for all entities.
-    GamePakFileType = gamepakfiletype.replace('.', "")
-    GamePakFileType = GamePakFileType.strip()
-    ModelFileType = modelfiletype.replace('.', "")
-    ModelFileType = ModelFileType.strip()
-    GameFolderName = gamefileslocation.split('\\')
-    GameFolderName = GameFolderName[len(GameFolderName)-1]
+    GamePakFileType = gamepakfiletype.replace('.', "").strip()
+    ModelFileType = modelfiletype.replace('.', "").strip()
+    GameFolderName = gamefileslocation.split('\\')[-1]
 
     if ModelHint is None:
         ModelHint = ""
