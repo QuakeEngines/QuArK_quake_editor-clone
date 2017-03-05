@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Plug-in which rebuild all views.
+Plug-in which displays the axis icons in the viewing windows.
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -174,6 +174,9 @@ quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.10  2008/02/23 22:16:04  cdunde
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.9  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #
