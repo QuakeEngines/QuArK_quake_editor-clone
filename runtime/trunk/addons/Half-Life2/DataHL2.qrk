@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.15  2010/02/21 13:17:52  danielpharos
+//Corrected New Files toolbox with correct files.
+//
 //Revision 1.14  2008/05/14 20:38:09  cdunde
 //Fixed basic lighting in all games and a few other small typo errors.
 //
@@ -75,6 +78,7 @@ QQRKSRC1
     //  Vmt.vmt = { }
       Vtf.vtf = { }
       Gcf.gcf = { }
+      Vpk.vpk = { }
     }
   }
   walltex:incl =
