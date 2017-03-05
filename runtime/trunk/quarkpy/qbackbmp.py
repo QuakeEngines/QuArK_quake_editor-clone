@@ -88,9 +88,10 @@ class BackBmpDlg(qmacro.dialogbox):
             src["PolySelectNoFill"] = quarkx.setupsubset(SS_MAP, "Options")["PolySelectNoFill"]
             src["NoFillSel"] = quarkx.setupsubset(SS_MAP, "Colors").getint("NoFillSel")
         else:
-            filename, center, scale, offset, multiple = view.background
-            src["filename"] = filename
-            src["center"] = center.tuple
+            center, scale, offset, multiple = view.background
+            image = view.backgroundimage
+            src["filename"] = image.filename
+            src["center"] = (center.x, center.y, center.z)
             src["scale"] = scale,
             if offset == 0:
                 src["offset"] = ""
@@ -254,8 +255,9 @@ class MdlBackBmpDlg(qmacro.dialogbox):
             src["offset"] = quarkx.setupsubset(SS_MODEL, "Options")["BGImage_offset"]
             src["multiple"] = quarkx.setupsubset(SS_MODEL, "Options")["BGImage_multiple"]
         else:
-            filename, center, scale, offset, multiple = view.background
-            src["filename"] = filename
+            center, scale, offset, multiple = view.background
+            image = view.backgroundimage
+            src["filename"] = image.filename
             src["center"] = center.tuple
             src["scale"] = scale,
             if offset == 0:
@@ -352,6 +354,9 @@ class MdlBackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.13  2009/07/06 18:17:58  danielpharos
+#Fixed vertical scrollbar showing up.
+#
 #Revision 1.12  2008/02/06 00:12:44  danielpharos
 #The skinview now properly updates to reflect changes made to textures.
 #

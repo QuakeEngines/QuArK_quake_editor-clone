@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2015/09/20 13:03:14  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.62  2015/09/06 12:35:31  danielpharos
 Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 
@@ -277,7 +280,7 @@ type
   TBackgroundImage = record
                       NeedToFree: Boolean;
                       Image: QPixelSet;
-                      center: TyVect;
+                      center: TVect;
                       scale: Single;
                       offset, multiple: Integer;
                      end;
@@ -914,13 +917,13 @@ begin
     scaling:=scale;
     if MapViewProj=Nil then
      begin
-      P1.X:=center.V.X;
-      P1.Y:=center.V.Y;
+      P1.X:=center.X;
+      P1.Y:=center.Y;
      end
     else
      begin
-      P1:=MapViewProj.Proj(center.V);
-      scaling:=scaling * MapViewProj.ScalingFactor(@center.V);
+      P1:=MapViewProj.Proj(center);
+      scaling:=scaling * MapViewProj.ScalingFactor(@center);
      end;
     if scaling<>0 then
      begin
@@ -3070,8 +3073,9 @@ begin
            if QkControl<>Nil then
             with (QkControl as TPyMapView).BackgroundImage do
              begin
-              centerX:=@center;
-              Result:=Py_BuildValueX('O!fii', [@TyVect_Type, @centerX, @scale, @offset, @multiple]);
+              centerX:=MakePyVect(center);
+              Result:=Py_BuildValueX('OOii', [centerX, PyFloat_FromDouble(scale), offset, multiple]);
+              Py_DECREF(centerX);
              end;
            Exit;
           end
@@ -3080,7 +3084,7 @@ begin
            if QkControl<>Nil then
             with (QkControl as TPyMapView).BackgroundImage do
              if Image<>nil then
-              Result:=Py_BuildValueX('O', [@Image])
+              Result:=Py_BuildValueX('O', [GetPyObj(Image)])
              else
               Result:=Py_None;
            Exit;
@@ -3256,7 +3260,7 @@ begin
               Exit;
              with (QkControl as TPyMapView).BackgroundImage do
               begin
-               center:=centerX^;
+               center:=centerX^.V;
                if scaleX<0 then
                  scale:=0
                else
