@@ -20,6 +20,7 @@ QQRKSRC1
 
     //t_hl2:incl =      {  v="hl2" PakFile="source materials.gcf"}
     t_hl2:incl =      {  v="hl2" PakFile="hl2_textures_dir.vpk"}
+    t_hl2_misc:incl =      {  v="hl2" PakFile="hl2_misc_dir.vpk" TexturePakFile="hl2_textures_dir.vpk"}
 
     Common Source Textures.qtxfolder =
     {
@@ -82,8 +83,8 @@ QQRKSRC1
             Brick/brickwall049e.wl  = { t_hl2=! }
             Brick/brickwall052b.wl  = { t_hl2=! }
             Brick/brickwall052c.wl  = { t_hl2=! }
-            Brick/brickwall052d.wl  = { t_hl2=! }
-            Brick/brickwall052e.wl  = { t_hl2=! }
+            Brick/brickwall052d.wl  = { t_hl2_misc=! }
+            Brick/brickwall052e.wl  = { t_hl2_misc=! }
             Brick/brickwall053a.wl  = { t_hl2=! }
             Brick/brickwall053d.wl  = { t_hl2=! }
             Brick/brickwall053e.wl  = { t_hl2=! }
@@ -372,18 +373,18 @@ QQRKSRC1
         {
             cable/black.wl  = { t_hl2=! }
             cable/blue.wl  = { t_hl2=! }
-            cable/blue_back.wl  = { t_hl2=! }
+            cable/blue_back.wl  = { t_hl2_misc=! }
             cable/cable.wl  = { t_hl2=! }
-            cable/cable_back.wl  = { t_hl2=! }
-            cable/cable_lit.wl  = { t_hl2=! }
-            cable/cable_lit_back.wl  = { t_hl2=! }
+            cable/cable_back.wl  = { t_hl2_misc=! }
+            cable/cable_lit.wl  = { t_hl2_misc=! }
+            cable/cable_lit_back.wl  = { t_hl2_misc=! }
             cable/chain.wl  = { t_hl2=! }
             cable/green.wl  = { t_hl2=! }
-            cable/green_back.wl  = { t_hl2=! }
+            cable/green_back.wl  = { t_hl2_misc=! }
             cable/new_cable_lit.wl  = { t_hl2=! }
-            cable/new_cable_lit_back.wl  = { t_hl2=! }
+            cable/new_cable_lit_back.wl  = { t_hl2_misc=! }
             cable/red.wl  = { t_hl2=! }
-            cable/red_back.wl  = { t_hl2=! }
+            cable/red_back.wl  = { t_hl2_misc=! }
             cable/rope.wl  = { t_hl2=! }
         }
         
@@ -404,8 +405,8 @@ QQRKSRC1
         
         Concrete.txlist =
         {
-            Concrete/blendconcdirt003a.wl  = { t_hl2=! }
-            Concrete/blendconcretegravel001a.wl  = { t_hl2=! }
+            Concrete/blendconcdirt003a.wl  = { t_hl2_misc=! }
+            Concrete/blendconcretegravel001a.wl  = { t_hl2_misc=! }
             Concrete/concreteceiling001a.wl  = { t_hl2=! }
             Concrete/concreteceiling002a.wl  = { t_hl2=! }
             Concrete/concreteceiling003a.wl  = { t_hl2=! }
@@ -417,28 +418,28 @@ QQRKSRC1
             Concrete/concretefloor005a.wl  = { t_hl2=! }
             Concrete/concretefloor006a.wl  = { t_hl2=! }
             Concrete/concretefloor007a.wl  = { t_hl2=! }
-            Concrete/concretefloor007a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor007a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor008a.wl  = { t_hl2=! }
             Concrete/concretefloor008b.wl  = { t_hl2=! }
             Concrete/concretefloor009a.wl  = { t_hl2=! }
             Concrete/concretefloor010a.wl  = { t_hl2=! }
             Concrete/concretefloor010b.wl  = { t_hl2=! }
             Concrete/concretefloor011a.wl  = { t_hl2=! }
-            Concrete/concretefloor011a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor011a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor012a.wl  = { t_hl2=! }
             Concrete/concretefloor013a.wl  = { t_hl2=! }
-            Concrete/concretefloor013a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor013a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor013b.wl  = { t_hl2=! }
             Concrete/concretefloor013c.wl  = { t_hl2=! }
             Concrete/concretefloor014a.wl  = { t_hl2=! }
             Concrete/concretefloor015a.wl  = { t_hl2=! }
-            Concrete/concretefloor015a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor015a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor016a.wl  = { t_hl2=! }
             Concrete/concretefloor018a.wl  = { t_hl2=! }
             Concrete/concretefloor019a.wl  = { t_hl2=! }
-            Concrete/concretefloor019a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor019a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor020a.wl  = { t_hl2=! }
-            Concrete/concretefloor020a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor020a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor020b.wl  = { t_hl2=! }
             Concrete/concretefloor022a.wl  = { t_hl2=! }
             Concrete/concretefloor023a.wl  = { t_hl2=! }
@@ -448,9 +449,9 @@ QQRKSRC1
             Concrete/concretefloor027a.wl  = { t_hl2=! }
             Concrete/concretefloor027b.wl  = { t_hl2=! }
             Concrete/concretefloor028a.wl  = { t_hl2=! }
-            Concrete/concretefloor028a_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor028a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor028c.wl  = { t_hl2=! }
-            Concrete/concretefloor028c_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor028c_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor028d.wl  = { t_hl2=! }
             Concrete/concretefloor030a.wl  = { t_hl2=! }
             Concrete/concretefloor031a.wl  = { t_hl2=! }
@@ -459,22 +460,22 @@ QQRKSRC1
             Concrete/concretefloor033b.wl  = { t_hl2=! }
             Concrete/concretefloor033c.wl  = { t_hl2=! }
             Concrete/concretefloor033k.wl  = { t_hl2=! }
-            Concrete/concretefloor033k_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor033k_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor033o.wl  = { t_hl2=! }
             Concrete/concretefloor033p.wl  = { t_hl2=! }
             Concrete/concretefloor033q.wl  = { t_hl2=! }
-            Concrete/concretefloor033q_c17.wl  = { t_hl2=! }
+            Concrete/concretefloor033q_c17.wl  = { t_hl2_misc=! }
             Concrete/concretefloor033y.wl  = { t_hl2=! }
             Concrete/concretefloor034a.wl  = { t_hl2=! }
             Concrete/concretefloor036a.wl  = { t_hl2=! }
             Concrete/concretefloor037a.wl  = { t_hl2=! }
             Concrete/concretefloor037b.wl  = { t_hl2=! }
-            Concrete/concretefloor037c.wl  = { t_hl2=! }
+            Concrete/concretefloor037c.wl  = { t_hl2_misc=! }
             Concrete/concretefloor038a.wl  = { t_hl2=! }
             Concrete/concretefloor038b.wl  = { t_hl2=! }
-            Concrete/concretefloor038c.wl  = { t_hl2=! }
+            Concrete/concretefloor038c.wl  = { t_hl2_misc=! }
             Concrete/concretefloor039a.wl  = { t_hl2=! }
-            Concrete/concretefloor039a_cheap.wl  = { t_hl2=! }
+            Concrete/concretefloor039a_cheap.wl  = { t_hl2_misc=! }
             Concrete/concretefloor039b.wl  = { t_hl2=! }
             Concrete/concretestair001a.wl  = { t_hl2=! }
             Concrete/concretestair002a.wl  = { t_hl2=! }
@@ -491,7 +492,7 @@ QQRKSRC1
             Concrete/concretewall002c.wl  = { t_hl2=! }
             Concrete/concretewall003a.wl  = { t_hl2=! }
             Concrete/concretewall004a.wl  = { t_hl2=! }
-            Concrete/concretewall004a_c17.wl  = { t_hl2=! }
+            Concrete/concretewall004a_c17.wl  = { t_hl2_misc=! }
             Concrete/concretewall004b.wl  = { t_hl2=! }
             Concrete/concretewall004c.wl  = { t_hl2=! }
             Concrete/concretewall005a.wl  = { t_hl2=! }
@@ -550,7 +551,7 @@ QQRKSRC1
             Concrete/concretewall032b.wl  = { t_hl2=! }
             Concrete/concretewall032c.wl  = { t_hl2=! }
             Concrete/concretewall032d.wl  = { t_hl2=! }
-            Concrete/concretewall032d_c17.wl  = { t_hl2=! }
+            Concrete/concretewall032d_c17.wl  = { t_hl2_misc=! }
             Concrete/concretewall034a.wl  = { t_hl2=! }
             Concrete/concretewall036a.wl  = { t_hl2=! }
             Concrete/concretewall037a.wl  = { t_hl2=! }
@@ -641,7 +642,9 @@ QQRKSRC1
             Console/background07.wl  = { t_hl2=! }
             Console/background07_widescreen.wl  = { t_hl2=! }
             Console/intro.wl  = { t_hl2=! }
+            Console/intro_widescreen.wl  = { t_hl2=! }
             Console/loading.wl  = { t_hl2=! }
+            Console/rt_background.wl  = { t_hl2_misc=! }
             Console/startup_loading.wl  = { t_hl2=! }
         }
         
@@ -657,66 +660,67 @@ QQRKSRC1
             Debug/debugluxelsnoalpha.wl  = { t_hl2=! }
             Debug/debugwireframe.wl  = { t_hl2=! }
             Debug/debugworldwireframezbuffer.wl  = { t_hl2=! }
+            Debug/particleerror.wl  = { t_hl2=! }
         }
         
         Decals.txlist =
         {
             Decals/alienflesh/shot1.wl  = { t_hl2=! }
-            Decals/alienflesh/shot1_subrect.wl  = { t_hl2=! }
+            Decals/alienflesh/shot1_subrect.wl  = { t_hl2_misc=! }
             Decals/alienflesh/shot2.wl  = { t_hl2=! }
-            Decals/alienflesh/shot2_subrect.wl  = { t_hl2=! }
+            Decals/alienflesh/shot2_subrect.wl  = { t_hl2_misc=! }
             Decals/alienflesh/shot3.wl  = { t_hl2=! }
-            Decals/alienflesh/shot3_subrect.wl  = { t_hl2=! }
+            Decals/alienflesh/shot3_subrect.wl  = { t_hl2_misc=! }
             Decals/alienflesh/shot4.wl  = { t_hl2=! }
-            Decals/alienflesh/shot4_subrect.wl  = { t_hl2=! }
+            Decals/alienflesh/shot4_subrect.wl  = { t_hl2_misc=! }
             Decals/alienflesh/shot5.wl  = { t_hl2=! }
-            Decals/alienflesh/shot5_subrect.wl  = { t_hl2=! }
-            Decals/Antlion/antlion_splat.wl  = { t_hl2=! }
+            Decals/alienflesh/shot5_subrect.wl  = { t_hl2_misc=! }
+            Decals/Antlion/antlion_splat.wl  = { t_hl2_misc=! }
             Decals/Antlion/shot1.wl  = { t_hl2=! }
-            Decals/Antlion/shot1_subrect.wl  = { t_hl2=! }
+            Decals/Antlion/shot1_subrect.wl  = { t_hl2_misc=! }
             Decals/Antlion/shot2.wl  = { t_hl2=! }
-            Decals/Antlion/shot2_subrect.wl  = { t_hl2=! }
+            Decals/Antlion/shot2_subrect.wl  = { t_hl2_misc=! }
             Decals/Antlion/shot3.wl  = { t_hl2=! }
-            Decals/Antlion/shot3_subrect.wl  = { t_hl2=! }
+            Decals/Antlion/shot3_subrect.wl  = { t_hl2_misc=! }
             Decals/Antlion/shot4.wl  = { t_hl2=! }
-            Decals/Antlion/shot4_subrect.wl  = { t_hl2=! }
+            Decals/Antlion/shot4_subrect.wl  = { t_hl2_misc=! }
             Decals/Antlion/shot5.wl  = { t_hl2=! }
-            Decals/Antlion/shot5_subrect.wl  = { t_hl2=! }
+            Decals/Antlion/shot5_subrect.wl  = { t_hl2_misc=! }
             Decals/beersplash.wl  = { t_hl2=! }
-            Decals/beersplashmodel.wl  = { t_hl2=! }
-            Decals/beersplash_subrect.wl  = { t_hl2=! }
+            Decals/beersplashmodel.wl  = { t_hl2_misc=! }
+            Decals/beersplash_subrect.wl  = { t_hl2_misc=! }
             Decals/bigshot1.wl  = { t_hl2=! }
-            Decals/bigshot1model.wl  = { t_hl2=! }
-            Decals/bigshot1_subrect.wl  = { t_hl2=! }
+            Decals/bigshot1model.wl  = { t_hl2_misc=! }
+            Decals/bigshot1_subrect.wl  = { t_hl2_misc=! }
             Decals/bigshot2.wl  = { t_hl2=! }
-            Decals/bigshot2model.wl  = { t_hl2=! }
-            Decals/bigshot2_subrect.wl  = { t_hl2=! }
+            Decals/bigshot2model.wl  = { t_hl2_misc=! }
+            Decals/bigshot2_subrect.wl  = { t_hl2_misc=! }
             Decals/bigshot3.wl  = { t_hl2=! }
-            Decals/bigshot3model.wl  = { t_hl2=! }
-            Decals/bigshot3_subrect.wl  = { t_hl2=! }
+            Decals/bigshot3model.wl  = { t_hl2_misc=! }
+            Decals/bigshot3_subrect.wl  = { t_hl2_misc=! }
             Decals/bigshot4.wl  = { t_hl2=! }
-            Decals/bigshot4model.wl  = { t_hl2=! }
-            Decals/bigshot4_subrect.wl  = { t_hl2=! }
+            Decals/bigshot4model.wl  = { t_hl2_misc=! }
+            Decals/bigshot4_subrect.wl  = { t_hl2_misc=! }
             Decals/bigshot5.wl  = { t_hl2=! }
-            Decals/bigshot5model.wl  = { t_hl2=! }
-            Decals/bigshot5_subrect.wl  = { t_hl2=! }
+            Decals/bigshot5model.wl  = { t_hl2_misc=! }
+            Decals/bigshot5_subrect.wl  = { t_hl2_misc=! }
             Decals/bills01a.wl  = { t_hl2=! }
             Decals/bills02a.wl  = { t_hl2=! }
             Decals/bills03a.wl  = { t_hl2=! }
             Decals/bills04a.wl  = { t_hl2=! }
             Decals/bills05a.wl  = { t_hl2=! }
             Decals/Blood1.wl  = { t_hl2=! }
-            Decals/blood1_subrect.wl  = { t_hl2=! }
+            Decals/blood1_subrect.wl  = { t_hl2_misc=! }
             Decals/Blood2.wl  = { t_hl2=! }
-            Decals/blood2_subrect.wl  = { t_hl2=! }
+            Decals/blood2_subrect.wl  = { t_hl2_misc=! }
             Decals/Blood3.wl  = { t_hl2=! }
-            Decals/blood3_subrect.wl  = { t_hl2=! }
+            Decals/blood3_subrect.wl  = { t_hl2_misc=! }
             Decals/Blood4.wl  = { t_hl2=! }
-            Decals/blood4_subrect.wl  = { t_hl2=! }
+            Decals/blood4_subrect.wl  = { t_hl2_misc=! }
             Decals/Blood5.wl  = { t_hl2=! }
-            Decals/blood5_subrect.wl  = { t_hl2=! }
+            Decals/blood5_subrect.wl  = { t_hl2_misc=! }
             Decals/Blood6.wl  = { t_hl2=! }
-            Decals/blood6_subrect.wl  = { t_hl2=! }
+            Decals/blood6_subrect.wl  = { t_hl2_misc=! }
             Decals/Blood7.wl  = { t_hl2=! }
             Decals/blood8.wl  = { t_hl2=! }
             Decals/bloodstain_001.wl  = { t_hl2=! }
@@ -725,49 +729,50 @@ QQRKSRC1
             Decals/bloodstain_003b.wl  = { t_hl2=! }
             Decals/bloodstain_101.wl  = { t_hl2=! }
             Decals/bloodstain_201.wl  = { t_hl2=! }
+            Decals/bloodstain_201m.wl  = { t_hl2=! }
             Decals/bloodyflesh/Blood1.wl  = { t_hl2=! }
-            Decals/bloodyflesh/Blood1_subrect.wl  = { t_hl2=! }
+            Decals/bloodyflesh/Blood1_subrect.wl  = { t_hl2_misc=! }
             Decals/bloodyflesh/Blood2.wl  = { t_hl2=! }
-            Decals/bloodyflesh/Blood2_subrect.wl  = { t_hl2=! }
+            Decals/bloodyflesh/Blood2_subrect.wl  = { t_hl2_misc=! }
             Decals/bloodyflesh/Blood3.wl  = { t_hl2=! }
-            Decals/bloodyflesh/Blood3_subrect.wl  = { t_hl2=! }
+            Decals/bloodyflesh/Blood3_subrect.wl  = { t_hl2_misc=! }
             Decals/bloodyflesh/Blood4.wl  = { t_hl2=! }
-            Decals/bloodyflesh/Blood4_subrect.wl  = { t_hl2=! }
+            Decals/bloodyflesh/Blood4_subrect.wl  = { t_hl2_misc=! }
             Decals/bloodyflesh/Blood5.wl  = { t_hl2=! }
-            Decals/bloodyflesh/Blood5_subrect.wl  = { t_hl2=! }
+            Decals/bloodyflesh/Blood5_subrect.wl  = { t_hl2_misc=! }
             Decals/blood_gunshot_decal.wl  = { t_hl2=! }
-            Decals/blood_gunshot_decalmodel.wl  = { t_hl2=! }
+            Decals/blood_gunshot_decalmodel.wl  = { t_hl2_misc=! }
             Decals/bproof1.wl  = { t_hl2=! }
-            Decals/bproof1model.wl  = { t_hl2=! }
-            Decals/bproof1_subrect.wl  = { t_hl2=! }
+            Decals/bproof1model.wl  = { t_hl2_misc=! }
+            Decals/bproof1_subrect.wl  = { t_hl2_misc=! }
             Decals/break1.wl  = { t_hl2=! }
-            Decals/break1model.wl  = { t_hl2=! }
-            Decals/break1_subrect.wl  = { t_hl2=! }
+            Decals/break1model.wl  = { t_hl2_misc=! }
+            Decals/break1_subrect.wl  = { t_hl2_misc=! }
             Decals/break2.wl  = { t_hl2=! }
-            Decals/break2model.wl  = { t_hl2=! }
-            Decals/break2_subrect.wl  = { t_hl2=! }
+            Decals/break2model.wl  = { t_hl2_misc=! }
+            Decals/break2_subrect.wl  = { t_hl2_misc=! }
             Decals/break3.wl  = { t_hl2=! }
-            Decals/break3model.wl  = { t_hl2=! }
-            Decals/break3_subrect.wl  = { t_hl2=! }
+            Decals/break3model.wl  = { t_hl2_misc=! }
+            Decals/break3_subrect.wl  = { t_hl2_misc=! }
             Decals/burn01a.wl  = { t_hl2=! }
             Decals/burn02a.wl  = { t_hl2=! }
-            Decals/combineballfade.wl  = { t_hl2=! }
-            Decals/combineballfade2.wl  = { t_hl2=! }
-            Decals/combineballfade3.wl  = { t_hl2=! }
+            Decals/combineballfade.wl  = { t_hl2_misc=! }
+            Decals/combineballfade2.wl  = { t_hl2_misc=! }
+            Decals/combineballfade3.wl  = { t_hl2_misc=! }
             Decals/CONCRETE/SHOT1.wl  = { t_hl2=! }
-            Decals/CONCRETE/SHOT1_subrect.wl  = { t_hl2=! }
+            Decals/CONCRETE/SHOT1_subrect.wl  = { t_hl2_misc=! }
             Decals/CONCRETE/SHOT2.wl  = { t_hl2=! }
-            Decals/CONCRETE/SHOT2_subrect.wl  = { t_hl2=! }
+            Decals/CONCRETE/SHOT2_subrect.wl  = { t_hl2_misc=! }
             Decals/CONCRETE/SHOT3.wl  = { t_hl2=! }
-            Decals/CONCRETE/SHOT3_subrect.wl  = { t_hl2=! }
+            Decals/CONCRETE/SHOT3_subrect.wl  = { t_hl2_misc=! }
             Decals/CONCRETE/SHOT4.wl  = { t_hl2=! }
-            Decals/CONCRETE/SHOT4_subrect.wl  = { t_hl2=! }
+            Decals/CONCRETE/SHOT4_subrect.wl  = { t_hl2_misc=! }
             Decals/CONCRETE/SHOT5.wl  = { t_hl2=! }
-            Decals/CONCRETE/SHOT5_subrect.wl  = { t_hl2=! }
+            Decals/CONCRETE/SHOT5_subrect.wl  = { t_hl2_misc=! }
             Decals/debris_concrete001a.wl  = { t_hl2=! }
             Decals/debris_concrete001b.wl  = { t_hl2=! }
             Decals/debris_tile001a.wl  = { t_hl2=! }
-            Decals/decalborealispuddle001a.wl  = { t_hl2=! }
+            Decals/decalborealispuddle001a.wl  = { t_hl2_misc=! }
             Decals/decalbrick002d.wl  = { t_hl2=! }
             Decals/decalconcretedrain001a.wl  = { t_hl2=! }
             Decals/decalconcretedrain002a.wl  = { t_hl2=! }
@@ -821,26 +826,30 @@ QQRKSRC1
             Decals/decalgraffiti061a.wl  = { t_hl2=! }
             Decals/decalgraffiti062a.wl  = { t_hl2=! }
             Decals/decalIndustrialnumber00a.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber00c.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber00c.wl  = { t_hl2_misc=! }
             Decals/decalIndustrialnumber01a.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber01b.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber01b.wl  = { t_hl2_misc=! }
             Decals/decalIndustrialnumber02a.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber02b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber02c.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber02b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber02c.wl  = { t_hl2_misc=! }
             Decals/decalIndustrialnumber03a.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber03b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber03c.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber04b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber04c.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber03b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber03c.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber04a.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber04b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber04c.wl  = { t_hl2_misc=! }
             Decals/decalIndustrialnumber05a.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber05b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber05c.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber06b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber07b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber07c.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber08b.wl  = { t_hl2=! }
-            Decals/decalIndustrialnumber08c.wl  = { t_hl2=! }
-            Decals/decalkleinerpuddle001a.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber05b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber05c.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber06a.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber06b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber07a.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber07b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber07c.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber08a.wl  = { t_hl2=! }
+            Decals/decalIndustrialnumber08b.wl  = { t_hl2_misc=! }
+            Decals/decalIndustrialnumber08c.wl  = { t_hl2_misc=! }
+            Decals/decalkleinerpuddle001a.wl  = { t_hl2_misc=! }
             Decals/decalmetalgrate001a.wl  = { t_hl2=! }
             Decals/decalmetalgrate005a.wl  = { t_hl2=! }
             Decals/decalmetalgrate010a.wl  = { t_hl2=! }
@@ -861,14 +870,14 @@ QQRKSRC1
             Decals/decalplaster003b.wl  = { t_hl2=! }
             Decals/decalplaster003d.wl  = { t_hl2=! }
             Decals/decalporthole001b.wl  = { t_hl2=! }
-            Decals/decalposter002a.wl  = { t_hl2=! }
-            Decals/decalposter002b.wl  = { t_hl2=! }
-            Decals/decalposter003a.wl  = { t_hl2=! }
-            Decals/decalposter004a.wl  = { t_hl2=! }
-            Decals/decalposter007a.wl  = { t_hl2=! }
-            Decals/decalposter014a.wl  = { t_hl2=! }
-            Decals/decalposter014b.wl  = { t_hl2=! }
-            Decals/decalposter014d.wl  = { t_hl2=! }
+            Decals/decalposter002a.wl  = { t_hl2_misc=! }
+            Decals/decalposter002b.wl  = { t_hl2_misc=! }
+            Decals/decalposter003a.wl  = { t_hl2_misc=! }
+            Decals/decalposter004a.wl  = { t_hl2_misc=! }
+            Decals/decalposter007a.wl  = { t_hl2_misc=! }
+            Decals/decalposter014a.wl  = { t_hl2_misc=! }
+            Decals/decalposter014b.wl  = { t_hl2_misc=! }
+            Decals/decalposter014d.wl  = { t_hl2_misc=! }
             Decals/decalpoweroutlet001a.wl  = { t_hl2=! }
             Decals/decalRug001a.wl  = { t_hl2=! }
             Decals/decalRug002a.wl  = { t_hl2=! }
@@ -890,8 +899,8 @@ QQRKSRC1
             Decals/decalsignpainted001a.wl  = { t_hl2=! }
             Decals/decalsignpainted001b.wl  = { t_hl2=! }
             Decals/decalsignpainted001c.wl  = { t_hl2=! }
-            Decals/decalsignstreet006b.wl  = { t_hl2=! }
-            Decals/decalsplash.wl  = { t_hl2=! }
+            Decals/decalsignstreet006b.wl  = { t_hl2_misc=! }
+            Decals/decalsplash.wl  = { t_hl2_misc=! }
             Decals/decalstain001a.wl  = { t_hl2=! }
             Decals/decalstain002a.wl  = { t_hl2=! }
             Decals/decalstain003a.wl  = { t_hl2=! }
@@ -912,25 +921,26 @@ QQRKSRC1
             Decals/decals_mod2x.wl  = { t_hl2=! }
             Decals/decaltilehatch001a.wl  = { t_hl2=! }
             Decals/decaltiremark001a.wl  = { t_hl2=! }
+            Decals/decalwastelandpuddle001a.wl  = { t_hl2=! }
             Decals/decalwire002a.wl  = { t_hl2=! }
             Decals/decal_birdpoop001.wl  = { t_hl2=! }
-            Decals/decal_birdpoop001_subrect.wl  = { t_hl2=! }
+            Decals/decal_birdpoop001_subrect.wl  = { t_hl2_misc=! }
             Decals/decal_birdpoop002.wl  = { t_hl2=! }
-            Decals/decal_birdpoop002_subrect.wl  = { t_hl2=! }
+            Decals/decal_birdpoop002_subrect.wl  = { t_hl2_misc=! }
             Decals/decal_birdpoop003.wl  = { t_hl2=! }
-            Decals/decal_birdpoop003_subrect.wl  = { t_hl2=! }
+            Decals/decal_birdpoop003_subrect.wl  = { t_hl2_misc=! }
             Decals/decal_birdpoop004.wl  = { t_hl2=! }
-            Decals/decal_birdpoop004_subrect.wl  = { t_hl2=! }
+            Decals/decal_birdpoop004_subrect.wl  = { t_hl2_misc=! }
             Decals/decal_crater001a.wl  = { t_hl2=! }
             Decals/decal_paintsplatterblue001.wl  = { t_hl2=! }
-            Decals/decal_paintsplatterblue001_subrect.wl  = { t_hl2=! }
-            Decals/decal_paintsplatterblue_model.wl  = { t_hl2=! }
+            Decals/decal_paintsplatterblue001_subrect.wl  = { t_hl2_misc=! }
+            Decals/decal_paintsplatterblue_model.wl  = { t_hl2_misc=! }
             Decals/decal_paintsplattergreen001.wl  = { t_hl2=! }
-            Decals/decal_paintsplattergreen001_subrect.wl  = { t_hl2=! }
-            Decals/decal_paintsplattergreen_model.wl  = { t_hl2=! }
+            Decals/decal_paintsplattergreen001_subrect.wl  = { t_hl2_misc=! }
+            Decals/decal_paintsplattergreen_model.wl  = { t_hl2_misc=! }
             Decals/decal_paintsplatterpink001.wl  = { t_hl2=! }
-            Decals/decal_paintsplatterpink001_subrect.wl  = { t_hl2=! }
-            Decals/decal_paintsplatterpink_model.wl  = { t_hl2=! }
+            Decals/decal_paintsplatterpink001_subrect.wl  = { t_hl2_misc=! }
+            Decals/decal_paintsplatterpink_model.wl  = { t_hl2_misc=! }
             Decals/decal_policeline01a.wl  = { t_hl2=! }
             Decals/decal_posterbreen.wl  = { t_hl2=! }
             Decals/decal_posterbreentv.wl  = { t_hl2=! }
@@ -954,31 +964,31 @@ QQRKSRC1
             Decals/decal_skidmark02.wl  = { t_hl2=! }
             Decals/decomp_puddle1.wl  = { t_hl2=! }
             Decals/extinguish1.wl  = { t_hl2=! }
-            Decals/extinguish1model.wl  = { t_hl2=! }
-            Decals/extinguish1_subrect.wl  = { t_hl2=! }
+            Decals/extinguish1model.wl  = { t_hl2_misc=! }
+            Decals/extinguish1_subrect.wl  = { t_hl2_misc=! }
             Decals/extinguish2.wl  = { t_hl2=! }
-            Decals/extinguish2model.wl  = { t_hl2=! }
-            Decals/extinguish2_subrect.wl  = { t_hl2=! }
+            Decals/extinguish2model.wl  = { t_hl2_misc=! }
+            Decals/extinguish2_subrect.wl  = { t_hl2_misc=! }
             Decals/flesh/Blood1.wl  = { t_hl2=! }
-            Decals/flesh/Blood1_subrect.wl  = { t_hl2=! }
+            Decals/flesh/Blood1_subrect.wl  = { t_hl2_misc=! }
             Decals/flesh/Blood2.wl  = { t_hl2=! }
-            Decals/flesh/Blood2_subrect.wl  = { t_hl2=! }
+            Decals/flesh/Blood2_subrect.wl  = { t_hl2_misc=! }
             Decals/flesh/Blood3.wl  = { t_hl2=! }
-            Decals/flesh/Blood3_subrect.wl  = { t_hl2=! }
+            Decals/flesh/Blood3_subrect.wl  = { t_hl2_misc=! }
             Decals/flesh/Blood4.wl  = { t_hl2=! }
-            Decals/flesh/Blood4_subrect.wl  = { t_hl2=! }
+            Decals/flesh/Blood4_subrect.wl  = { t_hl2_misc=! }
             Decals/flesh/Blood5.wl  = { t_hl2=! }
-            Decals/flesh/Blood5_subrect.wl  = { t_hl2=! }
+            Decals/flesh/Blood5_subrect.wl  = { t_hl2_misc=! }
             Decals/GLASS/shot1.wl  = { t_hl2=! }
-            Decals/GLASS/shot1_subrect.wl  = { t_hl2=! }
+            Decals/GLASS/shot1_subrect.wl  = { t_hl2_misc=! }
             Decals/GLASS/shot2.wl  = { t_hl2=! }
-            Decals/GLASS/shot2_subrect.wl  = { t_hl2=! }
+            Decals/GLASS/shot2_subrect.wl  = { t_hl2_misc=! }
             Decals/GLASS/shot3.wl  = { t_hl2=! }
-            Decals/GLASS/shot3_subrect.wl  = { t_hl2=! }
+            Decals/GLASS/shot3_subrect.wl  = { t_hl2_misc=! }
             Decals/GLASS/shot4.wl  = { t_hl2=! }
-            Decals/GLASS/shot4_subrect.wl  = { t_hl2=! }
+            Decals/GLASS/shot4_subrect.wl  = { t_hl2_misc=! }
             Decals/GLASS/shot5.wl  = { t_hl2=! }
-            Decals/GLASS/shot5_subrect.wl  = { t_hl2=! }
+            Decals/GLASS/shot5_subrect.wl  = { t_hl2_misc=! }
             Decals/ivy01.wl  = { t_hl2=! }
             Decals/ivy02.wl  = { t_hl2=! }
             Decals/ivy03.wl  = { t_hl2=! }
@@ -988,21 +998,21 @@ QQRKSRC1
             Decals/leaves_ground02.wl  = { t_hl2=! }
             Decals/manhackcut.wl  = { t_hl2=! }
             Decals/manhackcut2.wl  = { t_hl2=! }
-            Decals/manhackcut2_subrect.wl  = { t_hl2=! }
+            Decals/manhackcut2_subrect.wl  = { t_hl2_misc=! }
             Decals/manhackcut3.wl  = { t_hl2=! }
-            Decals/manhackcut3_subrect.wl  = { t_hl2=! }
-            Decals/manhackcut_subrect.wl  = { t_hl2=! }
+            Decals/manhackcut3_subrect.wl  = { t_hl2_misc=! }
+            Decals/manhackcut_subrect.wl  = { t_hl2_misc=! }
             Decals/METAL/shot1.wl  = { t_hl2=! }
-            Decals/METAL/SHOT1_subrect.wl  = { t_hl2=! }
+            Decals/METAL/SHOT1_subrect.wl  = { t_hl2_misc=! }
             Decals/METAL/shot2.wl  = { t_hl2=! }
-            Decals/METAL/SHOT2_subrect.wl  = { t_hl2=! }
+            Decals/METAL/SHOT2_subrect.wl  = { t_hl2_misc=! }
             Decals/METAL/shot3.wl  = { t_hl2=! }
-            Decals/METAL/SHOT3_subrect.wl  = { t_hl2=! }
+            Decals/METAL/SHOT3_subrect.wl  = { t_hl2_misc=! }
             Decals/METAL/shot4.wl  = { t_hl2=! }
-            Decals/METAL/SHOT4_subrect.wl  = { t_hl2=! }
+            Decals/METAL/SHOT4_subrect.wl  = { t_hl2_misc=! }
             Decals/METAL/shot5.wl  = { t_hl2=! }
-            Decals/METAL/SHOT5_subrect.wl  = { t_hl2=! }
-            Decals/plasmaglowfade.wl  = { t_hl2=! }
+            Decals/METAL/SHOT5_subrect.wl  = { t_hl2_misc=! }
+            Decals/plasmaglowfade.wl  = { t_hl2_misc=! }
             Decals/Plaster001a.wl  = { t_hl2=! }
             Decals/Plaster004a.wl  = { t_hl2=! }
             Decals/Plaster005a.wl  = { t_hl2=! }
@@ -1021,138 +1031,138 @@ QQRKSRC1
             Decals/Plaster018a.wl  = { t_hl2=! }
             Decals/Plaster019a.wl  = { t_hl2=! }
             Decals/Plaster020a.wl  = { t_hl2=! }
-            Decals/playerlogo01.wl  = { t_hl2=! }
-            Decals/playerlogo02.wl  = { t_hl2=! }
-            Decals/playerlogo03.wl  = { t_hl2=! }
-            Decals/playerlogo04.wl  = { t_hl2=! }
-            Decals/playerlogo05.wl  = { t_hl2=! }
-            Decals/playerlogo06.wl  = { t_hl2=! }
-            Decals/playerlogo07.wl  = { t_hl2=! }
-            Decals/playerlogo08.wl  = { t_hl2=! }
-            Decals/playerlogo09.wl  = { t_hl2=! }
-            Decals/playerlogo10.wl  = { t_hl2=! }
-            Decals/playerlogo11.wl  = { t_hl2=! }
-            Decals/playerlogo12.wl  = { t_hl2=! }
-            Decals/playerlogo13.wl  = { t_hl2=! }
-            Decals/playerlogo14.wl  = { t_hl2=! }
-            Decals/playerlogo15.wl  = { t_hl2=! }
-            Decals/playerlogo16.wl  = { t_hl2=! }
-            Decals/playerlogo17.wl  = { t_hl2=! }
-            Decals/playerlogo18.wl  = { t_hl2=! }
-            Decals/playerlogo19.wl  = { t_hl2=! }
-            Decals/playerlogo20.wl  = { t_hl2=! }
-            Decals/playerlogo21.wl  = { t_hl2=! }
-            Decals/playerlogo22.wl  = { t_hl2=! }
-            Decals/playerlogo23.wl  = { t_hl2=! }
-            Decals/playerlogo24.wl  = { t_hl2=! }
-            Decals/playerlogo25.wl  = { t_hl2=! }
-            Decals/playerlogo26.wl  = { t_hl2=! }
-            Decals/playerlogo27.wl  = { t_hl2=! }
-            Decals/playerlogo28.wl  = { t_hl2=! }
-            Decals/playerlogo29.wl  = { t_hl2=! }
-            Decals/playerlogo30.wl  = { t_hl2=! }
-            Decals/playerlogo31.wl  = { t_hl2=! }
-            Decals/playerlogo32.wl  = { t_hl2=! }
-            Decals/playerlogo33.wl  = { t_hl2=! }
-            Decals/playerlogo34.wl  = { t_hl2=! }
-            Decals/playerlogo35.wl  = { t_hl2=! }
-            Decals/playerlogo36.wl  = { t_hl2=! }
-            Decals/playerlogo37.wl  = { t_hl2=! }
-            Decals/playerlogo38.wl  = { t_hl2=! }
-            Decals/playerlogo39.wl  = { t_hl2=! }
-            Decals/playerlogo40.wl  = { t_hl2=! }
-            Decals/playerlogo41.wl  = { t_hl2=! }
-            Decals/playerlogo42.wl  = { t_hl2=! }
-            Decals/playerlogo43.wl  = { t_hl2=! }
-            Decals/playerlogo44.wl  = { t_hl2=! }
-            Decals/playerlogo45.wl  = { t_hl2=! }
-            Decals/playerlogo46.wl  = { t_hl2=! }
-            Decals/playerlogo47.wl  = { t_hl2=! }
-            Decals/playerlogo48.wl  = { t_hl2=! }
-            Decals/playerlogo49.wl  = { t_hl2=! }
-            Decals/playerlogo50.wl  = { t_hl2=! }
-            Decals/playerlogo51.wl  = { t_hl2=! }
-            Decals/playerlogo52.wl  = { t_hl2=! }
-            Decals/playerlogo53.wl  = { t_hl2=! }
-            Decals/playerlogo54.wl  = { t_hl2=! }
-            Decals/playerlogo55.wl  = { t_hl2=! }
-            Decals/playerlogo56.wl  = { t_hl2=! }
-            Decals/playerlogo57.wl  = { t_hl2=! }
-            Decals/playerlogo58.wl  = { t_hl2=! }
-            Decals/playerlogo59.wl  = { t_hl2=! }
-            Decals/playerlogo60.wl  = { t_hl2=! }
-            Decals/playerlogo61.wl  = { t_hl2=! }
-            Decals/playerlogo62.wl  = { t_hl2=! }
-            Decals/playerlogo63.wl  = { t_hl2=! }
-            Decals/playerlogo64.wl  = { t_hl2=! }
-            Decals/redglowfade.wl  = { t_hl2=! }
+            Decals/playerlogo01.wl  = { t_hl2_misc=! }
+            Decals/playerlogo02.wl  = { t_hl2_misc=! }
+            Decals/playerlogo03.wl  = { t_hl2_misc=! }
+            Decals/playerlogo04.wl  = { t_hl2_misc=! }
+            Decals/playerlogo05.wl  = { t_hl2_misc=! }
+            Decals/playerlogo06.wl  = { t_hl2_misc=! }
+            Decals/playerlogo07.wl  = { t_hl2_misc=! }
+            Decals/playerlogo08.wl  = { t_hl2_misc=! }
+            Decals/playerlogo09.wl  = { t_hl2_misc=! }
+            Decals/playerlogo10.wl  = { t_hl2_misc=! }
+            Decals/playerlogo11.wl  = { t_hl2_misc=! }
+            Decals/playerlogo12.wl  = { t_hl2_misc=! }
+            Decals/playerlogo13.wl  = { t_hl2_misc=! }
+            Decals/playerlogo14.wl  = { t_hl2_misc=! }
+            Decals/playerlogo15.wl  = { t_hl2_misc=! }
+            Decals/playerlogo16.wl  = { t_hl2_misc=! }
+            Decals/playerlogo17.wl  = { t_hl2_misc=! }
+            Decals/playerlogo18.wl  = { t_hl2_misc=! }
+            Decals/playerlogo19.wl  = { t_hl2_misc=! }
+            Decals/playerlogo20.wl  = { t_hl2_misc=! }
+            Decals/playerlogo21.wl  = { t_hl2_misc=! }
+            Decals/playerlogo22.wl  = { t_hl2_misc=! }
+            Decals/playerlogo23.wl  = { t_hl2_misc=! }
+            Decals/playerlogo24.wl  = { t_hl2_misc=! }
+            Decals/playerlogo25.wl  = { t_hl2_misc=! }
+            Decals/playerlogo26.wl  = { t_hl2_misc=! }
+            Decals/playerlogo27.wl  = { t_hl2_misc=! }
+            Decals/playerlogo28.wl  = { t_hl2_misc=! }
+            Decals/playerlogo29.wl  = { t_hl2_misc=! }
+            Decals/playerlogo30.wl  = { t_hl2_misc=! }
+            Decals/playerlogo31.wl  = { t_hl2_misc=! }
+            Decals/playerlogo32.wl  = { t_hl2_misc=! }
+            Decals/playerlogo33.wl  = { t_hl2_misc=! }
+            Decals/playerlogo34.wl  = { t_hl2_misc=! }
+            Decals/playerlogo35.wl  = { t_hl2_misc=! }
+            Decals/playerlogo36.wl  = { t_hl2_misc=! }
+            Decals/playerlogo37.wl  = { t_hl2_misc=! }
+            Decals/playerlogo38.wl  = { t_hl2_misc=! }
+            Decals/playerlogo39.wl  = { t_hl2_misc=! }
+            Decals/playerlogo40.wl  = { t_hl2_misc=! }
+            Decals/playerlogo41.wl  = { t_hl2_misc=! }
+            Decals/playerlogo42.wl  = { t_hl2_misc=! }
+            Decals/playerlogo43.wl  = { t_hl2_misc=! }
+            Decals/playerlogo44.wl  = { t_hl2_misc=! }
+            Decals/playerlogo45.wl  = { t_hl2_misc=! }
+            Decals/playerlogo46.wl  = { t_hl2_misc=! }
+            Decals/playerlogo47.wl  = { t_hl2_misc=! }
+            Decals/playerlogo48.wl  = { t_hl2_misc=! }
+            Decals/playerlogo49.wl  = { t_hl2_misc=! }
+            Decals/playerlogo50.wl  = { t_hl2_misc=! }
+            Decals/playerlogo51.wl  = { t_hl2_misc=! }
+            Decals/playerlogo52.wl  = { t_hl2_misc=! }
+            Decals/playerlogo53.wl  = { t_hl2_misc=! }
+            Decals/playerlogo54.wl  = { t_hl2_misc=! }
+            Decals/playerlogo55.wl  = { t_hl2_misc=! }
+            Decals/playerlogo56.wl  = { t_hl2_misc=! }
+            Decals/playerlogo57.wl  = { t_hl2_misc=! }
+            Decals/playerlogo58.wl  = { t_hl2_misc=! }
+            Decals/playerlogo59.wl  = { t_hl2_misc=! }
+            Decals/playerlogo60.wl  = { t_hl2_misc=! }
+            Decals/playerlogo61.wl  = { t_hl2_misc=! }
+            Decals/playerlogo62.wl  = { t_hl2_misc=! }
+            Decals/playerlogo63.wl  = { t_hl2_misc=! }
+            Decals/playerlogo64.wl  = { t_hl2_misc=! }
+            Decals/redglowfade.wl  = { t_hl2_misc=! }
             Decals/rollermine_crater.wl  = { t_hl2=! }
-            Decals/rollermine_crater_subrect.wl  = { t_hl2=! }
+            Decals/rollermine_crater_subrect.wl  = { t_hl2_misc=! }
             Decals/Rubble01a.wl  = { t_hl2=! }
-            Decals/Sand/SHOT1_subrect.wl  = { t_hl2=! }
-            Decals/Sand/SHOT2_subrect.wl  = { t_hl2=! }
-            Decals/Sand/SHOT3_subrect.wl  = { t_hl2=! }
-            Decals/Sand/SHOT4_subrect.wl  = { t_hl2=! }
+            Decals/Sand/SHOT1_subrect.wl  = { t_hl2_misc=! }
+            Decals/Sand/SHOT2_subrect.wl  = { t_hl2_misc=! }
+            Decals/Sand/SHOT3_subrect.wl  = { t_hl2_misc=! }
+            Decals/Sand/SHOT4_subrect.wl  = { t_hl2_misc=! }
             Decals/scorch1.wl  = { t_hl2=! }
-            Decals/scorch1model.wl  = { t_hl2=! }
-            Decals/scorch1_subrect.wl  = { t_hl2=! }
+            Decals/scorch1model.wl  = { t_hl2_misc=! }
+            Decals/scorch1_subrect.wl  = { t_hl2_misc=! }
             Decals/scorch2.wl  = { t_hl2=! }
-            Decals/scorch2model.wl  = { t_hl2=! }
-            Decals/scorch2_subrect.wl  = { t_hl2=! }
+            Decals/scorch2model.wl  = { t_hl2_misc=! }
+            Decals/scorch2_subrect.wl  = { t_hl2_misc=! }
             Decals/scorch3.wl  = { t_hl2=! }
-            Decals/scorchfade.wl  = { t_hl2=! }
-            Decals/scorchfademodel.wl  = { t_hl2=! }
-            Decals/scorchfade_subrect.wl  = { t_hl2=! }
+            Decals/scorchfade.wl  = { t_hl2_misc=! }
+            Decals/scorchfademodel.wl  = { t_hl2_misc=! }
+            Decals/scorchfade_subrect.wl  = { t_hl2_misc=! }
             Decals/ship_snow1b.wl  = { t_hl2=! }
             Decals/simpleshadow.wl  = { t_hl2=! }
             Decals/smscorch1.wl  = { t_hl2=! }
-            Decals/smscorch1model.wl  = { t_hl2=! }
-            Decals/smscorch1_subrect.wl  = { t_hl2=! }
+            Decals/smscorch1model.wl  = { t_hl2_misc=! }
+            Decals/smscorch1_subrect.wl  = { t_hl2_misc=! }
             Decals/smscorch2.wl  = { t_hl2=! }
-            Decals/smscorch2model.wl  = { t_hl2=! }
-            Decals/smscorch2_subrect.wl  = { t_hl2=! }
+            Decals/smscorch2model.wl  = { t_hl2_misc=! }
+            Decals/smscorch2_subrect.wl  = { t_hl2_misc=! }
             Decals/smscorch3.wl  = { t_hl2=! }
-            Decals/smscorch3model.wl  = { t_hl2=! }
-            Decals/smscorch3_subrect.wl  = { t_hl2=! }
-            Decals/splash1.wl  = { t_hl2=! }
-            Decals/splash1_subrect.wl  = { t_hl2=! }
-            Decals/splash2.wl  = { t_hl2=! }
-            Decals/splash2_subrect.wl  = { t_hl2=! }
-            Decals/splash3.wl  = { t_hl2=! }
-            Decals/splash3_subrect.wl  = { t_hl2=! }
+            Decals/smscorch3model.wl  = { t_hl2_misc=! }
+            Decals/smscorch3_subrect.wl  = { t_hl2_misc=! }
+            Decals/splash1.wl  = { t_hl2_misc=! }
+            Decals/splash1_subrect.wl  = { t_hl2_misc=! }
+            Decals/splash2.wl  = { t_hl2_misc=! }
+            Decals/splash2_subrect.wl  = { t_hl2_misc=! }
+            Decals/splash3.wl  = { t_hl2_misc=! }
+            Decals/splash3_subrect.wl  = { t_hl2_misc=! }
             Decals/TrashDecal01a.wl  = { t_hl2=! }
             Decals/TrashDecal02a.wl  = { t_hl2=! }
             Decals/TrashDecal03a.wl  = { t_hl2=! }
             Decals/TrashDecal04a.wl  = { t_hl2=! }
             Decals/TrashDecal05a.wl  = { t_hl2=! }
-            Decals/unburrow.wl  = { t_hl2=! }
-            Decals/unburrow_subrect.wl  = { t_hl2=! }
+            Decals/unburrow.wl  = { t_hl2_misc=! }
+            Decals/unburrow_subrect.wl  = { t_hl2_misc=! }
             Decals/WallStain01a.wl  = { t_hl2=! }
             Decals/WallStain_Frame01a.wl  = { t_hl2=! }
             Decals/WallStain_Frame02a.wl  = { t_hl2=! }
             Decals/WallStain_Frame03a.wl  = { t_hl2=! }
             Decals/WOOD/shot1.wl  = { t_hl2=! }
-            Decals/WOOD/SHOT1_subrect.wl  = { t_hl2=! }
+            Decals/WOOD/SHOT1_subrect.wl  = { t_hl2_misc=! }
             Decals/WOOD/shot2.wl  = { t_hl2=! }
-            Decals/WOOD/SHOT2_subrect.wl  = { t_hl2=! }
+            Decals/WOOD/SHOT2_subrect.wl  = { t_hl2_misc=! }
             Decals/WOOD/shot3.wl  = { t_hl2=! }
-            Decals/WOOD/SHOT3_subrect.wl  = { t_hl2=! }
+            Decals/WOOD/SHOT3_subrect.wl  = { t_hl2_misc=! }
             Decals/WOOD/shot4.wl  = { t_hl2=! }
-            Decals/WOOD/SHOT4_subrect.wl  = { t_hl2=! }
+            Decals/WOOD/SHOT4_subrect.wl  = { t_hl2_misc=! }
             Decals/WOOD/shot5.wl  = { t_hl2=! }
-            Decals/WOOD/SHOT5_subrect.wl  = { t_hl2=! }
+            Decals/WOOD/SHOT5_subrect.wl  = { t_hl2_misc=! }
             Decals/Yblood1.wl  = { t_hl2=! }
-            Decals/yblood1_subrect.wl  = { t_hl2=! }
+            Decals/yblood1_subrect.wl  = { t_hl2_misc=! }
             Decals/Yblood2.wl  = { t_hl2=! }
-            Decals/yblood2_subrect.wl  = { t_hl2=! }
+            Decals/yblood2_subrect.wl  = { t_hl2_misc=! }
             Decals/Yblood3.wl  = { t_hl2=! }
-            Decals/yblood3_subrect.wl  = { t_hl2=! }
+            Decals/yblood3_subrect.wl  = { t_hl2_misc=! }
             Decals/Yblood4.wl  = { t_hl2=! }
-            Decals/yblood4_subrect.wl  = { t_hl2=! }
+            Decals/yblood4_subrect.wl  = { t_hl2_misc=! }
             Decals/Yblood5.wl  = { t_hl2=! }
-            Decals/yblood5_subrect.wl  = { t_hl2=! }
+            Decals/yblood5_subrect.wl  = { t_hl2_misc=! }
             Decals/Yblood6.wl  = { t_hl2=! }
-            Decals/yblood6_subrect.wl  = { t_hl2=! }
+            Decals/yblood6_subrect.wl  = { t_hl2_misc=! }
         }
         
         Detail.txlist =
@@ -1164,22 +1174,23 @@ QQRKSRC1
         
         Dev.txlist =
         {
-            Dev/dev_blendmeasure.wl  = { t_hl2=! }
-            Dev/dev_blendmeasure2.wl  = { t_hl2=! }
+            Dev/dev_blendmeasure.wl  = { t_hl2_misc=! }
+            Dev/dev_blendmeasure2.wl  = { t_hl2_misc=! }
             Dev/dev_brickwall012d.wl  = { t_hl2=! }
             Dev/dev_brickwall012e.wl  = { t_hl2=! }
             Dev/dev_bumptest.wl  = { t_hl2=! }
             Dev/dev_camo.wl  = { t_hl2=! }
             Dev/dev_ceiling.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_1.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_2.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_3.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_4.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_5.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_b.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_g.wl  = { t_hl2=! }
-            Dev/dev_combinemonitor_r.wl  = { t_hl2=! }
-            Dev/dev_comintmonitor1a.wl  = { t_hl2=! }
+            Dev/dev_combinemonitor_1.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_2.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_3.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_4.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_5.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_b.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_g.wl  = { t_hl2_misc=! }
+            Dev/dev_combinemonitor_r.wl  = { t_hl2_misc=! }
+            Dev/dev_combinescanline.wl  = { t_hl2=! }
+            Dev/dev_comintmonitor1a.wl  = { t_hl2_misc=! }
             Dev/dev_concretefloor004a.wl  = { t_hl2=! }
             Dev/dev_concretefloor006a.wl  = { t_hl2=! }
             Dev/dev_concretewall020a.wl  = { t_hl2=! }
@@ -1201,9 +1212,9 @@ QQRKSRC1
             Dev/dev_lowerwallmetal01a.wl  = { t_hl2=! }
             Dev/dev_lowerwallmetal01c.wl  = { t_hl2=! }
             Dev/dev_lowerwallmetal01d.wl  = { t_hl2=! }
-            Dev/dev_materialmodify.wl  = { t_hl2=! }
+            Dev/dev_materialmodify.wl  = { t_hl2_misc=! }
             Dev/dev_measurebarrel.wl  = { t_hl2=! }
-            Dev/dev_measurecolorscale01.wl  = { t_hl2=! }
+            Dev/dev_measurecolorscale01.wl  = { t_hl2_misc=! }
             Dev/dev_measurecomputer01.wl  = { t_hl2=! }
             Dev/dev_measurecounter.wl  = { t_hl2=! }
             Dev/dev_measurecrate01.wl  = { t_hl2=! }
@@ -1234,25 +1245,27 @@ QQRKSRC1
             Dev/dev_prisontvoverlay002.wl  = { t_hl2=! }
             Dev/dev_prisontvoverlay003.wl  = { t_hl2=! }
             Dev/dev_prisontvoverlay004.wl  = { t_hl2=! }
+            Dev/dev_scanline.wl  = { t_hl2=! }
             Dev/dev_signflammable01a.wl  = { t_hl2=! }
             Dev/dev_slime.wl  = { t_hl2=! }
             Dev/dev_southwall.wl  = { t_hl2=! }
             Dev/dev_stonewall001a.wl  = { t_hl2=! }
-            Dev/dev_tvmonitor1a.wl  = { t_hl2=! }
-            Dev/dev_tvmonitor2a.wl  = { t_hl2=! }
-            Dev/dev_tvmonitornonoise.wl  = { t_hl2=! }
-            Dev/dev_water2.wl  = { t_hl2=! }
-            Dev/dev_water2_cheap.wl  = { t_hl2=! }
-            Dev/dev_water3.wl  = { t_hl2=! }
-            Dev/dev_water3_beneath.wl  = { t_hl2=! }
-            Dev/dev_water3_exp.wl  = { t_hl2=! }
-            Dev/dev_water4.wl  = { t_hl2=! }
-            Dev/dev_water5.wl  = { t_hl2=! }
-            Dev/dev_waterbeneath2.wl  = { t_hl2=! }
+            Dev/testgrid.wl  = { t_hl2=! }
+            Dev/dev_tvmonitor1a.wl  = { t_hl2_misc=! }
+            Dev/dev_tvmonitor2a.wl  = { t_hl2_misc=! }
+            Dev/dev_tvmonitornonoise.wl  = { t_hl2_misc=! }
+            Dev/dev_water2.wl  = { t_hl2_misc=! }
+            Dev/dev_water2_cheap.wl  = { t_hl2_misc=! }
+            Dev/dev_water3.wl  = { t_hl2_misc=! }
+            Dev/dev_water3_beneath.wl  = { t_hl2_misc=! }
+            Dev/dev_water3_exp.wl  = { t_hl2_misc=! }
+            Dev/dev_water4.wl  = { t_hl2_misc=! }
+            Dev/dev_water5.wl  = { t_hl2_misc=! }
+            Dev/dev_waterbeneath2.wl  = { t_hl2_misc=! }
             Dev/dev_westwall.wl  = { t_hl2=! }
             Dev/graygrid.wl  = { t_hl2=! }
-            Dev/ocean.wl  = { t_hl2=! }
-            Dev/oceanbeneath.wl  = { t_hl2=! }
+            Dev/ocean.wl  = { t_hl2_misc=! }
+            Dev/oceanbeneath.wl  = { t_hl2_misc=! }
             Dev/reflectivity_10.wl  = { t_hl2=! }
             Dev/reflectivity_10b.wl  = { t_hl2=! }
             Dev/reflectivity_20.wl  = { t_hl2=! }
@@ -1272,6 +1285,8 @@ QQRKSRC1
             Dev/reflectivity_90.wl  = { t_hl2=! }
             Dev/reflectivity_90b.wl  = { t_hl2=! }
             Dev/twenty.wl  = { t_hl2=! }
+            Dev/upscale.wl  = { t_hl2_misc=! }
+            Dev/warp.wl  = { t_hl2_misc=! }
             Dev/water.wl  = { t_hl2=! }
             Dev/water_moving.wl  = { t_hl2=! }
             Dev/water_moving_beneath.wl  = { t_hl2=! }
@@ -1294,8 +1309,10 @@ QQRKSRC1
             Editor/Axis_helper.wl  = { t_hl2=! }
             Editor/BaseAlphaEnvMapMaskIcon.wl  = { t_hl2=! }
             Editor/bullseye.wl  = { t_hl2=! }
+            Editor/choreo_manager.wl  = { t_hl2=! }
             Editor/choreo_scene.wl  = { t_hl2=! }
             Editor/Climb_node.wl  = { t_hl2=! }
+            Editor/color_correction.wl  = { t_hl2=! }
             Editor/cordon.wl  = { t_hl2=! }
             Editor/cubemap.wl  = { t_hl2=! }
             Editor/dotted.wl  = { t_hl2=! }
@@ -1311,14 +1328,16 @@ QQRKSRC1
             Editor/env_shooter.wl  = { t_hl2=! }
             Editor/env_soundscape.wl  = { t_hl2=! }
             Editor/env_spark.wl  = { t_hl2=! }
+            Editor/env_tonemap_controller.wl  = { t_hl2=! }
             Editor/env_wind.wl  = { t_hl2=! }
             Editor/ErrorIcon.wl  = { t_hl2=! }
             Editor/filter_class.wl  = { t_hl2=! }
             Editor/filter_multiple.wl  = { t_hl2=! }
             Editor/filter_name.wl  = { t_hl2=! }
+            Editor/filter_team.wl  = { t_hl2=! }
             Editor/flat.wl  = { t_hl2=! }
-            Editor/flatdecal.wl  = { t_hl2=! }
-            Editor/flatignorez.wl  = { t_hl2=! }
+            Editor/flatdecal.wl  = { t_hl2_misc=! }
+            Editor/flatignorez.wl  = { t_hl2_misc=! }
             Editor/fog_controller.wl  = { t_hl2=! }
             Editor/game_end.wl  = { t_hl2=! }
             Editor/game_text.wl  = { t_hl2=! }
@@ -1335,7 +1354,7 @@ QQRKSRC1
             Editor/info_target.wl  = { t_hl2=! }
             Editor/light.wl  = { t_hl2=! }
             Editor/lightmapgrid.wl  = { t_hl2=! }
-            Editor/lightmapgriddecal.wl  = { t_hl2=! }
+            Editor/lightmapgriddecal.wl  = { t_hl2_misc=! }
             Editor/light_env.wl  = { t_hl2=! }
             Editor/logic_auto.wl  = { t_hl2=! }
             Editor/logic_branch.wl  = { t_hl2=! }
@@ -1360,10 +1379,10 @@ QQRKSRC1
             Editor/tanktrain_ai.wl  = { t_hl2=! }
             Editor/tanktrain_aitarget.wl  = { t_hl2=! }
             Editor/translucentflat.wl  = { t_hl2=! }
-            Editor/translucentflatdecal.wl  = { t_hl2=! }
+            Editor/translucentflatdecal.wl  = { t_hl2_misc=! }
             Editor/TranslucentIcon.wl  = { t_hl2=! }
             Editor/trigger_relay.wl  = { t_hl2=! }
-            Editor/vertexcolor.wl  = { t_hl2=! }
+            Editor/vertexcolor.wl  = { t_hl2_misc=! }
             Editor/waterlodcontrol.wl  = { t_hl2=! }
             Editor/wireframe.wl  = { t_hl2=! }
         }
@@ -1377,6 +1396,7 @@ QQRKSRC1
             Effects/ar2_altfire1b.wl  = { t_hl2=! }
             Effects/ar2_altfire2.wl  = { t_hl2=! }
             Effects/base.wl  = { t_hl2=! }
+            Effects/blindsgobo.wl  = { t_hl2=! }
             Effects/blood.wl  = { t_hl2=! }
             Effects/blood2.wl  = { t_hl2=! }
             Effects/blood_core.wl  = { t_hl2=! }
@@ -1387,15 +1407,15 @@ QQRKSRC1
             Effects/blueblacklargebeam.wl  = { t_hl2=! }
             Effects/blueflare1.wl  = { t_hl2=! }
             Effects/bluelaser1.wl  = { t_hl2=! }
-            Effects/bluelaser2.wl  = { t_hl2=! }
+            Effects/bluelaser2.wl  = { t_hl2_misc=! }
             Effects/bluemuzzle.wl  = { t_hl2=! }
             Effects/bluespark.wl  = { t_hl2=! }
             Effects/breenscreen_static01_.wl  = { t_hl2=! }
             Effects/bubble.wl  = { t_hl2=! }
             Effects/c17_07camera.wl  = { t_hl2=! }
             Effects/com_shield002a.wl  = { t_hl2=! }
-            Effects/com_shield003a.wl  = { t_hl2=! }
-            Effects/com_shield004a.wl  = { t_hl2=! }
+            Effects/com_shield003a.wl  = { t_hl2_misc=! }
+            Effects/com_shield004a.wl  = { t_hl2_misc=! }
             Effects/combine_binocoverlay.wl  = { t_hl2=! }
             Effects/combinedisplay001a.wl  = { t_hl2=! }
             Effects/combinedisplay001b.wl  = { t_hl2=! }
@@ -1403,16 +1423,16 @@ QQRKSRC1
             Effects/combinedisplay002b.wl  = { t_hl2=! }
             Effects/combinemuzzle1.wl  = { t_hl2=! }
             Effects/combinemuzzle1_dark.wl  = { t_hl2=! }
-            Effects/combinemuzzle1_nocull.wl  = { t_hl2=! }
-            Effects/combinemuzzle1_noz.wl  = { t_hl2=! }
+            Effects/combinemuzzle1_nocull.wl  = { t_hl2_misc=! }
+            Effects/combinemuzzle1_noz.wl  = { t_hl2_misc=! }
             Effects/combinemuzzle2.wl  = { t_hl2=! }
             Effects/combinemuzzle2_dark.wl  = { t_hl2=! }
-            Effects/combinemuzzle2_nocull.wl  = { t_hl2=! }
-            Effects/combinemuzzle2_noz.wl  = { t_hl2=! }
+            Effects/combinemuzzle2_nocull.wl  = { t_hl2_misc=! }
+            Effects/combinemuzzle2_noz.wl  = { t_hl2_misc=! }
             Effects/CombineShield/comshieldwall.wl  = { t_hl2=! }
-            Effects/CombineShield/comshieldwall2.wl  = { t_hl2=! }
-            Effects/CombineShield/comshieldwall2faded.wl  = { t_hl2=! }
-            Effects/CombineShield/comshieldwall3.wl  = { t_hl2=! }
+            Effects/CombineShield/comshieldwall2.wl  = { t_hl2_misc=! }
+            Effects/CombineShield/comshieldwall2faded.wl  = { t_hl2_misc=! }
+            Effects/CombineShield/comshieldwall3.wl  = { t_hl2_misc=! }
             Effects/energyball.wl  = { t_hl2=! }
             Effects/energysplash.wl  = { t_hl2=! }
             Effects/exit1.wl  = { t_hl2=! }
@@ -1440,28 +1460,29 @@ QQRKSRC1
             Effects/hydragutbeamcap.wl  = { t_hl2=! }
             Effects/hydraspinalcord.wl  = { t_hl2=! }
             Effects/laser1.wl  = { t_hl2=! }
-            Effects/laser1_noz.wl  = { t_hl2=! }
+            Effects/laser1_noz.wl  = { t_hl2_misc=! }
             Effects/laserplane.wl  = { t_hl2=! }
             Effects/laser_citadel1.wl  = { t_hl2=! }
             Effects/mh_blood1.wl  = { t_hl2=! }
             Effects/mh_blood2.wl  = { t_hl2=! }
             Effects/mh_blood3.wl  = { t_hl2=! }
             Effects/muzzleflash1.wl  = { t_hl2=! }
-            Effects/muzzleflash1_noz.wl  = { t_hl2=! }
+            Effects/muzzleflash1_noz.wl  = { t_hl2_misc=! }
             Effects/muzzleflash2.wl  = { t_hl2=! }
-            Effects/muzzleflash2_noz.wl  = { t_hl2=! }
+            Effects/muzzleflash2_noz.wl  = { t_hl2_misc=! }
             Effects/muzzleflash3.wl  = { t_hl2=! }
-            Effects/muzzleflash3_noz.wl  = { t_hl2=! }
+            Effects/muzzleflash3_noz.wl  = { t_hl2_misc=! }
             Effects/muzzleflash4.wl  = { t_hl2=! }
-            Effects/muzzleflash4_noz.wl  = { t_hl2=! }
+            Effects/muzzleflash4_noz.wl  = { t_hl2_misc=! }
             Effects/prisonmap_disp.wl  = { t_hl2=! }
             Effects/red.wl  = { t_hl2=! }
             Effects/redflare.wl  = { t_hl2=! }
             Effects/rollerglow.wl  = { t_hl2=! }
+            Effects/screenwarp.wl  = { t_hl2_misc=! }
             Effects/security_noise2.wl  = { t_hl2=! }
             Effects/slime1.wl  = { t_hl2=! }
             Effects/spark.wl  = { t_hl2=! }
-            Effects/spark_noz.wl  = { t_hl2=! }
+            Effects/spark_noz.wl  = { t_hl2_misc=! }
             Effects/splash1.wl  = { t_hl2=! }
             Effects/splash2.wl  = { t_hl2=! }
             Effects/splash3.wl  = { t_hl2=! }
@@ -1469,28 +1490,29 @@ QQRKSRC1
             Effects/splashwake1.wl  = { t_hl2=! }
             Effects/splashwake3.wl  = { t_hl2=! }
             Effects/splashwake4.wl  = { t_hl2=! }
-            Effects/strider_bulge_dudv_DX60.wl  = { t_hl2=! }
-            Effects/strider_bulge_dx60.wl  = { t_hl2=! }
+            Effects/strider_bulge_dudv_DX60.wl  = { t_hl2_misc=! }
+            Effects/strider_bulge_dx60.wl  = { t_hl2_misc=! }
             Effects/strider_dark_flare.wl  = { t_hl2=! }
             Effects/strider_muzzle.wl  = { t_hl2=! }
-            Effects/strider_pinch_dudv_dx60.wl  = { t_hl2=! }
+            Effects/strider_pinch_dudv_dx60.wl  = { t_hl2_misc=! }
             Effects/strider_tracer.wl  = { t_hl2=! }
             Effects/stunstick.wl  = { t_hl2=! }
-            Effects/tesla_glow_noz.wl  = { t_hl2=! }
-            Effects/tp_eyefx/tpeye.wl  = { t_hl2=! }
-            Effects/tp_eyefx/tpeye2.wl  = { t_hl2=! }
-            Effects/tp_eyefx/tpeye3.wl  = { t_hl2=! }
+            Effects/tesla_glow_noz.wl  = { t_hl2_misc=! }
+            Effects/tp_eyefx/tpeye.wl  = { t_hl2_misc=! }
+            Effects/tp_eyefx/tpeye2.wl  = { t_hl2_misc=! }
+            Effects/tp_eyefx/tpeye3.wl  = { t_hl2_misc=! }
             Effects/tp_eyefx/tp_black.wl  = { t_hl2=! }
             Effects/tp_eyefx/tp_eyefx_eli.wl  = { t_hl2=! }
-            Effects/tp_refract.wl  = { t_hl2=! }
+            Effects/tp_refract.wl  = { t_hl2_misc=! }
             Effects/tracer_cap.wl  = { t_hl2=! }
             Effects/tracer_middle.wl  = { t_hl2=! }
             Effects/tracer_middle2.wl  = { t_hl2=! }
             Effects/tvscreen_noise001a.wl  = { t_hl2=! }
-            Effects/tvscreen_noise002a.wl  = { t_hl2=! }
+            Effects/tvscreen_noise001b.wl  = { t_hl2=! }
+            Effects/tvscreen_noise002a.wl  = { t_hl2_misc=! }
             Effects/water_highlight.wl  = { t_hl2=! }
             Effects/yellowflare.wl  = { t_hl2=! }
-            Effects/yellowflare_noz.wl  = { t_hl2=! }
+            Effects/yellowflare_noz.wl  = { t_hl2_misc=! }
         }
         
         Engine.txlist =
@@ -1498,12 +1520,18 @@ QQRKSRC1
             Engine/camerarendertarget.wl  = { t_hl2=! }
             Engine/defaultcubemap.wl  = { t_hl2=! }
             Engine/dummy.wl  = { t_hl2=! }
+            Engine/eye-cornea.wl  = { t_hl2=! }
+            Engine/eye-extra.wl  = { t_hl2=! }
+            Engine/eye-iris-blue.wl  = { t_hl2=! }
+            Engine/eye-iris-brown.wl  = { t_hl2=! }
+            Engine/eye-iris-green.wl  = { t_hl2=! }
+            Engine/eye-iris-vort.wl  = { t_hl2=! }
             Engine/framesync1.wl  = { t_hl2=! }
             Engine/framesync2.wl  = { t_hl2=! }
             Engine/lightsprite.wl  = { t_hl2=! }
             Engine/normalize.wl  = { t_hl2=! }
-            Engine/occlusionproxy.wl  = { t_hl2=! }
-            Engine/occlusionproxy_countdraw.wl  = { t_hl2=! }
+            Engine/occlusionproxy.wl  = { t_hl2_misc=! }
+            Engine/occlusionproxy_countdraw.wl  = { t_hl2_misc=! }
             Engine/rendertarget256.wl  = { t_hl2=! }
             Engine/rendertarget256-2.wl  = { t_hl2=! }
         }
@@ -1516,6 +1544,7 @@ QQRKSRC1
             Environment Maps/envmap009a.wl  = { t_hl2=! }
             Environment Maps/envmapcombine.wl  = { t_hl2=! }
             Environment Maps/gallery002.wl  = { t_hl2=! }
+            Environment maps/klab_01.wl  = { t_hl2=! }
             Environment Maps/rg.wl  = { t_hl2=! }
             Environment Maps/train_01.wl  = { t_hl2=! }
             Environment Maps/water_wasteland05.wl  = { t_hl2=! }
@@ -1571,6 +1600,9 @@ QQRKSRC1
             Glass/glasswindow070c.wl  = { t_hl2=! }
             Glass/glasswindowbreak070a.wl  = { t_hl2=! }
             Glass/glasswindowbreak070b.wl  = { t_hl2=! }
+            Glass/reflectiveglass001.wl  = { t_hl2_misc=! }
+            Glass/reflectiveglass002.wl  = { t_hl2=! }
+            Glass/reflectiveglass003.wl  = { t_hl2=! }
         }
         
         Halflife.txlist =
@@ -1604,7 +1636,8 @@ QQRKSRC1
             Halflife/generic015p.wl  = { t_hl2=! }
             Halflife/generic015r.wl  = { t_hl2=! }
             Halflife/generic027.wl  = { t_hl2=! }
-            Halflife/lab1_cmpm3000.wl  = { t_hl2=! }
+            Halflife/lab1_cmpm3.wl  = { t_hl2=! }
+            Halflife/lab1_cmpm3000.wl  = { t_hl2_misc=! }
             Halflife/lab1_cmpm5.wl  = { t_hl2=! }
             Halflife/lab1_comp3e.wl  = { t_hl2=! }
             Halflife/lab1_gad1.wl  = { t_hl2=! }
@@ -1621,6 +1654,7 @@ QQRKSRC1
         
         Hlmv.txlist =
         {
+            hlmv/background.wl  = { t_hl2_misc=! }
             hlmv/cubemap.wl  = { t_hl2=! }
             hlmv/debugwireframe.wl  = { t_hl2=! }
             hlmv/floor.wl  = { t_hl2=! }
@@ -1629,7 +1663,7 @@ QQRKSRC1
         
         Lights.txlist =
         {
-            Lights/combine_lightpanel001.wl  = { t_hl2=! }
+            Lights/combine_lightpanel001.wl  = { t_hl2_misc=! }
             Lights/fluorescent001a.wl  = { t_hl2=! }
             Lights/fluorescentcool001a.wl  = { t_hl2=! }
             Lights/fluorescentcool001b.wl  = { t_hl2=! }
@@ -1638,13 +1672,13 @@ QQRKSRC1
             Lights/hazzardred001a.wl  = { t_hl2=! }
             Lights/physgunlight.wl  = { t_hl2=! }
             Lights/White.wl  = { t_hl2=! }
-            Lights/White001.wl  = { t_hl2=! }
-            Lights/White001_nochop.wl  = { t_hl2=! }
+            Lights/White001.wl  = { t_hl2_misc=! }
+            Lights/White001_nochop.wl  = { t_hl2_misc=! }
             Lights/White002.wl  = { t_hl2=! }
             Lights/white003.wl  = { t_hl2=! }
-            Lights/white003_nochop.wl  = { t_hl2=! }
+            Lights/white003_nochop.wl  = { t_hl2_misc=! }
             Lights/white004.wl  = { t_hl2=! }
-            Lights/white004_nochop.wl  = { t_hl2=! }
+            Lights/white004_nochop.wl  = { t_hl2_misc=! }
             Lights/white005.wl  = { t_hl2=! }
         }
         
@@ -1656,28 +1690,28 @@ QQRKSRC1
             matsys_regressiontest/detail.wl  = { t_hl2=! }
         }
         
-        Metal1.txlist =
+        Metal (c-metalg).txlist =
         {
-            Metal/citadel_metalwall060a.wl  = { t_hl2=! }
+            Metal/citadel_metalwall060a.wl  = { t_hl2_misc=! }
             Metal/citadel_metalwall063a.wl  = { t_hl2=! }
-            Metal/citadel_metalwall063a_cheap.wl  = { t_hl2=! }
+            Metal/citadel_metalwall063a_cheap.wl  = { t_hl2_misc=! }
             Metal/citadel_metalwall072a.wl  = { t_hl2=! }
             Metal/citadel_metalwall072b.wl  = { t_hl2=! }
-            Metal/citadel_metalwall072b_cheap.wl  = { t_hl2=! }
+            Metal/citadel_metalwall072b_cheap.wl  = { t_hl2_misc=! }
             Metal/citadel_metalwall072c.wl  = { t_hl2=! }
-            Metal/citadel_metalwall074a.wl  = { t_hl2=! }
-            Metal/citadel_metalwall076a.wl  = { t_hl2=! }
+            Metal/citadel_metalwall074a.wl  = { t_hl2_misc=! }
+            Metal/citadel_metalwall076a.wl  = { t_hl2_misc=! }
             Metal/citadel_metalwall077a.wl  = { t_hl2=! }
             Metal/citadel_metalwall078a.wl  = { t_hl2=! }
             Metal/citadel_metalwall090a.wl  = { t_hl2=! }
             Metal/citadel_metalwall091a.wl  = { t_hl2=! }
-            Metal/citadel_metalwall091a_cheap.wl  = { t_hl2=! }
+            Metal/citadel_metalwall091a_cheap.wl  = { t_hl2_misc=! }
             Metal/citadel_metalwall101a.wl  = { t_hl2=! }
             Metal/citadel_metalwall101b.wl  = { t_hl2=! }
-            Metal/citadel_tilefloor016a.wl  = { t_hl2=! }
-            Metal/citadel_tilefloor016a_cheap.wl  = { t_hl2=! }
-            Metal/citadel_tilewall005a.wl  = { t_hl2=! }
-            Metal/lighthouse_platform.wl  = { t_hl2=! }
+            Metal/citadel_tilefloor016a.wl  = { t_hl2_misc=! }
+            Metal/citadel_tilefloor016a_cheap.wl  = { t_hl2_misc=! }
+            Metal/citadel_tilewall005a.wl  = { t_hl2_misc=! }
+            Metal/lighthouse_platform.wl  = { t_hl2_misc=! }
             Metal/metalarch004b.wl  = { t_hl2=! }
             Metal/metalbar001a.wl  = { t_hl2=! }
             Metal/metalbar001c.wl  = { t_hl2=! }
@@ -1750,16 +1784,16 @@ QQRKSRC1
             Metal/metalgrate002a.wl  = { t_hl2=! }
             Metal/metalgrate008a.wl  = { t_hl2=! }
             Metal/metalgrate011a.wl  = { t_hl2=! }
-            Metal/metalgrate011a_nopassbullets.wl  = { t_hl2=! }
+            Metal/metalgrate011a_nopassbullets.wl  = { t_hl2_misc=! }
             Metal/metalgrate013a.wl  = { t_hl2=! }
-            Metal/metalgrate013a2.wl  = { t_hl2=! }
+            Metal/metalgrate013a2.wl  = { t_hl2_misc=! }
             Metal/metalgrate013b.wl  = { t_hl2=! }
             Metal/metalgrate014a.wl  = { t_hl2=! }
             Metal/metalgrate016a.wl  = { t_hl2=! }
             Metal/metalgrate017a.wl  = { t_hl2=! }
         }
         
-        Metal2.txlist =
+        Metal (metalh-metalv).txlist =
         {
             Metal/metalhull002a.wl  = { t_hl2=! }
             Metal/metalhull003a.wl  = { t_hl2=! }
@@ -1788,7 +1822,7 @@ QQRKSRC1
             Metal/metalrail004b.wl  = { t_hl2=! }
             Metal/metalrail005a.wl  = { t_hl2=! }
             Metal/metalrail006a.wl  = { t_hl2=! }
-            Metal/metalrail006b.wl  = { t_hl2=! }
+            Metal/metalrail006b.wl  = { t_hl2_misc=! }
             Metal/metalrail009a.wl  = { t_hl2=! }
             Metal/metalrail012c.wl  = { t_hl2=! }
             Metal/metalrail013a.wl  = { t_hl2=! }
@@ -1797,11 +1831,11 @@ QQRKSRC1
             Metal/metalroof002a.wl  = { t_hl2=! }
             Metal/metalroof003a.wl  = { t_hl2=! }
             Metal/metalroof004a.wl  = { t_hl2=! }
-            Metal/metalroof004a_c17.wl  = { t_hl2=! }
+            Metal/metalroof004a_c17.wl  = { t_hl2_misc=! }
             Metal/metalroof005a.wl  = { t_hl2=! }
             Metal/metalroof006a.wl  = { t_hl2=! }
             Metal/metalroof008a.wl  = { t_hl2=! }
-            Metal/metalroof008a_c17.wl  = { t_hl2=! }
+            Metal/metalroof008a_c17.wl  = { t_hl2_misc=! }
             Metal/metalshutters001a.wl  = { t_hl2=! }
             Metal/metalstair001a.wl  = { t_hl2=! }
             Metal/metalstair002a.wl  = { t_hl2=! }
@@ -1840,11 +1874,11 @@ QQRKSRC1
             Metal/metalvent005a.wl  = { t_hl2=! }
             Metal/metalvent012a.wl  = { t_hl2=! }
             Metal/metalvent014a.wl  = { t_hl2=! }
-            Metal/metalvent014a_decal.wl  = { t_hl2=! }
+            Metal/metalvent014a_decal.wl  = { t_hl2_misc=! }
             Metal/metalvent015a.wl  = { t_hl2=! }
         }
         
-        Metal3.txlist =
+        Metal (metalw-metalw).txlist =
         {
             Metal/metalwall001a.wl  = { t_hl2=! }
             Metal/metalwall001b.wl  = { t_hl2=! }
@@ -1864,50 +1898,50 @@ QQRKSRC1
             Metal/metalwall013a.wl  = { t_hl2=! }
             Metal/metalwall013d.wl  = { t_hl2=! }
             Metal/metalwall014a.wl  = { t_hl2=! }
-            Metal/metalwall014a_cheap.wl  = { t_hl2=! }
+            Metal/metalwall014a_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall015b.wl  = { t_hl2=! }
             Metal/metalwall015c.wl  = { t_hl2=! }
             Metal/metalwall016a.wl  = { t_hl2=! }
             Metal/metalwall017a.wl  = { t_hl2=! }
             Metal/metalwall018a.wl  = { t_hl2=! }
-            Metal/metalwall018a_cheap.wl  = { t_hl2=! }
+            Metal/metalwall018a_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall018b.wl  = { t_hl2=! }
-            Metal/metalwall018b_cheap.wl  = { t_hl2=! }
+            Metal/metalwall018b_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall018c.wl  = { t_hl2=! }
             Metal/metalwall018e.wl  = { t_hl2=! }
-            Metal/metalwall018e_cheap.wl  = { t_hl2=! }
+            Metal/metalwall018e_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall018f.wl  = { t_hl2=! }
-            Metal/metalwall018f_cheap.wl  = { t_hl2=! }
+            Metal/metalwall018f_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall018g.wl  = { t_hl2=! }
             Metal/metalwall020a.wl  = { t_hl2=! }
             Metal/metalwall021a.wl  = { t_hl2=! }
-            Metal/metalwall021a_cheap.wl  = { t_hl2=! }
+            Metal/metalwall021a_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall021b.wl  = { t_hl2=! }
-            Metal/metalwall021b_cheap.wl  = { t_hl2=! }
+            Metal/metalwall021b_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall021c.wl  = { t_hl2=! }
-            Metal/metalwall021c_cheap.wl  = { t_hl2=! }
+            Metal/metalwall021c_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall021d.wl  = { t_hl2=! }
             Metal/metalwall021e.wl  = { t_hl2=! }
-            Metal/metalwall021e_cheap.wl  = { t_hl2=! }
+            Metal/metalwall021e_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall021f.wl  = { t_hl2=! }
-            Metal/metalwall021f_cheap.wl  = { t_hl2=! }
+            Metal/metalwall021f_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall021g.wl  = { t_hl2=! }
             Metal/metalwall021h.wl  = { t_hl2=! }
             Metal/metalwall025a.wl  = { t_hl2=! }
             Metal/metalwall026a.wl  = { t_hl2=! }
-            Metal/metalwall026a_c17.wl  = { t_hl2=! }
+            Metal/metalwall026a_c17.wl  = { t_hl2_misc=! }
             Metal/metalwall029a.wl  = { t_hl2=! }
             Metal/metalwall030a.wl  = { t_hl2=! }
             Metal/metalwall031a.wl  = { t_hl2=! }
             Metal/metalwall032a.wl  = { t_hl2=! }
-            Metal/metalwall032a_cheap.wl  = { t_hl2=! }
+            Metal/metalwall032a_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall032b.wl  = { t_hl2=! }
-            Metal/metalwall032b_cheap.wl  = { t_hl2=! }
+            Metal/metalwall032b_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall032c.wl  = { t_hl2=! }
-            Metal/metalwall032c_cheap.wl  = { t_hl2=! }
+            Metal/metalwall032c_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall032d.wl  = { t_hl2=! }
             Metal/metalwall032e.wl  = { t_hl2=! }
-            Metal/metalwall032e_cheap.wl  = { t_hl2=! }
+            Metal/metalwall032e_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall032f.wl  = { t_hl2=! }
             Metal/metalwall032g.wl  = { t_hl2=! }
             Metal/metalwall032h.wl  = { t_hl2=! }
@@ -1939,30 +1973,30 @@ QQRKSRC1
             Metal/metalwall065e.wl  = { t_hl2=! }
             Metal/metalwall065f.wl  = { t_hl2=! }
             Metal/metalwall066a.wl  = { t_hl2=! }
-            Metal/metalwall066a_cheap.wl  = { t_hl2=! }
+            Metal/metalwall066a_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall066b.wl  = { t_hl2=! }
-            Metal/metalwall066b_cheap.wl  = { t_hl2=! }
+            Metal/metalwall066b_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall066c.wl  = { t_hl2=! }
-            Metal/metalwall066c_c17.wl  = { t_hl2=! }
-            Metal/metalwall066c_cheap.wl  = { t_hl2=! }
+            Metal/metalwall066c_c17.wl  = { t_hl2_misc=! }
+            Metal/metalwall066c_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall066e.wl  = { t_hl2=! }
-            Metal/metalwall066e_cheap.wl  = { t_hl2=! }
+            Metal/metalwall066e_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall066f.wl  = { t_hl2=! }
-            Metal/metalwall066f_cheap.wl  = { t_hl2=! }
+            Metal/metalwall066f_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall066g.wl  = { t_hl2=! }
             Metal/metalwall067a.wl  = { t_hl2=! }
             Metal/metalwall068a.wl  = { t_hl2=! }
             Metal/metalwall069a.wl  = { t_hl2=! }
             Metal/metalwall070a.wl  = { t_hl2=! }
-            Metal/metalwall070a_cheap.wl  = { t_hl2=! }
+            Metal/metalwall070a_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall070b.wl  = { t_hl2=! }
-            Metal/metalwall070b_cheap.wl  = { t_hl2=! }
+            Metal/metalwall070b_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall070c.wl  = { t_hl2=! }
             Metal/metalwall070d.wl  = { t_hl2=! }
             Metal/metalwall070e.wl  = { t_hl2=! }
-            Metal/metalwall070e_cheap.wl  = { t_hl2=! }
+            Metal/metalwall070e_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall070f.wl  = { t_hl2=! }
-            Metal/metalwall070f_cheap.wl  = { t_hl2=! }
+            Metal/metalwall070f_cheap.wl  = { t_hl2_misc=! }
             Metal/metalwall070g.wl  = { t_hl2=! }
             Metal/metalwall070h.wl  = { t_hl2=! }
             Metal/metalwall071a.wl  = { t_hl2=! }
@@ -1991,19 +2025,20 @@ QQRKSRC1
             Metal/metalwall102a.wl  = { t_hl2=! }
         }
         
-        Models 1.txlist =
+        Models (A-G).txlist =
         {
             Models/Airboat/Airboat001.wl  = { t_hl2=! }
             Models/Airboat/airboat_blur02.wl  = { t_hl2=! }
             Models/Alyx/alyxblack.wl  = { t_hl2=! }
             Models/Alyx/alyx_faceandhair.wl  = { t_hl2=! }
             Models/Alyx/alyx_sheet.wl  = { t_hl2=! }
+            Models/Alyx/alyx_sheet_skin.wl  = { t_hl2_misc=! }
             Models/Alyx/emptool_glow.wl  = { t_hl2=! }
             Models/Alyx/emptool_sheet.wl  = { t_hl2=! }
             Models/Alyx/eyeball_l.wl  = { t_hl2=! }
             Models/Alyx/eyeball_r.wl  = { t_hl2=! }
             Models/Alyx/fmouth.wl  = { t_hl2=! }
-            Models/Alyx/glint.wl  = { t_hl2=! }
+            Models/Alyx/glint.wl  = { t_hl2_misc=! }
             Models/Alyx/hairbits.wl  = { t_hl2=! }
             Models/Alyx/pupil_l.wl  = { t_hl2=! }
             Models/Alyx/pupil_r.wl  = { t_hl2=! }
@@ -2014,6 +2049,7 @@ QQRKSRC1
             Models/AntLion/antlionhigh_sheet3.wl  = { t_hl2=! }
             Models/AntLion/antlionhigh_sheet4.wl  = { t_hl2=! }
             Models/AntLion/wingblur.wl  = { t_hl2=! }
+            Models/Antlion_Guard/antlionguard.wl  = { t_hl2_misc=! }
             Models/Antlion_Guard/bodyside.wl  = { t_hl2=! }
             Models/Antlion_Guard/legsside.wl  = { t_hl2=! }
             Models/Barnacle/barnacle_sheet.wl  = { t_hl2=! }
@@ -2024,7 +2060,7 @@ QQRKSRC1
             Models/Breen/breen_sheet.wl  = { t_hl2=! }
             Models/Breen/eyeball_l.wl  = { t_hl2=! }
             Models/Breen/eyeball_r.wl  = { t_hl2=! }
-            Models/Breen/glint.wl  = { t_hl2=! }
+            Models/Breen/glint.wl  = { t_hl2_misc=! }
             Models/Breen/mouth.wl  = { t_hl2=! }
             Models/Breen/pupil_l.wl  = { t_hl2=! }
             Models/Breen/pupil_r.wl  = { t_hl2=! }
@@ -2090,13 +2126,12 @@ QQRKSRC1
             Models/Crane_Docks/crane_body.wl  = { t_hl2=! }
             Models/Crane_Docks/crane_chair.wl  = { t_hl2=! }
             Models/Crow/crow01.wl  = { t_hl2=! }
-            Models/Debug/debugwhite.wl  = { t_hl2=! }
             Models/Dog/dog_sheet.wl  = { t_hl2=! }
             Models/Dog/eyeglass.wl  = { t_hl2=! }
             Models/Editor/camera_sheet.wl  = { t_hl2=! }
             Models/Editor/scripted_sequence.wl  = { t_hl2=! }
             Models/Editor/spot_sheet.wl  = { t_hl2=! }
-            Models/Effects/base.wl  = { t_hl2=! }
+            Models/Effects/base.wl  = { t_hl2_misc=! }
             Models/Effects/comball_glow1.wl  = { t_hl2=! }
             Models/Effects/comball_glow2.wl  = { t_hl2=! }
             Models/Effects/comball_sphere.wl  = { t_hl2=! }
@@ -2112,26 +2147,28 @@ QQRKSRC1
             Models/Effects/splodecard3_sheet.wl  = { t_hl2=! }
             Models/Effects/splodeglass_sheet.wl  = { t_hl2=! }
             Models/Effects/vol_light001.wl  = { t_hl2=! }
-            Models/Effects/vol_light002.wl  = { t_hl2=! }
+            Models/Effects/vol_light002.wl  = { t_hl2_misc=! }
             Models/Eli/eli_sheet.wl  = { t_hl2=! }
             Models/Eli/eli_tex4z.wl  = { t_hl2=! }
             Models/Eli/eyeball_l.wl  = { t_hl2=! }
             Models/Eli/eyeball_r.wl  = { t_hl2=! }
-            Models/Eli/glint.wl  = { t_hl2=! }
+            Models/Eli/glint.wl  = { t_hl2_misc=! }
             Models/Eli/mouth.wl  = { t_hl2=! }
             Models/Eli/pupil_l.wl  = { t_hl2=! }
             Models/Eli/pupil_r.wl  = { t_hl2=! }
-            Models/Error/new light1.wl  = { t_hl2=! }
+            Models/Error/green.wl  = { t_hl2=! }
+            Models/Error/new light1.wl  = { t_hl2_misc=! }
             Models/extras/speech_info.wl  = { t_hl2=! }
-            Models/Gibs/airboat_broken_gibs/Airboat001.wl  = { t_hl2=! }
-            Models/Gibs/combine_helicopter_gibs/combine_helicopter01.wl  = { t_hl2=! }
-            Models/Gibs/combine_helicopter_gibs/combine_helicopter02.wl  = { t_hl2=! }
-            Models/Gibs/combine_helicopter_gibs/helicopter_prop_01.wl  = { t_hl2=! }
-            Models/Gibs/furniture_gibs/furniture_chair01a.wl  = { t_hl2=! }
-            Models/Gibs/furniture_gibs/furniture_vanity01a.wl  = { t_hl2=! }
-            Models/Gibs/furniture_gibs/FurnitureTable003a.wl  = { t_hl2=! }
+            Models/extras/speech_info_used.wl  = { t_hl2=! }
+            Models/Gibs/airboat_broken_gibs/Airboat001.wl  = { t_hl2_misc=! }
+            Models/Gibs/combine_helicopter_gibs/combine_helicopter01.wl  = { t_hl2_misc=! }
+            Models/Gibs/combine_helicopter_gibs/combine_helicopter02.wl  = { t_hl2_misc=! }
+            Models/Gibs/combine_helicopter_gibs/helicopter_prop_01.wl  = { t_hl2_misc=! }
+            Models/Gibs/furniture_gibs/furniture_chair01a.wl  = { t_hl2_misc=! }
+            Models/Gibs/furniture_gibs/furniture_vanity01a.wl  = { t_hl2_misc=! }
+            Models/Gibs/furniture_gibs/FurnitureTable003a.wl  = { t_hl2_misc=! }
             Models/Gibs/furniture_gibs/FurnitureWoodDrawers001a.wl  = { t_hl2=! }
-            Models/Gibs/Glass/glass.wl  = { t_hl2=! }
+            Models/Gibs/Glass/glass.wl  = { t_hl2_misc=! }
             Models/Gibs/HGibs/rib.wl  = { t_hl2=! }
             Models/Gibs/HGibs/scapula.wl  = { t_hl2=! }
             Models/Gibs/HGibs/Skull1.wl  = { t_hl2=! }
@@ -2142,7 +2179,7 @@ QQRKSRC1
             Models/Gibs/woodgibs/woodgibs03.wl  = { t_hl2=! }
             Models/Gman/eyeball_l.wl  = { t_hl2=! }
             Models/Gman/eyeball_r.wl  = { t_hl2=! }
-            Models/Gman/glint.wl  = { t_hl2=! }
+            Models/Gman/glint.wl  = { t_hl2_misc=! }
             Models/Gman/gman_briefcase.wl  = { t_hl2=! }
             Models/Gman/gman_facehirez.wl  = { t_hl2=! }
             Models/Gman/gman_face_map3.wl  = { t_hl2=! }
@@ -2155,6 +2192,10 @@ QQRKSRC1
             Models/Gunship/GunshipSheet.wl  = { t_hl2=! }
             Models/Gunship/prop.wl  = { t_hl2=! }
             Models/Gunship/prop_off.wl  = { t_hl2=! }
+        }
+        
+        Models (H-O).txlist =
+        {
             Models/Headcrab/allinonebacup2.wl  = { t_hl2=! }
             Models/HEADCRAB_BLACK/Blackcrab_sheet.wl  = { t_hl2=! }
             Models/HEADCRAB_BLACK/hairs.wl  = { t_hl2=! }
@@ -2207,7 +2248,7 @@ QQRKSRC1
             Models/Humans/Male/Group01/art_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group01/citizen_sheet.wl  = { t_hl2=! }
             Models/Humans/Male/Group01/erdim_cylmap.wl  = { t_hl2=! }
-            Models/Humans/Male/Group01/erdim_facemap.wl  = { t_hl2=! }
+            Models/Humans/Male/Group01/erdim_facemap.wl  = { t_hl2_misc=! }
             Models/Humans/Male/Group01/eric_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group01/joe_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group01/Male_cheaple_sheet.wl  = { t_hl2=! }
@@ -2219,7 +2260,7 @@ QQRKSRC1
             Models/Humans/Male/Group02/art_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group02/citizen_sheet.wl  = { t_hl2=! }
             Models/Humans/Male/Group02/erdim_cylmap.wl  = { t_hl2=! }
-            Models/Humans/Male/Group02/erdim_facemap.wl  = { t_hl2=! }
+            Models/Humans/Male/Group02/erdim_facemap.wl  = { t_hl2_misc=! }
             Models/Humans/Male/Group02/eric_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group02/joe_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group02/mike_facemap.wl  = { t_hl2=! }
@@ -2230,7 +2271,7 @@ QQRKSRC1
             Models/Humans/Male/Group03/art_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group03/citizen_sheet.wl  = { t_hl2=! }
             Models/Humans/Male/Group03/erdim_cylmap.wl  = { t_hl2=! }
-            Models/Humans/Male/Group03/erdim_facemap.wl  = { t_hl2=! }
+            Models/Humans/Male/Group03/erdim_facemap.wl  = { t_hl2_misc=! }
             Models/Humans/Male/Group03/eric_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group03/joe_facemap.wl  = { t_hl2=! }
             Models/Humans/Male/Group03/mike_facemap.wl  = { t_hl2=! }
@@ -2267,7 +2308,6 @@ QQRKSRC1
             Models/Items/BoxSRounds.wl  = { t_hl2=! }
             Models/Items/buckshot.wl  = { t_hl2=! }
             Models/Items/car_battery01.wl  = { t_hl2=! }
-            Models/Items/combine_rifle_ammo01.wl  = { t_hl2=! }
             Models/Items/combine_rifle_cartridge01.wl  = { t_hl2=! }
             Models/Items/Flare.wl  = { t_hl2=! }
             Models/Items/Grenade2.wl  = { t_hl2=! }
@@ -2277,7 +2317,7 @@ QQRKSRC1
             Models/Items/W_grenadesheet.wl  = { t_hl2=! }
             Models/Kleiner/eyeball_l.wl  = { t_hl2=! }
             Models/Kleiner/eyeball_r.wl  = { t_hl2=! }
-            Models/Kleiner/glass2.wl  = { t_hl2=! }
+            Models/Kleiner/glass2.wl  = { t_hl2_misc=! }
             Models/Kleiner/glassesfront_walter.wl  = { t_hl2=! }
             Models/Kleiner/glassesside_walter.wl  = { t_hl2=! }
             Models/Kleiner/glasslens.wl  = { t_hl2=! }
@@ -2291,7 +2331,7 @@ QQRKSRC1
             Models/manhack/manhack_sheet.wl  = { t_hl2=! }
             Models/manhack/manhackblade001.wl  = { t_hl2=! }
             Models/manhack/manhackgib_sheet.wl  = { t_hl2=! }
-            Models/manhack/wires.wl  = { t_hl2=! }
+            Models/manhack/wires.wl  = { t_hl2_misc=! }
             Models/Monk/eyeball_l.wl  = { t_hl2=! }
             Models/Monk/eyeball_r.wl  = { t_hl2=! }
             Models/Monk/glint.wl  = { t_hl2=! }
@@ -2304,7 +2344,7 @@ QQRKSRC1
             Models/Mossman/eyeball_l.wl  = { t_hl2=! }
             Models/Mossman/eyeball_r.wl  = { t_hl2=! }
             Models/Mossman/fmouth.wl  = { t_hl2=! }
-            Models/Mossman/glint.wl  = { t_hl2=! }
+            Models/Mossman/glint.wl  = { t_hl2_misc=! }
             Models/Mossman/mossman_face.wl  = { t_hl2=! }
             Models/Mossman/mossman_hair.wl  = { t_hl2=! }
             Models/Mossman/mossman_sheet.wl  = { t_hl2=! }
@@ -2312,12 +2352,16 @@ QQRKSRC1
             Models/Mossman/pupil_r.wl  = { t_hl2=! }
             Models/Odessa/eyeball_l.wl  = { t_hl2=! }
             Models/Odessa/eyeball_r.wl  = { t_hl2=! }
-            Models/Odessa/glint.wl  = { t_hl2=! }
+            Models/Odessa/glint.wl  = { t_hl2_misc=! }
             Models/Odessa/hat.wl  = { t_hl2=! }
             Models/Odessa/odessa_face.wl  = { t_hl2=! }
             Models/Odessa/odessa_sheet.wl  = { t_hl2=! }
             Models/Odessa/pupil_l.wl  = { t_hl2=! }
             Models/Odessa/pupil_r.wl  = { t_hl2=! }
+        }
+        
+        Models (P-props_j).txlist =
+        {
             Models/Pigeon/pigeon_sheet.wl  = { t_hl2=! }
             Models/Player/player_chrome1.wl  = { t_hl2=! }
             Models/Police/barneyface.wl  = { t_hl2=! }
@@ -2332,11 +2376,11 @@ QQRKSRC1
             Models/props_animated_breakable/Smokestack/brick_chimney01.wl  = { t_hl2=! }
             Models/props_borealis/bluebarrel001.wl  = { t_hl2=! }
             Models/props_borealis/borealis_door001a.wl  = { t_hl2=! }
-            Models/props_borealis/borealis_door001a_02.wl  = { t_hl2=! }
+            Models/props_borealis/borealis_door001a_02.wl  = { t_hl2_misc=! }
             Models/props_borealis/handrail01_exterior_system.wl  = { t_hl2=! }
             Models/props_borealis/light_cagelight01.wl  = { t_hl2=! }
-            Models/props_borealis/light_decklight02.wl  = { t_hl2=! }
-            Models/props_borealis/light_decklight03.wl  = { t_hl2=! }
+            Models/props_borealis/light_decklight02.wl  = { t_hl2_misc=! }
+            Models/props_borealis/light_decklight03.wl  = { t_hl2_misc=! }
             Models/props_borealis/meathook01.wl  = { t_hl2=! }
             Models/props_borealis/mooring_cleat001.wl  = { t_hl2=! }
             Models/props_borealis/windlass01.wl  = { t_hl2=! }
@@ -2351,7 +2395,7 @@ QQRKSRC1
             Models/props_buildings/buildingsheet_02a.wl  = { t_hl2=! }
             Models/props_buildings/buildingsheet_03a.wl  = { t_hl2=! }
             Models/props_buildings/church_corner_txt3.wl  = { t_hl2=! }
-            Models/props_buildings/CollapsedBuilding02a.wl  = { t_hl2=! }
+            Models/props_buildings/CollapsedBuilding02a.wl  = { t_hl2_misc=! }
             Models/props_buildings/destroyed_cityblock01a.wl  = { t_hl2=! }
             Models/props_buildings/destroyed_cityblock01b.wl  = { t_hl2=! }
             Models/props_buildings/destroyed_cityblock01c.wl  = { t_hl2=! }
@@ -2364,7 +2408,7 @@ QQRKSRC1
             Models/props_buildings/industrial.wl  = { t_hl2=! }
             Models/props_buildings/long_building001a.wl  = { t_hl2=! }
             Models/props_buildings/long_building001a_reference copy.wl  = { t_hl2=! }
-            Models/props_buildings/plasterwall021a.wl  = { t_hl2=! }
+            Models/props_buildings/plasterwall021a.wl  = { t_hl2_misc=! }
             Models/props_buildings/project_building01.wl  = { t_hl2=! }
             Models/props_buildings/project_building01a.wl  = { t_hl2=! }
             Models/props_buildings/project_building02.wl  = { t_hl2=! }
@@ -2387,7 +2431,7 @@ QQRKSRC1
             Models/props_c17/canister02a.wl  = { t_hl2=! }
             Models/props_c17/canister_propane01a.wl  = { t_hl2=! }
             Models/props_c17/cashregister01a.wl  = { t_hl2=! }
-            Models/props_c17/cashregister01a_02.wl  = { t_hl2=! }
+            Models/props_c17/cashregister01a_02.wl  = { t_hl2_misc=! }
             Models/props_c17/chair_kleiner03a.wl  = { t_hl2=! }
             Models/props_c17/chair_office01a.wl  = { t_hl2=! }
             Models/props_c17/chair_stool01a.wl  = { t_hl2=! }
@@ -2399,7 +2443,7 @@ QQRKSRC1
             Models/props_c17/computer01.wl  = { t_hl2=! }
             Models/props_c17/concrete_barrier.wl  = { t_hl2=! }
             Models/props_c17/Concrete_Barrier002.wl  = { t_hl2=! }
-            Models/props_c17/concretewall020a.wl  = { t_hl2=! }
+            Models/props_c17/concretewall020a.wl  = { t_hl2_misc=! }
             Models/props_c17/consolebox01a.wl  = { t_hl2=! }
             Models/props_c17/consolebox03a.wl  = { t_hl2=! }
             Models/props_c17/consolebox05a.wl  = { t_hl2=! }
@@ -2424,9 +2468,9 @@ QQRKSRC1
             Models/props_c17/door02a_skin2.wl  = { t_hl2=! }
             Models/props_c17/fence_alpha.wl  = { t_hl2=! }
             Models/props_c17/fence_composite01.wl  = { t_hl2=! }
-            Models/props_c17/fisheyelens.wl  = { t_hl2=! }
-            Models/props_c17/fisheyelens2.wl  = { t_hl2=! }
-            Models/props_c17/fisheyelens_dx60.wl  = { t_hl2=! }
+            Models/props_c17/fisheyelens.wl  = { t_hl2_misc=! }
+            Models/props_c17/fisheyelens2.wl  = { t_hl2_misc=! }
+            Models/props_c17/fisheyelens_dx60.wl  = { t_hl2_misc=! }
             Models/props_c17/floodlightbulboff.wl  = { t_hl2=! }
             Models/props_c17/floodlighthousing.wl  = { t_hl2=! }
             Models/props_c17/fountain.wl  = { t_hl2=! }
@@ -2436,7 +2480,7 @@ QQRKSRC1
             Models/props_c17/Frame002a_skin4.wl  = { t_hl2=! }
             Models/props_c17/Frame002a_skin5.wl  = { t_hl2=! }
             Models/props_c17/Frame002a_skin6.wl  = { t_hl2=! }
-            Models/props_c17/frostedglass_01a.wl  = { t_hl2=! }
+            Models/props_c17/frostedglass_01a.wl  = { t_hl2_misc=! }
             Models/props_c17/frostedglass.wl  = { t_hl2=! }
             Models/props_c17/furniture_detailprops001a.wl  = { t_hl2=! }
             Models/props_c17/Furniturebed001a.wl  = { t_hl2=! }
@@ -2533,10 +2577,6 @@ QQRKSRC1
             Models/props_c17/tv_monitor01.wl  = { t_hl2=! }
             Models/props_c17/tv_monitor01_screen.wl  = { t_hl2=! }
             Models/props_c17/utility_poles001.wl  = { t_hl2=! }
-        }
-        
-        Models 2.txlist =
-        {
             Models/props_canal/boat001a_01.wl  = { t_hl2=! }
             Models/props_canal/boat001b_01.wl  = { t_hl2=! }
             Models/props_canal/boat002a_01.wl  = { t_hl2=! }
@@ -2567,7 +2607,7 @@ QQRKSRC1
             Models/props_canal/locks_small.wl  = { t_hl2=! }
             Models/props_canal/mattpipe_sheet.wl  = { t_hl2=! }
             Models/props_canal/metalcrate001d.wl  = { t_hl2=! }
-            Models/props_canal/metalwall005b.wl  = { t_hl2=! }
+            Models/props_canal/metalwall005b.wl  = { t_hl2_misc=! }
             Models/props_canal/Pipe_Bracket001.wl  = { t_hl2=! }
             Models/props_canal/refinery.wl  = { t_hl2=! }
             Models/props_canal/refinery_skybox.wl  = { t_hl2=! }
@@ -2596,10 +2636,10 @@ QQRKSRC1
             Models/props_combine/bunker_gun01.wl  = { t_hl2=! }
             Models/props_combine/citadel_cable.wl  = { t_hl2=! }
             Models/props_combine/citadel_cable_b.wl  = { t_hl2=! }
-            Models/props_combine/com_shield001a.wl  = { t_hl2=! }
-            Models/props_combine/com_shield001a_dx60.wl  = { t_hl2=! }
-            Models/props_combine/com_shield001b.wl  = { t_hl2=! }
-            Models/props_combine/com_shield001b_dx60.wl  = { t_hl2=! }
+            Models/props_combine/com_shield001a.wl  = { t_hl2_misc=! }
+            Models/props_combine/com_shield001a_dx60.wl  = { t_hl2_misc=! }
+            Models/props_combine/com_shield001b.wl  = { t_hl2_misc=! }
+            Models/props_combine/com_shield001b_dx60.wl  = { t_hl2_misc=! }
             Models/props_combine/combine_barricade_short01a.wl  = { t_hl2=! }
             Models/props_combine/combine_barricade_tall02b.wl  = { t_hl2=! }
             Models/props_combine/combine_barricade_tall03b.wl  = { t_hl2=! }
@@ -2691,48 +2731,48 @@ QQRKSRC1
             Models/props_combine/stasisfield_sheet.wl  = { t_hl2=! }
             Models/props_combine/stasisshield_sheet.wl  = { t_hl2=! }
             Models/props_combine/stasisshield_dx7.wl  = { t_hl2=! }
-            Models/props_combine/suit_charger001.wl  = { t_hl2=! }
+            Models/props_combine/suit_charger001.wl  = { t_hl2_misc=! }
             Models/props_combine/suit_charger001_sheet.wl  = { t_hl2=! }
             Models/props_combine/tpballglow.wl  = { t_hl2=! }
             Models/props_combine/tpcontroller_disp.wl  = { t_hl2=! }
             Models/props_combine/tpcontroller_sheet.wl  = { t_hl2=! }
             Models/props_combine/tprings_globe.wl  = { t_hl2=! }
-            Models/props_combine/tprings_globe_dx60.wl  = { t_hl2=! }
+            Models/props_combine/tprings_globe_dx60.wl  = { t_hl2_misc=! }
             Models/props_combine/tprings_sheet.wl  = { t_hl2=! }
             Models/props_combine/tprotato1_sheet.wl  = { t_hl2=! }
             Models/props_combine/tprotato2_sheet.wl  = { t_hl2=! }
             Models/props_combine/weaponstripper_sheet.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template010a.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template010b.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template012d.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template013c.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template022c.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template022j.wl  = { t_hl2=! }
-            Models/props_debris/Building_Template022j.wl  = { t_hl2=! }
+            Models/props_debris/Building_Template010a.wl  = { t_hl2_misc=! }
+            Models/props_debris/Building_Template010b.wl  = { t_hl2_misc=! }
+            Models/props_debris/Building_Template012d.wl  = { t_hl2_misc=! }
+            Models/props_debris/Building_Template013c.wl  = { t_hl2_misc=! }
+            Models/props_debris/Building_Template022c.wl  = { t_hl2_misc=! }
+            Models/props_debris/Building_Template022j.wl  = { t_hl2_misc=! }
+            Models/props_debris/Building_Template022j.wl  = { t_hl2_misc=! }
             Models/props_debris/composite_debris.wl  = { t_hl2=! }
             Models/props_debris/concretedebris_chunk01.wl  = { t_hl2=! }
-            Models/props_debris/concretefloor013a.wl  = { t_hl2=! }
-            Models/props_debris/concretefloor020a.wl  = { t_hl2=! }
-            Models/props_debris/concretewall019a.wl  = { t_hl2=! }
-            Models/props_debris/courtyard_template001c.wl  = { t_hl2=! }
-            Models/props_debris/grainelevator01.wl  = { t_hl2=! }
-            Models/props_debris/metalwall001a.wl  = { t_hl2=! }
-            Models/props_debris/plasterceiling008a.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall009d.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall021a.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall034a.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall034c.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall034d.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall039c.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall040a.wl  = { t_hl2=! }
-            Models/props_debris/plasterwall040c.wl  = { t_hl2=! }
+            Models/props_debris/concretefloor013a.wl  = { t_hl2_misc=! }
+            Models/props_debris/concretefloor020a.wl  = { t_hl2_misc=! }
+            Models/props_debris/concretewall019a.wl  = { t_hl2_misc=! }
+            Models/props_debris/courtyard_template001c.wl  = { t_hl2_misc=! }
+            Models/props_debris/grainelevator01.wl  = { t_hl2_misc=! }
+            Models/props_debris/metalwall001a.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterceiling008a.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall009d.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall021a.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall034a.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall034c.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall034d.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall039c.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall040a.wl  = { t_hl2_misc=! }
+            Models/props_debris/plasterwall040c.wl  = { t_hl2_misc=! }
             Models/props_debris/rebar_concrete001.wl  = { t_hl2=! }
             Models/props_debris/Rebar_MedThin01.wl  = { t_hl2=! }
             Models/props_debris/Rebar_MedThin02.wl  = { t_hl2=! }
             Models/props_debris/Rebar_MedThin03.wl  = { t_hl2=! }
             Models/props_debris/Rebar_SmallNorm01.wl  = { t_hl2=! }
-            Models/props_debris/tilefloor001c.wl  = { t_hl2=! }
-            Models/props_debris/tilewall009b.wl  = { t_hl2=! }
+            Models/props_debris/tilefloor001c.wl  = { t_hl2_misc=! }
+            Models/props_debris/tilewall009b.wl  = { t_hl2_misc=! }
             Models/props_debris/woodset01.wl  = { t_hl2=! }
             Models/props_docks/canal_docks01a.wl  = { t_hl2=! }
             Models/props_docks/dock01a.wl  = { t_hl2=! }
@@ -2742,7 +2782,7 @@ QQRKSRC1
             Models/props_foliage/cattails.wl  = { t_hl2=! }
             Models/props_foliage/driftwood_01a.wl  = { t_hl2=! }
             Models/props_foliage/ivy01.wl  = { t_hl2=! }
-            Models/props_foliage/oak_tree01.wl  = { t_hl2=! }
+            Models/props_foliage/oak_tree01.wl  = { t_hl2_misc=! }
             Models/props_foliage/tree_deciduous_01a_branches.wl  = { t_hl2=! }
             Models/props_foliage/tree_deciduous_01a_leaves.wl  = { t_hl2=! }
             Models/props_foliage/tree_deciduous_01a_lod.wl  = { t_hl2=! }
@@ -2751,7 +2791,7 @@ QQRKSRC1
             Models/props_foliage/tree_deciduous_cards_01.wl  = { t_hl2=! }
             Models/props_interiors/Elevator_Shaft01a.wl  = { t_hl2=! }
             Models/props_interiors/FlorescentLight01a.wl  = { t_hl2=! }
-            Models/props_interiors/FlorescentLight01a_on.wl  = { t_hl2=! }
+            Models/props_interiors/FlorescentLight01a_on.wl  = { t_hl2_misc=! }
             Models/props_interiors/furniture_cabinetdrawer01a.wl  = { t_hl2=! }
             Models/props_interiors/furniture_cabinetdrawer02a.wl  = { t_hl2=! }
             Models/props_interiors/furniture_chair01a.wl  = { t_hl2=! }
@@ -2766,8 +2806,8 @@ QQRKSRC1
             Models/props_interiors/Handrail02a.wl  = { t_hl2=! }
             Models/props_interiors/interiors_potsnpans01a.wl  = { t_hl2=! }
             Models/props_interiors/LightBulb01a.wl  = { t_hl2=! }
-            Models/props_interiors/LightBulb01a_on.wl  = { t_hl2=! }
-            Models/props_interiors/metalfence007a.wl  = { t_hl2=! }
+            Models/props_interiors/LightBulb01a_on.wl  = { t_hl2_misc=! }
+            Models/props_interiors/metalfence007a.wl  = { t_hl2_misc=! }
             Models/props_interiors/Radiator01a.wl  = { t_hl2=! }
             Models/props_interiors/Radiator01b.wl  = { t_hl2=! }
             Models/props_interiors/Radiator01c.wl  = { t_hl2=! }
@@ -2775,7 +2815,7 @@ QQRKSRC1
             Models/props_interiors/refrigeratordoor01a.wl  = { t_hl2=! }
             Models/props_interiors/refrigeratordoor02a.wl  = { t_hl2=! }
             Models/props_interiors/Sconce01a.wl  = { t_hl2=! }
-            Models/props_interiors/Sconce01a_on.wl  = { t_hl2=! }
+            Models/props_interiors/Sconce01a_on.wl  = { t_hl2_misc=! }
             Models/props_interiors/SinkKitchen01a.wl  = { t_hl2=! }
             Models/props_interiors/SodaMachine01a.wl  = { t_hl2=! }
             Models/props_interiors/Tub01a.wl  = { t_hl2=! }
@@ -2827,7 +2867,7 @@ QQRKSRC1
             Models/props_junk/WoodCrates02a.wl  = { t_hl2=! }
         }
         
-        Models 3.txlist =
+        Models (props_l-R).txlist =
         {
             Models/props_lab/airlock_laser.wl  = { t_hl2=! }
             Models/props_lab/airlock_sheet.wl  = { t_hl2=! }
@@ -2839,7 +2879,7 @@ QQRKSRC1
             Models/props_lab/cleaver_sheet.wl  = { t_hl2=! }
             Models/props_lab/clipboard_sheet.wl  = { t_hl2=! }
             Models/props_lab/computer_disp.wl  = { t_hl2=! }
-            Models/props_lab/controlroom_filecabinets001.wl  = { t_hl2=! }
+            Models/props_lab/controlroom_filecabinets001.wl  = { t_hl2_misc=! }
             Models/props_lab/corkboard001_sheet.wl  = { t_hl2=! }
             Models/props_lab/corkboard002_sheet.wl  = { t_hl2=! }
             Models/props_lab/cornerunit2_sheet.wl  = { t_hl2=! }
@@ -3058,9 +3098,9 @@ QQRKSRC1
             Models/props_wasteland/cargo_container01c.wl  = { t_hl2=! }
             Models/props_wasteland/cargo_container02.wl  = { t_hl2=! }
             Models/props_wasteland/cargo_container03.wl  = { t_hl2=! }
-            Models/props_wasteland/concretefloor010a.wl  = { t_hl2=! }
-            Models/props_wasteland/concretewall064b.wl  = { t_hl2=! }
-            Models/props_wasteland/concretewall066a.wl  = { t_hl2=! }
+            Models/props_wasteland/concretefloor010a.wl  = { t_hl2_misc=! }
+            Models/props_wasteland/concretewall064b.wl  = { t_hl2_misc=! }
+            Models/props_wasteland/concretewall066a.wl  = { t_hl2_misc=! }
             Models/props_wasteland/controlroom_001.wl  = { t_hl2=! }
             Models/props_wasteland/controlroom_cabinets001.wl  = { t_hl2=! }
             Models/props_wasteland/controlroom_chair001a.wl  = { t_hl2=! }
@@ -3072,9 +3112,9 @@ QQRKSRC1
             Models/props_wasteland/coolingtank02_skin3.wl  = { t_hl2=! }
             Models/props_wasteland/cranemagnet01a.wl  = { t_hl2=! }
             Models/props_wasteland/Depot.wl  = { t_hl2=! }
-            Models/props_wasteland/dirtwall001a.wl  = { t_hl2=! }
+            Models/props_wasteland/dirtwall001a.wl  = { t_hl2_misc=! }
             Models/props_wasteland/dockpole01.wl  = { t_hl2=! }
-            Models/props_wasteland/fence_alpha.wl  = { t_hl2=! }
+            Models/props_wasteland/fence_alpha.wl  = { t_hl2_misc=! }
             Models/props_wasteland/fence_sheet01.wl  = { t_hl2=! }
             Models/props_wasteland/fence_sheet02.wl  = { t_hl2=! }
             Models/props_wasteland/gaspump.wl  = { t_hl2=! }
@@ -3085,16 +3125,16 @@ QQRKSRC1
             Models/props_wasteland/laundry_carts001a.wl  = { t_hl2=! }
             Models/props_wasteland/laundry_machines001.wl  = { t_hl2=! }
             Models/props_wasteland/laundry_machines002.wl  = { t_hl2=! }
-            Models/props_wasteland/laundry_machines002_02.wl  = { t_hl2=! }
+            Models/props_wasteland/laundry_machines002_02.wl  = { t_hl2_misc=! }
             Models/props_wasteland/laundry_machines003.wl  = { t_hl2=! }
             Models/props_wasteland/laundry_machines004.wl  = { t_hl2=! }
             Models/props_wasteland/Light_IndustrialCluster01a.wl  = { t_hl2=! }
             Models/props_wasteland/light_spotlight01a.wl  = { t_hl2=! }
             Models/props_wasteland/light_spotlight01b.wl  = { t_hl2=! }
             Models/props_wasteland/lighthouse_brace.wl  = { t_hl2=! }
-            Models/props_wasteland/lighthouse_fresnel_light.wl  = { t_hl2=! }
+            Models/props_wasteland/lighthouse_fresnel_light.wl  = { t_hl2_misc=! }
             Models/props_wasteland/lighthouse_fresnel_light_base.wl  = { t_hl2=! }
-            Models/props_wasteland/lighthouse_fresnel_light_dx60.wl  = { t_hl2=! }
+            Models/props_wasteland/lighthouse_fresnel_light_dx60.wl  = { t_hl2_misc=! }
             Models/props_wasteland/lighthouse_stairs.wl  = { t_hl2=! }
             Models/props_wasteland/metal_tram001a.wl  = { t_hl2=! }
             Models/props_wasteland/powertower01.wl  = { t_hl2=! }
@@ -3111,11 +3151,11 @@ QQRKSRC1
             Models/props_wasteland/prisonkitchen01.wl  = { t_hl2=! }
             Models/props_wasteland/prisonkitchen02.wl  = { t_hl2=! }
             Models/props_wasteland/quarryobjects01.wl  = { t_hl2=! }
-            Models/props_wasteland/rockcliff02a.wl  = { t_hl2=! }
-            Models/props_wasteland/rockcliff02b.wl  = { t_hl2=! }
+            Models/props_wasteland/rockcliff02a.wl  = { t_hl2_misc=! }
+            Models/props_wasteland/rockcliff02b.wl  = { t_hl2_misc=! }
             Models/props_wasteland/rockgranite02a.wl  = { t_hl2=! }
-            Models/props_wasteland/rockcliff02c.wl  = { t_hl2=! }
-            Models/props_wasteland/rockcliff04a.wl  = { t_hl2=! }
+            Models/props_wasteland/rockcliff02c.wl  = { t_hl2_misc=! }
+            Models/props_wasteland/rockcliff04a.wl  = { t_hl2_misc=! }
             Models/props_wasteland/rockgranite02a.wl  = { t_hl2=! }
             Models/props_wasteland/SpeakerCluster01a.wl  = { t_hl2=! }
             Models/props_wasteland/throwswitch001a.wl  = { t_hl2=! }
@@ -3128,6 +3168,10 @@ QQRKSRC1
             Models/props_wasteland/wood_fence01a_skin2.wl  = { t_hl2=! }
             Models/Roller/rollermine_glow.wl  = { t_hl2=! }
             Models/Roller/rollermine_sheet.wl  = { t_hl2=! }
+        }
+        
+        Models (S-Z).txlist =
+        {
             Models/Seagull/seagull.wl  = { t_hl2=! }
             Models/shadertest/shader2.wl  = { t_hl2=! }
             Models/shadertest/shader3.wl  = { t_hl2=! }
@@ -3210,7 +3254,7 @@ QQRKSRC1
             Models/Weapons/V_Rocket_launcher/rocket launcher sheet.wl  = { t_hl2=! }
             Models/Weapons/V_shotgun/vshotgun_albedo.wl  = { t_hl2=! }
             Models/Weapons/V_Slam/new light1.wl  = { t_hl2=! }
-            Models/Weapons/V_smg1/texture4.wl  = { t_hl2=! }
+            Models/Weapons/V_smg1/texture4.wl  = { t_hl2_misc=! }
             Models/Weapons/V_smg1/texture5.wl  = { t_hl2=! }
             Models/Weapons/V_smg1/v_smg1_sheet.wl  = { t_hl2=! }
             Models/Weapons/V_smg2/TEXTURE4.wl  = { t_hl2=! }
@@ -3225,9 +3269,9 @@ QQRKSRC1
             Models/Weapons/W_Alyx_Gun_XSI/alexgun.wl  = { t_hl2=! }
             Models/Weapons/w_annabelle/gun.wl  = { t_hl2=! }
             Models/Weapons/w_bugbait/wbugbait_sheet.wl  = { t_hl2=! }
-            Models/Weapons/w_bullet/bullet.wl  = { t_hl2=! }
+            Models/Weapons/w_bullet/bullet.wl  = { t_hl2_misc=! }
             Models/Weapons/W_IRifle/W_IRifle.wl  = { t_hl2=! }
-            Models/Weapons/w_missile/missile side.wl  = { t_hl2=! }
+            Models/Weapons/w_missile/missile side.wl  = { t_hl2_misc=! }
             Models/Weapons/W_package/Package_sheet.wl  = { t_hl2=! }
             Models/Weapons/W_physics/w_physics_sheet.wl  = { t_hl2=! }
             Models/Weapons/W_physics/w_physics_sheet2.wl  = { t_hl2=! }
@@ -3251,49 +3295,49 @@ QQRKSRC1
         
         Nature.txlist =
         {
-            Nature/blendcliffdirt001a.wl  = { t_hl2=! }
-            Nature/blendcliffgrass001a.wl  = { t_hl2=! }
-            Nature/blenddirtdirt001a.wl  = { t_hl2=! }
-            Nature/blenddirtgrass001a.wl  = { t_hl2=! }
-            Nature/blenddirtgrass001b.wl  = { t_hl2=! }
-            Nature/blenddirtgrass005a.wl  = { t_hl2=! }
-            Nature/blenddirtgrass006a.wl  = { t_hl2=! }
-            Nature/blenddirtgrass008a.wl  = { t_hl2=! }
-            Nature/blenddirtgrass008b.wl  = { t_hl2=! }
-            Nature/blenddirtmud003a.wl  = { t_hl2=! }
-            Nature/blendgrassdirt001a.wl  = { t_hl2=! }
-            Nature/blendgrassgrass001a.wl  = { t_hl2=! }
-            Nature/blendgrassgravel001a.wl  = { t_hl2=! }
-            Nature/blendgrassgravel001b.wl  = { t_hl2=! }
-            Nature/blendgrassgravel002a.wl  = { t_hl2=! }
-            Nature/blendmuddirt001a.wl  = { t_hl2=! }
-            Nature/blendmudmud001a.wl  = { t_hl2=! }
-            Nature/blendrockdirt002a.wl  = { t_hl2=! }
-            Nature/blendrockdirt005b_lowfrict.wl  = { t_hl2=! }
-            Nature/blendrockdirt006a.wl  = { t_hl2=! }
-            Nature/blendrockdirt006b_lowfrict.wl  = { t_hl2=! }
-            Nature/blendrockdirt007d.wl  = { t_hl2=! }
-            Nature/blendrockdirt008a.wl  = { t_hl2=! }
-            Nature/blendrockdirt008c.wl  = { t_hl2=! }
-            Nature/blendrockdirt008d.wl  = { t_hl2=! }
-            Nature/blendrockgrass004a.wl  = { t_hl2=! }
-            Nature/blendrockgravel001a.wl  = { t_hl2=! }
-            Nature/blendrocksand004a.wl  = { t_hl2=! }
-            Nature/blendrocksand005a.wl  = { t_hl2=! }
-            Nature/blendrocksand008c.wl  = { t_hl2=! }
-            Nature/blendrocksand008d.wl  = { t_hl2=! }
-            Nature/blendrocksgrass005a.wl  = { t_hl2=! }
-            Nature/blendrocksgrass006a.wl  = { t_hl2=! }
-            Nature/blendsandgrass008a.wl  = { t_hl2=! }
-            Nature/blendsandrock004a.wl  = { t_hl2=! }
-            Nature/blendsandrock004c.wl  = { t_hl2=! }
-            Nature/blendsandsand008a.wl  = { t_hl2=! }
-            Nature/blendsandsand008b.wl  = { t_hl2=! }
-            Nature/blendsandsand008b_antlion.wl  = { t_hl2=! }
-            Nature/blendsandweed005a.wl  = { t_hl2=! }
-            Nature/blendtoxictoxic002a.wl  = { t_hl2=! }
-            Nature/blendtoxictoxic004a.wl  = { t_hl2=! }
-            Nature/canal_reeds.wl  = { t_hl2=! }
+            Nature/blendcliffdirt001a.wl  = { t_hl2_misc=! }
+            Nature/blendcliffgrass001a.wl  = { t_hl2_misc=! }
+            Nature/blenddirtdirt001a.wl  = { t_hl2_misc=! }
+            Nature/blenddirtgrass001a.wl  = { t_hl2_misc=! }
+            Nature/blenddirtgrass001b.wl  = { t_hl2_misc=! }
+            Nature/blenddirtgrass005a.wl  = { t_hl2_misc=! }
+            Nature/blenddirtgrass006a.wl  = { t_hl2_misc=! }
+            Nature/blenddirtgrass008a.wl  = { t_hl2_misc=! }
+            Nature/blenddirtgrass008b.wl  = { t_hl2_misc=! }
+            Nature/blenddirtmud003a.wl  = { t_hl2_misc=! }
+            Nature/blendgrassdirt001a.wl  = { t_hl2_misc=! }
+            Nature/blendgrassgrass001a.wl  = { t_hl2_misc=! }
+            Nature/blendgrassgravel001a.wl  = { t_hl2_misc=! }
+            Nature/blendgrassgravel001b.wl  = { t_hl2_misc=! }
+            Nature/blendgrassgravel002a.wl  = { t_hl2_misc=! }
+            Nature/blendmuddirt001a.wl  = { t_hl2_misc=! }
+            Nature/blendmudmud001a.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt002a.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt005b_lowfrict.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt006a.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt006b_lowfrict.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt007d.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt008a.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt008c.wl  = { t_hl2_misc=! }
+            Nature/blendrockdirt008d.wl  = { t_hl2_misc=! }
+            Nature/blendrockgrass004a.wl  = { t_hl2_misc=! }
+            Nature/blendrockgravel001a.wl  = { t_hl2_misc=! }
+            Nature/blendrocksand004a.wl  = { t_hl2_misc=! }
+            Nature/blendrocksand005a.wl  = { t_hl2_misc=! }
+            Nature/blendrocksand008c.wl  = { t_hl2_misc=! }
+            Nature/blendrocksand008d.wl  = { t_hl2_misc=! }
+            Nature/blendrocksgrass005a.wl  = { t_hl2_misc=! }
+            Nature/blendrocksgrass006a.wl  = { t_hl2_misc=! }
+            Nature/blendsandgrass008a.wl  = { t_hl2_misc=! }
+            Nature/blendsandrock004a.wl  = { t_hl2_misc=! }
+            Nature/blendsandrock004c.wl  = { t_hl2_misc=! }
+            Nature/blendsandsand008a.wl  = { t_hl2_misc=! }
+            Nature/blendsandsand008b.wl  = { t_hl2_misc=! }
+            Nature/blendsandsand008b_antlion.wl  = { t_hl2_misc=! }
+            Nature/blendsandweed005a.wl  = { t_hl2_misc=! }
+            Nature/blendtoxictoxic002a.wl  = { t_hl2_misc=! }
+            Nature/blendtoxictoxic004a.wl  = { t_hl2_misc=! }
+            Nature/canal_reeds.wl  = { t_hl2_misc=! }
             Nature/cavewall005a.wl  = { t_hl2=! }
             Nature/cliffface001a.wl  = { t_hl2=! }
             Nature/cliffface002a.wl  = { t_hl2=! }
@@ -3315,38 +3359,38 @@ QQRKSRC1
             Nature/grassfloor003a.wl  = { t_hl2=! }
             Nature/gravelfloor001a.wl  = { t_hl2=! }
             Nature/gravelfloor002a.wl  = { t_hl2=! }
-            Nature/gravelfloor002a_lowfriction.wl  = { t_hl2=! }
+            Nature/gravelfloor002a_lowfriction.wl  = { t_hl2_misc=! }
             Nature/gravelfloor002b.wl  = { t_hl2=! }
             Nature/gravelfloor003a.wl  = { t_hl2=! }
             Nature/gravelfloor004a.wl  = { t_hl2=! }
-            Nature/gravelfloor004a_c17.wl  = { t_hl2=! }
+            Nature/gravelfloor004a_c17.wl  = { t_hl2_misc=! }
             Nature/gravelfloor005a.wl  = { t_hl2=! }
             Nature/mudfloor001a.wl  = { t_hl2=! }
             Nature/mudfloor002a.wl  = { t_hl2=! }
             Nature/mudfloor004a.wl  = { t_hl2=! }
             Nature/mudfloor004b.wl  = { t_hl2=! }
-            Nature/mudfloor004bs.wl  = { t_hl2=! }
+            Nature/mudfloor004bs.wl  = { t_hl2_misc=! }
             Nature/mudfloor005a.wl  = { t_hl2=! }
-            Nature/red_grass.wl  = { t_hl2=! }
-            Nature/red_grass_thin.wl  = { t_hl2=! }
+            Nature/red_grass.wl  = { t_hl2_misc=! }
+            Nature/red_grass_thin.wl  = { t_hl2_misc=! }
             Nature/rockfloor002a.wl  = { t_hl2=! }
             Nature/rockfloor003a.wl  = { t_hl2=! }
             Nature/rockfloor006a.wl  = { t_hl2=! }
-            Nature/rocks_red_grass.wl  = { t_hl2=! }
+            Nature/rocks_red_grass.wl  = { t_hl2_misc=! }
             Nature/rockwall003a.wl  = { t_hl2=! }
-            Nature/rockwall003a_c17.wl  = { t_hl2=! }
+            Nature/rockwall003a_c17.wl  = { t_hl2_misc=! }
             Nature/rockwall006a.wl  = { t_hl2=! }
             Nature/rockwall010b.wl  = { t_hl2=! }
             Nature/rockwall010c.wl  = { t_hl2=! }
             Nature/rockwall015a.wl  = { t_hl2=! }
             Nature/sandfloor005a.wl  = { t_hl2=! }
             Nature/sandfloor010a.wl  = { t_hl2=! }
-            Nature/Sewer_Water001.wl  = { t_hl2=! }
-            Nature/Sewer_Water001_bottom.wl  = { t_hl2=! }
-            Nature/Sewer_WaterDarkFog.wl  = { t_hl2=! }
-            Nature/Sewer_WaterDarkFog2.wl  = { t_hl2=! }
-            Nature/Sewer_WaterDarkFog_dx70.wl  = { t_hl2=! }
-            Nature/short_red_grass.wl  = { t_hl2=! }
+            Nature/Sewer_Water001.wl  = { t_hl2_misc=! }
+            Nature/Sewer_Water001_bottom.wl  = { t_hl2_misc=! }
+            Nature/Sewer_WaterDarkFog.wl  = { t_hl2_misc=! }
+            Nature/Sewer_WaterDarkFog2.wl  = { t_hl2_misc=! }
+            Nature/Sewer_WaterDarkFog_dx70.wl  = { t_hl2_misc=! }
+            Nature/short_red_grass.wl  = { t_hl2_misc=! }
             Nature/snowfloor001a.wl  = { t_hl2=! }
             Nature/snowfloor002a.wl  = { t_hl2=! }
             Nature/snowfloor003a.wl  = { t_hl2=! }
@@ -3355,43 +3399,51 @@ QQRKSRC1
             Nature/snowwall003a.wl  = { t_hl2=! }
             Nature/snowwall004a.wl  = { t_hl2=! }
             Nature/toxicslime002a.wl  = { t_hl2=! }
-            Nature/toxicslime002a_dx70.wl  = { t_hl2=! }
-            Nature/toxicslime002a_dx70_beneath.wl  = { t_hl2=! }
+            Nature/toxicslime002a_dx70.wl  = { t_hl2_misc=! }
+            Nature/toxicslime002a_dx70_beneath.wl  = { t_hl2_misc=! }
             Nature/trash01a.wl  = { t_hl2=! }
             Nature/treeline001a.wl  = { t_hl2=! }
-            Nature/tree_card_clump.wl  = { t_hl2=! }
-            Nature/water_canals03.wl  = { t_hl2=! }
-            Nature/water_canals03_beneath.wl  = { t_hl2=! }
-            Nature/water_canals03_dx70.wl  = { t_hl2=! }
-            Nature/water_canals_cheap001.wl  = { t_hl2=! }
-            Nature/water_canals_cheap001_dx70.wl  = { t_hl2=! }
-            Nature/water_canals_city.wl  = { t_hl2=! }
-            Nature/water_canals_city_beneath.wl  = { t_hl2=! }
-            Nature/water_canals_city_dx70.wl  = { t_hl2=! }
-            Nature/water_canals_city_murky.wl  = { t_hl2=! }
-            Nature/water_canals_city_murky_dx70.wl  = { t_hl2=! }
-            Nature/water_canals_water2.wl  = { t_hl2=! }
-            Nature/water_canals_water2_dx70.wl  = { t_hl2=! }
-            Nature/water_canals_waterbeneath2.wl  = { t_hl2=! }
-            Nature/water_canals_waterbeneath_clear.wl  = { t_hl2=! }
-            Nature/water_canals_water_clear.wl  = { t_hl2=! }
-            Nature/water_canals_water_murky.wl  = { t_hl2=! }
-            Nature/water_canals_water_murky_dx70.wl  = { t_hl2=! }
-            Nature/water_dx70.wl  = { t_hl2=! }
-            Nature/water_dx70_beneath.wl  = { t_hl2=! }
-            Nature/water_dx70_opaq.wl  = { t_hl2=! }
-            Nature/water_lowdirty001.wl  = { t_hl2=! }
-            Nature/water_lowdirty001_dx70.wl  = { t_hl2=! }
-            Nature/water_lowdirty002.wl  = { t_hl2=! }
-            Nature/water_lowmurkref.wl  = { t_hl2=! }
-            Nature/water_lowmurkref_dx70.wl  = { t_hl2=! }
-            Nature/water_movingplane.wl  = { t_hl2=! }
-            Nature/water_movingplane_beneath.wl  = { t_hl2=! }
-            Nature/water_movingplane_dx70.wl  = { t_hl2=! }
-            Nature/water_wasteland002a.wl  = { t_hl2=! }
-            Nature/water_wasteland002a_beneath.wl  = { t_hl2=! }
-            Nature/water_wasteland002b.wl  = { t_hl2=! }
-            Nature/water_wasteland002c.wl  = { t_hl2=! }
+            Nature/tree_card_clump.wl  = { t_hl2_misc=! }
+            Nature/water_canals03.wl  = { t_hl2_misc=! }
+            Nature/water_canals03_beneath.wl  = { t_hl2_misc=! }
+            Nature/water_canals03_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_canals_cheap001.wl  = { t_hl2_misc=! }
+            Nature/water_canals_cheap001_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_canals_city.wl  = { t_hl2_misc=! }
+            Nature/water_canals_city_beneath.wl  = { t_hl2_misc=! }
+            Nature/water_canals_city_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_canals_city_murky.wl  = { t_hl2_misc=! }
+            Nature/water_canals_city_murky_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_canals_water2.wl  = { t_hl2_misc=! }
+            Nature/water_canals_water2_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_canals_waterbeneath2.wl  = { t_hl2_misc=! }
+            Nature/water_canals_waterbeneath_clear.wl  = { t_hl2_misc=! }
+            Nature/water_canals_water_clear.wl  = { t_hl2_misc=! }
+            Nature/water_canals_water_murky.wl  = { t_hl2_misc=! }
+            Nature/water_canals_water_murky_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_coast01.wl  = { t_hl2_misc=! }
+            Nature/water_coast01_beneath.wl  = { t_hl2_misc=! }
+            Nature/water_coast01_beneath_dx8.wl  = { t_hl2_misc=! }
+            Nature/water_coast02.wl  = { t_hl2_misc=! }
+            Nature/water_coast03.wl  = { t_hl2_misc=! }
+            Nature/water_coast04.wl  = { t_hl2_misc=! }
+            Nature/water_coast05.wl  = { t_hl2_misc=! }
+            Nature/water_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_dx70_beneath.wl  = { t_hl2_misc=! }
+            Nature/water_dx70_opaq.wl  = { t_hl2_misc=! }
+            Nature/water_lowdirty001.wl  = { t_hl2_misc=! }
+            Nature/water_lowdirty001_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_lowdirty002.wl  = { t_hl2_misc=! }
+            Nature/water_lowmurkref.wl  = { t_hl2_misc=! }
+            Nature/water_lowmurkref_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_movingplane.wl  = { t_hl2_misc=! }
+            Nature/water_movingplane_beneath.wl  = { t_hl2_misc=! }
+            Nature/water_movingplane_dx70.wl  = { t_hl2_misc=! }
+            Nature/water_wasteland002a.wl  = { t_hl2_misc=! }
+            Nature/water_wasteland002a_beneath.wl  = { t_hl2_misc=! }
+            Nature/water_wasteland002b.wl  = { t_hl2_misc=! }
+            Nature/water_wasteland002c.wl  = { t_hl2_misc=! }
+            Nature/water_wasteland002d.wl  = { t_hl2_misc=! }
         }
         
         Overlays.txlist =
@@ -3399,7 +3451,7 @@ QQRKSRC1
             Overlays/darkedge.wl  = { t_hl2=! }
             Overlays/dirttrack01a.wl  = { t_hl2=! }
             Overlays/dirttrack01b.wl  = { t_hl2=! }
-            Overlays/gasoline01.wl  = { t_hl2=! }
+            Overlays/gasoline01.wl  = { t_hl2_misc=! }
             Overlays/gravelpath01a.wl  = { t_hl2=! }
             Overlays/gravelpath01b.wl  = { t_hl2=! }
             Overlays/puddle001a.wl  = { t_hl2=! }
@@ -3412,7 +3464,7 @@ QQRKSRC1
             Overlays/sandtrack02a.wl  = { t_hl2=! }
             Overlays/sandtrack02b.wl  = { t_hl2=! }
             Overlays/shorewave001a.wl  = { t_hl2=! }
-            Overlays/shorewave002a.wl  = { t_hl2=! }
+            Overlays/shorewave002a.wl  = { t_hl2_misc=! }
             Overlays/slimeoverlay001a.wl  = { t_hl2=! }
             Overlays/slimeoverlay002a.wl  = { t_hl2=! }
             Overlays/tideline01a.wl  = { t_hl2=! }
@@ -3426,11 +3478,11 @@ QQRKSRC1
             particle/particle_composite.wl  = { t_hl2=! }
             particle/particle_noisesphere.wl  = { t_hl2=! }
             particle/particle_smokegrenade.wl  = { t_hl2=! }
-            particle/particle_smokegrenade1.wl  = { t_hl2=! }
+            particle/particle_smokegrenade1.wl  = { t_hl2_misc=! }
             particle/particle_sphere.wl  = { t_hl2=! }
             particle/rain.wl  = { t_hl2=! }
-            particle/screenspace_fog.wl  = { t_hl2=! }
-            particle/SmokeStack.wl  = { t_hl2=! }
+            particle/screenspace_fog.wl  = { t_hl2_misc=! }
+            particle/SmokeStack.wl  = { t_hl2_misc=! }
             particle/snow.wl  = { t_hl2=! }
             particle/sparkles.wl  = { t_hl2=! }
         }
@@ -3445,15 +3497,15 @@ QQRKSRC1
             Plaster/plasterceiling006a.wl  = { t_hl2=! }
             Plaster/plasterceiling007a.wl  = { t_hl2=! }
             Plaster/plasterceiling008a.wl  = { t_hl2=! }
-            Plaster/plasterceiling008a_c17.wl  = { t_hl2=! }
+            Plaster/plasterceiling008a_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall003a.wl  = { t_hl2=! }
             Plaster/plasterwall003b.wl  = { t_hl2=! }
             Plaster/plasterwall003d.wl  = { t_hl2=! }
             Plaster/plasterwall005a.wl  = { t_hl2=! }
             Plaster/plasterwall005c.wl  = { t_hl2=! }
-            Plaster/plasterwall005c_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall005c_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall005e.wl  = { t_hl2=! }
-            Plaster/plasterwall005e_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall005e_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall007a.wl  = { t_hl2=! }
             Plaster/plasterwall007d.wl  = { t_hl2=! }
             Plaster/plasterwall008a.wl  = { t_hl2=! }
@@ -3468,9 +3520,9 @@ QQRKSRC1
             Plaster/plasterwall013g.wl  = { t_hl2=! }
             Plaster/plasterwall016a.wl  = { t_hl2=! }
             Plaster/plasterwall017a.wl  = { t_hl2=! }
-            Plaster/plasterwall017c_c17.wl  = { t_hl2=! }
-            Plaster/plasterwall017d_c17.wl  = { t_hl2=! }
-            Plaster/plasterwall017e_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall017c_c17.wl  = { t_hl2_misc=! }
+            Plaster/plasterwall017d_c17.wl  = { t_hl2_misc=! }
+            Plaster/plasterwall017e_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall018a.wl  = { t_hl2=! }
             Plaster/plasterwall018b.wl  = { t_hl2=! }
             Plaster/plasterwall018c.wl  = { t_hl2=! }
@@ -3480,9 +3532,9 @@ QQRKSRC1
             Plaster/plasterwall021a.wl  = { t_hl2=! }
             Plaster/plasterwall022a.wl  = { t_hl2=! }
             Plaster/plasterwall022c.wl  = { t_hl2=! }
-            Plaster/plasterwall022c_c17.wl  = { t_hl2=! }
-            Plaster/plasterwall022d_c17.wl  = { t_hl2=! }
-            Plaster/plasterwall022e_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall022c_c17.wl  = { t_hl2_misc=! }
+            Plaster/plasterwall022d_c17.wl  = { t_hl2_misc=! }
+            Plaster/plasterwall022e_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall023a.wl  = { t_hl2=! }
             Plaster/plasterwall024b.wl  = { t_hl2=! }
             Plaster/plasterwall026a.wl  = { t_hl2=! }
@@ -3496,17 +3548,17 @@ QQRKSRC1
             Plaster/plasterwall030a.wl  = { t_hl2=! }
             Plaster/plasterwall030b.wl  = { t_hl2=! }
             Plaster/plasterwall030c.wl  = { t_hl2=! }
-            Plaster/plasterwall030c_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall030c_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall030d.wl  = { t_hl2=! }
-            Plaster/plasterwall030d_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall030d_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall030e.wl  = { t_hl2=! }
-            Plaster/plasterwall030e_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall030e_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall031b.wl  = { t_hl2=! }
             Plaster/plasterwall032a.wl  = { t_hl2=! }
             Plaster/plasterwall032b.wl  = { t_hl2=! }
             Plaster/plasterwall032c.wl  = { t_hl2=! }
             Plaster/plasterwall034a.wl  = { t_hl2=! }
-            Plaster/plasterwall034a_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall034a_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall034b.wl  = { t_hl2=! }
             Plaster/plasterwall034c.wl  = { t_hl2=! }
             Plaster/plasterwall034d.wl  = { t_hl2=! }
@@ -3529,11 +3581,11 @@ QQRKSRC1
             Plaster/plasterwall041a.wl  = { t_hl2=! }
             Plaster/plasterwall042a.wl  = { t_hl2=! }
             Plaster/plasterwall042c.wl  = { t_hl2=! }
-            Plaster/plasterwall042c_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall042c_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall042d.wl  = { t_hl2=! }
-            Plaster/plasterwall042d_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall042d_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall042e.wl  = { t_hl2=! }
-            Plaster/plasterwall042e_c17.wl  = { t_hl2=! }
+            Plaster/plasterwall042e_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwall043b.wl  = { t_hl2=! }
             Plaster/plasterwall043c.wl  = { t_hl2=! }
             Plaster/plasterwall043d.wl  = { t_hl2=! }
@@ -3561,11 +3613,11 @@ QQRKSRC1
             Plaster/plasterwall050c.wl  = { t_hl2=! }
             Plaster/plasterwall050d.wl  = { t_hl2=! }
             Plaster/plasterwallpaper001a.wl  = { t_hl2=! }
-            Plaster/plasterwallpaper001a_c17.wl  = { t_hl2=! }
+            Plaster/plasterwallpaper001a_c17.wl  = { t_hl2_misc=! }
             Plaster/plasterwallpaper004a.wl  = { t_hl2=! }
             Plaster/plasterwallpaper005a.wl  = { t_hl2=! }
             Plaster/plasterwallpaper006a.wl  = { t_hl2=! }
-            Plaster/plasterwallpaper006a_c17.wl  = { t_hl2=! }
+            Plaster/plasterwallpaper006a_c17.wl  = { t_hl2_misc=! }
             Plaster/Wallpaper001b.wl  = { t_hl2=! }
             Plaster/Wallpaper002a.wl  = { t_hl2=! }
             Plaster/Wallpaper002b.wl  = { t_hl2=! }
@@ -3696,7 +3748,7 @@ QQRKSRC1
             Props/Sign_HOTEL01a.wl  = { t_hl2=! }
             Props/sign_lowclearance001a.wl  = { t_hl2=! }
             Props/sign_novaprospekt.wl  = { t_hl2=! }
-            Props/sign_obersvation.wl  = { t_hl2=! }
+            Props/sign_obersvation.wl  = { t_hl2_misc=! }
             Props/Sign_PHARMACY01a.wl  = { t_hl2=! }
             Props/Sign_TrainSchedule01a.wl  = { t_hl2=! }
             Props/sign_trainstation01.wl  = { t_hl2=! }
@@ -3719,13 +3771,13 @@ QQRKSRC1
         
         Scripted.txlist =
         {
-            scripted/breen_fakemonitor_1.wl  = { t_hl2=! }
-            scripted/intro_screenspaceeffect.wl  = { t_hl2=! }
+            scripted/breen_fakemonitor_1.wl  = { t_hl2_misc=! }
+            scripted/intro_screenspaceeffect.wl  = { t_hl2_misc=! }
         }
         
         Shadertest.txlist =
         {
-            shadertest/AnimatedTexture.wl  = { t_hl2=! }
+            shadertest/AnimatedTexture.wl  = { t_hl2_misc=! }
             shadertest/BaseTimesLightmapTimes2Detail.wl  = { t_hl2=! }
             shadertest/BaseTimesLightmapTimesDetail.wl  = { t_hl2=! }
             shadertest/BaseTimesLightmapWet.wl  = { t_hl2=! }
@@ -3734,55 +3786,55 @@ QQRKSRC1
             shadertest/Camo.wl  = { t_hl2=! }
             shadertest/cloud.wl  = { t_hl2=! }
             shadertest/CubeMap.wl  = { t_hl2=! }
-            shadertest/cubemapdemo.wl  = { t_hl2=! }
-            shadertest/cubemapdemoCameraSpace.wl  = { t_hl2=! }
+            shadertest/cubemapdemo.wl  = { t_hl2_misc=! }
+            shadertest/cubemapdemoCameraSpace.wl  = { t_hl2_misc=! }
             shadertest/DebugModifyVertex.wl  = { t_hl2=! }
             shadertest/Eyeball.wl  = { t_hl2=! }
             shadertest/GooInGlass.wl  = { t_hl2=! }
-            shadertest/jet.wl  = { t_hl2=! }
+            shadertest/jet.wl  = { t_hl2_misc=! }
             shadertest/Lightmap.wl  = { t_hl2=! }
             shadertest/LightmappedAlphaTestedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedAlphaTestedTextureDetail.wl  = { t_hl2=! }
+            shadertest/LightmappedAlphaTestedTextureDetail.wl  = { t_hl2_misc=! }
             shadertest/LightmappedBaseAlphaMaskedEnvMappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedBaseAlphaMaskedEnvMappedTextureDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedBaseAlphaMaskedEnvMappedTextureDetailV2.wl  = { t_hl2=! }
-            shadertest/LightmappedBaseAlphaMaskedEnvMappedTextureV2.wl  = { t_hl2=! }
-            shadertest/LightmappedEnvmap.wl  = { t_hl2=! }
+            shadertest/LightmappedBaseAlphaMaskedEnvMappedTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedBaseAlphaMaskedEnvMappedTextureDetailV2.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedBaseAlphaMaskedEnvMappedTextureV2.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedEnvmap.wl  = { t_hl2_misc=! }
             shadertest/LightmappedEnvmappedBumpmappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedEnvmappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedEnvmappedTextureDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedEnvmappedTextureDetailV2.wl  = { t_hl2=! }
-            shadertest/LightmappedEnvmappedTextureV2.wl  = { t_hl2=! }
+            shadertest/LightmappedEnvmappedTexture.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedEnvmappedTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedEnvmappedTextureDetailV2.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedEnvmappedTextureV2.wl  = { t_hl2_misc=! }
             shadertest/LightmappedGeneric.wl  = { t_hl2=! }
-            shadertest/LightmappedGenericDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedGenericDetailV2.wl  = { t_hl2=! }
-            shadertest/LightmappedGenericV2.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedEnvmap.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedEnvmappedBumpmappedTranslucentTxtre.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedEnvmappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedEnvmappedTextureDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedEnvmappedTextureDetailV2.wl  = { t_hl2=! }
+            shadertest/LightmappedGenericDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedGenericDetailV2.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedGenericV2.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedMaskedEnvmap.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedMaskedEnvmappedBumpmappedTranslucentTxtre.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedMaskedEnvmappedTexture.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedMaskedEnvmappedTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedMaskedEnvmappedTextureDetailV2.wl  = { t_hl2_misc=! }
             shadertest/LightmappedMaskedEnvmappedTextureV2.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedSphereEnvmappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedMaskedSphereEnvmappedTextureAndVertexColor.wl  = { t_hl2=! }
-            shadertest/LightmappedSelfIlluminatedEnvmappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedSelfIlluminatedEnvmappedTextureDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedSelfIlluminatedEnvmappedTextureDetailV2.wl  = { t_hl2=! }
-            shadertest/LightmappedSelfIlluminatedEnvmappedTextureV2.wl  = { t_hl2=! }
+            shadertest/LightmappedMaskedSphereEnvmappedTexture.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedMaskedSphereEnvmappedTextureAndVertexColor.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedSelfIlluminatedEnvmappedTexture.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedSelfIlluminatedEnvmappedTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedSelfIlluminatedEnvmappedTextureDetailV2.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedSelfIlluminatedEnvmappedTextureV2.wl  = { t_hl2_misc=! }
             shadertest/LightmappedSelfIlluminatedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedSelfIlluminatedTextureDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedSphereEnvmappedTexture.wl  = { t_hl2=! }
+            shadertest/LightmappedSelfIlluminatedTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedSphereEnvmappedTexture.wl  = { t_hl2_misc=! }
             shadertest/LightmappedTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedTextureAndVertexColor.wl  = { t_hl2=! }
-            shadertest/LightmappedTextureAndVertexColorDetail.wl  = { t_hl2=! }
-            shadertest/LightmappedTextureDetail.wl  = { t_hl2=! }
+            shadertest/LightmappedTextureAndVertexColor.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedTextureAndVertexColorDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmappedTextureDetail.wl  = { t_hl2_misc=! }
             shadertest/LightmappedTranslucentTexture.wl  = { t_hl2=! }
-            shadertest/LightmappedTranslucentTextureDetail.wl  = { t_hl2=! }
-            shadertest/LightmapSingleColorDetail.wl  = { t_hl2=! }
-            shadertest/Modulate.wl  = { t_hl2=! }
+            shadertest/LightmappedTranslucentTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/LightmapSingleColorDetail.wl  = { t_hl2_misc=! }
+            shadertest/Modulate.wl  = { t_hl2_misc=! }
             shadertest/ShootMeText.wl  = { t_hl2=! }
-            shadertest/spheremap.wl  = { t_hl2=! }
-            shadertest/SphericalEnvMap.wl  = { t_hl2=! }
+            shadertest/spheremap.wl  = { t_hl2_misc=! }
+            shadertest/SphericalEnvMap.wl  = { t_hl2_misc=! }
             shadertest/SphericalEnvMapBlendMaskedBaseTimesLightmap.wl  = { t_hl2=! }
             shadertest/Sprite.wl  = { t_hl2=! }
             shadertest/testroombackground.wl  = { t_hl2=! }
@@ -3793,28 +3845,28 @@ QQRKSRC1
             shadertest/unlitadditivesinglecolor.wl  = { t_hl2=! }
             shadertest/unlitadditivetexture.wl  = { t_hl2=! }
             shadertest/unlitadditivetextureandvertexcolor.wl  = { t_hl2=! }
-            shadertest/unlitadditivetexturedetail.wl  = { t_hl2=! }
+            shadertest/unlitadditivetexturedetail.wl  = { t_hl2_misc=! }
             shadertest/unlitadditivevertexcolor.wl  = { t_hl2=! }
             shadertest/unlitalphatestedtexture.wl  = { t_hl2=! }
-            shadertest/unlitalphatestedtexturedetail.wl  = { t_hl2=! }
-            shadertest/UnlitBaseAlphaEnvMapMaskedTexture.wl  = { t_hl2=! }
-            shadertest/UnlitBaseAlphaEnvMapMaskedTextureDetail.wl  = { t_hl2=! }
-            shadertest/unlitgeneric.wl  = { t_hl2=! }
-            shadertest/unlitgenericdetail.wl  = { t_hl2=! }
-            shadertest/unlitsinglecolor.wl  = { t_hl2=! }
-            shadertest/unlitsinglecolordetail.wl  = { t_hl2=! }
-            shadertest/unlittexture.wl  = { t_hl2=! }
-            shadertest/unlittextureandvertexcolor.wl  = { t_hl2=! }
-            shadertest/unlittextureandvertexcolordetail.wl  = { t_hl2=! }
-            shadertest/unlittexturedetail.wl  = { t_hl2=! }
-            shadertest/UnlitTwoTexture.wl  = { t_hl2=! }
-            shadertest/unlitvertexcolor.wl  = { t_hl2=! }
-            shadertest/unlitvertexcolordetail.wl  = { t_hl2=! }
+            shadertest/unlitalphatestedtexturedetail.wl  = { t_hl2_misc=! }
+            shadertest/UnlitBaseAlphaEnvMapMaskedTexture.wl  = { t_hl2_misc=! }
+            shadertest/UnlitBaseAlphaEnvMapMaskedTextureDetail.wl  = { t_hl2_misc=! }
+            shadertest/unlitgeneric.wl  = { t_hl2_misc=! }
+            shadertest/unlitgenericdetail.wl  = { t_hl2_misc=! }
+            shadertest/unlitsinglecolor.wl  = { t_hl2_misc=! }
+            shadertest/unlitsinglecolordetail.wl  = { t_hl2_misc=! }
+            shadertest/unlittexture.wl  = { t_hl2_misc=! }
+            shadertest/unlittextureandvertexcolor.wl  = { t_hl2_misc=! }
+            shadertest/unlittextureandvertexcolordetail.wl  = { t_hl2_misc=! }
+            shadertest/unlittexturedetail.wl  = { t_hl2_misc=! }
+            shadertest/UnlitTwoTexture.wl  = { t_hl2_misc=! }
+            shadertest/unlitvertexcolor.wl  = { t_hl2_misc=! }
+            shadertest/unlitvertexcolordetail.wl  = { t_hl2_misc=! }
             shadertest/VolumetricFog.wl  = { t_hl2=! }
-            shadertest/watercheap_opaque.wl  = { t_hl2=! }
-            shadertest/watercheap_opaque_nofresnel.wl  = { t_hl2=! }
-            shadertest/water_refract_only.wl  = { t_hl2=! }
-            shadertest/water_refract_only_nofresnel.wl  = { t_hl2=! }
+            shadertest/watercheap_opaque.wl  = { t_hl2_misc=! }
+            shadertest/watercheap_opaque_nofresnel.wl  = { t_hl2_misc=! }
+            shadertest/water_refract_only.wl  = { t_hl2_misc=! }
+            shadertest/water_refract_only_nofresnel.wl  = { t_hl2_misc=! }
             shadertest/Wireframe.wl  = { t_hl2=! }
             shadertest/WireFrameVertexColor.wl  = { t_hl2=! }
             shadertest/WorldAdditiveTransEnvMapWithMaskedTexture.wl  = { t_hl2=! }
@@ -3956,13 +4008,13 @@ QQRKSRC1
             skybox/sky_day03_05lf.wl  = { t_hl2=! }
             skybox/sky_day03_05rt.wl  = { t_hl2=! }
             skybox/sky_day03_05up.wl  = { t_hl2=! }
-            skybox/sky_day03_06Bbk.wl  = { t_hl2=! }
-            skybox/sky_day03_06Bdn.wl  = { t_hl2=! }
-            skybox/sky_day03_06Bft.wl  = { t_hl2=! }
+            skybox/sky_day03_06Bbk.wl  = { t_hl2_misc=! }
+            skybox/sky_day03_06Bdn.wl  = { t_hl2_misc=! }
+            skybox/sky_day03_06Bft.wl  = { t_hl2_misc=! }
             skybox/sky_day03_06bk.wl  = { t_hl2=! }
-            skybox/sky_day03_06Blf.wl  = { t_hl2=! }
-            skybox/sky_day03_06Brt.wl  = { t_hl2=! }
-            skybox/sky_day03_06Bup.wl  = { t_hl2=! }
+            skybox/sky_day03_06Blf.wl  = { t_hl2_misc=! }
+            skybox/sky_day03_06Brt.wl  = { t_hl2_misc=! }
+            skybox/sky_day03_06Bup.wl  = { t_hl2_misc=! }
             skybox/sky_day03_06dn.wl  = { t_hl2=! }
             skybox/sky_day03_06ft.wl  = { t_hl2=! }
             skybox/sky_day03_06lf.wl  = { t_hl2=! }
@@ -3991,15 +4043,15 @@ QQRKSRC1
             Sprites/640_logo.wl  = { t_hl2=! }
             Sprites/640_pain.wl  = { t_hl2=! }
             Sprites/640_train.wl  = { t_hl2=! }
-            Sprites/animglow01.wl  = { t_hl2=! }
+            Sprites/animglow01.wl  = { t_hl2_misc=! }
             Sprites/animglow02.wl  = { t_hl2=! }
             Sprites/ar2_muzzle1.wl  = { t_hl2=! }
-            Sprites/ar2_muzzle1b.wl  = { t_hl2=! }
-            Sprites/ar2_muzzle2b.wl  = { t_hl2=! }
+            Sprites/ar2_muzzle1b.wl  = { t_hl2_misc=! }
+            Sprites/ar2_muzzle2b.wl  = { t_hl2_misc=! }
             Sprites/ar2_muzzle3.wl  = { t_hl2=! }
-            Sprites/ar2_muzzle3b.wl  = { t_hl2=! }
+            Sprites/ar2_muzzle3b.wl  = { t_hl2_misc=! }
             Sprites/ar2_muzzle4.wl  = { t_hl2=! }
-            Sprites/ar2_muzzle4b.wl  = { t_hl2=! }
+            Sprites/ar2_muzzle4b.wl  = { t_hl2_misc=! }
             Sprites/arrow.wl  = { t_hl2=! }
             Sprites/autoaim_1a.wl  = { t_hl2=! }
             Sprites/autoaim_1b.wl  = { t_hl2=! }
@@ -4009,9 +4061,9 @@ QQRKSRC1
             Sprites/blood.wl  = { t_hl2=! }
             Sprites/bloodspray.wl  = { t_hl2=! }
             Sprites/blueflare1.wl  = { t_hl2=! }
-            Sprites/blueflare1_noz.wl  = { t_hl2=! }
+            Sprites/blueflare1_noz.wl  = { t_hl2_misc=! }
             Sprites/blueglow1.wl  = { t_hl2=! }
-            Sprites/blueglow2.wl  = { t_hl2=! }
+            Sprites/blueglow2.wl  = { t_hl2_misc=! }
             Sprites/bluelaser1.wl  = { t_hl2=! }
             Sprites/bluelight1.wl  = { t_hl2=! }
             Sprites/blueshaft1.wl  = { t_hl2=! }
@@ -4023,21 +4075,22 @@ QQRKSRC1
             Sprites/combineball_trail_blue_1.wl  = { t_hl2=! }
             Sprites/combineball_trail_red_1.wl  = { t_hl2=! }
             Sprites/crosshairs.wl  = { t_hl2=! }
-            Sprites/crosshairs_tluc.wl  = { t_hl2=! }
+            Sprites/crosshairs_tluc.wl  = { t_hl2_misc=! }
             Sprites/crosshair_h.wl  = { t_hl2=! }
             Sprites/crosshair_v.wl  = { t_hl2=! }
             Sprites/crystal_beam1.wl  = { t_hl2=! }
             Sprites/dot.wl  = { t_hl2=! }
             Sprites/d_icons.wl  = { t_hl2=! }
             Sprites/fire.wl  = { t_hl2=! }
-            Sprites/fire1.wl  = { t_hl2=! }
-            Sprites/fire2.wl  = { t_hl2=! }
-            Sprites/fireburst.wl  = { t_hl2=! }
+            Sprites/fire1.wl  = { t_hl2_misc=! }
+            Sprites/fire2.wl  = { t_hl2_misc=! }
+            Sprites/fireburst.wl  = { t_hl2_misc=! }
             Sprites/fire_floor.wl  = { t_hl2=! }
-            Sprites/fire_floor_subrect.wl  = { t_hl2=! }
-            Sprites/flame01.wl  = { t_hl2=! }
-            Sprites/flame03.wl  = { t_hl2=! }
-            Sprites/flame04.wl  = { t_hl2=! }
+            Sprites/fire_floor_subrect.wl  = { t_hl2_misc=! }
+            Sprites/flame01.wl  = { t_hl2_misc=! }
+            Sprites/flame03.wl  = { t_hl2_misc=! }
+            Sprites/flame04.wl  = { t_hl2_misc=! }
+            Sprites/flamefromabove.wl  = { t_hl2_misc=! }
             Sprites/flamelet1.wl  = { t_hl2=! }
             Sprites/flamelet2.wl  = { t_hl2=! }
             Sprites/flamelet3.wl  = { t_hl2=! }
@@ -4047,19 +4100,19 @@ QQRKSRC1
             Sprites/flatflame.wl  = { t_hl2=! }
             Sprites/floorfire4_.wl  = { t_hl2=! }
             Sprites/FloorFlame.wl  = { t_hl2=! }
-            Sprites/floorflame2.wl  = { t_hl2=! }
+            Sprites/floorflame2.wl  = { t_hl2_misc=! }
             Sprites/FlyingEmber.wl  = { t_hl2=! }
             Sprites/glow01.wl  = { t_hl2=! }
             Sprites/glow02.wl  = { t_hl2=! }
             Sprites/glow03.wl  = { t_hl2=! }
             Sprites/glow04.wl  = { t_hl2=! }
-            Sprites/glow04_noz.wl  = { t_hl2=! }
+            Sprites/glow04_noz.wl  = { t_hl2_misc=! }
             Sprites/glow05.wl  = { t_hl2=! }
             Sprites/glow06.wl  = { t_hl2=! }
             Sprites/glow07.wl  = { t_hl2=! }
             Sprites/glow08.wl  = { t_hl2=! }
             Sprites/glow1.wl  = { t_hl2=! }
-            Sprites/glow1_noz.wl  = { t_hl2=! }
+            Sprites/glow1_noz.wl  = { t_hl2_misc=! }
             Sprites/glow_test01.wl  = { t_hl2=! }
             Sprites/glow_test01b.wl  = { t_hl2=! }
             Sprites/glow_test02.wl  = { t_hl2=! }
@@ -4087,12 +4140,12 @@ QQRKSRC1
             Sprites/laserbeam.wl  = { t_hl2=! }
             Sprites/laserdot.wl  = { t_hl2=! }
             Sprites/lgtning.wl  = { t_hl2=! }
-            Sprites/lgtning_noz.wl  = { t_hl2=! }
+            Sprites/lgtning_noz.wl  = { t_hl2_misc=! }
             Sprites/light_glow01.wl  = { t_hl2=! }
             Sprites/light_glow02.wl  = { t_hl2=! }
-            Sprites/light_glow02_add.wl  = { t_hl2=! }
-            Sprites/light_glow02_add_noz.wl  = { t_hl2=! }
-            Sprites/light_glow02_noz.wl  = { t_hl2=! }
+            Sprites/light_glow02_add.wl  = { t_hl2_misc=! }
+            Sprites/light_glow02_add_noz.wl  = { t_hl2_misc=! }
+            Sprites/light_glow02_noz.wl  = { t_hl2_misc=! }
             Sprites/light_glow03.wl  = { t_hl2=! }
             Sprites/muzzleflash1.wl  = { t_hl2=! }
             Sprites/muzzleflash2.wl  = { t_hl2=! }
@@ -4101,7 +4154,7 @@ QQRKSRC1
             Sprites/obsolete.wl  = { t_hl2=! }
             Sprites/old_Aexplo.wl  = { t_hl2=! }
             Sprites/old_Cexplo.wl  = { t_hl2=! }
-            Sprites/old_richo2.wl  = { t_hl2=! }
+            Sprites/old_richo2.wl  = { t_hl2_misc=! }
             Sprites/old_XFire.wl  = { t_hl2=! }
             Sprites/orangecore1.wl  = { t_hl2=! }
             Sprites/orangecore2.wl  = { t_hl2=! }
@@ -4117,14 +4170,14 @@ QQRKSRC1
             Sprites/physcannon_blueglow.wl  = { t_hl2=! }
             Sprites/physcannon_bluelight1.wl  = { t_hl2=! }
             Sprites/physcannon_bluelight1b.wl  = { t_hl2=! }
-            Sprites/physcannon_bluelight2.wl  = { t_hl2=! }
-            Sprites/physring1.wl  = { t_hl2=! }
+            Sprites/physcannon_bluelight2.wl  = { t_hl2_misc=! }
+            Sprites/physring1.wl  = { t_hl2_misc=! }
             Sprites/plasma.wl  = { t_hl2=! }
-            Sprites/plasma1.wl  = { t_hl2=! }
+            Sprites/plasma1.wl  = { t_hl2_misc=! }
             Sprites/plasmabeam.wl  = { t_hl2=! }
             Sprites/plasmaember.wl  = { t_hl2=! }
             Sprites/plasmahalo.wl  = { t_hl2=! }
-            Sprites/predator.wl  = { t_hl2=! }
+            Sprites/predator.wl  = { t_hl2_misc=! }
             Sprites/purpleglow1.wl  = { t_hl2=! }
             Sprites/purplelaser1.wl  = { t_hl2=! }
             Sprites/qi_center.wl  = { t_hl2=! }
@@ -4137,8 +4190,8 @@ QQRKSRC1
             Sprites/reticle2.wl  = { t_hl2=! }
             Sprites/richo1.wl  = { t_hl2=! }
             Sprites/rico1.wl  = { t_hl2=! }
-            Sprites/rico1_noz.wl  = { t_hl2=! }
-            Sprites/rollermine_shock.wl  = { t_hl2=! }
+            Sprites/rico1_noz.wl  = { t_hl2_misc=! }
+            Sprites/rollermine_shock.wl  = { t_hl2_misc=! }
             Sprites/scanner.wl  = { t_hl2=! }
             Sprites/scanner_bottom.wl  = { t_hl2=! }
             Sprites/scanner_dots1.wl  = { t_hl2=! }
@@ -4147,13 +4200,14 @@ QQRKSRC1
             Sprites/smoke.wl  = { t_hl2=! }
             Sprites/splodesprite.wl  = { t_hl2=! }
             Sprites/spotlight.wl  = { t_hl2=! }
-            Sprites/sprite_fire01.wl  = { t_hl2=! }
-            Sprites/steam1.wl  = { t_hl2=! }
+            Sprites/sprite_fire01.wl  = { t_hl2_misc=! }
+            Sprites/steam1.wl  = { t_hl2_misc=! }
             Sprites/strider_blackball.wl  = { t_hl2=! }
             Sprites/strider_bluebeam.wl  = { t_hl2=! }
             Sprites/tp_beam001.wl  = { t_hl2=! }
+            Sprites/vortring1.wl  = { t_hl2_misc=! }
             Sprites/white.wl  = { t_hl2=! }
-            Sprites/WXplo1.wl  = { t_hl2=! }
+            Sprites/WXplo1.wl  = { t_hl2_misc=! }
             Sprites/w_icons1.wl  = { t_hl2=! }
             Sprites/w_icons1b.wl  = { t_hl2=! }
             Sprites/w_icons2.wl  = { t_hl2=! }
@@ -4176,16 +4230,16 @@ QQRKSRC1
             Stone/stonearch003c.wl  = { t_hl2=! }
             Stone/stonecolumn001a.wl  = { t_hl2=! }
             Stone/stonefloor006a.wl  = { t_hl2=! }
-            Stone/stonefloor006a2.wl  = { t_hl2=! }
+            Stone/stonefloor006a2.wl  = { t_hl2_misc=! }
             Stone/stonefloor006b.wl  = { t_hl2=! }
             Stone/stonefloor006c.wl  = { t_hl2=! }
             Stone/stonefloor006d.wl  = { t_hl2=! }
-            Stone/stonefloor006d_c17.wl  = { t_hl2=! }
+            Stone/stonefloor006d_c17.wl  = { t_hl2_misc=! }
             Stone/stonefloor006e.wl  = { t_hl2=! }
-            Stone/stonefloor006e_c17.wl  = { t_hl2=! }
+            Stone/stonefloor006e_c17.wl  = { t_hl2_misc=! }
             Stone/stonefloor006f.wl  = { t_hl2=! }
-            Stone/stonefloor006f_c17.wl  = { t_hl2=! }
-            Stone/stonefloor006h_c17.wl  = { t_hl2=! }
+            Stone/stonefloor006f_c17.wl  = { t_hl2_misc=! }
+            Stone/stonefloor006h_c17.wl  = { t_hl2_misc=! }
             Stone/stonefloor011a.wl  = { t_hl2=! }
             Stone/stonestair001a.wl  = { t_hl2=! }
             Stone/stonewall002a.wl  = { t_hl2=! }
@@ -4203,9 +4257,9 @@ QQRKSRC1
             Stone/stonewall020c.wl  = { t_hl2=! }
             Stone/stonewall021h.wl  = { t_hl2=! }
             Stone/stonewall022a.wl  = { t_hl2=! }
-            Stone/stonewall022a_c17.wl  = { t_hl2=! }
+            Stone/stonewall022a_c17.wl  = { t_hl2_misc=! }
             Stone/stonewall022b.wl  = { t_hl2=! }
-            Stone/stonewall022b_c17.wl  = { t_hl2=! }
+            Stone/stonewall022b_c17.wl  = { t_hl2_misc=! }
             Stone/stonewall024a.wl  = { t_hl2=! }
             Stone/stonewall025a.wl  = { t_hl2=! }
             Stone/stonewall025c.wl  = { t_hl2=! }
@@ -4259,7 +4313,7 @@ QQRKSRC1
             Tile/tilefloor001c.wl  = { t_hl2=! }
             Tile/tilefloor003a.wl  = { t_hl2=! }
             Tile/tilefloor005a.wl  = { t_hl2=! }
-            Tile/tilefloor007b.wl  = { t_hl2=! }
+            Tile/tilefloor007b.wl  = { t_hl2_misc=! }
             Tile/tilefloor008a.wl  = { t_hl2=! }
             Tile/tilefloor009a.wl  = { t_hl2=! }
             Tile/tilefloor009b.wl  = { t_hl2=! }
@@ -4268,19 +4322,19 @@ QQRKSRC1
             Tile/tilefloor012a.wl  = { t_hl2=! }
             Tile/tilefloor012b.wl  = { t_hl2=! }
             Tile/tilefloor013a.wl  = { t_hl2=! }
-            Tile/tilefloor013a_c17.wl  = { t_hl2=! }
+            Tile/tilefloor013a_c17.wl  = { t_hl2_misc=! }
             Tile/tilefloor016a.wl  = { t_hl2=! }
             Tile/tilefloor018a.wl  = { t_hl2=! }
-            Tile/tilefloor018a_c17.wl  = { t_hl2=! }
+            Tile/tilefloor018a_c17.wl  = { t_hl2_misc=! }
             Tile/tilefloor019a.wl  = { t_hl2=! }
             Tile/tilefloor020a.wl  = { t_hl2=! }
-            Tile/tilefloor020a_cheap.wl  = { t_hl2=! }
+            Tile/tilefloor020a_cheap.wl  = { t_hl2_misc=! }
             Tile/tilefloor021a.wl  = { t_hl2=! }
             Tile/tileroof002a.wl  = { t_hl2=! }
             Tile/tileroof003a.wl  = { t_hl2=! }
             Tile/tileroof003b.wl  = { t_hl2=! }
             Tile/tileroof004a.wl  = { t_hl2=! }
-            Tile/tileroof004a_c17.wl  = { t_hl2=! }
+            Tile/tileroof004a_c17.wl  = { t_hl2_misc=! }
             Tile/tileroof004b.wl  = { t_hl2=! }
             Tile/tilestair001a.wl  = { t_hl2=! }
             Tile/tilestair002a.wl  = { t_hl2=! }
@@ -4301,7 +4355,6 @@ QQRKSRC1
             Tools/toolsblocklight.wl  = { t_hl2=! }
             Tools/toolsblock_LOS.wl  = { t_hl2=! }
             Tools/toolsclip.wl  = { t_hl2=! }
-            Tools/toolscontrolclip.wl  = { t_hl2=! }
             Tools/toolsdotted.wl  = { t_hl2=! }
             Tools/toolsfog.wl  = { t_hl2=! }
             Tools/toolshint.wl  = { t_hl2=! }
@@ -4314,6 +4367,7 @@ QQRKSRC1
             Tools/toolsplayerclip.wl  = { t_hl2=! }
             Tools/toolsskip.wl  = { t_hl2=! }
             Tools/toolsskybox.wl  = { t_hl2=! }
+            Tools/toolsskybox2d.wl  = { t_hl2_misc=! }
             Tools/toolsskyfog.wl  = { t_hl2=! }
             Tools/toolstrigger.wl  = { t_hl2=! }
         }
@@ -4356,6 +4410,10 @@ QQRKSRC1
             VGUI/chapters/chapter8.wl  = { t_hl2=! }
             VGUI/chapters/chapter9.wl  = { t_hl2=! }
             VGUI/chapters/chapter9a.wl  = { t_hl2=! }
+            VGUI/circle.wl  = { t_hl2_misc=! }
+            VGUI/common/message_dialog.wl  = { t_hl2_misc=! }
+            VGUI/common/message_dialog_error.wl  = { t_hl2_misc=! }
+            VGUI/common/message_dialog_warning.wl  = { t_hl2_misc=! }
             VGUI/friends/icon_away.wl  = { t_hl2=! }
             VGUI/friends/icon_blocked.wl  = { t_hl2=! }
             VGUI/friends/icon_busy.wl  = { t_hl2=! }
@@ -4372,19 +4430,31 @@ QQRKSRC1
             VGUI/hud/800corner3.wl  = { t_hl2=! }
             VGUI/hud/800corner4.wl  = { t_hl2=! }
             VGUI/hud/autoaim.wl  = { t_hl2=! }
+            VGUI/hud/icon_check.wl  = { t_hl2_misc=! }
             VGUI/hud/icon_commentary.wl  = { t_hl2=! }
             VGUI/hud/icon_commentary_off.wl  = { t_hl2=! }
             VGUI/hud/icon_commentary_small.wl  = { t_hl2=! }
+            VGUI/hud/icon_complete.wl  = { t_hl2_misc=! }
+            VGUI/hud/icon_locked.wl  = { t_hl2_misc=! }
+            VGUI/hud/xbox_reticle.wl  = { t_hl2_misc=! }
             VGUI/mouse.wl  = { t_hl2=! }
             VGUI/plugin/message_waiting.wl  = { t_hl2=! }
+            VGUI/progressbar.wl  = { t_hl2_misc=! }
+            VGUI/resource/autosave.wl  = { t_hl2_misc=! }
+            VGUI/resource/best_with_ati.wl  = { t_hl2_misc=! }
+            VGUI/resource/downarrow.wl  = { t_hl2_misc=! }
             VGUI/resource/game_menu.wl  = { t_hl2=! }
             VGUI/resource/game_menu_mouseover.wl  = { t_hl2=! }
             VGUI/resource/icon_file.wl  = { t_hl2=! }
+            VGUI/resource/icon_file_selected.wl  = { t_hl2_misc=! }
             VGUI/resource/icon_folder.wl  = { t_hl2=! }
             VGUI/resource/icon_folderup.wl  = { t_hl2=! }
             VGUI/resource/icon_folder_selected.wl  = { t_hl2=! }
             VGUI/resource/icon_hlicon1.wl  = { t_hl2=! }
             VGUI/resource/icon_hlicon2.wl  = { t_hl2=! }
+            VGUI/resource/icon_ifm_track_synched.wl  = { t_hl2_misc=! }
+            VGUI/resource/icon_ifm_track_unsynched.wl  = { t_hl2_misc=! }
+            VGUI/resource/icon_newfolder.wl  = { t_hl2_misc=! }
             VGUI/resource/icon_play_bounce.wl  = { t_hl2=! }
             VGUI/resource/icon_play_bounce2.wl  = { t_hl2=! }
             VGUI/resource/icon_play_loop.wl  = { t_hl2=! }
@@ -4438,8 +4508,8 @@ QQRKSRC1
         
         Voice.txlist =
         {
-            voice/headlabel.wl  = { t_hl2=! }
-            voice/icntlk_local.wl  = { t_hl2=! }
+            voice/headlabel.wl  = { t_hl2_misc=! }
+            voice/icntlk_local.wl  = { t_hl2_misc=! }
             voice/icntlk_pl.wl  = { t_hl2=! }
             voice/icntlk_sv.wl  = { t_hl2=! }
             voice/speaker4.wl  = { t_hl2=! }
@@ -4485,7 +4555,7 @@ QQRKSRC1
             Wood/woodfloor006a.wl  = { t_hl2=! }
             Wood/woodfloor006b.wl  = { t_hl2=! }
             Wood/woodfloor007a.wl  = { t_hl2=! }
-            Wood/woodfloor007a_c17.wl  = { t_hl2=! }
+            Wood/woodfloor007a_c17.wl  = { t_hl2_misc=! }
             Wood/woodfloor008a.wl  = { t_hl2=! }
             Wood/woodshelf001a.wl  = { t_hl2=! }
             Wood/woodshelf002a.wl  = { t_hl2=! }

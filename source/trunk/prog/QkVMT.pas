@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2011/09/05 17:44:04  danielpharos
+Fixed a variable type and added two safety-checks.
+
 Revision 1.26  2011/08/13 22:17:19  danielpharos
 Simplified Steam file path handling. Should be much more uniform.
 
@@ -229,7 +232,7 @@ end;
 
 function QVMTFile.DefaultImage : QPixelSet;
 var
- GCFFilename: String;
+ PakFilename: String;
  FullTextureFile: String;
  DefaultImageName: array[0..9] of String;
  DefaultImageIndex: Integer;
@@ -249,11 +252,13 @@ begin
 
   if ReverseLink<>nil then
   begin
-    GCFFilename:=ReverseLink.Specifics.Values['PakFile'];
+    PakFilename:=ReverseLink.Specifics.Values['TexturePakFile'];
+    if PakFilename='' then
+      PakFilename:=ReverseLink.Specifics.Values['PakFile'];
   end
   else
   begin
-    GCFFilename:='';
+    PakFilename:='';
   end;
 
   //FIXME: Horribly horriby workaround...! We need to get into the first
@@ -270,7 +275,7 @@ begin
     FullTextureFile:=SubElements[0].Specifics.Values[DefaultImageName[0]];
     Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
-      Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
+      Result:=NeedGameFile(FullTextureFile, PakFilename) as QPixelSet
     except
       Result:=nil;
     end;
@@ -296,7 +301,7 @@ begin
         FullTextureFile:=ConcatPaths([GameTexturesPath, ImageFileName]);
         Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
         try
-          Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet
+          Result:=NeedGameFile(FullTextureFile, PakFilename) as QPixelSet
         except
           Result:=nil;
         end;
@@ -317,7 +322,7 @@ begin
     FullTextureFile:=ConcatPaths([GameTexturesPath, ImageFileName]);
     Log(LOG_VERBOSE,'attempting to load '+FullTextureFile);
     try
-      Result:=NeedGameFile(FullTextureFile, GCFFilename) as QPixelSet;
+      Result:=NeedGameFile(FullTextureFile, PakFilename) as QPixelSet;
     except
       Result:=nil;
     end;
