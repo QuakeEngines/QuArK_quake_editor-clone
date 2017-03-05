@@ -7,6 +7,108 @@ QQRKSRC1
 {
   Description = "Common Source Entities"
   t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
+  
+// custom polys for use with specific brush entities
+
+  trigger_tex:incl= {tex = "tools/toolstrigger"}
+  origin_tex:incl= {tex = "tools/toolsorigin"}
+  portal_tex:incl= {tex = "tools/toolsareaportal"}
+  nodraw_tex:incl= {tex = "tools/toolsnodraw"}
+  occluder_tex:incl= {tex = "tools/toolsoccluder"}
+  ladder_tex:incl= {tex = "tools/toolsinvisibleladder"}
+  detail_tex:incl= {tex = "Dev/dev_measuregeneric01"}
+
+  t_triggerpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   trigger_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' trigger_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   trigger_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' trigger_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   trigger_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' trigger_tex=! m="1"}
+    }
+  }
+
+  t_originpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   origin_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' origin_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   origin_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' origin_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   origin_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' origin_tex=! m="1"}
+    }
+  }
+
+  t_portalpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   portal_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' portal_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   portal_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' portal_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   portal_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' portal_tex=! m="1"}
+    }
+  }
+
+  t_nodrawpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   nodraw_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' nodraw_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   nodraw_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' nodraw_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   nodraw_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' nodraw_tex=! m="1"}
+    }
+  }
+
+  t_occluderpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   occluder_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' occluder_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   occluder_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' occluder_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   occluder_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' occluder_tex=! m="1"}
+    }
+  }
+
+  t_ladderpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   ladder_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' ladder_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   ladder_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' ladder_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   ladder_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' ladder_tex=! m="1"}
+    }
+  }
+
+  t_detailpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   detail_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' detail_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   detail_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' detail_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   detail_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' detail_tex=! m="1"}
+    }
+  }
+  
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."
