@@ -43,6 +43,7 @@ def createusedtextures(ToolBox, editor=None):
     #
     for ToolBoxFolder in ToolBox.subitems:
         if ToolBoxFolder.name == "Used Textures.txlist":
+            quarkx.toolboxselect("", None) #Make sure the selected texture in the Texture Browser isn't part of the Used Textures list
             ToolBoxFolder.parent.removeitem(ToolBoxFolder)
             break
 
@@ -101,6 +102,7 @@ def CloseRoot(self, oldCloseRoot=MapEditor.CloseRoot):
         ToolBoxName, ToolBox, flag = tbx_list[0]
         for ToolBoxFolder in ToolBox.subitems:
             if ToolBoxFolder.name == "Used Textures.txlist":
+                quarkx.toolboxselect("", None) #Make sure the selected texture in the Texture Browser isn't part of the Used Textures list
                 ToolBoxFolder.parent.removeitem(ToolBoxFolder)
                 break
 
@@ -111,6 +113,9 @@ MapEditor.CloseRoot = CloseRoot
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.2  2017/03/05 13:19:59  danielpharos
+#Made HL2 textures work too.
+#
 #Revision 1.1  2017/03/05 12:48:04  danielpharos
 #Moved the "Used Textures" functionality in the map editor into a plugin.
 #

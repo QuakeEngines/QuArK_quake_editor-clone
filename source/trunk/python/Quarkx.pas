@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.104  2015/09/20 13:03:13  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.103  2011/03/13 00:40:11  cdunde
 New flag added to tell if Texture Browser is open or not by DanielPharos.
 
@@ -2068,6 +2071,28 @@ begin
  end;
 end;
 
+function xToolBoxSelect(self, args: PyObject) : PyObject; cdecl;
+var
+ tb: PChar;
+ sel: PyObject;
+ ToolBox: TToolBoxForm;
+begin
+ try
+  Result:=Nil;
+  if not PyArg_ParseTupleX(args, 'sO', [@tb, @sel]) then
+   Exit;
+  if tb^<>#0 then
+   ToolBox:=OpenToolBox(tb)
+  else
+   ToolBox:=OpenTextureBrowser;
+  ToolBox.SelectTbObject(QkObjFromPyObj(sel));
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 function xOpenToolBox(self, args: PyObject) : PyObject; cdecl;
 var
  tb: PChar;
@@ -3331,7 +3356,7 @@ begin
 end;
 
 const
- MethodTable: array[0..91] of TyMethodDef =
+ MethodTable: array[0..92] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;          ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;          ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;      ml_flags: METH_VARARGS),
@@ -3367,6 +3392,7 @@ const
    (ml_name: 'outputfile';      ml_meth: xOutputFile;      ml_flags: METH_VARARGS),
    (ml_name: 'outputpakfile';   ml_meth: xOutputPakFile;   ml_flags: METH_VARARGS),
    (ml_name: 'resolvefilename'; ml_meth: xResolveFilename; ml_flags: METH_VARARGS),
+   (ml_name: 'toolboxselect';   ml_meth: xToolBoxSelect;   ml_flags: METH_VARARGS),
    (ml_name: 'opentoolbox';     ml_meth: xOpenToolBox;     ml_flags: METH_VARARGS),
    (ml_name: 'openconfigdlg';   ml_meth: xOpenConfigDlg;   ml_flags: METH_VARARGS),
    (ml_name: 'progressbar';     ml_meth: xProgressBar;     ml_flags: METH_VARARGS),
