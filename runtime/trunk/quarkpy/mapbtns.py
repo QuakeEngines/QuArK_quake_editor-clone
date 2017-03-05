@@ -376,39 +376,6 @@ def texturebrowser(reserved=None):
     #
     # Open the Texture Browser tool box.
     #
-    tbx_list = quarkx.findtoolboxes("Texture Browser...");
-    ToolBoxName, ToolBox, flag = tbx_list[0]
-    for ToolBoxFolder in ToolBox.subitems:
-        if ToolBoxFolder.name == "Used Textures.txlist":
-            ToolBoxFolder.parent.removeitem(ToolBoxFolder)
-            break
-
-    Folder = quarkx.newobj("Used Textures.txlist")
-    Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
-
-    UsedTexturesList = quarkx.texturesof([editor.Root])
- #   NoImageFile = None
-    for UsedTextureName in UsedTexturesList:
-        UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
- #       if quarkx.setupsubset()["ShadersPath"] is not None:
- #           try:
- #               GameFilesPath = quarkx.getquakedir()+"/"+quarkx.getbasedir()
- #               UsedTexture["a"] = GameFilesPath+"/"+quarkx.setupsubset()["ShadersPath"]+"sky.shader"+"[textures/"+UsedTextureName+("]")
- #           except:
- #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
- #       else:
- #           try:
- #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
- #           except:
- #               NoImageFile = 1
-        UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
-        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
-        Folder.appenditem(UsedTexture)
- #   if NoImageFile is not None:
- #       pass
- #   else:
- #       ToolBox.appenditem(Folder)
-    ToolBox.appenditem(Folder)
     quarkx.opentoolbox("", seltex)
 
 
@@ -745,6 +712,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.40  2016/03/13 16:13:42  danielpharos
+#Small cleanup in path concatenation.
+#
 #Revision 1.39  2016/02/13 12:32:56  danielpharos
 #Raise a proper exception.
 #

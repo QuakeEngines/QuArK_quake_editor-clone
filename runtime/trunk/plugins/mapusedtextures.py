@@ -1,0 +1,111 @@
+"""   QuArK  -  Quake Army Knife
+
+Plug-in that makes a "used textures" folder in the Texture Browser.
+"""
+#
+# Copyright (C) 1996-99 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+
+#$Header$
+
+
+Info = {
+   "plug-in":       "Used textures",
+   "desc":          "Creates a used textures folder in the Texture Browser",
+   "date":          "December 14 2007",
+   "author":        "Shine team, Nazar and vodkins",
+   "author e-mail": "",
+   "quark":         "Version 6" }
+
+
+import quarkx
+from quarkpy import qutils
+from quarkpy.mapeditor import MapEditor
+from quarkpy.maputils import *
+from quarkpy import mapbtns
+
+
+#
+# Creates the Used Textures folder in the given toolbox
+#
+def createusedtextures(ToolBox, editor=None):
+    "Creates a list of used textures in the given toolbox."
+
+    if editor is None:
+        editor = mapeditor()
+        if editor is None:
+            return
+
+    #
+    # Delete the folder, if it already exists.
+    #
+    for ToolBoxFolder in ToolBox.subitems:
+        if ToolBoxFolder.name == "Used Textures.txlist":
+            ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+            break
+
+    Folder = quarkx.newobj("Used Textures.txlist")
+    Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
+
+    UsedTexturesList = quarkx.texturesof([editor.Root])
+ #   NoImageFile = None
+    for UsedTextureName in UsedTexturesList:
+        UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
+ #       if quarkx.setupsubset()["ShadersPath"] is not None:
+ #           try:
+ #               GameFilesPath = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+ #               UsedTexture["a"] = GameFilesPath+"/"+quarkx.setupsubset()["ShadersPath"]+"sky.shader"+"[textures/"+UsedTextureName+("]")
+ #           except:
+ #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+ #       else:
+ #           try:
+ #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+ #           except:
+ #               NoImageFile = 1
+        UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+        UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
+        Folder.appenditem(UsedTexture)
+ #   if NoImageFile is not None:
+ #       pass
+ #   else:
+ #       ToolBox.appenditem(Folder)
+    ToolBox.appenditem(Folder)
+    return
+
+#Overwrite the texturebrowser-open-function
+def texturebrowser(reserved=None, oldtexturebrowser=mapbtns.texturebrowser):
+    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    ToolBoxName, ToolBox, flag = tbx_list[0]
+    createusedtextures(ToolBox)
+    
+    oldtexturebrowser(reserved)
+mapbtns.texturebrowser = texturebrowser
+
+def OpenRoot(self, oldOpenRoot=MapEditor.OpenRoot):
+    oldOpenRoot(self)
+
+    if not IsBsp(self):
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox, flag = tbx_list[0]
+        createusedtextures(ToolBox, editor=self) #mapeditor isn't set yet, to let's pass it manually
+MapEditor.OpenRoot = OpenRoot
+
+def CloseRoot(self, oldCloseRoot=MapEditor.CloseRoot):
+    if not IsBsp(self):
+        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        ToolBoxName, ToolBox, flag = tbx_list[0]
+        for ToolBoxFolder in ToolBox.subitems:
+            if ToolBoxFolder.name == "Used Textures.txlist":
+                ToolBoxFolder.parent.removeitem(ToolBoxFolder)
+                break
+
+    oldCloseRoot(self)
+MapEditor.CloseRoot = CloseRoot
+
+
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
+#

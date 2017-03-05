@@ -74,46 +74,6 @@ class MapEditor(BaseEditor):
             quarkx.msgbox(Strings[5770], MT_WARNING, MB_OK)
         self.AutoSave(0)
 
-        if not IsBsp(self):
-            import qutils
-            # Creates the "Used Textures.txlist" to display in the Texture Browser for the map that is opened in the editor.
-            tbx_list = quarkx.findtoolboxes("Texture Browser...");
-            ToolBoxName, ToolBox, flag = tbx_list[0]
-            # Removes the old Used Textures ToolBoxFolder so duplicates of it are not displayed.
-            for ToolBoxFolder in ToolBox.subitems:
-                if ToolBoxFolder.name == "Used Textures.txlist":
-                    ToolBoxFolder.parent.removeitem(ToolBoxFolder)
-                    break
-            # Creates the "Used Textures.txlist" to display in the Texture Browser.
-            Folder = quarkx.newobj("Used Textures.txlist")
-            Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
-            UsedTexturesList = quarkx.texturesof([self.Root])
-        #   NoImageFile = None
-            for UsedTextureName in UsedTexturesList:
-                UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
-    #         UsedTexture["a"] = (quarkx.getquakedir()+("/")+quarkx.getbasedir())
-        #       if quarkx.setupsubset()["ShadersPath"] is not None:
-        #           try:
-        #               GameFilesPath = quarkx.getquakedir()+"/"+quarkx.getbasedir()
-        #               UsedTexture["a"] = GameFilesPath+"/"+quarkx.setupsubset()["ShadersPath"]+"sky.shader"+"[textures/"+UsedTextureName+("]")
-        #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
-        #           except:
-        #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
-        #       else:
-        #           UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
-        #           try:
-        #               print "mapeditor line 106 the image path",(UsedTexture["a"]+"/"+quarkx.setupsubset()["TexturesPath"]+"/"+UsedTextureName)
-        #           except:
-        #               NoImageFile = 1
-                UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
-                UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
-                Folder.appenditem(UsedTexture)
-    #     if NoImageFile is not None:
-    #         pass
-    #     else:
-    #         ToolBox.appenditem(Folder)
-            ToolBox.appenditem(Folder)
-    #      quarkx.opentoolbox("", None)
 
     def FrozenDragObject(self, view, x, y, s, redcolor):
         #
@@ -163,7 +123,7 @@ class MapEditor(BaseEditor):
                         closest = face
                 handle=maphandles.FaceHandle(closest.origin, closest)
                 return qhandles.HandleDragObject(view, x, y, handle, redcolor)
-                     
+
 
     def CloseRoot(self):
         if not (self.Root is None) and (IsBsp(self)):
@@ -404,6 +364,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.28  2016/03/13 16:13:42  danielpharos
+#Small cleanup in path concatenation.
+#
 #Revision 1.27  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #
