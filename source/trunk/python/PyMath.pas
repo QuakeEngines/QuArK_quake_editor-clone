@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2015/09/06 12:34:31  danielpharos
+Fix memory-leak on error path.
+
 Revision 1.25  2013/01/28 04:03:25  cdunde
 Fix by Dan for handling Skin-view tristodraw data.
 
@@ -2686,5 +2689,5 @@ begin
 end;
 
 initialization
-  g_DrawInfo.WindowsNT:=CheckWindowsNT;
+  g_DrawInfo.WindowsNT:=CheckWindowsNT; //FIXME: Race condition with SystemDetails?
 end.
