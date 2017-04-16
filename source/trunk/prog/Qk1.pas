@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.97  2017/02/26 08:57:16  danielpharos
+Fixed DLL hijacking vulnerability on Windows XP SP1 and later. Also, improved speed parsing environmental block, and removed its 1024 character cut-off.
+
 Revision 1.96  2016/01/02 19:32:58  danielpharos
 Removed unneeded variable, and added restore-autosave functionality for .qkl files.
 
@@ -796,6 +799,10 @@ begin
    Splash.Release;
    Application.ProcessMessages;
  end;
+
+ // Warn for bugs
+ if (SetupSubSet(ssGeneral, 'Update').Specifics.Values['BugCheck']<>'') then
+   WarnDriverBugs;
 
  Log(LOG_VERBOSE, 'Preparing QuArK Explorer...');
 

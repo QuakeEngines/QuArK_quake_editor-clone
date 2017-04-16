@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2017/02/26 11:27:41  danielpharos
+Small cleanup.
+
 Revision 1.62  2017/02/26 08:57:16  danielpharos
 Fixed DLL hijacking vulnerability on Windows XP SP1 and later. Also, improved speed parsing environmental block, and removed its 1024 character cut-off.
 
@@ -215,9 +218,10 @@ uses
   SysUtils, StrUtils, Windows, Classes, ExtraFunctionality;
 
 function CheckWindowsNT: Boolean;
-function ProcessExists(const exeFileName: string): Boolean;
+function ProcessExists(const exeFileName: String): Boolean;
 function WindowExists(const WindowName: String): Boolean;
 function RetrieveModuleFilename(ModuleHandle: HMODULE): String;
+procedure WarnDriverBugs;
 procedure SetDllSearchPath;
 
 type
@@ -432,7 +436,6 @@ type
     FDAC: TStrings;
     FAcc: TStrings;
     FModes: TStrings;
-    AMDDriverDescBug: boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -494,6 +497,7 @@ var
   VFeatures: LongInt;
   WindowsPlatformCompatibility: TPlatformType;
   WindowsPlatform: TPlatform;
+  AMDDriverDescBug: boolean;
 
 { TCPU }
 
@@ -2040,19 +2044,7 @@ end;
 procedure TDisplay.Report(var sl: TStringList);
 var
   i :integer;
-  S: String;
 begin
-  if AMDDriverDescBug then
-  begin
-    S:='Registry corruption detected! The most probable cause is a known bad AMD driver. Please contact your video card manufacturer for a corrected driver.';
-    S:=S+#13#10#13#10'Technical details:'#13#10;
-    S:=S+'This bad AMD Graphics driver gives the "DriverDesc" key the wrong data-type (REG_BINARY instead of REG_SZ).'#13#10;
-    S:=S+'This can be manually corrected, but this is not recommended.';
-    S:=S+'QuArK will continue to run, but some graphical options may be disabled.'#13#10;
-    S:=S+'For more information, see: http://quark.sourceforge.net/forums/index.php?topic=1064';
-    MessageBox(0, PChar(S), 'QuArK', MB_TASKMODAL or MB_ICONWARNING or MB_OK);
-  end;
-
   with sl do
   begin
     for i:=0 to Devices.count-1 do
@@ -2279,7 +2271,7 @@ begin
   end;
 end;
 
-function ProcessExists(const exeFileName: string): Boolean;
+function ProcessExists(const exeFileName: String): Boolean;
 var 
   ContinueLoop: BOOL; 
   FSnapshotHandle: THandle; 
@@ -2402,6 +2394,23 @@ end;
 function CheckWindowsNT: Boolean;
 begin
   Result:=(WindowsPlatformCompatibility=osWinNTComp);
+end;
+
+procedure WarnDriverBugs;
+var
+  S: String;
+begin
+  if AMDDriverDescBug then
+  begin
+    //Note: Can't put in dictionary; no Python loaded yet!
+    S:='Registry corruption detected! The most probable cause is a known bad AMD driver. Please contact your video card manufacturer for a corrected driver.';
+    S:=S+#13#10#13#10'Technical details:'#13#10;
+    S:=S+'This bad AMD Graphics driver gives the "DriverDesc" key the wrong data-type (REG_BINARY instead of REG_SZ).'#13#10;
+    S:=S+'This can be manually corrected, but this is not recommended.';
+    S:=S+'QuArK will continue to run, but some graphical options may be disabled.'#13#10;
+    S:=S+'For more information, see: http://quark.sourceforge.net/forums/index.php?topic=1064';
+    MessageBox(0, PChar(S), 'QuArK', MB_TASKMODAL or MB_ICONWARNING or MB_OK);
+  end;
 end;
 
 procedure SetDllSearchPath;

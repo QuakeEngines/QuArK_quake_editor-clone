@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.567  2017/02/25 14:02:21  danielpharos
+//Finished support for new Steam 'common' game file layout.
+//
 //Revision 1.566  2017/02/22 17:12:07  danielpharos
 //Added support for new Steam game file layout (using the 'common' directory).
 //
@@ -1971,6 +1974,7 @@ QQRKSRC1
         CheckForPackages = ""   //Hidden
         AutomaticInstall = ""   //Currently hidden
         SingleInstance = "1"
+        BugCheck = "1"
         Form = "GeneralUpdate"
         Notification_Main = "6" //Hidden: Start-index for this version
       }
@@ -9883,6 +9887,7 @@ QQRKSRC1
       UpdateCheckOnline: = {Typ="X" Txt="Check online" Cap="Enabled" Hint = "Check for updates online."}
       //AutomaticInstall: = {Typ="X" Txt="Automatically update" Cap="Enabled" Hint = "Automatically download and install any updates available."}
       SingleInstance: = {Typ="X" Txt="Check for single instance" Cap="Enabled" Hint = "Enables the check for a single running QuArK (or updater instance) instance on start-up."}
+      BugCheck: = {Typ="X" Txt="Check for bugs" Cap="Enabled" Hint = "Enables checks that warn about bugs in third-party software that might affect QuArK."}
     }
     externaledit:incl = {
       Typ = "EP"
