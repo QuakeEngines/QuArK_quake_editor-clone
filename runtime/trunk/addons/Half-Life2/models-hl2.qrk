@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2009/02/11 15:52:05  danielpharos
+//Corrected combobox types.
+//
 //Revision 1.10  2007/08/15 22:35:45  danielpharos
 //Change the name of HL2 back for backwards compatibility reasons.
 //
@@ -4221,7 +4224,7 @@ QQRKSRC1
     t_modelselect:incl =
     {
       mdl = "[model]"
-      mdlbase = "steamaccess://220/hl2"
+      mdlbase = "hl2"
       mdlopacity = "0.5"
       mdlrendermode = "2"
       model: =
