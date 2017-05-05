@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2017/02/25 14:41:25  danielpharos
+Updated compile-date for new nightly build.
+
 Revision 1.9  2015/12/06 11:07:15  danielpharos
 Switching version number to 6.6 Beta 7.
 
@@ -62,7 +65,7 @@ uses SysUtils;
 const
   QuArKVersion            = 'QuArK 6.6';
   QuArKMinorVersion       = 'Beta 7';
-  QuArKCopyright          = 'Copyright (C) 1996-2015 Armin Rigo and others';
+  QuArKCopyright          = 'Copyright (C) 1996-2017 Armin Rigo and others';
 {$IFDEF CompiledWithDelphi1}
   QuArKUsedCompiler       = 'Delphi 1.0';
 {$ELSE}
