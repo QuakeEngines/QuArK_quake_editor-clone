@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2017/02/25 14:02:23  danielpharos
+Finished support for new Steam 'common' game file layout.
+
 Revision 1.92  2017/02/22 17:12:04  danielpharos
 Added support for new Steam game file layout (using the 'common' directory).
 
@@ -1254,7 +1257,12 @@ begin
               GameFiles.Add(PakFile);
               GameFiles.Sort(ByFileName);
             end;
-            Result:=PakFile.FindFile(FilenameAlias);
+            try
+              Result:=PakFile.FindFile(FilenameAlias);
+            except
+              //FIXME: Log error?
+              Result:=Nil;
+            end;
             if (Result<>Nil) then
               Exit; // found it
           end;
