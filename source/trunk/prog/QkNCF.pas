@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.2  2010/10/16 22:36:08  danielpharos
 Fixed bug in HLLib error message displaying.
 
@@ -276,14 +279,10 @@ begin
         Result:=Nil
       else
         Result:=QNCFFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
-        if assigned(Result) then
-          Result.Protocol:=self.Protocol;
       Exit;
     end;
   end;
   Result:=SubElements.FindName(PakPath) as QFileObject;
-  if assigned(Result) then
-    Result.Protocol:=self.Protocol;
 end;
 
 function QNCFFolder.GetFolder(Path: String) : QNCFFolder;

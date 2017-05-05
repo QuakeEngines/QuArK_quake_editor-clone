@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.76  2016/01/02 19:29:46  danielpharos
 Properly document a currently leaking Win32 event.
 
@@ -360,7 +363,6 @@ type
                   procedure WriteSiblingsTo(Info1: TInfoEnreg1);
                 public
                   Filename: String;
-                  Protocol: String;
                   ReadFormat: Integer;
                   destructor Destroy; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); virtual;
