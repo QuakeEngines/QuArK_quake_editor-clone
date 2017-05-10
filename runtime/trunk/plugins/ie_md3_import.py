@@ -821,7 +821,7 @@ def Import(basepath, filename):
                     md3.numTags = md3.numTags + 1
     for i in xrange(md3.numTags):
         tag = md3.tags[i]
-        # We need to keep these sepperate for each complete model loaded.
+        # We need to keep these separate for each complete model loaded.
         newtag = quarkx.newobj(ModelFolder + '_' + tag.name + ':tag')
         tagname = tag.name.split("_", 1)[1]
         if ModelName.find(tagname) != -1:
@@ -840,6 +840,7 @@ def Import(basepath, filename):
                 try:
                     tag = md3.tags[j * md3.numTags + i]
                 except:
+                    print "Warning: Missing a tag:" + str(j * md3.numTags + i)
                     continue
 
                 # Note: Quake3 uses left-hand geometry
@@ -1409,6 +1410,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.29  2015/09/20 12:59:58  danielpharos
+# Added a missing import statement.
+#
 # Revision 1.28  2013/10/13 06:22:39  cdunde
 # Fixed possible dupe component names from sneaking through.
 #
