@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.94  2017/05/05 19:03:43  danielpharos
+Skip corrupt pak-files (they would otherwise abort the pakfile search).
+
 Revision 1.93  2017/02/25 14:02:23  danielpharos
 Finished support for new Steam 'common' game file layout.
 
@@ -1132,6 +1135,20 @@ function GetGameFileBase(const BaseDir, FileName, PakFileName: String; LookInCD:
        Result:='';
  end;
 
+ function IfRelativeThenAbsoluteFileName(const RootPath, FilePath: String): String;
+ begin
+   if (Length(FilePath) > 1) and (FilePath[2] = ':') then
+   begin
+     //This is an absolute path!
+     Result:=FilePath;
+   end
+   else
+   begin
+     //This is a relative path!
+     Result:=ExpandFileName(ConcatPaths([RootPath, FilePath]));
+   end;
+ end;
+
 var
  SearchStage: Integer;
  AbsolutePath, AbsolutePathAndFilename: String;
@@ -1155,7 +1172,7 @@ begin
     FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      AbsolutePathAndFilename := ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
+      AbsolutePathAndFilename := IfRelativeThenAbsoluteFileName(AbsolutePath, FilenameAlias);
       Result := SortedFindFileName(GameFiles, AbsolutePathAndFilename);
       if (Result <> NIL) then
         Exit; { found it }
@@ -1167,7 +1184,7 @@ begin
     FilenameAlias := GetNextAlias;
     while (FilenameAlias <> '') do
     begin
-      AbsolutePathAndFilename := ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
+      AbsolutePathAndFilename := IfRelativeThenAbsoluteFileName(AbsolutePath, FilenameAlias);
       if FileExists(AbsolutePathAndFilename) then
       begin
         Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
@@ -1244,7 +1261,7 @@ begin
       while (FilenameAlias <> '') do
       begin
         GetPakNames.ResetIter(True);
-        AbsolutePathAndFilename:=ExpandFileName(ConcatPaths([AbsolutePath, FilenameAlias]));
+        AbsolutePathAndFilename:=IfRelativeThenAbsoluteFileName(AbsolutePath, FilenameAlias);
         while GetPakNames.GetNextPakName(True, AbsolutePathAndFilename, True) do
         begin
           if (not IsPakTemp(AbsolutePathAndFilename)) then  // ignores QuArK's own temporary pak's
