@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2017/06/18 09:57:19  danielpharos
+Fixed reading of video adapter memory size on some systems.
+
 Revision 1.64  2017/04/16 13:06:57  danielpharos
 Added checkbox for AMD driver bug check.
 
@@ -1955,7 +1958,13 @@ begin
               if ValueExists(rvHardware+'.'+rvHWMem) then
               begin
                 try
-                  idata:=readinteger(rvHardware+'.'+rvHWMem);
+                  try
+                    //Modern systems use REG_DWORD
+                    idata:=readinteger(rvHardware+'.'+rvHWMem);
+                  except on ERegistryException do
+                    //Older systems use REG_BINARY
+                    readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
+                  end
                 except
                   Log(LOG_WARNING, 'Could not retrieve Video Hardware Memory size!');
                   idata:=0;
