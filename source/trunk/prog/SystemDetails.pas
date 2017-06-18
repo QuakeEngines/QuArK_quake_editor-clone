@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2017/06/18 11:09:55  danielpharos
+Added a bunch more video driver enumeration, and disable the unused special keystate checking.
+
 Revision 1.66  2017/06/18 10:12:55  danielpharos
 Ah, we need both.
 
@@ -508,6 +511,13 @@ var
   WindowsPlatformCompatibility: TPlatformType;
   WindowsPlatform: TPlatform;
   AMDDriverDescBug: boolean;
+
+function FormatBytes(const Number: Cardinal) : String;
+begin
+  Result:=formatfloat('#,##',Number);
+  if Length(Result)=0 then
+    Result:='0';
+end;
 
 { TCPU }
 
@@ -1413,23 +1423,12 @@ begin
 end;
 
 procedure TMemory.Report(var sl: TStringList);
-var
-  buf: string;
 begin
   with sl do
   begin
-    buf:=formatfloat('#,##',PhysicalTotal);
-    if length(buf)=0 then
-      buf:='0';
-    add('Physical Memory Total: '+buf+' Bytes');
-    buf:=formatfloat('#,##',PhysicalFree);
-    if length(buf)=0 then
-      buf:='0';
-    add('Physical Memory Free: '+buf+' Bytes');
-    buf:=formatfloat('#,##',VirtualFree);
-    if length(buf)=0 then
-      buf:='0';
-    add('Virtual Memory Free: '+buf+' Bytes');
+    add('Physical Memory Total: '+FormatBytes(PhysicalTotal)+' Bytes');
+    add('Physical Memory Free: '+FormatBytes(PhysicalFree)+' Bytes');
+    add('Virtual Memory Free: '+FormatBytes(VirtualFree)+' Bytes');
   end;
 end;
 
@@ -1885,8 +1884,8 @@ begin
             if ValueExists(rvCIDAC) then
               FDAC.Add(ReadString(rvCIDAC))
             else
-              FDAC.Add('no DAC information');
-   
+              FDAC.Add('Unknown');
+
             if ValueExists(rvCIChip) then
             begin
               FChipset.Add(ReadString(rvCIChip));
@@ -1894,12 +1893,12 @@ begin
                 FChipset[FChipset.Count-1]:=FChipset[FChipset.Count-1]+' Rev '+ReadString(rvCIRev);
             end
             else
-              FChipset.Add('no Chipset information');
+              FChipset.Add('Unknown');
    
             if ValueExists(rvCIMem) then
-              FMemory.Add(inttostr(readinteger(rvCIMem)))
+              FMemory.Add(FormatBytes(readinteger(rvCIMem)))
             else
-              FMemory.Add('no Memory information');
+              FMemory.Add('Unknown');
    
             CloseKey;
           end;
@@ -1995,7 +1994,7 @@ begin
                     Log(LOG_WARNING, 'Could not retrieve Video Hardware Memory size!');
                     idata:=0;
                   end;
-                  FMemory.Add(IntToStr(idata));
+                  FMemory.Add(FormatBytes(idata));
                 end
                 else
                   FMemory.Add('Unknown');
