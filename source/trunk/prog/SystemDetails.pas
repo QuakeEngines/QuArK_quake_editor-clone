@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2017/06/18 10:12:55  danielpharos
+Ah, we need both.
+
 Revision 1.65  2017/06/18 09:57:19  danielpharos
 Fixed reading of video adapter memory size on some systems.
 
@@ -377,9 +380,9 @@ type
     FBIOSCopyright: string;
     FBIOSName: string;
     FBIOSDate: string;
-    FScrollLock: Boolean;
-    FNumLock: Boolean;
-    FCapsLock: Boolean;
+    //FScrollLock: Boolean;
+    //FNumLock: Boolean;
+    //FCapsLock: Boolean;
     function GetSystemUpTime: Extended;
   public
     procedure GetInfo;
@@ -392,9 +395,9 @@ type
     property BIOSDate :string read FBIOSDate write FBIOSDate stored false;
     property BIOSExtendedInfo :string read FBIOSExtendedInfo write FBIOSExtendedInfo stored false;
     property BIOSName :string read FBIOSName write FBIOSName stored false;
-    property CapsLock :Boolean read FCapsLock write FCapsLock stored false;
-    property NumLock :Boolean read FNumLock write FNumLock stored false;
-    property ScrollLock :Boolean read FScrollLock write FScrollLock stored false;
+    //property CapsLock :Boolean read FCapsLock write FCapsLock stored false;
+    //property NumLock :Boolean read FNumLock write FNumLock stored false;
+    //property ScrollLock :Boolean read FScrollLock write FScrollLock stored false;
   end;
 
   TCurveCap = (ccCircles,ccPieWedges,ccChords,ccEllipses,ccWideBorders,ccStyledBorders,
@@ -422,8 +425,6 @@ type
     FVertRes: integer;
     FColorDepth: integer;
     FHorzRes: integer;
-    FBIOSDate: string;
-    FBIOSVersion: string;
     FPixelDiagonal: integer;
     FPixelHeight: integer;
     FVertSize: integer;
@@ -440,6 +441,9 @@ type
     FDevices: TStrings;
     FAdapter: TStrings;
     FDAC: TStrings;
+    FProvider: TStrings;
+    FDriverDate: TStrings;
+    FDriverVersion: TStrings;
     FAcc: TStrings;
     FModes: TStrings;
   public
@@ -454,12 +458,12 @@ type
     property DAC :TStrings read FDAC write FDAC stored false;
     property Chipset :TStrings read FChipset write FChipset stored false;
     property Memory :TStrings read FMemory write FMemory stored false;
+    property Provider :TStrings read FProvider write FProvider stored false;
+    property DriverDate :TStrings read FDriverDate write FDriverDate stored false;
+    property DriverVersion :TStrings read FDriverVersion write FDriverVersion stored false;
     property HorzRes :integer read FHorzRes write FHorzRes stored false;
     property VertRes :integer read FVertRes write FVertRes stored false;
     property ColorDepth :integer read FColorDepth write FColorDepth stored false;
-    // BIOS info is available only under NT
-    property BIOSVersion :string read FBIOSVersion write FBIOSVersion stored false;
-    property BIOSDate :string read FBIOSDate write FBIOSDate stored false;
     property Technology :string read FTechnology write FTechnology stored false;
 //    property HorzSize :integer read FHorzSize write FHorzSize stored false;
 //    property VertSize :integer read FVertSize write FVertSize stored false;
@@ -1495,7 +1499,9 @@ const
   rvBiosDate = 'SystemBiosDate';
   rvBiosID = 'Identifier';
   rvBiosVersion = 'SystemBiosVersion';
-
+  // Video BIOS info is available only under NT
+  //rvVideoBiosDate = 'VideoBiosDate';
+  //rvVideoBiosVersion = 'VideoBiosVersion';
 begin
   Log(LOG_VERBOSE, 'Starting gathering workstation information...');
   FSystemUpTime:=GetSystemUpTime;
@@ -1536,9 +1542,9 @@ begin
     FBIOSExtendedInfo:=string(pchar(ptr(cBIOSExtInfo)));
   end;
   GetKeyboardState(KeyState);
-  FCapsLock:=KeyState[VK_CAPITAL]=1;
-  FNumLock:=KeyState[VK_NUMLOCK]=1;
-  FScrollLock:=KeyState[VK_SCROLL]=1;
+  //FCapsLock:=KeyState[VK_CAPITAL]=1;
+  //FNumLock:=KeyState[VK_NUMLOCK]=1;
+  //FScrollLock:=KeyState[VK_SCROLL]=1;
 end;
 
 procedure TWorkstation.Report(var sl: TStringList);
@@ -1643,6 +1649,7 @@ var
   i :integer;
   j :DWORD;
   DevMode :TDevMode;
+  MaxDev :DWORD;
   Found: Boolean;
   l_hdc: HDC;
   ClassKey: string;
@@ -1650,13 +1657,17 @@ const
   bdatasize = 255;
 
   rkVideoHardware = {HKEY_LOCAL_MACHINE\}'HARDWARE\DEVICEMAP\VIDEO';
-  rvVideoKey1 = '\Device\Video0';
-  rvVideoKey2 = '\\Device\\Video0';
+  rvVideoKey1 = '\Device\Video';
+  rvVideoKey2 = '\\Device\\Video';
   rvHardware = 'HardwareInformation';
   rvHWVideo = 'AdapterString';
-  rvHWDAC = 'DacType';
+  //rvHWBios = 'BiosString';
   rvHWChip = 'ChipType';
+  rvHWDAC = 'DacType';
   rvHWMem = 'MemorySize';
+  rvProvider = 'ProviderName';
+  rvDriverDate = 'DriverDate';
+  rvDriverVersion = 'DriverVersion';
 
   rvVideoClass = 'Display';
 
@@ -1668,10 +1679,6 @@ const
   rvCIRev = 'Revision';
 
   rv3DClass = '3D Accelerators';
-
-  rkBIOS = {HKEY_LOCAL_MACHINE\}'HARDWARE\DESCRIPTION\System';
-  rvVideoBiosDate = 'VideoBiosDate';
-  rvVideoBiosVersion = 'VideoBiosVersion';
 
   DescValue = 'DriverDesc';
 begin
@@ -1838,6 +1845,9 @@ begin
     FDAC.Clear;
     FChipset.Clear;
     FMemory.Clear;
+    FProvider.Clear;
+    FDriverDate.Clear;
+    FDriverVersion.Clear;
     Log(LOG_VERBOSE, 'Gathering of display driver information...');
     try
       rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
@@ -1898,98 +1908,118 @@ begin
    
       if not Found then
       begin
+        MaxDev:=0;
         if OpenKey(rkVideoHardware,false) then
         begin
-          if ValueExists(rvVideoKey1) then
-            rk:=ReadString(rvVideoKey1)
-          else
-          begin
-            if ValueExists(rvVideoKey2) then
-              rk:=ReadString(rvVideoKey2)
-            else
-              rk:='';
+          try
+            MaxDev:=readinteger('MaxObjectNumber');
+          except
+            MaxDev:=0;
           end;
           CloseKey;
-   
-          if rk<>'' then
+        end;
+
+        for i:=0 to MaxDev do
+        begin
+          if OpenKey(rkVideoHardware,false) then
           begin
-            rk:=copy(rk,pos('Machine\',rk)+8,255);
-            if OpenKey(rk,false) then
+            if ValueExists(rvVideoKey1+IntToStr(i)) then
+              rk:=ReadString(rvVideoKey1+IntToStr(i))
+            else
             begin
-              if ValueExists(rvHardware+'.'+rvHWVideo) then
-              begin
-                FillChar(bdata^,bdatasize+1,0);
-                try
-                  readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,bdatasize);
-                except
-                  Log(LOG_WARNING, 'Could not retrieve adapter name!');
-                  bdata^:=#0;
-                end;
-                FAdapter.Add(getstrfrombuf(pchar(bdata)));
-              end
+              if ValueExists(rvVideoKey2+IntToStr(i)) then
+                rk:=ReadString(rvVideoKey2+IntToStr(i))
               else
-                FAdapter.Add('Unknown');
-              if ValueExists(rvHardware+'.'+rvHWDAC) then
+                rk:='';
+            end;
+            CloseKey;
+   
+            if rk<>'' then
+            begin
+              rk:=copy(rk,pos('Machine\',rk)+8,255);
+              if OpenKey(rk,false) then
               begin
-                FillChar(bdata^,bdatasize+1,0);
-                try
-                  readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,bdatasize);
-                except
-                  Log(LOG_WARNING, 'Could not retrieve DAC name!');
-                  bdata^:=#0;
-                end;
-                FDAC.Add(getstrfrombuf(pchar(bdata)));
-              end
-              else
-                FDAC.Add('Unknown');
-              if ValueExists(rvHardware+'.'+rvHWChip) then
-              begin
-                FillChar(bdata^,bdatasize+1,0);
-                try
-                  readbinarydata(rvHardware+'.'+rvHWChip,bdata^,bdatasize);
-                except
-                  Log(LOG_WARNING, 'Could not retrieve Chipset name!');
-                  bdata^:=#0;
-                end;
-                FChipset.Add(getstrfrombuf(pchar(bdata)));
-              end
-              else
-                FChipset.Add('Unknown');
-              if ValueExists(rvHardware+'.'+rvHWMem) then
-              begin
-                try
+                if ValueExists(rvHardware+'.'+rvHWVideo) then
+                begin
+                  FillChar(bdata^,bdatasize+1,0);
                   try
-                    //Modern systems use REG_DWORD
-                    idata:=readinteger(rvHardware+'.'+rvHWMem);
-                  except on ERegistryException do
-                    //Older systems use REG_BINARY
-                    readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
-                  end
-                except
-                  Log(LOG_WARNING, 'Could not retrieve Video Hardware Memory size!');
-                  idata:=0;
-                end;
-                FMemory.Add(IntToStr(idata));
-              end
-              else
-                FMemory.Add('Unknown');
-              CloseKey;
+                    readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,bdatasize);
+                  except
+                    Log(LOG_WARNING, 'Could not retrieve adapter name!');
+                    bdata^:=#0;
+                  end;
+                  FAdapter.Add(getstrfrombuf(pchar(bdata)));
+                end
+                else
+                  FAdapter.Add('Unknown');
+
+                if ValueExists(rvHardware+'.'+rvHWDAC) then
+                begin
+                  FillChar(bdata^,bdatasize+1,0);
+                  try
+                    readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,bdatasize);
+                  except
+                    Log(LOG_WARNING, 'Could not retrieve DAC name!');
+                    bdata^:=#0;
+                  end;
+                  FDAC.Add(getstrfrombuf(pchar(bdata)));
+                end
+                else
+                  FDAC.Add('Unknown');
+
+                if ValueExists(rvHardware+'.'+rvHWChip) then
+                begin
+                  FillChar(bdata^,bdatasize+1,0);
+                  try
+                    readbinarydata(rvHardware+'.'+rvHWChip,bdata^,bdatasize);
+                  except
+                    Log(LOG_WARNING, 'Could not retrieve Chipset name!');
+                    bdata^:=#0;
+                  end;
+                  FChipset.Add(getstrfrombuf(pchar(bdata)));
+                end
+                else
+                  FChipset.Add('Unknown');
+
+                if ValueExists(rvHardware+'.'+rvHWMem) then
+                begin
+                  try
+                    try
+                      //Modern systems use REG_DWORD
+                      idata:=readinteger(rvHardware+'.'+rvHWMem);
+                    except on ERegistryException do
+                      //Older systems use REG_BINARY
+                      readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
+                    end
+                  except
+                    Log(LOG_WARNING, 'Could not retrieve Video Hardware Memory size!');
+                    idata:=0;
+                  end;
+                  FMemory.Add(IntToStr(idata));
+                end
+                else
+                  FMemory.Add('Unknown');
+
+                if ValueExists(rvProvider) then
+                  FProvider.Add(ReadString(rvProvider))
+                else
+                  FProvider.Add('Unknown');
+
+                if ValueExists(rvDriverDate) then
+                  FDriverDate.Add(ReadString(rvDriverDate))
+                else
+                  FDriverDate.Add('Unknown');
+
+                if ValueExists(rvDriverVersion) then
+                  FDriverVersion.Add(ReadString(rvDriverVersion))
+                else
+                  FDriverVersion.Add('Unknown');
+
+                CloseKey;
+              end;
             end;
           end;
         end;
-      end;
-      Log(LOG_VERBOSE, 'Gathering of video bios information...');
-      if OpenKey(rkBIOS,false) then
-      begin
-        if ValueExists(rvVideoBIOSVersion) then
-        begin
-          FillChar(bdata^,bdatasize+1,0);
-          readbinarydata(rvVideoBIOSVersion,bdata^,bdatasize);
-          FBIOSVersion:=strpas(pchar(bdata));
-        end;
-        if ValueExists(rvVideoBIOSDate) then
-          FBIOSDate:=ReadString(rvVideoBIOSDate);
-        CloseKey;
       end;
       free;
     end;
@@ -2039,6 +2069,9 @@ begin
   FDAc:=TStringList.Create;
   FChipset:=TStringList.Create;
   FMemory:=TStringList.Create;
+  FProvider:=TStringList.Create;
+  FDriverDate:=TStringList.Create;
+  FDriverVersion:=TStringList.Create;
 end;
 
 destructor TDisplay.Destroy;
@@ -2050,6 +2083,9 @@ begin
   FDAc.Free;
   FChipset.Free;
   FMemory.Free;
+  FProvider.Free;
+  FDriverDate.Free;
+  FDriverVersion.Free;
   inherited;
 end;
 
@@ -2069,6 +2105,9 @@ begin
       add('    Chipset: '   +Chipset[i]);
       add('    DAC: '       +DAC[i]);
       add('    Memory: '    +Memory[i] + ' Bytes');
+      add('    Provider: '       +Provider[i]);
+      add('    Driver date: '    +DriverDate[i]);
+      add('    Driver version: ' +DriverVersion[i]);
     end;
     (*for i:=0 to Modes.Count-1 do
     begin
