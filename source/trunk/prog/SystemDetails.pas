@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2017/04/16 13:06:57  danielpharos
+Added checkbox for AMD driver bug check.
+
 Revision 1.63  2017/02/26 11:27:41  danielpharos
 Small cleanup.
 
@@ -1632,7 +1635,7 @@ procedure TDisplay.GetInfo;
 var
   rk :string;
   bdata :pchar;
-  idata :integer;
+  idata :DWORD;
   sl :tstringlist;
   i :integer;
   j :DWORD;
@@ -1952,12 +1955,12 @@ begin
               if ValueExists(rvHardware+'.'+rvHWMem) then
               begin
                 try
-                  readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
+                  idata:=readinteger(rvHardware+'.'+rvHWMem);
                 except
                   Log(LOG_WARNING, 'Could not retrieve Video Hardware Memory size!');
                   idata:=0;
                 end;
-                FMemory.Add(inttostr(idata));
+                FMemory.Add(IntToStr(idata));
               end
               else
                 FMemory.Add('Unknown');
