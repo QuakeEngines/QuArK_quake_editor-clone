@@ -80,7 +80,7 @@ def createusedtextures(ToolBox, editor=None):
 
 #Overwrite the texturebrowser-open-function
 def texturebrowser(reserved=None, oldtexturebrowser=mapbtns.texturebrowser):
-    tbx_list = quarkx.findtoolboxes("Texture Browser...");
+    tbx_list = quarkx.findtoolboxes("Texture Browser...")
     ToolBoxName, ToolBox, flag = tbx_list[0]
     createusedtextures(ToolBox)
     
@@ -91,14 +91,14 @@ def OpenRoot(self, oldOpenRoot=MapEditor.OpenRoot):
     oldOpenRoot(self)
 
     if not IsBsp(self):
-        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        tbx_list = quarkx.findtoolboxes("Texture Browser...")
         ToolBoxName, ToolBox, flag = tbx_list[0]
         createusedtextures(ToolBox, editor=self) #mapeditor isn't set yet, to let's pass it manually
 MapEditor.OpenRoot = OpenRoot
 
 def CloseRoot(self, oldCloseRoot=MapEditor.CloseRoot):
     if not IsBsp(self):
-        tbx_list = quarkx.findtoolboxes("Texture Browser...");
+        tbx_list = quarkx.findtoolboxes("Texture Browser...")
         ToolBoxName, ToolBox, flag = tbx_list[0]
         for ToolBoxFolder in ToolBox.subitems:
             if ToolBoxFolder.name == "Used Textures.txlist":
@@ -113,6 +113,9 @@ MapEditor.CloseRoot = CloseRoot
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.3  2017/03/05 13:44:42  danielpharos
+#Workaround a crash on quit with the Used Textures functionality.
+#
 #Revision 1.2  2017/03/05 13:19:59  danielpharos
 #Made HL2 textures work too.
 #
