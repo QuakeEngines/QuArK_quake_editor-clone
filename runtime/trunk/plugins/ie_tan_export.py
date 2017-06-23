@@ -31,6 +31,7 @@ from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
 
 # Globals
+SS_MODEL = 3
 editor = None
 logging = 0
 exportername = "ie_tan_export.py"
@@ -618,7 +619,7 @@ def savemodel(root, filename, gamename, nomessage=0):
             QuArK_comps.append(item)
             frame_count = frame_count + [len(item.dictitems['Frames:fg'].dictitems)]
 
-    if len(sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
+    if len(sellist) > 1 and quarkx.setupsubset(SS_MODEL, "Options")["ExpComponentChecks"] == "1":
         if len(frame_count) > 1:
             for item in range(len(frame_count)):
                 if item >= len(frame_count)-1:
@@ -659,6 +660,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".tan Alice\EF2\FAKK2 Exporter", ".tan file
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2013/02/20 05:19:41  cdunde
+# Fix for sometimes incorrect skinsize being used.
+#
 # Revision 1.4  2010/11/09 05:48:10  cdunde
 # To reverse previous changes, some to be reinstated after next release.
 #

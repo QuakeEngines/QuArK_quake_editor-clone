@@ -2104,7 +2104,7 @@ class VertexHandle(qhandles.GenericHandle):
                     cv.ellipse(int(p.x)-3, int(p.y)-3, int(p.x)+3, int(p.y)+3)
                 else:
                     cv.ellipse(int(p.x)-2, int(p.y)-2, int(p.x)+2, int(p.y)+2)
-            elif mdlentities.vtxpaint == 0 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1" and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and self == draghandle:
+            elif mdlentities.vtxpaint == 0 and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1" and (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and self == draghandle:
                 foundbone = None
                 for item in editor.layout.explorer.sellist:
                     if item.type == ":bone":
@@ -2174,7 +2174,7 @@ class VertexHandle(qhandles.GenericHandle):
                     cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 
             if editor.ModelVertexSelList != []:
-                if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1":
+                if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
                     cv.brushcolor = vertexsellistcolor
                     foundbone = None
         #            selsize = int(quarkx.setupsubset(SS_MODEL,"Building")['LinearSelected'][0])
@@ -3446,7 +3446,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
             else:
                 if editor.layout.explorer.sellist[0].type == ":mf":
                     pass
-                elif quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and editor.layout.explorer.sellist[0].type == ":bone" and editor.layout.explorer.sellist[len(editor.layout.explorer.sellist)-1].type == ":mf":
+                elif quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and editor.layout.explorer.sellist[0].type == ":bone" and editor.layout.explorer.sellist[len(editor.layout.explorer.sellist)-1].type == ":mf":
                     pass
                 elif (len(editor.layout.explorer.sellist) == 2) and (editor.layout.explorer.sellist[0].type == ":bg" or editor.layout.explorer.sellist[0].type == ":bone") and (editor.layout.explorer.sellist[1].type == ":mf"):
                     pass
@@ -3727,7 +3727,7 @@ class RectSelDragObject(qhandles.RectangleDragObject):
                             v.handles = []
 
             from qbaseeditor import flagsmouse
-            if flagsmouse == 2056 and quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone":
+            if flagsmouse == 2056 and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and len(editor.layout.explorer.sellist) != 0 and editor.layout.explorer.sellist[0].type == ":bone":
                 # This section calls to save the vertex weights to the undo list if set to do so.
                 if editor.Root.currentcomponent.dictspec.has_key("apply_vtx_weights"):
                     mdlentities.macro_applychanges(None)
@@ -6604,6 +6604,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.242  2017/06/23 18:49:26  danielpharos
+#Removed a test print-out.
+#
 #Revision 1.241  2016/06/17 19:27:03  danielpharos
 #Removed some unneeded import-statements.
 #

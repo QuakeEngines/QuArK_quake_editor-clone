@@ -939,7 +939,7 @@ class BaseEditor:
 
             # This section handles the Vertex Weights Painting paint brush function.
             if (flagsmouse == 552 or flagsmouse == 1064 or flagsmouse == 2088) and len(self.layout.explorer.sellist) != 0 and self.layout.explorer.sellist[0].type == ":bone":
-                if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
+                if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
                     self.dragobject = None
                     if flagsmouse == 2088:
                         mdlentities.PaintManager(self, view, x, y, flagsmouse, None)
@@ -1799,6 +1799,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.156  2016/06/17 19:27:27  danielpharos
+#Fixed a typo.
+#
 #Revision 1.155  2016/02/13 12:36:20  danielpharos
 #Raise a proper exception.
 #

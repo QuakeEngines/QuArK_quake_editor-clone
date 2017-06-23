@@ -2551,7 +2551,7 @@ def vtxcolorclick(btn):
     global editor
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if quarkx.setupsubset(3, "Options")["LinearBox"] == "1":
+    if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
         editor.ModelVertexSelList = []
         editor.linearbox = "True"
         editor.linear1click(btn)
@@ -2564,14 +2564,14 @@ def colorclick(btn):
     global editor
     if editor is None:
         editor = quarkpy.mdleditor.mdleditor # Get the editor.
-    if not quarkx.setupsubset(3, "Options")['VertexUVColor'] or quarkx.setupsubset(3, "Options")['VertexUVColor'] == "0":
-        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "1"
+    if not quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] or quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] == "0":
+        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "1"
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.selected
         quarkx.update(editor.form)
         vtxcolorclick(btn)
     else:
-        quarkx.setupsubset(3, "Options")['VertexUVColor'] = "0"
+        quarkx.setupsubset(SS_MODEL, "Options")['VertexUVColor'] = "0"
         quarkpy.qtoolbar.toggle(btn)
         btn.state = quarkpy.qtoolbar.normal
         quarkx.update(editor.form)
@@ -2706,6 +2706,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.44  2016/12/16 22:18:49  danielpharos
+# Corrected a couple of warnings due to misplaced global statements.
+#
 # Revision 1.43  2011/06/03 20:29:26  danielpharos
 # Removed some bad characters from comments.
 #

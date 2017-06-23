@@ -16,6 +16,7 @@ import quarkx
 import quarkpy.qutils
 
 # Globals
+SS_MODEL = 3
 logging = 0
 textlog = "model_ie_log.txt"
 tobj = None
@@ -65,22 +66,22 @@ def default_start_logging(IM_EX_name, IM_EX_textlog, filename, IM_or_EX, add_to_
     global tobj, textlog
 
     starttime = time.time()
-    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
+    if quarkx.setupsubset(SS_MODEL, "Options")['IELogging'] != "0":
         logging = 1
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1" and textlog != "model_ie_log.txt" and tobj is not None:
+        if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] != "1" and textlog != "model_ie_log.txt" and tobj is not None:
             if tobj.txtobj is not None:
                 tobj.txtobj.close()
                 textlog = "model_ie_log.txt"
                 tobj = dotext(textlog) # Calls the class to handle logging.
 
-        if quarkx.setupsubset(3, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj is not None:
+        if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] == "1" and textlog == "model_ie_log.txt" and tobj is not None:
             if tobj.txtobj is not None:
                 tobj.txtobj.close()
                 textlog = IM_EX_textlog
                 tobj = dotext(textlog) # Calls the class to handle logging.
 
-        if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
-            if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+        if quarkx.setupsubset(SS_MODEL, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] != "1":
                 textlog = "model_ie_log.txt"
                 tobj = dotext(textlog) # Calls the class to handle logging.
             else:
@@ -88,7 +89,7 @@ def default_start_logging(IM_EX_name, IM_EX_textlog, filename, IM_or_EX, add_to_
                 tobj = dotext(textlog) # Calls the class to handle logging.
         else:
             if tobj is None:
-                if quarkx.setupsubset(3, "Options")['IELogByFileType'] != "1":
+                if quarkx.setupsubset(SS_MODEL, "Options")['IELogByFileType'] != "1":
                     textlog = "model_ie_log.txt"
                     tobj = dotext(textlog) # Calls the class to handle logging.
                 else:
@@ -132,7 +133,7 @@ def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
 
     end = time.time()
     seconds = "in %.2f %s" % (end-starttime, "seconds")
-    if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
+    if quarkx.setupsubset(SS_MODEL, "Options")['IELogging'] != "0":
         if IM_or_EX == "IM":
             tobj.logcon ("=====================================================================")
             tobj.logcon ("Successfully imported " + os.path.basename(filename))
@@ -149,7 +150,7 @@ def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
                 tobj.logcon ("=====================================================================")
                 tobj.logcon ("")
                 tobj.logcon ("")
-            if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(SS_MODEL, "Options")['IELogAll'] != "1":
                 tobj.txtobj.close()
         else:
             tobj.logcon ("=====================================================================")
@@ -167,7 +168,7 @@ def default_end_logging(filename, IM_or_EX, starttime, add_to_message=""):
                 tobj.logcon ("=====================================================================")
                 tobj.logcon ("")
                 tobj.logcon ("")
-            if quarkx.setupsubset(3, "Options")['IELogAll'] != "1":
+            if quarkx.setupsubset(SS_MODEL, "Options")['IELogAll'] != "1":
                 tobj.txtobj.close()
     if IM_or_EX == "EX":
         if add_to_message == "":
@@ -204,7 +205,7 @@ class dotext:
     def write(self, wstring, maxlen=80):
         # Opens a text file in QuArK's main directory for logging to.
         # See QuArK's Defaults.qrk file for additional setup code for IELogging option.
-        if quarkx.setupsubset(3, "Options")['IELogging'] != "0":
+        if quarkx.setupsubset(SS_MODEL, "Options")['IELogging'] != "0":
             if self.txtobj == None or not os.path.exists(quarkx.exepath + self.textlog):
                 self.txtobj = open(quarkx.exepath + self.textlog, "w")
         if (self.txtobj==None):
@@ -214,7 +215,7 @@ class dotext:
             if (ll>maxlen):
                 self.txtobj.write((wstring[:maxlen]))
                 self.txtobj.write("\n")
-                if int(quarkx.setupsubset(3, "Options")['IELogging']) == 2:
+                if int(quarkx.setupsubset(SS_MODEL, "Options")['IELogging']) == 2:
                     print (wstring[:maxlen])
                 wstring = (wstring[maxlen:])
             else:
@@ -223,13 +224,13 @@ class dotext:
                 except:
                     self.txtobj = open(quarkx.exepath + self.textlog, "w")
                     self.txtobj.write(wstring)
-                if int(quarkx.setupsubset(3, "Options")['IELogging']) == 2:
+                if int(quarkx.setupsubset(SS_MODEL, "Options")['IELogging']) == 2:
                     if wstring != "\n":
                         print wstring
                 break
 
     def pstring(self, ppstring, where = _NO):
-        where = int(quarkx.setupsubset(3, "Options")['IELogging'])
+        where = int(quarkx.setupsubset(SS_MODEL, "Options")['IELogging'])
         if where == dotext._NO: where = self.dwhere
         self.write(ppstring)
         self.write("\n")
@@ -312,6 +313,9 @@ def NicePrintableFloat(amt):
 #
 #
 #$Log$
+#Revision 1.12  2010/11/09 05:48:10  cdunde
+#To reverse previous changes, some to be reinstated after next release.
+#
 #Revision 1.11  2010/11/06 13:31:04  danielpharos
 #Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #

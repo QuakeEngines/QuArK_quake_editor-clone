@@ -1124,7 +1124,7 @@ def savemodel(root, filename, gamename):
             QuArK_comps.append(item)
             frame_count = frame_count + [len(item.dictitems['Frames:fg'].dictitems)]
 
-    if len(sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
+    if len(sellist) > 1 and quarkx.setupsubset(SS_MODEL, "Options")["ExpComponentChecks"] == "1":
         if len(frame_count) > 1:
             for item in range(len(frame_count)):
                 if item >= len(frame_count)-1:
@@ -1253,6 +1253,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.22  2013/02/20 05:19:41  cdunde
+# Fix for sometimes incorrect skinsize being used.
+#
 # Revision 1.21  2012/01/13 07:50:21  cdunde
 # Change to get away from relying on ModelFolder for exporting models.
 #

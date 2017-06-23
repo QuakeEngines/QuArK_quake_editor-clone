@@ -51,6 +51,7 @@ from ie_utils import tobj
 from quarkpy.qdictionnary import Strings
 
 # Globals
+SS_MODEL = 3
 logging = 0
 exportername = "ie_lightwave_export.py"
 textlog = "lwo_ie_log.txt"
@@ -927,7 +928,7 @@ def savemodel(root, filename, gamename, nomessage=0):
     editor = quarkpy.mdleditor.mdleditor
     if editor is None:
         return
-    if len(editor.layout.explorer.sellist) > 1 and quarkx.setupsubset(3, "Options")["ExpComponentChecks"] == "1":
+    if len(editor.layout.explorer.sellist) > 1 and quarkx.setupsubset(SS_MODEL, "Options")["ExpComponentChecks"] == "1":
         frame_count = []
         for item in editor.layout.explorer.sellist:
             if item.type == ":mc":
@@ -958,6 +959,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.15  2010/11/09 05:48:10  cdunde
+# To reverse previous changes, some to be reinstated after next release.
+#
 # Revision 1.14  2010/11/06 13:31:04  danielpharos
 # Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
 #
