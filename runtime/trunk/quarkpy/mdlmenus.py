@@ -334,7 +334,7 @@ def MdlBackgroundMenu(editor, view=None, origin=None):
                 item = sellist[0]
                 if (item.type == ':fg' or item.type == ':mf' or item.type == ':bg' or item.type == ':bone') and (quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1"):
                     bonepop.state = qmenu.normal
-                comp =  editor.layout.componentof(item)
+                comp = editor.layout.componentof(item)
             if sellist == [] or quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1" or (len(sellist) == 1 and sellist[0].type != ':mf'):
                 vertexpop.state = qmenu.disabled
             else:
@@ -422,8 +422,7 @@ def BaseMenu(sellist, editor):
     "The base pop-up menu for a given list of objects."
 
     mult = len(sellist)>1 or (len(sellist)==1 and sellist[0].type==':g')
-    Force1 = qmenu.item(("&Force to grid", "&Force everything to grid")[mult],
-      editor.ForceEverythingToGrid)
+    Force1 = qmenu.item(("&Force to grid", "&Force everything to grid")[mult], editor.ForceEverythingToGrid)
     if not MdlOption("GridActive") or quarkx.setupsubset(SS_MODEL, "Display")["GridStep"][0] == 0:
         Force1.state = qmenu.disabled
 
@@ -453,6 +452,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.56  2012/07/09 18:11:33  cdunde
+#Updated Tree-view RMB menu for correct single frame Duplication function in the Model Editor.
+#
 #Revision 1.55  2011/05/30 20:46:32  cdunde
 #Added frame name change to complete updatings and AutoFrameRenaming function.
 #
