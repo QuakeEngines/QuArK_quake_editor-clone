@@ -2174,7 +2174,6 @@ class VertexHandle(qhandles.GenericHandle):
                     cv.ellipse(int(p.x)-1, int(p.y)-1, int(p.x)+1, int(p.y)+1)
 
             if editor.ModelVertexSelList != []:
-                print len(editor.ModelVertexSelList)
                 if quarkx.setupsubset(3, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(3, "Options")['VertexPaintMode'] == "1":
                     cv.brushcolor = vertexsellistcolor
                     foundbone = None
@@ -6605,6 +6604,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.241  2016/06/17 19:27:03  danielpharos
+#Removed some unneeded import-statements.
+#
 #Revision 1.240  2016/05/17 17:50:07  danielpharos
 #Removed two instances of circular imports that were causing trouble on Wine.
 #
