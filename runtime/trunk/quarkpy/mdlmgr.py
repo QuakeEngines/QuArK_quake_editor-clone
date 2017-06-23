@@ -16,7 +16,6 @@ Model editor Layout managers.
 #
 
 import qutils
-import mdleditor
 import math
 import quarkx
 import qtoolbar
@@ -2030,6 +2029,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.139  2016/06/17 19:27:27  danielpharos
+#Fixed a typo.
+#
 #Revision 1.138  2013/01/28 04:00:45  cdunde
 #Fix for Skin-view tristodraw and view handles not being stored in .qkl file.
 #
