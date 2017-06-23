@@ -50,7 +50,6 @@ import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.maphandles
 import quarkpy.dlgclasses
-import maptagside
 import faceutils
 from quarkpy.maputils import *
 import quarkpy.tagging as nt
@@ -191,7 +190,7 @@ def refreshTemplateClick(m):
 
 def RefreshTemplate(item, editor):
     if item is None:
-        return	
+        return
 
     if item.type != ":d":
         return
@@ -208,7 +207,8 @@ def RefreshTemplate(item, editor):
 def RestrictByMe(m):
   editor = mapeditor()
   if editor is None:
-    maptagside.squawk("no editor")
+    squawk("no editor")
+    return
   if m.object.name == "worldspawn:b":
     clearrestrictor(editor)
     return
@@ -225,10 +225,9 @@ def vec2rads(v):
 def ZoomToMe(m):
     editor = mapeditor()
     if editor is None:
-        maptagside.squawk("no editor")
-
-    else:
-        zoomToMeFunc(editor,m.object)
+        squawk("no editor")
+        return
+    zoomToMeFunc(editor,m.object)
 
 quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Look and Zoom in 3D views", "3Dzoom", (1,1),
       hint="|Look and Zoom in 3D views:\n\nIf this menu item is checked, it will zoom in and center on the selection(s) in all of the 3D views when the 'Zoom to selection' button on the 'Selection Toolbar' is clicked.\n\nIf a face is selected and the 'Shift' key is held down, it will look at the other side of the face and strive to center it in the view.\n\nIf this menu item is unchecked, it will only look in the selection(s) direction from the current camera position.|intro.mapeditor.menu.html#optionsmenu"))
@@ -347,10 +346,10 @@ def SelectMe(m):
       import quarkpy.mapmenus
       editor = mapeditor()
       if editor is None:
-          maptagside.squawk("no editor")
-      else:
-          selectMeFunc(editor,m.object)
-          
+          squawk("no editor")
+          return
+      selectMeFunc(editor,m.object)
+
 def selectMeFunc(editor, object):
     #
     # the tree-view
@@ -841,8 +840,9 @@ def NoSelClick(m):
 
 def UnrestrictClick(m):
     editor = mapeditor()
-    if editor is None: return
-    #    maptagside.squawk("no editor")
+    if editor is None:
+        squawk("no editor")
+        return
     clearrestrictor(editor)
     editor.invalidateviews(1)
 
@@ -1127,6 +1127,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.42  2015/09/20 12:59:35  danielpharos
+# Fixed a typo.
+#
 # Revision 1.41  2008/10/05 13:42:49  danielpharos
 # Fixed a typo.
 #

@@ -389,13 +389,15 @@ quarkpy.mapoptions.items.append(mengluelinkedondrag)
 #---------------- An important exception -------------
 #
 
-bail = 'bail'
+class Bail(Exception):
+    def __str__(self):
+        return "bail"
 
 def check_true(whatever):
   "this device is used to exit from complicated sequences of tests"
   "  when one fails"
   if not whatever:
-     raise bail, 0
+     raise Bail
   return whatever
 
 #
@@ -557,9 +559,6 @@ def gluemenuitem(String, ClickFunction,o, helptext='', infobaselink=''):
 #
 # ---------  misc utilities -----------
 #
-
-def squawk(msg):
-  quarkx.msgbox(msg, MT_INFORMATION, MB_OK)
 
 def isoneface(selections):
   return len(selections) == 1 and selections[0].type == ':f'
@@ -988,16 +987,15 @@ def pillarwrapdisabler(menuitem, tagged, o):
   #
   # using a defined exception as a bailout go-to
   #
-  bail = 'bail'
   try:
     if tagpolys[0].type != ":p" or selpolys[0].type != ":p":
-      raise bail, 0
+      raise Bail
     #
     # and indeed to the same poly
     #
     thepolys = intersection(tagpolys, selpolys)
     if thepolys == []:
-      raise bail, 0
+      raise Bail
     thepoly = thepolys[0]  # I hope this assumption isn't unsound
     #
     # and indeed that these faces furthermore abutt
@@ -1010,11 +1008,11 @@ def pillarwrapdisabler(menuitem, tagged, o):
     #
     shared = abutting_vtx(ovx, tvx)
     if not shared:
-      raise bail, 0
+      raise Bail
     sep = (shared[1][0]-shared[0][0]).normalized
     result = oppositeedge(ovx, shared[0][1], sep)
     if not result:
-      raise bail, 0
+      raise Bail
     (first, second, gap) = result
     #
     # Now we embark on a voyage of discovery around the poly,
@@ -1052,7 +1050,7 @@ def pillarwrapdisabler(menuitem, tagged, o):
          (face, nvtxes, shared) = facial
          result = oppositeedge(nvtxes, shared[0][1], sep)
          if not result:
-           raise bail, 0
+           raise Bail
          (first, second, gap) = result
          facelist.append(face)
          circuitlength = circuitlength + abs(gap)
@@ -1073,12 +1071,12 @@ def pillarwrapdisabler(menuitem, tagged, o):
             menuitem.horiz = gap
 #            squawk("faces: "+`len(facelist)`)
             return
-      raise bail, 0
+      raise Bail
   #
   # and the final bailout go-to
   #
 
-  except bail, dummy:
+  except Bail:
     menuitem.state = qmenu.disabled
     return 0
   
@@ -1170,17 +1168,16 @@ def wraptaggedstate(menuitem, o):
    if editor is None:
       return
    taglist = gettaggedlist(editor)
-#   bail = 'bail'
    try:  # raise the bail exception to quit the sequence tests
      if taglist is None:
-        raise bail, 0
+        raise Bail
      #
      # the current side must be in the tagged list
      #  (actaully, on an end or in a cycle!) 
      #
      taglist = taglist[:]      #make a copy
      if taglist.count(o) == 0:
-        raise bail, 0
+        raise Bail
      pozzie = taglist.index(o)
      #
      #  Figure out which direction to go in building the wrap list.
@@ -1210,7 +1207,7 @@ def wraptaggedstate(menuitem, o):
           faces.append(face)
           abuttments.append(abuttment)
      if len(faces) > 2 or len(faces) == 0:
-       raise bail, 0  #  wrong number, no proper abuttment
+       raise Bail  #  wrong number, no proper abuttment
      if len(faces) == 2:
        #
        # Now we pick one, hopefully one that was tagged after o
@@ -1290,13 +1287,13 @@ def wraptaggedstate(menuitem, o):
        #  latch onto what we've got, so bail
        #
        else:
-         raise bail, 0    
+         raise Bail
 #     squawk("length: "+`len(wraplist)`)
      menuitem.wraplist = wraplist
      menuitem.circuit = circuit
      menuitem.horiz = horiz
      menuitem.texorigshift = texorigshift
-   except bail, dummy:
+   except Bail:
      menuitem.state = qmenu.disabled
      return
 
@@ -1937,6 +1934,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.45  2015/09/20 12:59:58  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.44  2013/03/17 14:15:09  danielpharos
 #Fixed a typo.
 #
