@@ -11,8 +11,6 @@ Model Editor Entities manager
 #$Header$
 
 
-
-
 import quarkx
 import qeditor
 from mdlutils import *
@@ -20,7 +18,7 @@ import mdlhandles
 import dlgclasses
 from qeditor import ico_dict # Get the dictionary list of all icon image files available.
 import qtoolbar              # Get the toolbar functions to make buttons with.
-SS_MODEL = 3 # The Model Editor mode.
+
 
 #
 # Classes that implement operations on all types of Model Objects.
@@ -3356,6 +3354,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.94  2016/05/17 17:50:07  danielpharos
+#Removed two instances of circular imports that were causing trouble on Wine.
+#
 #Revision 1.93  2012/10/13 21:54:20  cdunde
 #To correct and update model settings.
 #

@@ -26,7 +26,6 @@ import mdlhandles
 import plugins.mdlcamerapos
 
 # Globals
-SS_MODEL = 3
 CompList = ""
 camsel = None
 
@@ -891,6 +890,9 @@ MapHotKeyList("Full3DPrevShot", WindowPrevShot, shortcuts)
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.8  2015/09/20 13:00:51  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.7  2011/03/27 22:26:25  cdunde
 #InfoBase and links update.
 #
