@@ -332,8 +332,7 @@ def macro_nearplanes(self, index=0):
         editor.nearplanesdlg.collect()
     elif index==3:
         editor.nearplanesdlg.findsplit()
- 
-        
+
 quarkpy.qmacro.MACRO_nearplanes = macro_nearplanes
 
 def findSplitNodes(editor, plane):
@@ -597,12 +596,15 @@ def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
         p1 = view.proj(pos)
         p2 = view.proj(pos+96*norm)
         drawsquare(cv,p1,10)
-        cv.line(p1, p2)    
+        cv.line(p1, p2)
 
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = bspfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2015/06/20 15:27:28  danielpharos
+#Removed unused variable.
+#
 #Revision 1.14  2014/01/18 14:50:47  danielpharos
 #Removed some silly whitespace.
 #

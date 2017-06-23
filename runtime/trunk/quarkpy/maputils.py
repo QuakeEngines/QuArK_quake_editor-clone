@@ -27,7 +27,7 @@ def checktree(root, obj):
         if t is None or not (obj in t.subitems):
             return 0
         obj = t
-    return 1     
+    return 1
 
 
 #
@@ -367,6 +367,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.32  2017/06/23 20:30:33  danielpharos
+#Removed old commented out deprecated function.
+#
 #Revision 1.31  2017/06/23 20:29:14  danielpharos
 #Moved cycle utility functions into the only plugin that is using them.
 #
