@@ -1008,7 +1008,7 @@ def modelaxis(view):
         cv.penwidth = float(quarkx.setupsubset(SS_MODEL,"Options")['linethickness'])
     except:
         cv.penwidth = 2
-        
+
     cv.pencolor = WHITE
     cv.ellipse(int(mc.x)-2, int(mc.y)-2, int(mc.x)+2, int(mc.y)+2)
 
@@ -1017,30 +1017,24 @@ def modelaxis(view):
     cv.fontname = "MS Serif"
     cv.brushstyle = BS_CLEAR
 
-    if view.info["viewname"] == "YZ":
-        pass
-    else:
+    if view.info["viewname"] != "YZ":
         # X axis settings
         cv.pencolor = MapColor("ModelAxisX", SS_MODEL)
         cv.fontcolor = MapColor("ModelAxisX", SS_MODEL)
         cv.line(int(mc.x), int(mc.y), int(Xend.x), int(Xend.y))
-        cv.textout(int(Xend.x-5), int(Xend.y-20), "X")
-    if view.info["viewname"] == "XZ":
-        pass
-    else:
+        cv.textout(int(Xend.x)-5, int(Xend.y)-20, "X")
+    if view.info["viewname"] != "XZ":
         # Y axis settings
         cv.pencolor = MapColor("ModelAxisY", SS_MODEL)
         cv.fontcolor = MapColor("ModelAxisY", SS_MODEL)
         cv.line(int(mc.x), int(mc.y), int(Yend.x), int(Yend.y))
-        cv.textout(int(Yend.x-5), int(Yend.y-20), "Y")
-    if view.info["viewname"] == "XY":
-        pass
-    else:
+        cv.textout(int(Yend.x)-5, int(Yend.y)-20, "Y")
+    if view.info["viewname"] != "XY":
         # Z axis settings
         cv.pencolor = MapColor("ModelAxisZ", SS_MODEL)
         cv.fontcolor = MapColor("ModelAxisZ", SS_MODEL)
         cv.line(int(mc.x), int(mc.y), int(Zend.x), int(Zend.y))
-        cv.textout(int(Zend.x-5), int(Zend.y-20), "Z")
+        cv.textout(int(Zend.x)-5, int(Zend.y)-20, "Z")
 
 
 def faceselfilllist(view, fillcolor=None):
@@ -1080,18 +1074,18 @@ def faceselfilllist(view, fillcolor=None):
 
 
 
-def setsingleframefillcolor(self, view):
-    if self is None:
+def setsingleframefillcolor(editor, view):
+    if editor is None:
         return
-    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+    if editor.Root.currentcomponent is None and editor.Root.name.endswith(":mr"):
         componentnames = []
-        for item in self.Root.dictitems:
+        for item in editor.Root.dictitems:
             if item.endswith(":mc"):
                 componentnames.append(item)
         componentnames.sort()
-        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+        editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
 
-    comp = self.Root.currentcomponent
+    comp = editor.Root.currentcomponent
     
     if view.info["viewname"] == "XY":
         fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
@@ -1101,7 +1095,7 @@ def setsingleframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1116,7 +1110,7 @@ def setsingleframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1131,7 +1125,7 @@ def setsingleframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1146,7 +1140,7 @@ def setsingleframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1161,7 +1155,7 @@ def setsingleframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1170,20 +1164,20 @@ def setsingleframefillcolor(self, view):
 
 
 
-def setframefillcolor(self, view):
+def setframefillcolor(editor, view):
     from qbaseeditor import currentview
-    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+    if editor.Root.currentcomponent is None and editor.Root.name.endswith(":mr"):
         componentnames = []
-        for item in self.Root.dictitems:
+        for item in editor.Root.dictitems:
             if item.endswith(":mc"):
                 componentnames.append(item)
         componentnames.sort()
-        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+        editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
 
-    comp = self.Root.currentcomponent
+    comp = editor.Root.currentcomponent
     
     if (view.info["viewname"] == "XY" or view.info["viewname"] == "XZ" or view.info["viewname"] == "YZ"):
-        for v in self.layout.views:
+        for v in editor.layout.views:
             if v.info["viewname"] == "XY":
                 if quarkx.setupsubset(SS_MODEL, "Options")["Options3Dviews_fillmesh2"] == "1":
                     fillcolor = MapColor("Options3Dviews_fillColor2", SS_MODEL)
@@ -1192,7 +1186,7 @@ def setframefillcolor(self, view):
                     comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                        if self.ModelFaceSelList != []:
+                        if editor.ModelFaceSelList != []:
                             comp.filltris = faceselfilllist(v)
                         else:
                             comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1207,7 +1201,7 @@ def setframefillcolor(self, view):
                     comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                        if self.ModelFaceSelList != []:
+                        if editor.ModelFaceSelList != []:
                             comp.filltris = faceselfilllist(v)
                         else:
                             comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1222,7 +1216,7 @@ def setframefillcolor(self, view):
                     comp.filltris = [(fillcolor,None)]*len(comp.triangles)
                 else:
                     if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                        if self.ModelFaceSelList != []:
+                        if editor.ModelFaceSelList != []:
                             comp.filltris = faceselfilllist(v)
                         else:
                             comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1238,7 +1232,7 @@ def setframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1254,7 +1248,7 @@ def setframefillcolor(self, view):
             comp.filltris = [(fillcolor,None)]*len(comp.triangles)
         else:
             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                if self.ModelFaceSelList != []:
+                if editor.ModelFaceSelList != []:
                     comp.filltris = faceselfilllist(view)
                 else:
                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1262,21 +1256,21 @@ def setframefillcolor(self, view):
                 comp.filltris = [(None,(backfacecolor1,backfacecolor2))]*len(comp.triangles)
 
 
-def paintframefill(self, v):
+def paintframefill(editor, v):
 
-    if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
+    if editor.Root.currentcomponent is None and editor.Root.name.endswith(":mr"):
         componentnames = []
-        for item in self.Root.dictitems:
+        for item in editor.Root.dictitems:
             if item.endswith(":mc"):
                 componentnames.append(item)
         componentnames.sort()
-        self.Root.currentcomponent = self.Root.dictitems[componentnames[0]]
+        editor.Root.currentcomponent = editor.Root.dictitems[componentnames[0]]
 
-    comp = self.Root.currentcomponent
+    comp = editor.Root.currentcomponent
 
     try:
-        for v in self.layout.views:
-            if ((v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow") and self.dragobject != None):
+        for v in editor.layout.views:
+            if ((v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow") and editor.dragobject != None):
                 pass
             else:
                 try:
@@ -1289,7 +1283,7 @@ def paintframefill(self, v):
                             v.repaint()
                         else:
                             if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                                if self.ModelFaceSelList != []:
+                                if editor.ModelFaceSelList != []:
                                     comp.filltris = faceselfilllist(v)
                                 else:
                                     comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1308,7 +1302,7 @@ def paintframefill(self, v):
                         v.repaint()
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                            if self.ModelFaceSelList != []:
+                            if editor.ModelFaceSelList != []:
                                 comp.filltris = faceselfilllist(v)
                             else:
                                 comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1325,7 +1319,7 @@ def paintframefill(self, v):
                         v.repaint()
                     else:
                         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-                            if self.ModelFaceSelList != []:
+                            if editor.ModelFaceSelList != []:
                                 comp.filltris = faceselfilllist(v)
                             else:
                                 comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1337,7 +1331,7 @@ def paintframefill(self, v):
                     pass
 
                 ### Allows the drawing of the gridscale when actually panning.
-                plugins.mdlgridscale.gridfinishdrawing(self, v)
+                plugins.mdlgridscale.gridfinishdrawing(editor, v)
     except:
         pass
 
@@ -1348,7 +1342,7 @@ def paintframefill(self, v):
         comp.filltris = [(fillcolor,None)]*len(comp.triangles)
     else:
         if quarkx.setupsubset(SS_MODEL, "Options")["DBF"] != "1":
-            if self.ModelFaceSelList != []:
+            if editor.ModelFaceSelList != []:
                 comp.filltris = faceselfilllist(v)
             else:
                 comp.filltris = [(None,None)]*len(comp.triangles)
@@ -1366,17 +1360,18 @@ def commonhandles(self, redraw=1):
 
     if flagsmouse == 2072 and isinstance(self.dragobject, mdltoolbars.FaceCutter): # Cancels face cutting.
         return
-    try:
-        if flagsmouse == 536:
-            return
-            
-        if flagsmouse == 2072 and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
-            self.dragobject = None
-        
-        if flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.VertexHandle):
-            return
 
-        if currentview.info["viewname"] =="3Dwindow":
+    if flagsmouse == 536:
+        return
+            
+    if flagsmouse == 2072 and isinstance(self.dragobject, qhandles.FreeZoomDragObject):
+        self.dragobject = None
+
+    if flagsmouse == 2072 and isinstance(self.dragobject, mdlhandles.VertexHandle):
+        return
+
+    try:
+        if currentview.info["viewname"] == "3Dwindow":
             if flagsmouse == 1048 or flagsmouse == 1056:
                 cv = currentview.canvas()
                 for h in currentview.handles:
@@ -1411,10 +1406,8 @@ def commonhandles(self, redraw=1):
 
 ### 3D Views ONLY Section for special needs:
 ### =======================================
-    try:
-        if isinstance(self.dragobject, qhandles.HandleDragObject):
-            pass
-        else:
+    if not isinstance(self.dragobject, qhandles.HandleDragObject):
+        try:
             if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "editors3Dview":
                     if (flagsmouse == 2064 or flagsmouse == 2080) and (quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1") and (quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1"):
@@ -1435,16 +1428,7 @@ def commonhandles(self, redraw=1):
                         for h in currentview.handles:
                             h.draw(currentview, cv, None)
                         return
-                else:
-                    pass
-    except:
-        pass
 
-    try:
-        if isinstance(self.dragobject, qhandles.HandleDragObject):
-            pass
-        else:
-            if (flagsmouse == 1032 or flagsmouse == 1040 or flagsmouse == 1048 or flagsmouse == 1056 or flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2080):
                 if currentview.info["viewname"] == "3Dwindow":
                     if (flagsmouse == 2064 or flagsmouse == 2080) and (quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1") and (quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1"):
                         modelaxis(currentview)
@@ -1464,10 +1448,8 @@ def commonhandles(self, redraw=1):
                         for h in currentview.handles:
                             h.draw(currentview, cv, None)
                         return
-                else:
-                    pass
-    except:
-        pass
+        except:
+            pass
 
     if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and (flagsmouse == 2064 or flagsmouse == 2080):
         return
@@ -1707,9 +1689,8 @@ def commonhandles(self, redraw=1):
     for v in self.layout.views:
         if v.info["viewname"] == "editors3Dview" or v.info["viewname"] == "3Dwindow" or v.info["viewname"] == "skinview":
             continue
-        else:
-            plugins.mdlgridscale.gridfinishdrawing(self, v)
-            plugins.mdlaxisicons.newfinishdrawing(self, v)
+        plugins.mdlgridscale.gridfinishdrawing(self, v)
+        plugins.mdlaxisicons.newfinishdrawing(self, v)
 
 
 ### Draw View Handles & Selected Faces Section:
@@ -1864,6 +1845,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.171  2017/06/23 18:50:57  danielpharos
+#Reduced internal dependencies.
+#
 #Revision 1.170  2016/01/16 20:00:57  danielpharos
 #Removed a try-except that's hiding bugs, and shouldn't be needed.
 #
