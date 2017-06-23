@@ -625,7 +625,6 @@ def texturebrowser(reserved=None):
 def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=None):
     "Move the selection and/or apply a linear mapping on it."
 
-    import mdlutils
     from qbaseeditor import currentview
     #
     # Get the list of selected items.
@@ -634,7 +633,7 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
         items = editor.EditorObjectList
         newlist = []
     else:
-        items = mdlutils.MakeEditorVertexPolyObject(editor)
+        items = MakeEditorVertexPolyObject(editor)
     if len(items):
         if matrix and (origin is None):
             #
@@ -687,10 +686,10 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
         mdlmgr.savefacesel = 1
         if quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] == "1":
             text = "face " + text
-            mdlutils.ConvertEditorFaceObject(editor, newlist, currentview.flags, currentview, text)
+            ConvertEditorFaceObject(editor, newlist, currentview.flags, currentview, text)
         else:
             text = "vertex " + text
-            mdlutils.ConvertVertexPolyObject(editor, [new], currentview.flags, currentview, text, 0)
+            ConvertVertexPolyObject(editor, [new], currentview.flags, currentview, text, 0)
 
     else:
         #
@@ -736,6 +735,9 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.46  2015/09/20 13:00:51  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.45  2012/07/10 02:04:16  cdunde
 #Fix for error when making a dupe copy of a model's baseframe.
 #

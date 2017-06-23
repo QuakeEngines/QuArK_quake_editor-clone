@@ -1,18 +1,19 @@
 """   QuArK  -  Quake Army Knife
 
-Model editor commands menu.
+The model editor's "Commands" menu (to be extended by plug-ins)
 """
-
 #
-# $Header$
+# Copyright (C) 1996-99 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+
+#$Header$
 
 
 import quarkx
-from mdlutils import *
-import mdlhandles
 import qmenu
-import dlgclasses
-import mdleditor
+from mdlutils import *
 
 
 def newframeclick(m):
@@ -20,7 +21,7 @@ def newframeclick(m):
     addframe(editor)
 
 def matchframesclick(m):
-    editor = mdleditor.mdleditor
+    editor = mapeditor()
     hasmostframes = None
     framecount = 0
     countsdontmatch = None
@@ -180,6 +181,9 @@ onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.25  2012/07/09 18:11:33  cdunde
+# Updated Tree-view RMB menu for correct single frame Duplication function in the Model Editor.
+#
 # Revision 1.24  2009/06/03 05:16:22  cdunde
 # Over all updating of Model Editor improvements, bones and model importers.
 #
