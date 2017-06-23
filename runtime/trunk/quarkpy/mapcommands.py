@@ -11,7 +11,6 @@ The map editor's "Commands" menu (to be extended by plug-ins)
 #$Header$
 
 
-
 import quarkx
 import qmenu
 from qutils import *
@@ -192,6 +191,9 @@ def CommandsMenu():
 #
 #
 #$Log$
+#Revision 1.10  2008/08/18 20:37:04  danielpharos
+#Moved import to proper place
+#
 #Revision 1.9  2007/12/21 20:39:23  cdunde
 #Added new Templates functions and Templates.
 #

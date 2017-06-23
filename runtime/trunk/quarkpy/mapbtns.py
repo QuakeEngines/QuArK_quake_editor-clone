@@ -11,7 +11,6 @@ Map Editor Buttons and implementation of editing commands
 #$Header$
 
 
-
 import quarkx
 from qdictionnary import Strings
 from maputils import *
@@ -712,6 +711,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.41  2017/03/05 12:48:04  danielpharos
+#Moved the "Used Textures" functionality in the map editor into a plugin.
+#
 #Revision 1.40  2016/03/13 16:13:42  danielpharos
 #Small cleanup in path concatenation.
 #
