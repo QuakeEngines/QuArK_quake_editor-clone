@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-The Animation Toolbar Palette.
+The Animation Toolbar.
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -1101,6 +1101,9 @@ class AnimationBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.27  2011/11/17 01:19:02  cdunde
+#Setup BBox drag toolbar button to work correctly with other toolbar buttons.
+#
 #Revision 1.26  2011/03/04 06:50:28  cdunde
 #Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
 #
