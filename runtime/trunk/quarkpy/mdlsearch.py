@@ -13,8 +13,8 @@ Base of the Model editor "Search" menu
 
 import quarkx
 import qutils
+from qeditor import *
 from qdictionnary import Strings
-from maputils import *
 from mdlutils import *
 import qmenu
 import qmacro
@@ -890,6 +890,9 @@ MapHotKeyList("Full3DPrevShot", WindowPrevShot, shortcuts)
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.9  2017/06/23 19:13:06  danielpharos
+#Removed unneeded variable declaration.
+#
 #Revision 1.8  2015/09/20 13:00:51  danielpharos
 #Added a missing import statement.
 #
