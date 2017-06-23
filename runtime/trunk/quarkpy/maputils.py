@@ -19,21 +19,6 @@ from qdictionnary import Strings
 
 
 #
-# Function below removed. Use "view.scale()" instead.
-#
-
-#def scaleofview(view):
-#    "The scale of the given view, or 1.0 for 3D views."
-#    if view.info["type"]!="3D":
-#        try:
-#            return view.info["scale"]
-#        except KeyError:
-#            pass
-#    return 1.0
-
-
-
-#
 # Is a given object still in the tree view, or was it removed ?
 #
 def checktree(root, obj):
@@ -382,6 +367,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.31  2017/06/23 20:29:14  danielpharos
+#Moved cycle utility functions into the only plugin that is using them.
+#
 #Revision 1.30  2015/09/20 13:00:28  danielpharos
 #Added a missing import statement.
 #
