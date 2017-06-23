@@ -12,10 +12,10 @@ The model editor's "Toolbars" menu (to be extended by plug-ins)
 
 
 import qmenu
+import qtoolbar
 from mdlutils import *
 import qeditor
 import qhandles
-import qtoolbar
 import mdleditor
 import mdlhandles
 
@@ -1025,6 +1025,9 @@ toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal"
 #
 #
 #$Log$
+#Revision 1.21  2015/09/20 13:03:06  danielpharos
+#Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+#
 #Revision 1.20  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #
