@@ -10,7 +10,6 @@ Core of the Model editor.
 
 #$Header$
 
-import mdlmenus
 from qbaseeditor import BaseEditor
 from qeditor import *
 import qmacro
@@ -332,6 +331,7 @@ class ModelEditor(BaseEditor):
 
     def initmenu(self, form):
         "Builds the menu bar."
+        import mdlmenus
         form.menubar, form.shortcuts = mdlmenus.BuildMenuBar(self)
         quarkx.update(form)
         self.initquickkeys(mdlmenus.MdlQuickKeys)
@@ -431,6 +431,7 @@ class ModelEditor(BaseEditor):
         def SaveSkinFile(m):
             quarkx.savefileobj(obj, FM_SaveAsFile, 0, None, 0)
 
+        import mdlmenus
         try:
             if view.info["viewname"] == "skinview":
                 return mdlmenus.MdlBackgroundMenu(self, view, origin)
@@ -1863,6 +1864,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.170  2016/01/16 20:00:57  danielpharos
+#Removed a try-except that's hiding bugs, and shouldn't be needed.
+#
 #Revision 1.169  2016/01/16 19:17:31  danielpharos
 #Removed an old single quote workaround.
 #
