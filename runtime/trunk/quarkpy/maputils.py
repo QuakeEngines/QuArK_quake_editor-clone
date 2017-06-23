@@ -205,12 +205,6 @@ def findlabelled(list,label):
     except (AttributeError):
       pass
 
-def cyclenext(i, len):
-    return (i+1)%len
-    
-def cycleprev(i, len):
-    return (i-1)%len
-
 def projectpointtoplane(p,n1,o2,n2):
   "project point to plane at o2 with normal n2 along normal n1"
   v1 = o2-p
@@ -388,6 +382,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.30  2015/09/20 13:00:28  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.29  2011/03/13 00:41:47  cdunde
 #Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
 #

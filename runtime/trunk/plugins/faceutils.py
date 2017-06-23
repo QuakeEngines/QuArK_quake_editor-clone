@@ -14,20 +14,6 @@ import quarkpy.qhandles
 # globals
 set_error = None
 
-def cyclenext(i, len):
-  j = i+1
-  if j == len:
-    return 0
-  else:
-    return j
-
-def cycleprev(i, len):
-  j = i-1
-  if j == 0:
-    return len
-  else:
-    return j
-
 def vtx_index(vtxes, pos):
   for i in range(len(vtxes)):
     if not(vtxes[i]-pos):
@@ -310,6 +296,10 @@ def common_vertexes(fixedvtx, compface, comppoly, variance):
         return None
 
 #$Log$
+#Revision 1.14  2005/11/06 23:42:39  cdunde
+#Added three new functions, close_to, cursor2vertex and common_vertexes.
+#See them for description, last one allows a grid variance setting.
+#
 #Revision 1.13  2005/10/15 00:49:51  cdunde
 #To reinstate headers and history
 #

@@ -72,6 +72,12 @@ def toggleitem(text,hint):
   item = qmenu.item(text,ToggleCheck,hint)
   return item
 
+def cyclenext(i, len):
+    return (i+1)%len
+    
+def cycleprev(i, len):
+    return (i-1)%len
+
 #
 # Texture multiple support (juggernaut's idea)
 #
@@ -1934,6 +1940,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.46  2017/06/23 20:26:31  danielpharos
+#Removed duplicate squawk function, and fixed Bail-exception to work in Python 2.4.
+#
 #Revision 1.45  2015/09/20 12:59:58  danielpharos
 #Added a missing import statement.
 #
