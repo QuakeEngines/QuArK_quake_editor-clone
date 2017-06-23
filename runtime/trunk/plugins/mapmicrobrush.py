@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Python code to implement the various Duplicator styles.
+Find and remove micro-brushes
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -10,15 +10,9 @@ Python code to implement the various Duplicator styles.
 
 #$Header$
 
-
-#
-# Feel free to add your own styles here, or better
-# in a new plug-in that looks like this one.
-#
-
 Info = {
    "plug-in":       "Micro-Brush Finder",
-   "desc":          "Standard Duplicator styles.",
+   "desc":          "Find and remove micro-brushes.",
    "date":          "10 Feb 2001",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.net",
@@ -26,8 +20,6 @@ Info = {
 
 
 from quarkpy.maputils import *
-import quarkpy.mapmenus
-import quarkpy.mapcommands
 import quarkpy.dlgclasses
 import quarkpy.mapsearch
 import mapmadsel
@@ -100,7 +92,11 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
     def inspect(self):
-        index = eval(self.chosen)
+        try:
+            index = int(self.chosen)
+        except:
+            quarkx.beep()
+            return
         #
         # FIXME: dumb hack, revise mapmadsel
         #
@@ -110,7 +106,11 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
         mapmadsel.SelectMe(m)
 
     def zap(self):
-        index = eval(self.chosen)
+        try:
+            index = int(self.chosen)
+        except:
+            quarkx.beep()
+            return
         undo=quarkx.action()
         thin = self.pack.thinnies[index]
         undo.exchange(thin,None)
@@ -121,7 +121,7 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
         # This seems to need to be called to get the dialog
         #   to reset itself with the new data (not quite sure
         #   why it doesn't happen automatically here, but it
-        #   dosnt seem to)
+        #   doesnt seem to)
         #
         self.datachange(self.dlg)
 
@@ -154,7 +154,7 @@ quarkpy.qmacro.MACRO_zapview = macro_zapview
 # For a face, for each other different face, the vertex furthest
 #  away from the other face must be far enough away/
 #
-def brushIsThin(brush, thick):
+def brushIsThin(brush, thickness):
     for face in brush.faces:
         for face2 in brush.faces:
             if not face2 is face:
@@ -163,10 +163,10 @@ def brushIsThin(brush, thick):
                 sep = 0.0
                 for vert in face.verticesof(brush):
                     sep=max(sep,abs(vert-projectpointtoplane(vert,n,d*n,n)))
-                if sep<thick:
-                        return 1
-    return 0                
-                
+                if sep<thickness:
+                    return 1
+    return 0
+
 def getThin(thin, editor):
     thinnies = []
     for brush in editor.Root.findallsubitems("",":p"):
@@ -178,12 +178,13 @@ def thinClick(m):
     editor=mapeditor()
     thinnies=[]
 
-    thin = quarkx.setupsubset(SS_MAP, "Options")["thinsize"]
-    if thin==None:
-        thin="1.0"
+    try:
+        thin = float(quarkx.setupsubset(SS_MAP, "Options")["thinsize"])
+    except:
+        thin=1.0
 
     for brush in editor.Root.findallsubitems("",":p"):
-        if brushIsThin(brush,eval(thin)):
+        if brushIsThin(brush,thin):
             thinnies.append(brush)
     
     #
@@ -235,7 +236,7 @@ def thinClick(m):
         # Note the commas, EF..1 controls take 1-tuples as data
         #
         self.src["num"]=len(pack.klist),
-        self.src["thin"]=eval(pack.thin),
+        self.src["thin"]=float(pack.thin),
 
     #
     # When data is entered, this gets executed.
@@ -257,14 +258,14 @@ def thinClick(m):
                quarkx.setupsubset(SS_MAP, "Options")["thinsize"]="%f2"%newthin
            pack.thinnies=getThin(newthin, editor)
            pack.thin="%.2f"%newthin
-           
+
     #
     # Cleanup when dialog closes (not needed if no mess has
     #  been created)
     #
     def onclosing(self,editor=editor):
         del editor.microbrushdlg
-        
+
     #
     # And here's the invocation. 2nd arg is a label for storing
     #  position info in setup.qrk.
@@ -276,6 +277,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|Find Microbrushes:\n\nThis function identifies brushes that are suspiciously small, at least in one dimension.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.13  2009/09/25 22:55:56  danielpharos
+#Added some missing import-statements.
+#
 #Revision 1.12  2005/10/15 00:51:24  cdunde
 #To reinstate headers and history
 #

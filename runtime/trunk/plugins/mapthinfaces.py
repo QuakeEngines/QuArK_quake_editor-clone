@@ -20,10 +20,8 @@ Info = {
 
 
 from quarkpy.maputils import *
-import quarkpy.mapmenus
-import quarkpy.mapcommands
-import quarkpy.mapsearch
 import quarkpy.dlgclasses
+import quarkpy.mapsearch
 import mapmadsel
 import quarkx
 
@@ -93,7 +91,11 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
     def inspect(self):
-        index = eval(self.chosen)
+        try:
+            index = int(self.chosen)
+        except:
+            quarkx.beep()
+            return
         #
         # FIXME: dumb hack, revise mapmadsel
         #
@@ -101,12 +103,16 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
         m.object=self.pack.useless[index]
         mapmadsel.ZoomToMe(m)
         mapmadsel.SelectMe(m)
-        thinones = hasThinFaces(m.object,eval(self.pack.thin),retvals=1)
+        thinones = hasThinFaces(m.object,float(self.pack.thin),retvals=1)
         self.pack.thinfaces=thinones
         self.editor.layout.explorer.sellist=thinones
 
     def fix(self):
-        index = eval(self.chosen)
+        try:
+            index = int(self.chosen)
+        except:
+            quarkx.beep()
+            return
         undo=quarkx.action()
         remains=0
         brush = self.pack.useless[index]
@@ -126,7 +132,7 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
         # This seems to need to be called to get the dialog
         #   to reset itself with the new data (not quite sure
         #   why it doesn't happen automatically here, but it
-        #   dosnt seem to)
+        #   doesnt seem to)
         #
         self.datachange(self.dlg)
 
@@ -198,7 +204,7 @@ def thinClick(m):
     if thin==None:
         thin="1.0"
 
-    useless=getThin(eval(thin),editor)    
+    useless=getThin(float(thin),editor)    
     
     #
     # Here we start the Live Edit dialog invocation sequence.
@@ -247,7 +253,7 @@ def thinClick(m):
         # Note the commas, EF..1 controls take 1-tuples as data
         #
         self.src["num"]=len(pack.klist),
-        self.src["thin"]=eval(pack.thin),
+        self.src["thin"]=float(pack.thin),
 
     #
     # When data is entered, this gets executed.
@@ -269,14 +275,14 @@ def thinClick(m):
                quarkx.setupsubset(SS_MAP, "Options")["thinfacesize"]="%f2"%newthin
            pack.useless=getThin(newthin, editor)
            pack.thin="%.2f"%newthin
-           
+
     #
     # Cleanup when dialog closes (not needed if no mess has
     #  been created)
     #
     def onclosing(self,editor=editor):
         del editor.uselessfacedlg
-        
+
     #
     # And here's the invocation. 2nd arg is a label for storing
     #  position info in setup.qrk.
@@ -288,6 +294,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|Find Thin Faces:\n\nThis function will search for and identifies brushes with faces that are suspiciously thin.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.11  2009/11/03 19:23:18  danielpharos
+#Don't show a scrollbar on dialog.
+#
 #Revision 1.10  2009/09/25 22:55:56  danielpharos
 #Added some missing import-statements.
 #
