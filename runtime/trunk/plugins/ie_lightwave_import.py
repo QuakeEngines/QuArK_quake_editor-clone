@@ -56,7 +56,7 @@ Info = {
 #    import mod_meshtools as my_meshtools
 
 #python specific modules import
-import struct, chunk, os, cStringIO, time, operator
+import struct, chunk, os, cStringIO, time, operator, math
 import quarkx
 import quarkpy.qtoolbar
 import ie_utils
@@ -1404,7 +1404,7 @@ def my_create_mesh(clip_list, surf, objspec_list, current_facelist, objname, not
     if surf.has_key('SMAN'):
         #not allowed mixed mode mesh (all the mesh is smoothed and all with the same angle)
         #only one smoothing angle will be active! => take the max one
-        s = int(surf['SMAN']/3.1415926535897932384626433832795*180.0)     #lwo in radians - blender in degrees
+        s = int(surf['SMAN']/math.pi*180.0)     #lwo in radians - blender in degrees
         if msh.getMaxSmoothAngle() < s: msh.setMaxSmoothAngle(s)
 
     img = None
@@ -2706,6 +2706,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.45  2017/06/23 19:25:41  danielpharos
+# Replaced a whole bunch of magic constants with their proper variable.
+#
 # Revision 1.44  2016/12/16 22:18:49  danielpharos
 # Corrected a couple of warnings due to misplaced global statements.
 #
