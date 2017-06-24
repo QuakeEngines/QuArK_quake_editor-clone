@@ -122,7 +122,7 @@ def ListAngleSpecs(entity):
 
 # tbd : this should be configured in the game addon file !
 def ListAddPointSpecs(entity):
-    "Called from maphandles CenterEntityHandle funciton"
+    "Called from maphandles CenterEntityHandle function"
     "to create extra Specifics setting handles"
     "for Half-Life 2 functions commented below."
     h=[]
@@ -1137,6 +1137,9 @@ def LoadEntityForm(sl):  # Let's find all the objects (items) in sl (a list)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.64  2016/11/28 18:30:40  danielpharos
+#Changed the way entity light is stored for easier understanding and fixed a lighting quality bug in OpenGL.
+#
 #Revision 1.63  2016/06/17 19:27:27  danielpharos
 #Fixed a typo.
 #
