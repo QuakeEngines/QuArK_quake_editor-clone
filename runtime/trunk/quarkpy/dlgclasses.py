@@ -134,9 +134,8 @@ class LiveBrowserDlg(LiveButtonDlg):
 
 
         self.moresetup=moresetup
-            
         self.moreaction=moreaction
-                    
+        
         self.pack=pack
         pack.seen = 0
         
@@ -199,6 +198,9 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.16  2015/09/20 13:00:28  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.15  2008/08/21 12:03:32  danielpharos
 #Cleaned up redundant code
 #
