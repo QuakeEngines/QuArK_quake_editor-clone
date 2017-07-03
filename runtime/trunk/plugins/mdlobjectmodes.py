@@ -26,17 +26,12 @@ import quarkpy.qtoolbar
 import quarkpy.qhandles
 from quarkpy.maputils import *
 import quarkpy.mdltoolbars
-import quarkpy.maphandles
-import quarkpy.mapbtns
 from math import pi, sin, cos, fmod
 import mapdragmodes
-import quarkpy.qbaseeditor
 import quarkpy.dlgclasses
 import quarkpy.mdlutils
 import mdlgridscale
 # For hollowing Torus
-import quarkpy.mapcommands
-import quarkpy.mapentities
 import plugins.mapcsg
 
 #
@@ -5626,6 +5621,9 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.23  2016/06/17 19:27:28  danielpharos
+# Fixed a typo.
+#
 # Revision 1.22  2015/01/09 20:22:26  danielpharos
 # Typo fixes.
 #
