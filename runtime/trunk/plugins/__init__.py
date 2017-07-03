@@ -20,6 +20,7 @@ Plug-ins Launcher
 
 #   q_*.py     loaded at start-up
 #   map*.py    loaded only when a map editor opens
+#   mdl*.py    loaded only when a model editor opens
 
 
 import nt     # note: this is not portable, but I want to avoid
@@ -48,6 +49,9 @@ LoadPlugins("Q_")   # immediately loads plug-ins whose name
 #
 #
 # $Log$
+# Revision 1.10  2009/07/14 12:14:54  danielpharos
+# Oops: uploaded version: Added logging of plugin loading.
+#
 # Revision 1.9  2009/07/14 11:29:13  danielpharos
 # Added logging of plugin loading.
 #
