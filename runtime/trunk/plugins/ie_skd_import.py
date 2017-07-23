@@ -524,13 +524,13 @@ class skd_obj:
     ofsLODs = 0          #item  70    int, offset to LOD data.
     lodIndex = 0         #item  71    int, LOD Index. [8]?
     numBoxes = 0         #item  72    int, number of Hit Boxes.
-    ofsBoxes = 0         #item  73    int, number of Morphs.
+    ofsBoxes = 0         #item  73    int, offset to Hit Box data.
     numMorphTargets = 0  #item  74    int, number of Morphs.
     ofsMorphTargets = 0  #item  75    int, offset to Morph data.
 
     binary_format="<4si"  #little-endian (<), see #item descriptions above.
 
-    #skb data objects
+    #skd data objects
     existing_bones = None
     surfaceList = []
     bones = [] # To put our QuArK bones into.
@@ -1765,6 +1765,10 @@ quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.26  2012/01/04 04:59:19  cdunde
+# New method to stop need of loading mesh file every time an animation file is loaded.
+# Speeds up animation loading and avoids overwriting editing that has already taken place.
+#
 # Revision 1.25  2012/01/03 08:42:22  cdunde
 # Setup progressbars.
 #

@@ -612,7 +612,7 @@ class skd_obj:
     ofsLODs = 0          #item  70    int, offset to LOD data.
     lodIndex = 0         #item  71    int, LOD Index. [8]?
     numBoxes = 0         #item  72    int, number of Hit Boxes.
-    ofsBoxes = 0         #item  73    int, number of Morphs.
+    ofsBoxes = 0         #item  73    int, offset to Hit Box data.
     numMorphTargets = 0  #item  74    int, number of Morphs.
     ofsMorphTargets = 0  #item  75    int, offset to Morph data.
 
@@ -1501,6 +1501,9 @@ quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2017/06/23 19:25:41  danielpharos
+# Replaced a whole bunch of magic constants with their proper variable.
+#
 # Revision 1.15  2015/01/09 20:22:27  danielpharos
 # Typo fixes.
 #
