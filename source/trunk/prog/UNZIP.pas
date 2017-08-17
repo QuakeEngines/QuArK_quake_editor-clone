@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2017/08/17 17:50:58  danielpharos
+Updated to Chief's UNZIP V2.60; this adds CRC checking to ZIP-file loading.
+
 Revision 1.9  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -1732,7 +1735,7 @@ var header: tlocalfileheader;
     i := huft_build(pword(@ll), nl, 257, pushlist(@cplens), pushlist(@cplext), pphuft(@tl), bl);
     if i <> huft_complete then begin
       if i = huft_incomplete then huft_free(tl);
-      inflate_dynamic := -90;
+      inflate_dynamic := unzip_ZipFileErr;
       exit
     end;
     bd := dbits;
