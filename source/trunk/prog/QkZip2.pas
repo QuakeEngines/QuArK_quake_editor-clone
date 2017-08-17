@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2010/10/16 20:43:26  danielpharos
+Fixed a memory leak during certain failures to save zip files.
+
 Revision 1.31  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -206,6 +209,10 @@ const
   cEOCD_HEADER  = $06054B50;
   quark_zip_comment = 'by QuArK';
   quark_zip_comment_temp = quark_zip_comment + ' (temporary)';
+  cSTORED_COMPRESSION = 0;
+  cSHRUNK_COMPRESSION = 1;
+  cIMPLODED_COMPRESSION = 6;
+  cDEFLATED_COMPRESSION = 8;
 
 implementation
 
@@ -326,52 +333,58 @@ begin
       else
       begin
         S:=Chemin+Q.Name+Q.TypeInfo;
-        TempStream:=TMemoryStream.Create;
-        tInfo:=TInfoEnreg1.Create;
-        tInfo.Format:=Info.Format;
-        tInfo.TransfertSource:=Info.TransfertSource;
-        tInfo.TempObject:=Info.TempObject;
-        tInfo.F:=TempStream;
-        Q.SaveFile1(tInfo);   { save in non-QuArK file format }
-        tInfo.Free;
-        crc:=DWORD($FFFFFFFF);
-        CalcCRC32(TempStream.Memory, TempStream.Size, crc);
-        crc:=not crc;
-        TempStream.Seek(0, soFromBeginning);
-        OrgSize:=TempStream.Size;
-       { Compress Data From TempStream To T2}
         T2:=TMemoryStream.Create;
+        try
+         { First Save The File Data To A Memory Stream}
+          TempStream:=TMemoryStream.Create;
+          try
+            tInfo:=TInfoEnreg1.Create;
+            try
+              tInfo.Format:=Info.Format;
+              tInfo.TransfertSource:=Info.TransfertSource;
+              tInfo.TempObject:=Info.TempObject;
+              tInfo.F:=TempStream;
+              Q.SaveFile1(tInfo);   { save in non-QuArK file format }
+            finally
+              tInfo.Free;
+            end;
+            crc:=$FFFFFFFF;
+            CalcCRC32(TempStream.Memory, TempStream.Size, crc);
+            crc:=not crc;
+            TempStream.Seek(0, soFromBeginning);
+            OrgSize:=TempStream.Size;
 
-        CompressStream(TempStream, T2);
+           { Compress Data From TempStream To T2}
+            CompressStream(TempStream, T2);
+            T2.Seek(0, soFromBeginning);
+            Size:=T2.Size;
+          finally
+            TempStream.Free;
+          end;
 
-        T2.Seek(0, soFromBeginning);
+          pos:=Info.F.Position; // Save Local Header Offset
+         {Write File Entry}
+          LFS:=BuildLFH(10, 0, 8, DateTimeToFileDate(Now()), crc, Size, OrgSize, length(s), 0);
+          sig:=cZIP_HEADER;
+          Info.F.WriteBuffer(sig, 4);
+          Info.F.WriteBuffer(LFS, Sizeof(TLocalFileHeader));
+          Info.F.WriteBuffer(PChar(S)^, Length(S));
+         {/Write File Entry}
 
-        Size:=T2.Size;
+          cdir:=BuildFH(10, 20, 0, 8, DateTimeToFileDate(Now()), crc, Size, OrgSize, length(s), 0, 0, 0, {-2118778880} LongInt($81B60000), pos, 0);
+          sig:=cCFILE_HEADER;
+          Repertoire.WriteBuffer(sig, 4);
+          Repertoire.WriteBuffer(cdir, sizeof(TFileHeader));
+          Repertoire.WriteBuffer(PChar(S)^, Length(S));
 
-       {Dont Need TempStream Any More...}
-        TempStream.Free;
+          inc(eocd^.no_entries_disk);
+          inc(eocd^.no_entries);
+          inc(eocd^.size_cd, (4 + sizeof(TFileHeader) + Length(S)));
 
-        pos:=Info.F.Position; // Save Local Header Offset
-       {Write File Entry}
-        LFS:=BuildLFH(10, 0, 8, DateTimeToFileDate(now), crc, Size, OrgSize, length(s), 0);
-        sig:=cZIP_HEADER;
-        Info.F.WriteBuffer(sig, 4);
-        Info.F.WriteBuffer(LFS, Sizeof(TLocalFileHeader));
-        Info.F.WriteBuffer(PChar(S)^, Length(S));
-       {/Write File Entry}
-
-        cdir:=BuildFH(10, 20, 0, 8, DateTimeToFileDate(Now()), crc, Size, OrgSize, length(s), 0, 0, 0, {-2118778880} LongInt($81B60000), pos, 0);
-        sig:=cCFILE_HEADER;
-        Repertoire.WriteBuffer(sig, 4);
-        Repertoire.WriteBuffer(cdir, sizeof(TFileHeader));
-        Repertoire.WriteBuffer(PChar(S)^, Length(S));
-
-        inc(eocd^.no_entries_disk);
-        inc(eocd^.no_entries);
-        inc(eocd^.size_cd, (4 + sizeof(TFileHeader) + Length(S)));
-
-        Info.F.CopyFrom(T2, T2.Size);       {Write Actual File Date ( Compressed ) }
-        T2.Free;
+          Info.F.CopyFrom(T2, T2.Size);       {Write Actual File Data ( Compressed ) }
+        finally
+          T2.Free;
+        end;
       end;
       ProgressIndicatorIncrement;
     end;
@@ -412,14 +425,14 @@ begin
 
           Repertoire.Seek(0, soFromBeginning);
           F.CopyFrom(Repertoire, 0);
-
-          sig:=cEOCD_HEADER;
-          F.WriteBuffer(sig, 4);
-          F.WriteBuffer(EOCDHeader, sizeof(TEndOfCentralDir));
-          F.WriteBuffer(comment[1], Length(comment));
         finally
           Repertoire.Free;
         end;
+
+        sig:=cEOCD_HEADER;
+        F.WriteBuffer(sig, 4);
+        F.WriteBuffer(EOCDHeader, sizeof(TEndOfCentralDir));
+        F.WriteBuffer(comment[1], Length(comment));
       end;
       else
         inherited;
@@ -434,12 +447,17 @@ var
 begin
   Ref^.Self.Position:=Ref^.Position;
   mem:=TMemoryStream.Create;
-  err:=UnZipFile(Ref^.Self, mem, Ref^.Position);
-  if err<>0 then
-    raise Exception.CreateFmt('Error decompressing file (%d)', [err]);
-  Result:=mem.Size;
-  mem.Position:=0;
-  S:=mem;
+  try
+    err:=UnZipFile(Ref^.Self, mem, Ref^.Position);
+    if err<>0 then
+      raise Exception.CreateFmt('Error decompressing file (%d)', [err]);
+    Result:=mem.Size;
+    mem.Position:=0;
+    S:=mem;
+  except
+    mem.Free;
+    raise
+  end;
 end;
 
 procedure QZipFolder.LoadFile(F: TStream; FSize: Integer);
@@ -454,7 +472,7 @@ var
   files: TMemoryStream;
   EoSig,s,nEnd: Longint;
   eocd: TEndOfCentralDir;
-  I:Integer;
+  I:Smallint;
   eocd_found: boolean;
 begin
   case ReadFormat of
@@ -466,22 +484,21 @@ begin
       if (FSize < sizeof(TEndOfCentralDIR)) then
         raise Exception.CreateFmt('File "%s" is corrupt, please correct or remove it.\nFilesize less than minimum required size (%d < %d).', [LoadName, FSize, sizeof(TEndOfCentralDIR)]);
 
-      f.seek(FSize, soFromBeginning); {end of 'file'}
-      f.seek(-sizeof(TEndOfCentralDIR), soFromCurrent); // EOCD is stored at least -Sizeof(endofcentradir) header
+      f.seek(FSize-sizeof(TEndOfCentralDIR), soFromBeginning); // EOCD is stored at least -Sizeof(endofcentraldir) header
       eocd_found:=false;
-      try // catch stream read errors
-        while (f.position > org) do
-        begin
-          f.ReadBuffer(eosig, 4);                         // check for cEOCD_HEADER signiture
-          eocd_found := (eosig = cEOCD_HEADER);
-          if not eocd_found then
-            f.seek(-5, soFromCurrent)                     // Skip back 1 byte, and recheck
-          else
-            break;
-        end;
-      finally
+      while (f.position > org) do
+      begin
+        f.ReadBuffer(eosig, 4);                         // check for cEOCD_HEADER signature
+        eocd_found := (eosig = cEOCD_HEADER);
         if not eocd_found then
-          raise Exception.CreateFmt('File "%s" is corrupt. cEOCD_HEADER(%d) not found', [LoadName, cEOCD_HEADER]);
+          f.seek(-5, soFromCurrent)                     // Skip back 1 byte, and recheck
+        else
+          break;
+      end;
+      if not eocd_found then
+      begin
+        f.seek(org, soFromBeginning); // Restore original file position, just in case
+        raise Exception.CreateFmt('File "%s" is corrupt. cEOCD_HEADER(%d) not found', [LoadName, cEOCD_HEADER]);
       end;
 
       f.readbuffer(eocd, sizeof(eocd));
@@ -496,18 +513,17 @@ begin
           Specifics.Values['temp']:= '1';
         end;
       end;
-      f.seek(org, soFromBeginning); {beginning of 'file'}
-      f.seek(eocd.offset_cd, soFromCurrent);
+      f.seek(org + eocd.offset_cd, soFromBeginning); {seek to central directory}
       files:=TMemoryStream.Create;    {ms for central directory}
       try
         files.CopyFrom(f, eocd.size_cd); {read in central dir}
-        files.seek(0, sofrombeginning);
+        files.seek(0, soFromBeginning);
 
         ProgressIndicatorStart(5461, eocd.no_entries);
         try
           for i:=1 to eocd.no_entries do
           begin
-            files.readbuffer(s, 4); // Signiture
+            files.ReadBuffer(s, 4); // Signature
             if s<>cCFILE_HEADER then
               raise Exception.CreateFmt('Central directory for file "%s" is corrupt: %d<>%d(cCFILE_HEADER)', [LoadName, s, cCFILE_HEADER]);
 
@@ -521,10 +537,10 @@ begin
             fn:=Chemin;
 
             { check compression method, that it is one we can decompress }
-            if  (FH.compression_method<>0)
-            and (FH.compression_method<>1)
-            and (FH.compression_method<>6)
-            and (FH.compression_method<>8) then
+            if  (FH.compression_method<>cSTORED_COMPRESSION)
+            and (FH.compression_method<>cSHRUNK_COMPRESSION)
+            and (FH.compression_method<>cIMPLODED_COMPRESSION)
+            and (FH.compression_method<>cDEFLATED_COMPRESSION) then
               Raise EErrorFmt(5692, [LoadName, FH.compression_method]);
 
             { if previous file's path, is the same as this file's path, then reuse the Dossier-pointer.
