@@ -130,17 +130,17 @@ class GameConsole(BatchConsole):
                     else:
                         type1 = qobj.type.upper()
                         if type1:
-                            type2 = fname[-len(type1):].upper()
+                            type2 = qname[-len(type1):].upper()
                             if type1 != type2:
-                                raise "Invalid file types : %s should be of type %s" % (fname,type1)
-                            fname = fname[:-len(type1)]
-                        i = len(fname)
-                        while i and not (fname[i-1] in ("/", "\\")):
+                                raise "Invalid file types : %s should be of type %s" % (qname,type1)
+                            qname = qname[:-len(type1)]
+                        i = len(qname)
+                        while i and not (qname[i-1] in ("/", "\\")):
                             i = i - 1
-                        folder = pak.getfolder(fname[:i])
-                        qobj.shortname = fname[i:]
+                        folder = pak.getfolder(qname[:i])
+                        qobj.shortname = qname[i:]
                         folder.appenditem(qobj)
-                print "/" + fname + err
+                print "/" + qname + err
             pak.filename = writeto
             pak.savefile()
         else:
@@ -194,6 +194,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.25  2008/10/08 21:42:12  danielpharos
+#Made map extension changable.
+#
 #Revision 1.24  2008/09/29 23:16:38  danielpharos
 #Resolve-code: Another fix. This should get Steam-games compiling and running again.
 #

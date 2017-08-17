@@ -14,6 +14,8 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed the bad PAK file output, which was broken in 6.6.0 Beta 2.
+
 * [DanielPharos]: Fixed the errors and value corruption when trying to re-open the
           - "Background Image" window.
 
