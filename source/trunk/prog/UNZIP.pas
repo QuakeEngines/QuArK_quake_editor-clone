@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.8  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -46,7 +49,12 @@ added cvs headers
 This unit basically decompresses a zip file (only stored, shrunk, imploded and deflated files
 allowed - that should be enough for PK3 support) from one stream to another.
 
-   -- SORRY ABOUT THE MESSYNESS OF THIS UNIT. I DIDNOT WRITE THIS CODE, A FRIEND DID --
+Based on Chief's UNZIP V2.60:
+  Original version (1.x): Christian Ghisler
+   C code by info-zip group, translated to pascal by Christian Ghisler
+   based on unz51g.zip;
+   Special thanks go to Mark Adler,who wrote the main inflate and
+   explode code, and did NOT copyright it!!!
 }
 
 unit UNZIP;
@@ -58,6 +66,7 @@ uses Windows, SysUtils, Classes;
 function UnZipFile(fs: TStream; {<-- INPUT} ms: TStream {<-- OUTPUT}; offset: longint {Of LocalHeader in Zip File}): integer;
            {Returns Zero if all is well}
 
+{ pkzip header in front of every file in archive }
 type
   TLocalfileheader = packed record
     version_needed: SmallInt;
@@ -71,29 +80,88 @@ type
     extrafield_len: SmallInt;
   end;
 
+{Error codes returned by the main unzip functions}
+const
+  unzip_Ok               =  0;
+  unzip_CRCErr           = -1;
+  unzip_WriteErr         = -2;
+  unzip_ReadErr          = -3;
+  unzip_ZipFileErr       = -4;
+  unzip_UserAbort        = -5;
+  unzip_NotSupported     = -6;
+  unzip_Encrypted        = -7;
+  unzip_InUse            = -8;
+  unzip_InternalError    = -9;    {Error in zip format}
+  unzip_NoMoreItems      = -10;
+  unzip_FileError        = -11;   {Error Accessing file}
+  unzip_NotZipfile       = -12;   {not a zip file}
+  unzip_HeaderTooLarge   = -13;   {can't handle such a big ZIP header}
+  unzip_ZipFileOpenError = -14; { can't open zip file }
+  unzip_SeriousError     = -100;  {serious error}
+  unzip_MissingParameter = -500; {missing parameter}
+
 implementation
 
 const
+  { filename length }
+  TFileNameSize   = 259;
+
+type
+  TDirType = array[0..TFileNameSize] of char;
+
+const   {Error codes returned by huft_build}
   huft_complete = 0; {Complete tree}
   huft_incomplete = 1; {Incomplete tree <- sufficient in some cases!}
   huft_error = 2; {bad tree constructed}
   huft_outofmem = 3; {not enough memory}
+
+const
   MaxMax = 31 * 1024;
-  WSize = $8000;
-  max_code = 8192;
-  max_stack = 8192;
-  initial_code_size = 9;
-  final_code_size = 13;
-  write_max = wsize - 3 * (max_code - 256) - max_stack - 2; {Rest of slide=write buffer =766 bytes}
-  n_max = 288;
-  b_max = 16;
-  BMAX = 16;
+  WSize = $8000;       {Size of sliding dictionary}
+  INBUFSIZ = 1024 * 4;    {Size of input buffer (4kb) }
   lbits: integer = 9;
   dbits: integer = 6;
+  b_max = 16;
+  n_max = 288;
+  BMAX = 16;
+
+type
+  push = ^ush;
+  ush = Word;
+  pushlist = ^ushlist;
+  ushlist = array[0..maxmax] of ush; {only pseudo-size!!}
+  piobuf = ^iobuf;
+  iobuf = array[0..inbufsiz-1] of byte;
+
+type
+  pphuft = ^phuft;
+  phuft = ^huft;
+  phuftlist = ^huftlist;
+  huft = packed record
+    e, {# of extra bits}
+      b: byte; {# of bits in code}
+    v_n: ush;
+    v_t: phuftlist; {Linked List}
+  end;
+  huftlist = array[0..8190] of huft;
+
+{b and mask_bits[i] gets lower i bits out of i}
+const
   mask_bits: array[0..16] of word =
     ($0000,
     $0001, $0003, $0007, $000F, $001F, $003F, $007F, $00FF,
     $01FF, $03FF, $07FF, $0FFF, $1FFF, $3FFF, $7FFF, $FFFF);
+
+{ Tables for deflate from PKZIP's appnote.txt. }
+const
+  border: array[0..18] of byte = { Order of the bit length code lengths }
+    (16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15);
+  cplens: array[0..30] of word = { Copy lengths for literal codes 257..285 }
+    (3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
+    35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0);
+  cplext: array[0..30] of word = { Extra bits for literal codes 257..285 }
+    (0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
+    3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 99, 99); { 99==invalid }
   cpdist: array[0..29] of word = { Copy offsets for distance codes 0..29 }
     (1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
     257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
@@ -102,9 +170,9 @@ const
     (0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
     7, 7, 8, 8, 9, 9, 10, 10, 11, 11,
     12, 12, 13, 13);
-  cplens: array[0..30] of word = { Copy lengths for literal codes 257..285 }
-    (3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
-    35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0);
+
+{ Tables for explode }
+const
   cplen2: array[0..63] of word = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
     35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
@@ -117,9 +185,6 @@ const
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     8);
-  cplext: array[0..30] of word = { Extra bits for literal codes 257..285 }
-    (0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
-    3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 99, 99); { 99==invalid }
   cpdist4: array[0..63] of word = (1, 65, 129, 193, 257, 321, 385, 449, 513, 577, 641, 705,
     769, 833, 897, 961, 1025, 1089, 1153, 1217, 1281, 1345, 1409, 1473,
     1537, 1601, 1665, 1729, 1793, 1857, 1921, 1985, 2049, 2113, 2177,
@@ -132,12 +197,92 @@ const
     4225, 4353, 4481, 4609, 4737, 4865, 4993, 5121, 5249, 5377, 5505,
     5633, 5761, 5889, 6017, 6145, 6273, 6401, 6529, 6657, 6785, 6913,
     7041, 7169, 7297, 7425, 7553, 7681, 7809, 7937, 8065);
-  border: array[0..18] of byte = { Order of the bit length code lengths }
-    (16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15);
 
-type TDirType = array[0..259] of char;
-  push = ^ush;
-  ush = Word;
+{***************** CRC Checking **************************}
+{////// by the African Chief  ////////////////////////////}
+PROCEDURE UpdateCRC32(var CRC:Cardinal; var InBuf; InLen:Longint);
+CONST
+CRC32Table :
+ARRAY [0..255] OF Cardinal = (
+   $00000000, $77073096, $ee0e612c, $990951ba, $076dc419, $706af48f, $e963a535, $9e6495a3,
+   $0edb8832, $79dcb8a4, $e0d5e91e, $97d2d988, $09b64c2b, $7eb17cbd, $e7b82d07, $90bf1d91,
+   $1db71064, $6ab020f2, $f3b97148, $84be41de, $1adad47d, $6ddde4eb, $f4d4b551, $83d385c7,
+   $136c9856, $646ba8c0, $fd62f97a, $8a65c9ec, $14015c4f, $63066cd9, $fa0f3d63, $8d080df5,
+   $3b6e20c8, $4c69105e, $d56041e4, $a2677172, $3c03e4d1, $4b04d447, $d20d85fd, $a50ab56b,
+   $35b5a8fa, $42b2986c, $dbbbc9d6, $acbcf940, $32d86ce3, $45df5c75, $dcd60dcf, $abd13d59,
+   $26d930ac, $51de003a, $c8d75180, $bfd06116, $21b4f4b5, $56b3c423, $cfba9599, $b8bda50f,
+   $2802b89e, $5f058808, $c60cd9b2, $b10be924, $2f6f7c87, $58684c11, $c1611dab, $b6662d3d,
+   $76dc4190, $01db7106, $98d220bc, $efd5102a, $71b18589, $06b6b51f, $9fbfe4a5, $e8b8d433,
+   $7807c9a2, $0f00f934, $9609a88e, $e10e9818, $7f6a0dbb, $086d3d2d, $91646c97, $e6635c01,
+   $6b6b51f4, $1c6c6162, $856530d8, $f262004e, $6c0695ed, $1b01a57b, $8208f4c1, $f50fc457,
+   $65b0d9c6, $12b7e950, $8bbeb8ea, $fcb9887c, $62dd1ddf, $15da2d49, $8cd37cf3, $fbd44c65,
+   $4db26158, $3ab551ce, $a3bc0074, $d4bb30e2, $4adfa541, $3dd895d7, $a4d1c46d, $d3d6f4fb,
+   $4369e96a, $346ed9fc, $ad678846, $da60b8d0, $44042d73, $33031de5, $aa0a4c5f, $dd0d7cc9,
+   $5005713c, $270241aa, $be0b1010, $c90c2086, $5768b525, $206f85b3, $b966d409, $ce61e49f,
+   $5edef90e, $29d9c998, $b0d09822, $c7d7a8b4, $59b33d17, $2eb40d81, $b7bd5c3b, $c0ba6cad,
+   $edb88320, $9abfb3b6, $03b6e20c, $74b1d29a, $ead54739, $9dd277af, $04db2615, $73dc1683,
+   $e3630b12, $94643b84, $0d6d6a3e, $7a6a5aa8, $e40ecf0b, $9309ff9d, $0a00ae27, $7d079eb1,
+   $f00f9344, $8708a3d2, $1e01f268, $6906c2fe, $f762575d, $806567cb, $196c3671, $6e6b06e7,
+   $fed41b76, $89d32be0, $10da7a5a, $67dd4acc, $f9b9df6f, $8ebeeff9, $17b7be43, $60b08ed5,
+   $d6d6a3e8, $a1d1937e, $38d8c2c4, $4fdff252, $d1bb67f1, $a6bc5767, $3fb506dd, $48b2364b,
+   $d80d2bda, $af0a1b4c, $36034af6, $41047a60, $df60efc3, $a867df55, $316e8eef, $4669be79,
+   $cb61b38c, $bc66831a, $256fd2a0, $5268e236, $cc0c7795, $bb0b4703, $220216b9, $5505262f,
+   $c5ba3bbe, $b2bd0b28, $2bb45a92, $5cb36a04, $c2d7ffa7, $b5d0cf31, $2cd99e8b, $5bdeae1d,
+   $9b64c2b0, $ec63f226, $756aa39c, $026d930a, $9c0906a9, $eb0e363f, $72076785, $05005713,
+   $95bf4a82, $e2b87a14, $7bb12bae, $0cb61b38, $92d28e9b, $e5d5be0d, $7cdcefb7, $0bdbdf21,
+   $86d3d2d4, $f1d4e242, $68ddb3f8, $1fda836e, $81be16cd, $f6b9265b, $6fb077e1, $18b74777,
+   $88085ae6, $ff0f6a70, $66063bca, $11010b5c, $8f659eff, $f862ae69, $616bffd3, $166ccf45,
+   $a00ae278, $d70dd2ee, $4e048354, $3903b3c2, $a7672661, $d06016f7, $4969474d, $3e6e77db,
+   $aed16a4a, $d9d65adc, $40df0b66, $37d83bf0, $a9bcae53, $debb9ec5, $47b2cf7f, $30b5ffe9,
+   $bdbdf21c, $cabac28a, $53b39330, $24b4a3a6, $bad03605, $cdd70693, $54de5729, $23d967bf,
+   $b3667a2e, $c4614ab8, $5d681b02, $2a6f2b94, $b40bbe37, $c30c8ea1, $5a05df1b, $2d02ef8d
+);
+
+VAR
+BytePtr : ^Byte;
+wcount : Word;
+aCRC   : Cardinal;
+BEGIN
+     aCRC := CRC ;
+     BytePtr := Addr ( InBuf ) ;
+     FOR wcount := 1 TO InLen
+     DO BEGIN
+         aCRC := CRC32Table [Byte ( aCRC XOR Cardinal ( BytePtr^ ) ) ]
+                     XOR ( ( aCRC SHR 8 ) AND $00ffffff ) ;
+         Inc ( BytePtr );
+     END ;
+     CRC := aCRC;
+END;
+{/////////////////////////////////////////////////////////}
+PROCEDURE InitCRC32 ( VAR CRC : Cardinal );
+BEGIN
+  CRC := $FFFFFFFF;
+END;
+{/////////////////////////////////////////////////////////}
+FUNCTION FinalCRC32 ( CRC : Cardinal ) : Cardinal;
+BEGIN
+  FinalCRC32 := NOT CRC;
+END;
+{/////////////////////////////////////////////////////////}
+{/////////////////////////////////////////////////////////}
+{/////////////////////////////////////////////////////////}
+
+{Written and NOT copyrighted by Christian Ghisler.
+ I have rewritten unshrink because the original
+ function was copyrighted by Mr. Smith of Info-zip
+ This funtion here is now completely FREE!!!!
+ The only right I claim on this code is that
+ noone else claims a copyright on it!}
+
+
+const
+  max_code = 8192;
+  max_stack = 8192;
+  initial_code_size = 9;
+  final_code_size = 13;
+  write_max = wsize - 3 * (max_code - 256) - max_stack - 2; {Rest of slide=write buffer =766 bytes}
+
+type
   prev = array[257..max_code] of integer;
   pprev = ^prev;
   cds = array[257..max_code] of char;
@@ -146,23 +291,6 @@ type TDirType = array[0..259] of char;
   pstacktype = ^stacktype;
   writebuftype = array[0..write_max] of char; {write buffer}
   pwritebuftype = ^writebuftype;
-  piobuf = ^iobuf;
-  iobuf = array[0..4095] of byte;
-  pphuft = ^phuft;
-  phuft = ^huft;
-  phuftlist = ^huftlist;
-  huft = packed record
-    e, {# of extra bits}
-      b: byte; {# of bits in code}
-    v_n: ush;
-    v_t: phuftlist; {Linked List}
-  end;
-  huftlist = array[0..8190] of huft;
-  pushlist = ^ushlist;
-  ushlist = array[0..maxmax] of ush; {only pseudo-size!!}
-
-var
-  _Token: PChar;
 
 {***************************************************************************}
 
@@ -185,6 +313,11 @@ begin
     {$ENDIF}
 end;
 
+{******************************* Break string into tokens ****************************}
+
+var
+  _Token: PChar;
+
 function StrTok(Source: PChar; Token: CHAR): PChar;
 var P: PChar;
 begin
@@ -201,6 +334,8 @@ begin
   end;
   _Token := P;
 end;
+
+{*************** free huffman tables starting with table where t points to ************}
 
 procedure huft_free(t: phuftlist);
 
@@ -236,13 +371,13 @@ var a: word; {counter for codes of length k}
   v: array[0..n_max] of word; {values in order of bit length}
   w: integer; {bits before this table}
   x: array[0..b_max + 1] of word; {bit offsets, then code stack}
-  l: array[-1..b_max + 1] of Word; {l[h] bits in table of level h}
+  l: array[-1..b_max + 1] of word; {l[h] bits in table of level h}
   xp: pword; {pointer into x}
   y: integer; {number of dummy codes added}
   z: word; {number of entries in current table}
   tryagain: boolean; {bool for loop}
   pt: phuft; {for test against bad input}
-  el: Word; {length of eob code=code 256}
+  el: word; {length of eob code=code 256}
 begin
   if n > 256 then el := pword(longint(b) + 256 * sizeof(word))^
   else el := BMAX;
@@ -295,9 +430,9 @@ begin
   {generate starting offsets into the value table for each length}
   x[1] := 0;
   j := 0;
-  p := pword(@c); {@@}
+  p := pword(@c);
   inc(longint(p), sizeof(word));
-  xp := pword(@x); {@@}
+  xp := pword(@x);
   inc(longint(xp), 2 * sizeof(word));
   dec(i);
   while i <> 0 do begin
@@ -320,7 +455,7 @@ begin
   until i >= n;
   {generate huffman codes and for each, make the table entries}
   x[0] := 0; i := 0;
-  p := pword(@v); {@@}
+  p := pword(@v);
   h := -1;
   l[-1] := 0;
   w := 0;
@@ -439,12 +574,13 @@ end;
 
 function UnZipFile(fs: TStream; {<-- INPUT} ms: TStream {<-- OUTPUT}; offset: longint {Of LocalHeader in Zip File}): integer;
 var header: tlocalfileheader;
+  originalcrc : Cardinal; {crc from zip-header}
   ziptype, aResult: integer;
   slide: PChar;
-  sig: Longint;
+  sig: Cardinal;
   compsize, uncompsize, hufttype, reachedsize: Longint;
-  totalabort, {User pressed abort button, set in showpercent!}
-    zipeof: boolean; {read over end of zip section for this file}
+  crc32val   : Cardinal; {crc calculated from data}
+  zipeof: boolean; {read over end of zip section for this file}
   previous_code: pprev; {previous code trie}
   actual_code: pcds; {actual code trie}
   stack: pstacktype; {Stack for output}
@@ -454,6 +590,12 @@ var header: tlocalfileheader;
   w, k, b, inpos, readpos: Longint;
   inbuf: iobuf; {input buffer}
 
+  PROCEDURE UpdateCRC ( VAR s : iobuf;len : integer );
+  BEGIN
+    UpdateCRC32 ( crc32val, s , len );
+  END;
+
+  {************************** fill inbuf from infile *********************}
   procedure readbuf;
   begin
     if reachedsize > compsize + 2 then begin {+2: last code is smaller than requested!}
@@ -471,12 +613,16 @@ var header: tlocalfileheader;
     inpos := 0;
   end;
 
+  {**** read byte, only used by explode ****}
+
   procedure READBYTE(var bt: byte);
   begin
     if inpos > readpos then readbuf;
     bt := inbuf[inpos];
     inc(inpos);
   end;
+
+  {*********** read at least n bits into the global variable b *************}
 
   procedure NEEDBITS(n: byte);
   var nb: longint;
@@ -490,40 +636,45 @@ var header: tlocalfileheader;
     end;
   end;
 
+  {***************** dump n bits no longer needed from global variable b *************}
+
   procedure DUMPBITS(n: byte);
   begin
     b := b shr n;
     k := k - n;
   end;
 
+  {********************* Flush w bytes directly from slide to file ******************}
   function flush(w: Longint): boolean;
-  var n: Longint; {True wenn OK}
+  var n: Longint;
     b: boolean;
   begin
     n := ms.write(slide[0], w);
     b := (n = w) and (ioresult = 0); {True-> alles ok}
+    UpdateCRC(iobuf(piobuf(@slide[0])^), w);
     flush := b;
   end;
 
+  {************************* copy stored file ************************************}
   function copystored: integer;
   var readin: longint;
     outcnt: Integer;
   begin
-    while (reachedsize < compsize) and not totalabort do begin
+    while (reachedsize < compsize) do begin
       readin := compsize - reachedsize;
       if readin > wsize then readin := wsize;
       outcnt := fs.Read(slide[0], readin);
       if (outcnt <> readin) or (ioresult <> 0) then begin
-        copystored := -99;
+        copystored := unzip_ReadErr;
         exit
       end;
       if not flush(outcnt) then begin {Flushoutput takes care of CRC too}
-        copystored := -98;
+        copystored := unzip_WriteErr;
         exit
       end;
       inc(reachedsize, outcnt);
     end;
-    copystored := 0
+    copystored := unzip_Ok
   end;
 
   function unshrink_flush: boolean;
@@ -533,6 +684,7 @@ var header: tlocalfileheader;
   begin
     n := ms.write(writebuf^[0], write_ptr);
     b := (n = write_ptr) and (ioresult = 0); {True-> alles ok}
+    UpdateCRC(iobuf(piobuf(@writebuf^[0])^), write_ptr);
     unshrink_flush := b;
   end;
 
@@ -587,22 +739,28 @@ var header: tlocalfileheader;
       bits_to_read: longint;
   begin
     if compsize = maxlongint then begin {Compressed Size was not in header!}
-      unshrink := -100;
+      unshrink := unzip_NotSupported;
       exit
     end;
     inpos := 0; {Input buffer position}
     readpos := -1; {Nothing read}
+
+    {initialize window, bit buffer}
     w := 0;
-    k := 0; {initialize window, bit buffer}
+    k := 0;
     b := 0;
+
+    {Initialize pointers for various buffers}
     a1 := sizeof(prev);
-    a2 := sizeof(prev) + sizeof(cds); {Initialize pointers for various buffers}
+    a2 := sizeof(prev) + sizeof(cds);
     a3 := sizeof(prev) + sizeof(cds) + sizeof(stacktype);
     previous_code := pprev(@slide[0]);
     actual_code := pcds(@slide[a1]);
     stack := pstacktype(@slide[a2]);
     writebuf := pwritebuftype(@slide[a3]);
     fillchar(slide^, wsize, #0);
+
+    {initialize free codes list}
     for i := 257 to max_code do
       previous_code^[i] := -(i + 1);
     next_free := 257;
@@ -616,11 +774,11 @@ var header: tlocalfileheader;
     lastincode := incode;
     lastoutcode := char(incode);
     if not write_char(lastoutcode) then begin
-      unshrink := -98;
+      unshrink := unzip_writeErr;
       exit
     end;
     bits_to_read := 8 * compsize - code_size; {Bits to be read}
-    while not totalabort and (bits_to_read >= code_size) do begin
+    while bits_to_read >= code_size do begin
       NEEDBITS(code_size);
       incode := b and code_mask;
       DUMPBITS(code_size);
@@ -634,7 +792,7 @@ var header: tlocalfileheader;
           1: begin
               inc(code_size);
               if code_size > final_code_size then begin
-                unshrink := -99;
+                unshrink := unzip_ZipFileErr;
                 exit
               end;
               code_mask := mask_bits[code_size];
@@ -643,7 +801,7 @@ var header: tlocalfileheader;
               ClearLeafNodes;
             end;
         else
-          unshrink := -99;
+          unshrink := unzip_ZipFileErr;
           exit
         end;
       end else begin
@@ -651,7 +809,7 @@ var header: tlocalfileheader;
         if incode < 256 then begin {Simple char}
           lastoutcode := char(incode);
           if not write_char(lastoutcode) then begin
-            unshrink := -98;
+            unshrink := unzip_writeErr;
             exit
           end;
         end else begin
@@ -667,12 +825,12 @@ var header: tlocalfileheader;
           end;
           lastoutcode := char(incode);
           if not write_char(lastoutcode) then begin
-            unshrink := -98;
+            unshrink := unzip_writeErr;
             exit
           end;
           for i := stack_ptr + 1 to max_stack do
             if not write_char(stack^[i]) then begin
-              unshrink := -98;
+              unshrink := unzip_writeErr;
               exit
             end;
           stack_ptr := max_stack;
@@ -686,14 +844,14 @@ var header: tlocalfileheader;
         lastincode := new_code;
       end;
     end;
-    if totalabort then
-      unshrink := -1
-    else if unshrink_flush then
-      unshrink := 0
+    if unshrink_flush then
+      unshrink := unzip_ok
     else
-      unshrink := -98;
+      unshrink := unzip_WriteErr;
   end;
+  {************************************* explode ********************************}
 
+  {*********************************** read in tree *****************************}
   function get_tree(l: pword; n: word): integer;
   var i, k, j, b: word;
     bytebuf: byte;
@@ -722,6 +880,8 @@ var header: tlocalfileheader;
     if k <> n then get_tree := 4 else get_tree := 0;
   end;
 
+  {******************exploding, method: 8k slide, 3 trees ***********************}
+
   function explode_lit8(tb, tl, td: phuftlist; bb, bl, bd: integer): integer;
   var s: longint;
     e: word;
@@ -737,7 +897,7 @@ var header: tlocalfileheader;
     ml := mask_bits[bl];
     md := mask_bits[bd];
     s := uncompsize;
-    while (s > 0) and not (totalabort or zipeof) do begin
+    while (s > 0) and not zipeof do begin
       NEEDBITS(1);
       if (b and 1) <> 0 then begin {Litteral}
         DUMPBITS(1);
@@ -747,7 +907,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_lit8 := -90;
+              explode_lit8 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -761,7 +921,7 @@ var header: tlocalfileheader;
         inc(w);
         if w = WSIZE then begin
           if not flush(w) then begin
-            explode_lit8 := -98;
+            explode_lit8 := unzip_WriteErr;
             exit
           end;
           w := 0; u := 0;
@@ -776,7 +936,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_lit8 := -90;
+              explode_lit8 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -792,7 +952,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_lit8 := -90;
+              explode_lit8 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -830,7 +990,7 @@ var header: tlocalfileheader;
             until e = 0;
           if w = WSIZE then begin
             if not flush(w) then begin
-              explode_lit8 := -98;
+              explode_lit8 := unzip_WriteErr;
               exit
             end;
             w := 0; u := 0;
@@ -838,13 +998,11 @@ var header: tlocalfileheader;
         until n = 0;
       end;
     end;
-    if totalabort then explode_lit8 := -1
+    if not flush(w) then explode_lit8 := unzip_WriteErr
     else
-      if not flush(w) then explode_lit8 := -98
+      if zipeof then explode_lit8 := unzip_readErr
       else
-        if zipeof then explode_lit8 := -99
-        else
-          explode_lit8 := 0;
+        explode_lit8 := unzip_Ok;
   end;
 
   {******************exploding, method: 4k slide, 3 trees ***********************}
@@ -865,7 +1023,7 @@ var header: tlocalfileheader;
     ml := mask_bits[bl];
     md := mask_bits[bd];
     s := uncompsize;
-    while (s > 0) and not (totalabort or zipeof) do begin
+    while (s > 0) and not zipeof do begin
       NEEDBITS(1);
       if (b and 1) <> 0 then begin {Litteral}
         DUMPBITS(1);
@@ -875,7 +1033,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_lit4 := -90;
+              explode_lit4 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -889,7 +1047,7 @@ var header: tlocalfileheader;
         inc(w);
         if w = WSIZE then begin
           if not flush(w) then begin
-            explode_lit4 := -98;
+            explode_lit4 := unzip_WriteErr;
             exit
           end;
           w := 0; u := 0;
@@ -904,7 +1062,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_lit4 := -90;
+              explode_lit4 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -920,7 +1078,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_lit4 := -90;
+              explode_lit4 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -958,7 +1116,7 @@ var header: tlocalfileheader;
             until e = 0;
           if w = WSIZE then begin
             if not flush(w) then begin
-              explode_lit4 := -90;
+              explode_lit4 := unzip_WriteErr;
               exit
             end;
             w := 0; u := 0;
@@ -966,12 +1124,10 @@ var header: tlocalfileheader;
         until n = 0;
       end;
     end;
-    if totalabort then explode_lit4 := -1
+    if not flush(w) then explode_lit4 := unzip_WriteErr
     else
-      if not flush(w) then explode_lit4 := -98
-      else
-        if zipeof then explode_lit4 := -99
-        else explode_lit4 := 0;
+      if zipeof then explode_lit4 := unzip_readErr
+      else explode_lit4 := unzip_Ok;
   end;
 
   {******************exploding, method: 8k slide, 2 trees ***********************}
@@ -990,7 +1146,7 @@ var header: tlocalfileheader;
     ml := mask_bits[bl];
     md := mask_bits[bd];
     s := uncompsize;
-    while (s > 0) and not (totalabort or zipeof) do begin
+    while (s > 0) and not zipeof do begin
       NEEDBITS(1);
       if (b and 1) <> 0 then begin {Litteral}
         DUMPBITS(1);
@@ -1000,7 +1156,7 @@ var header: tlocalfileheader;
         inc(w);
         if w = WSIZE then begin
           if not flush(w) then begin
-            explode_nolit8 := -98;
+            explode_nolit8 := unzip_WriteErr;
             exit
           end;
           w := 0; u := 0;
@@ -1016,7 +1172,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_nolit8 := -90;
+              explode_nolit8 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -1032,7 +1188,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_nolit8 := -90;
+              explode_nolit8 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -1070,7 +1226,7 @@ var header: tlocalfileheader;
             until e = 0;
           if w = WSIZE then begin
             if not flush(w) then begin
-              explode_nolit8 := -98;
+              explode_nolit8 := unzip_WriteErr;
               exit
             end;
             w := 0; u := 0;
@@ -1078,12 +1234,10 @@ var header: tlocalfileheader;
         until n = 0;
       end;
     end;
-    if totalabort then explode_nolit8 := -1
+    if not flush(w) then explode_nolit8 := unzip_WriteErr
     else
-      if not flush(w) then explode_nolit8 := -98
-      else
-        if zipeof then explode_nolit8 := -99
-        else explode_nolit8 := 0;
+      if zipeof then explode_nolit8 := unzip_readErr
+      else explode_nolit8 := unzip_Ok;
   end;
 
   {******************exploding, method: 4k slide, 2 trees ***********************}
@@ -1102,7 +1256,7 @@ var header: tlocalfileheader;
     ml := mask_bits[bl];
     md := mask_bits[bd];
     s := uncompsize;
-    while (s > 0) and not (totalabort or zipeof) do begin
+    while (s > 0) and not zipeof do begin
       NEEDBITS(1);
       if (b and 1) <> 0 then begin {Litteral}
         DUMPBITS(1);
@@ -1112,7 +1266,7 @@ var header: tlocalfileheader;
         inc(w);
         if w = WSIZE then begin
           if not flush(w) then begin
-            explode_nolit4 := -98;
+            explode_nolit4 := unzip_WriteErr;
             exit
           end;
           w := 0; u := 0;
@@ -1128,7 +1282,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_nolit4 := -90;
+              explode_nolit4 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -1144,7 +1298,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              explode_nolit4 := -90;
+              explode_nolit4 := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -1182,7 +1336,7 @@ var header: tlocalfileheader;
             until e = 0;
           if w = WSIZE then begin
             if not flush(w) then begin
-              explode_nolit4 := -98;
+              explode_nolit4 := unzip_WriteErr;
               exit
             end;
             w := 0; u := 0;
@@ -1190,12 +1344,10 @@ var header: tlocalfileheader;
         until n = 0;
       end;
     end;
-    if totalabort then explode_nolit4 := -1
+    if not flush(w) then explode_nolit4 := unzip_WriteErr
     else
-      if not flush(w) then explode_nolit4 := -98
-      else
-        if zipeof then explode_nolit4 := -99
-        else explode_nolit4 := 0;
+      if zipeof then explode_nolit4 := unzip_readErr
+      else explode_nolit4 := unzip_Ok;
   end;
 
   {****************************** explode *********************************}
@@ -1214,33 +1366,33 @@ var header: tlocalfileheader;
       bb := 9;
       r := get_tree(@l[0], 256);
       if r <> 0 then begin
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       r := huft_build(pword(@l), 256, 256, nil, nil, pphuft(@tb), bb);
       if r <> 0 then begin
         if r = huft_incomplete then huft_free(tb);
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       r := get_tree(@l[0], 64);
       if r <> 0 then begin
         huft_free(tb);
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       r := huft_build(pword(@l), 64, 0, pushlist(@cplen3), pushlist(@extra), pphuft(@tl), bl);
       if r <> 0 then begin
         if r = huft_incomplete then huft_free(tl);
         huft_free(tb);
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       r := get_tree(@l[0], 64);
       if r <> 0 then begin
         huft_free(tb);
         huft_free(tl);
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       if hufttype and 2 <> 0 then begin {8k}
@@ -1249,7 +1401,7 @@ var header: tlocalfileheader;
           if r = huft_incomplete then huft_free(td);
           huft_free(tb);
           huft_free(tl);
-          explode := -90;
+          explode := unzip_ZipFileErr;
           exit
         end;
         r := explode_lit8(tb, tl, td, bb, bl, bd);
@@ -1259,7 +1411,7 @@ var header: tlocalfileheader;
           if r = huft_incomplete then huft_free(td);
           huft_free(tb);
           huft_free(tl);
-          explode := -90;
+          explode := unzip_ZipFileErr;
           exit
         end;
         r := explode_lit4(tb, tl, td, bb, bl, bd);
@@ -1270,19 +1422,19 @@ var header: tlocalfileheader;
     end else begin {No literal tree}
       r := get_tree(@l[0], 64);
       if r <> 0 then begin
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       r := huft_build(pword(@l), 64, 0, pushlist(@cplen2), pushlist(@extra), pphuft(@tl), bl);
       if r <> 0 then begin
         if r = huft_incomplete then huft_free(tl);
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       r := get_tree(@l[0], 64);
       if r <> 0 then begin
         huft_free(tl);
-        explode := -90;
+        explode := unzip_ZipFileErr;
         exit
       end;
       if hufttype and 2 <> 0 then begin {8k}
@@ -1290,7 +1442,7 @@ var header: tlocalfileheader;
         if r <> 0 then begin
           if r = huft_incomplete then huft_free(td);
           huft_free(tl);
-          explode := -90;
+          explode := unzip_ZipFileErr;
           exit
         end;
         r := explode_nolit8(tl, td, bl, bd);
@@ -1299,7 +1451,7 @@ var header: tlocalfileheader;
         if r <> 0 then begin
           if r = huft_incomplete then huft_free(td);
           huft_free(tl);
-          explode := -90;
+          explode := unzip_ZipFileErr;
           exit
         end;
         r := explode_nolit4(tl, td, bl, bd);
@@ -1320,13 +1472,13 @@ var header: tlocalfileheader;
     { inflate the coded data }
     ml := mask_bits[bl]; {precompute masks for speed}
     md := mask_bits[bd];
-    while not (totalabort or zipeof) do begin
+    while not zipeof do begin
       NEEDBITS(bl);
       t := @tl^[b and ml];
       e := t^.e;
       if e > 16 then repeat {then it's a literal}
           if e = 99 then begin
-            inflate_codes := -90;
+            inflate_codes := unzip_ZipFileErr;
             exit
           end;
           DUMPBITS(t^.b);
@@ -1341,14 +1493,14 @@ var header: tlocalfileheader;
         inc(w);
         if w = WSIZE then begin
           if not flush(w) then begin
-            inflate_codes := -98;
+            inflate_codes := unzip_WriteErr;
             exit;
           end;
           w := 0
         end;
       end else begin {it's an EOB or a length}
         if e = 15 then begin {Ende} {exit if end of block}
-          inflate_codes := 0;
+          inflate_codes := unzip_Ok;
           exit;
         end;
         NEEDBITS(e); {get length of block to copy}
@@ -1359,7 +1511,7 @@ var header: tlocalfileheader;
         e := t^.e;
         if e > 16 then repeat
             if e = 99 then begin
-              inflate_codes := -98;
+              inflate_codes := unzip_ZipFileErr;
               exit
             end;
             DUMPBITS(t^.b);
@@ -1393,7 +1545,7 @@ var header: tlocalfileheader;
             then begin
             if not flush(w)
               then begin
-              inflate_codes := -98;
+              inflate_codes := unzip_WriteErr;
               exit;
             end;
             w := 0;
@@ -1401,10 +1553,7 @@ var header: tlocalfileheader;
         until n = 0;
       end;
     end;
-    if totalabort then
-      inflate_codes := -1
-    else
-      inflate_codes := -99;
+    inflate_codes := unzip_readErr;
   end;
 
   {**************************** "decompress" stored block **************************}
@@ -1421,27 +1570,26 @@ var header: tlocalfileheader;
     DUMPBITS(16);
     NEEDBITS(16);
     if (n <> (not b) and $FFFF) then begin
-      inflate_stored := -90;
+      inflate_stored := unzip_zipFileErr;
       exit
     end;
     DUMPBITS(16);
-    while (n > 0) and not (totalabort or zipeof) do begin {read and output the compressed data}
+    while (n > 0) and not zipeof do begin {read and output the compressed data}
       dec(n);
       NEEDBITS(8);
       slide[w] := char(b);
       inc(w);
       if w = WSIZE then begin
         if not flush(w) then begin
-          inflate_stored := -98;
+          inflate_stored := unzip_WriteErr;
           exit
         end;
         w := 0;
       end;
       DUMPBITS(8);
     end;
-    if totalabort then inflate_stored := -1
-    else if zipeof then inflate_stored := -99
-    else inflate_stored := 0;
+    if zipeof then inflate_stored := unzip_readErr
+    else inflate_stored := unzip_Ok;
   end;
 
   {**************************** decompress fixed block **************************}
@@ -1469,7 +1617,7 @@ var header: tlocalfileheader;
     i := huft_build(pword(@l), 30, 0, pushlist(@cpdist), pushlist(@cpdext), pphuft(@td), bd); {@@}
     if i > huft_incomplete then begin
       huft_free(tl);
-      inflate_fixed := -90;
+      inflate_fixed := unzip_ZipFileErr;
       exit
     end;
     inflate_fixed := inflate_codes(tl, td, bl, bd);
@@ -1518,7 +1666,7 @@ var header: tlocalfileheader;
     i := huft_build(pword(@ll), 19, 19, nil, nil, pphuft(@tl), bl); {@@}
     if i <> huft_complete then begin
       if i = huft_incomplete then huft_free(tl); {other errors: already freed}
-      inflate_dynamic := -90;
+      inflate_dynamic := unzip_ZipFileErr;
       exit
     end;
     {read in literal and distance code lengths}
@@ -1567,7 +1715,7 @@ var header: tlocalfileheader;
         j := 11 + b and $7F;
         DUMPBITS(7);
         if i + j > n then begin
-          inflate_dynamic := -90;
+          inflate_dynamic := unzip_zipfileErr;
           exit
         end;
         while j > 0 do begin
@@ -1592,7 +1740,7 @@ var header: tlocalfileheader;
     if i > huft_incomplete then begin {pkzip bug workaround}
       if i = huft_incomplete then huft_free(td);
       huft_free(tl);
-      inflate_dynamic := -90;
+      inflate_dynamic := unzip_ZipFileErr;
       exit
     end;
     {decompress until an end-of-block code}
@@ -1617,7 +1765,7 @@ var header: tlocalfileheader;
       1: begin inflate_block := inflate_fixed; end;
       2: begin inflate_block := inflate_dynamic; end;
     else
-      inflate_block := -90; {bad block type}
+      inflate_block := unzip_ZipFileErr; {bad block type}
     end;
   end;
 
@@ -1642,13 +1790,11 @@ var header: tlocalfileheader;
       end;
     until e <> 0;
     {flush out slide}
-    if not flush(w) then inflate := -98
-    else inflate := 0;
+    if not flush(w) then inflate := unzip_WriteErr
+    else inflate := unzip_Ok;
   end;
 
 begin
-  getmem(slide, wsize);
-  fillchar(slide[0], wsize, #0);
   fs.seek(offset, soFromBeginning);
   fs.readbuffer(sig, 4);
   fs.readbuffer(header, sizeof(tlocalfileheader));
@@ -1658,50 +1804,66 @@ begin
   if (hufttype and 8) = 0 then begin {Size and crc at the beginning}
     compsize := header.compressed;
     uncompsize := header.uncompressed;
+    originalcrc := header.crc_32;
   end else begin
-{$IFDEF __GPC__}
-    compsize := maxint; {Don't get a sudden zipeof!}
-    uncompsize := maxint;
-{$ELSE}
     compsize := maxlongint; {Don't get a sudden zipeof!}
     uncompsize := maxlongint;
-{$ENDIF}
+    originalcrc := 0;
   end;
   ziptype := header.compression_method; {0=stored, 6=imploded, 8=deflated}
-  if (1 shl ziptype) and GetSupportedMethods = 0 then begin {Not Supported!!!}
-    freemem(slide, wsize);
-    unzipfile := -100;
+  if (1 shl ziptype) and GetSupportedMethods() = 0 then begin {Not Supported!!!}
+    unzipfile := unzip_NotSupported;
     exit;
   end;
   hufttype := header.bit_flag;
   if (hufttype and 1) <> 0 then begin {encrypted}
-    freemem(slide, wsize);
-    unzipfile := -50;
+    unzipfile := unzip_Encrypted;
     exit;
   end;
   reachedsize := 0;
   fs.seek(offset, soFromBeginning);
-  totalabort := FALSE;
   zipeof := FALSE;
-  case ziptype of
-    0: aResult := copystored;
-    1: aResult := unshrink;
-    6: aResult := explode;
-    8: aResult := inflate;
-  else begin
-      aResult := -100;
+
+  getmem(slide, wsize);
+  fillchar(slide[0], wsize, #0);
+  try
+    InitCrc32(crc32val);
+
+    {Unzip correct type}
+    case ziptype of
+      0: aResult := copystored;
+      1: aResult := unshrink;
+      6: aResult := explode;
+      8: aResult := inflate;
+    else begin
+        aResult := unzip_NotSupported;
+      end;
     end;
+    unzipfile := aResult;
+  finally
+    freemem(slide, wsize);
   end;
-  unzipfile := aResult;
-  if (aResult = 0) and ((hufttype and 8) <> 0) then begin {CRC at the end}
+
+  if (aResult = unzip_ok) and ((hufttype and 8) <> 0) then begin {CRC at the end}
     dumpbits(k and 7);
     needbits(16);
+    {originalcrc := b and $FFFF;}
     dumpbits(16);
     needbits(16);
+    originalcrc := (b and $FFFF) shl 16;
     dumpbits(16);
   end;
-  freemem(slide, wsize);
-  freemem(_token);
+
+  crc32val := FinalCrc32(crc32val);
+
+  if (aResult = unzip_ok) and (originalcrc <> crc32val) then
+    unzipfile := unzip_CRCErr;
+
+  if (_token<>nil) then
+  begin
+    freemem(_token);
+    _token := nil;
+  end;
 end; { unzipfile }
 
 end.

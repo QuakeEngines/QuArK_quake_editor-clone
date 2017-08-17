@@ -123,6 +123,10 @@ The developers of used libraries/programs
                         NOMSSI NZALI Jacques H. C.
                         http://www.nomssi.de/paszlib/paszlib.html
 
+- Chief's UNZIP
+                        info-zip group, Christian Ghisler, Prof Abimbola Olowofoyeku (The African Chief)
+                        http://www.foyeh.org/
+
 - MarsCap:
                         Chen Ken
                         http://www.nease.net/~marspark (BROKEN)
