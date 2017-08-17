@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.568  2017/04/16 13:07:02  danielpharos
+//Added checkbox for AMD driver bug check.
+//
 //Revision 1.567  2017/02/25 14:02:21  danielpharos
 //Finished support for new Steam 'common' game file layout.
 //
@@ -1962,8 +1965,6 @@ QQRKSRC1
         UndoBufferSize = '30.0'      // MB
         GameFiles = '100'
         GameBufferSize = '300.0'     // MB
-        CompressionBufferSize = '16' // KBytes
-        CompressionLevel = '9' // Where else to put this?
         Form = "GeneralMemory"
       }
       Update:config =
@@ -4478,6 +4479,13 @@ QQRKSRC1
         SaveFormatDevIL = "0"
         SaveFormatADevIL = "1"
         Form = "FilesVTF"
+      }
+      ZIP:config =
+      {
+        CompressionBufferSize = '16' // KBytes
+        CompressionLevel = '9'
+        CompressionMemoryUsage = '8'
+        Form = "FilesZIP"
       }
     }
 
@@ -9138,6 +9146,14 @@ QQRKSRC1
         Hint = "The format the VTF texture with alpha will be saved in"
       }
     }
+    FilesZIP:form =
+    {
+      Style = "7"
+      sep: = {Typ="S" Txt="---- Advanced ZIP Settings ----"}
+      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of compression to use (0 .. 9)"}
+      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing"}
+      CompressionMemoryUsage: = {Txt="Memory usage of internal compression state" Typ="EF1" Hint="Level of memory usage when compressing (1 .. 9)"}
+    }
 
     MapColors:form =
     {
@@ -9877,8 +9893,6 @@ QQRKSRC1
       UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
       GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory (e.g. textures)"}
       GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
-      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of compression to use for zip files (0 .. 9)"}
-      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
     }
     GeneralUpdate:form =
     {
