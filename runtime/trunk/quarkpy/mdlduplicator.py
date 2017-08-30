@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Map Duplicator abstract classes.
+Model Duplicator abstract classes.
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -19,6 +19,7 @@ Map Duplicator abstract classes.
 
 
 from qeditor import *
+from qutils import *
 import mdlhandles
 
 
@@ -123,13 +124,16 @@ class StandardDuplicator(DuplicatorManager):
                 tex_dict=Dup_Tex_Dicts[tex_sub]={}
                 try:
                     texfile=open(quarkx.exepath+tex_sub,'r')
-                    line=texfile.readline()
-                    while line:
-                        line = line.split()
-                        tex_dict[line[0]]=line[:]
+                    try:
                         line=texfile.readline()
+                        while line:
+                            line = line.split()
+                            tex_dict[line[0]]=line[:]
+                            line=texfile.readline()
+                    finally:
+                        texfile.close()
                 except:
-                     quarkx.msgbox("didn't find texture substition file "+tex_sub,2,4)
+                    quarkx.msgbox("didn't find texture substition file "+tex_sub, MT_INFORMATION, MB_OK)
         sourcelist = self.sourcelist()
         #
         # fancy linear mappings stuff
@@ -259,7 +263,7 @@ class StandardDuplicator(DuplicatorManager):
             try:
                 tex_dict=Dup_Tex_Dicts[tex_sub]
             except:
-                quarkx.msgbox('no tex_dict found',2,4)
+                quarkx.msgbox('no tex_dict found', MT_INFORMATION, MB_OK)
         if self.dup["item center"]:
             try:
                 if self.matrix is not None:
@@ -433,4 +437,7 @@ DupCodes = {}
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2011/03/15 08:25:46  cdunde
+#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
+#
 #

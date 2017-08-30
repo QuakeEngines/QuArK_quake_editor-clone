@@ -124,13 +124,16 @@ class StandardDuplicator(DuplicatorManager):
                 tex_dict=Dup_Tex_Dicts[tex_sub]={}
                 try:
                     texfile=open(quarkx.exepath+tex_sub,'r')
-                    line=texfile.readline()
-                    while line:
-                        line = line.split()
-                        tex_dict[line[0]]=line[:]
+                    try:
                         line=texfile.readline()
+                        while line:
+                            line = line.split()
+                            tex_dict[line[0]]=line[:]
+                            line=texfile.readline()
+                    finally:
+                        texfile.close()
                 except:
-                     quarkx.msgbox("didn't find texture substition file "+tex_sub,2,4)
+                    quarkx.msgbox("didn't find texture substition file "+tex_sub, MT_INFORMATION, MB_OK)
         sourcelist = self.sourcelist()
         #
         # fancy linear mappings stuff
@@ -260,7 +263,7 @@ class StandardDuplicator(DuplicatorManager):
             try:
                 tex_dict=Dup_Tex_Dicts[tex_sub]
             except:
-                quarkx.msgbox('no tex_dict found',2,4)
+                quarkx.msgbox('no tex_dict found', MT_INFORMATION, MB_OK)
         if self.dup["item center"]:
             try:
                 if self.matrix is not None:
@@ -713,6 +716,9 @@ DupCodes = {"dup origin" : OriginDuplicator,
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2016/02/13 12:35:01  danielpharos
+#Return a boolean instead of an integer.
+#
 #Revision 1.29  2007/12/21 20:39:23  cdunde
 #Added new Templates functions and Templates.
 #
