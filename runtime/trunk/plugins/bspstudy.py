@@ -480,7 +480,7 @@ class PlaneType(quarkpy.mapentities.EntityManager):
         nearItem = qmenu.item("Near Planes",nearPlanesClick,"|Find the planes near this one")
         splitItem = qmenu.item("Split Nodes",splitNodesClick,"|Find the nodes split by this plane")
         return [collectItem, nearItem, splitItem]
-        
+
 class HullType(quarkpy.mapentities.GroupType):
     "Bsp Hulls (models)"
 
@@ -602,6 +602,9 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = bspfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2017/06/23 21:00:11  danielpharos
+#Improved some whitespace.
+#
 #Revision 1.15  2015/06/20 15:27:28  danielpharos
 #Removed unused variable.
 #
