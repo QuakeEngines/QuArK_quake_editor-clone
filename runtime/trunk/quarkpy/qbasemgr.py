@@ -449,10 +449,9 @@ class BaseLayout:
         self.mpp.lock = qtoolbar.button(maptogglebtn, "lock the current page||When this button is activated, QuArK no longer automatically switches between the pages when you select or unselect objects.", ico_maped, 9)
         self.mpp.lock.mode = self.MODE
         self.mpp.lock.tag = "PagesLocked"
-        import mapeditor
-        if isinstance(self.editor, mapeditor.MapEditor):
+        if self.editor.MODE == SS_MAP:
             self.mpp.btnpanel.buttons = self.mpp.btnpanel.buttons + [qtoolbar.padright, self.mpp.lock]
-        else:
+        elif self.editor.MODE == SS_MODEL:
             import mdlbtns
             TexBtn = qtoolbar.button(mdlbtns.texturebrowser, "choose texture||Click this button to open the 'Texture Browser'.", ico_maped, 0)
             self.mpp.btnpanel.buttons = self.mpp.btnpanel.buttons + [TexBtn] + [qtoolbar.padright, self.mpp.lock]
@@ -663,6 +662,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.47  2017/08/30 17:48:11  danielpharos
+#Fixed a few magic constants.
+#
 #Revision 1.46  2016/06/12 13:05:11  danielpharos
 #Removed the fullscreen size option for Glide.
 #
