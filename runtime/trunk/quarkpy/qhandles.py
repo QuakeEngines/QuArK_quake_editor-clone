@@ -41,7 +41,6 @@ vfSkinView = 0x80 # 2d only - used for skin page for mdl editor and bezier page 
 grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
-saveeditor = None
 modelcenter = None
 skinviewold = None
 skinviewnew = None
@@ -69,9 +68,8 @@ def setupgrid(editor):
     #
     # Set the grid variable from the editor's current grid step.
     #
-    global grid, saveeditor
+    global grid
     grid = (editor.grid, editor.gridstep)
-    saveeditor = editor
 
 def cleargrid():
     global grid
@@ -236,8 +234,7 @@ class GenericHandle:
         else:
             setupgrid(editor)
         undo = quarkx.action()
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             try:
                 old, ri = self.drag(v1, v2, flags, view, undo)
             except:
@@ -246,7 +243,7 @@ class GenericHandle:
             old, ri = self.drag(v1, v2, flags, view)
         if (ri is None) or (len(old)!=len(ri)):
             return
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             if ri == []:
                 try:
                     old, ri = self.drag(v1, v2, flags, view, undo)
@@ -286,20 +283,18 @@ class Rotate3DHandle(GenericHandle):
         self.center = center
         self.normal = normal
         self.icon = icon
-        if mapeditor() is not None:
-            self.editor = mapeditor()
-        else:
-            self.editor = saveeditor
 
     def draw(self, view, cv, draghandle=None):
         "Draws the camera position eye line and ball handle"
         p1, p2 = view.proj(self.center), view.proj(self.pos)
     ## To turn off camera position and eye icon in selected 3D views using Terrain Generator 3D views Options dialog button
-        editor = self.editor
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        editor = mapeditor()
+        if editor is None:
+            quarkx.clickform = view.owner
+            editor = mapeditor()
+        if self.MODE == SS_MODEL:
             pass # To allow Eye ball handle to draw when needed.
-        elif editor is not None and editor.layout is not None:
+        elif editor.layout is not None:
             tb2 = editor.layout.toolbars["tb_terrmodes"]
             if view.info["type"] == "3D":
                 if view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1":
@@ -344,9 +339,7 @@ class Rotate3DHandle(GenericHandle):
         self.draw1(view, cv.reset(), p1, p2, p1<p2)
 
     def draw1(self, view, cv, p1, p2, fromback):
-        editor = self.editor
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if self.MODE == SS_MODEL:
             if view.viewmode == "wire":
                 cv.pencolor = BLACK
             else:
@@ -584,15 +577,11 @@ class EyeDirection(Rotate3DHandle):
     def __init__(self, view, view3D):
         self.camera = view3D.cameraposition
         forward = angles2vec1(self.camera[2] * rad2deg, self.camera[1] * rad2deg, 0)
-        if mapeditor() is not None:
-            editor = mapeditor()
-        else:
-            editor = saveeditor
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
-            Rotate3DHandle.__init__(self, self.camera[0], forward, view.info['scale'], mapicons[12])
-        else:
-            Rotate3DHandle.__init__(self, self.camera[0], forward, view.scale(), mapicons[12])
+        try:
+            scale = view.info['scale']
+        except:
+            scale = view.scale()
+        Rotate3DHandle.__init__(self, self.camera[0], forward, scale, mapicons[12])
         self.view3D = view3D
         self.view = view
         if self.view.info["type"] == "3D" and self.view.info["viewname"] == "editors3Dview" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons1"] == "1" or self.view.info["type"] == "3D" and self.view.info["viewname"] == "3Dwindow" and quarkx.setupsubset(SS_MAP, "Options")["Options3Dviews_noicons2"] == "1":
@@ -955,11 +944,8 @@ class RedImageDragObject(DragObject):
 ## the lines below were added for the Terrain Generator
         editor = mapeditor()
         if editor is None:
-            quarkx.clickform = view.owner  # Rowdys -important, gets the editor
+            quarkx.clickform = view.owner
             editor = mapeditor()
-            if editor is None:
-                import mdleditor
-                editor = mdleditor.mdleditor
         self.editor = editor
         self.newx = x
         self.newy = y
@@ -1041,9 +1027,7 @@ class RedImageDragObject(DragObject):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
-            editor = mdleditor.mdleditor
+        if editor.MODE == SS_MODEL:
             import mdlhandles
             ### Stops Model Editor Vertex drag handles from drawing if not returned.
             ### Also fixes a Ctrl snap to grid drag from breaking.
@@ -1115,7 +1099,7 @@ class RedImageDragObject(DragObject):
                         if self.handle is not None:
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
                     else:
-                        if isinstance(editor, mdleditor.ModelEditor):
+                        if editor.MODE == SS_MODEL:
                             # This area draws the rectangle selector and view handles
                             #   in the Model Editor 3D and 2D view while dragging.
                             # It also does one draw of the rectangle selector for the
@@ -1179,7 +1163,7 @@ class RedImageDragObject(DragObject):
                 if internal==2:
                     view.invalidate()
             if internal==2:    # set up a timer to update the other views as well
-                if isinstance(editor, mdleditor.ModelEditor) and self.view.info["viewname"] == "skinview":
+                if (editor.MODE == SS_MODEL) and self.view.info["viewname"] == "skinview":
                     quarkx.settimer(refresh, self, 50)
                 else:
                     try:
@@ -1202,8 +1186,7 @@ class RedImageDragObject(DragObject):
         global skinviewold, skinviewnew, skinviewdraghandle  # used for model editor
         self.autoscroll_stop()
 
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             try:
                 import mdlhandles
                 if isinstance(self.handle, mdlhandles.PFaceHandle) or isinstance(self.handle, mdlhandles.PolyHandle) or isinstance(self.handle, mdlhandles.PVertexHandle):
@@ -1226,8 +1209,7 @@ class RedImageDragObject(DragObject):
 
 ## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
 
-        import mapeditor
-        if isinstance(editor, mapeditor.MapEditor):
+        if editor.MODE == SS_MAP:
             tb2 = editor.layout.toolbars["tb_terrmodes"]
 ## Deals with Terrain Selector movement, face drawing is in drawredimages section
             for b in tb2.tb.buttons:
@@ -1250,7 +1232,7 @@ class RedImageDragObject(DragObject):
                 return
 
 ## Deals with Model Editor Skin-view movement, face drawing is in python\mdlhandles.py class SkinHandle section
-        if isinstance(editor, mdleditor.ModelEditor) and old is not None and self.redimages is not None:
+        if (editor.MODE == SS_MODEL) and old is not None and self.redimages is not None:
             try:
                 if self.redimages[0].type == ":mc":
                     compframes = self.redimages[0].findallsubitems("", ':mf')   # get all frames
@@ -1294,10 +1276,10 @@ class HandleDragObject(RedImageDragObject):
 
 def refreshtimer(obj):
     editor = obj.editor
-    import mdleditor
     if editor is None:
+        import mdleditor
         editor = mdleditor.mdleditor
-    if isinstance(editor, mdleditor.ModelEditor):
+    if editor.MODE == SS_MODEL:
         from qbaseeditor import flagsmouse
         if flagsmouse == 16384:
             try:
@@ -1332,6 +1314,7 @@ def refreshtimer(obj):
                     import mdlhandles
                     obj.view.handles = mdlhandles.BuildHandles(editor, editor.layout.explorer, obj.view)
             if flagsmouse == 1072:
+                import mdleditor
                 mdleditor.setsingleframefillcolor(editor, obj.view)
                 obj.view.repaint()
                 try:
@@ -1456,16 +1439,16 @@ class FreeZoomDragObject(DragObject):
         setviews(self.viewlist, "scale", scale)
 
         ### To enable Model Editor multiple meshfill color selection zooming.
-        try:
+        if self.MODE == SS_MODEL:
             if (self.view.info["viewname"] == "XY" or self.view.info["viewname"] == "XZ" or self.view.info["viewname"] == "YZ"):
-                quarkx.clickform = self.view.owner
                 editor = mapeditor()
-                import mdleditor
-                if isinstance(editor, mdleditor.ModelEditor):
-                    mdleditor.commonhandles(editor)
+                if editor is None:
+                    quarkx.clickform = self.view.owner
+                    editor = mapeditor()
+                mdleditor.commonhandles(editor)
             else:
                 self.view.repaint()
-        except:
+        else:
             self.view.repaint()
 
 #
@@ -1505,16 +1488,9 @@ class ScrollViewDragObject(DragObject):
         self.scroller = MakeScroller(editor.layout, view)
 
     def dragto(self, x, y, flags):
-        try:
-            import mdleditor
-            if isinstance(editor, mdleditor.ModelEditor):
-                if view.info["viewname"] == "skinview":
-                    x = self.x0-x
-                    y = self.y0-y
-        except:
-            x = self.x0-x
-            y = self.y0-y
-            self.scroller(x, y)
+        x = self.x0-x
+        y = self.y0-y
+        self.scroller(x, y)
 
 
 #
@@ -1712,8 +1688,7 @@ class RectangleDragObject(RedImageDragObject):
     def ok(self, editor, x, y, flags):
         self.autoscroll_stop()
         self.dragto(x, y, flags)
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             # All views including Skin-view come here at the end of a rectangle selector drag,
             # then go on to qbaseeditor.py 'finishdrawing' function then mdleditor.py 'commonhandles'.
             # Need to call to rebuild a views handles if an option is setup for no handles during drag.
@@ -1731,6 +1706,7 @@ class RectangleDragObject(RedImageDragObject):
                         else:
                             import mdlutils
                             mdlutils.Update_Editor_Views(editor, 4)
+                import mdleditor
                 mdleditor.setsingleframefillcolor(editor, self.view)
                 import mdlhandles, plugins.mdlmodes
                 if isinstance(editor.dragobject, mdlhandles.RectSelDragObject) or isinstance(editor.dragobject, plugins.mdlmodes.BBoxMakerDragObject):
@@ -2211,9 +2187,7 @@ def flat3Dview(view3d, layout, selonly=0):
         #
         # Final part of methods for rotation in the Model Editors 3D views.
         #
-    editor = mapeditor()
-    import mdleditor
-    if isinstance(editor, mdleditor.ModelEditor):
+    if layout.editor.MODE == SS_MODEL:
         from mdlhandles import cursorposatstart
         rotationmode = quarkx.setupsubset(SS_MODEL, "Options").getint("3DRotation")
         if rotationmode == 2:
@@ -2239,6 +2213,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.106  2017/08/30 17:47:54  danielpharos
+#Put it back; that didn't help.
+#
 #Revision 1.105  2017/08/30 15:57:55  danielpharos
 #Hopefully resolved a circular import.
 #
