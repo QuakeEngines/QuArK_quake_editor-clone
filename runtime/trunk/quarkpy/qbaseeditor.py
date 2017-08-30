@@ -40,6 +40,7 @@ def drawview(view,mapobj,mode=0):
 class BaseEditor:
 
     MouseDragMode = None
+    # MODE required !
 
     def __init__(self, form):
         "Called when there is a map/model to display."
@@ -92,8 +93,7 @@ class BaseEditor:
         scale1 = self.lastscale
         if scale1<=0:
             scale1=1.0
-        import mdleditor
-        if isinstance(self, mdleditor.ModelEditor):
+        if self.MODE == SS_MODEL:
             # Stops duplicate drawing of handles in all views after a zoom in a 3D view.
             if view.info["type"] != "3D" and (view.info["viewname"] != "editors3Dview" and view.info["viewname"] != "3Dwindow"):
                 try:
@@ -231,10 +231,7 @@ class BaseEditor:
         # If Terrain Generator button is active this stops the white outline
         # drawing of the selected face/poly parent in a selection of more than
         # one face to give a cleaner look when working in Terrain Generator.
-        import mdleditor
-        if isinstance(self, mdleditor.ModelEditor):
-            pass
-        else:
+        if self.MODE == SS_MAP:
             if self.layout.toolbars["tb_terrmodes"] is not None and len(ex.sellist) > 1:
                 tb2 = self.layout.toolbars["tb_terrmodes"]
                 for b in tb2.tb.buttons:
@@ -245,9 +242,7 @@ class BaseEditor:
         #
         # Fill the background of the selected object
         #
-        if isinstance(self, mdleditor.ModelEditor):
-            pass
-        else:
+        if self.MODE == SS_MAP:
             if (fs is not None) and (view.viewmode == "wire"):
                 # This gives the option of NOT filling the selected poly with color in 2D views.
                 # Very helpful when a background image is being used to work with.
@@ -268,7 +263,7 @@ class BaseEditor:
         # Handles the views drawing for all editors for self.Root.selected.
         #
         if self.Root.selected:
-            if isinstance(self, mdleditor.ModelEditor):
+            if self.MODE == SS_MODEL:
                 if view.viewmode == "wire": # Calls to only draw the lines, we don't want a textured or solid image.
                     self.ObjectMgr.im_func("drawback", self.Root, self, view, 1)
                 else: # Draws the textured or solid image of the model.
@@ -279,7 +274,7 @@ class BaseEditor:
             #
             # Handles the views drawing for the Model Editor when not self.Root.selected above.
             #
-            if isinstance(self, mdleditor.ModelEditor):
+            if self.MODE == SS_MODEL:
                 # Calls to draw only the lines for wire mode views OR
                 # the image for textured and solid views when component colors is being used, active.
                 if view.viewmode == "wire" or quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
@@ -351,9 +346,7 @@ class BaseEditor:
             #
             # Then the selected ones over them
             #
-            if isinstance(self, mdleditor.ModelEditor):
-                pass
-            else:
+            if self.MODE == SS_MAP:
                 mode = self.drawmode
                 if MapOption("BBoxSelected", self.MODE):
                     mode=mode|DM_BBOX
@@ -380,7 +373,7 @@ class BaseEditor:
         # Additional drawings will appear in wireframe over the solid or texture image.
         # In our case, we simply draw the selected objects again.
         #
-        if isinstance(self, mdleditor.ModelEditor):
+        if self.MODE == SS_MODEL:
             if view.viewmode != "wire":
                 if fs is not None and fs.type != ":p":
                     if quarkx.setupsubset(SS_MODEL, "Options")["CompColors"] is not None:
@@ -433,8 +426,7 @@ class BaseEditor:
         else:
             draghandle = self.dragobject.handle
 
-        import mdleditor
-        if isinstance(self, mdleditor.ModelEditor):
+        if self.MODE == SS_MODEL:
             if (flagsmouse == 528 or flagsmouse == 1040):
                 view.handles = []
             try:
@@ -573,6 +565,7 @@ class BaseEditor:
                     if flagsmouse == 16384 and isinstance(self.dragobject, plugins.mdlobjectmodes.DeactivateDragObject):
                         self.dragobject = None
                     if quarkx.setupsubset(SS_MODEL, "Options")["MAIV"] == "1":
+                        import mdleditor
                         mdleditor.modelaxis(view)
                     if flagsmouse == 16384 and self.dragobject is not None and (isinstance(self.dragobject, qhandles.FreeZoomDragObject) or isinstance(self.dragobject, mdlhandles.RectSelDragObject)):
                         self.dragobject = None
@@ -601,6 +594,7 @@ class BaseEditor:
                         return
 
                     if self.layout.hintcontrol is not None and not isinstance(self.dragobject, mdlhandles.RectSelDragObject) and not isinstance(self.dragobject, qhandles.HandleDragObject):
+                        import mdleditor
                         mdleditor.setsingleframefillcolor(self, view)
                         cv = view.canvas()
                         for h in view.handles:
@@ -811,8 +805,8 @@ class BaseEditor:
     def invalidateviews(self, rebuild=0, viewmode=''):
         "Force all views to be redrawn."
 
-        import mdleditor
-        if isinstance(self, mdleditor.ModelEditor) and currentview is not None:
+        if self.MODE == SS_MODEL and currentview is not None:
+            import mdleditor
             try:
                 if currentview.info["viewname"] == "skinview":
                     if flagsmouse == 16384 and self.dragobject is not None:
@@ -918,13 +912,11 @@ class BaseEditor:
         cursorpos = (x, y)                         ### Used for the Model Editor only.
         import mdleditor                           ### Used for the Model Editor only.
         import mdlhandles                          ### Used for the Model Editor only.
-        import mdlmgr                              ### Used for the Model Editor only.
-        import mdlentities                         ### Used for the Model Editor only.
         import plugins.mdlcamerapos                ### Used for the Model Editor only.
 
         ### This section just for Model Editor face selection and editor views drawing manipulation
         ### and to free up L & RMB combo dragging for Model Editor Face selection use.
-        if isinstance(self, mdleditor.ModelEditor):
+        if self.MODE == SS_MODEL:
             if (flagsmouse == 560 or flagsmouse == 1072) and (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
                 if flagsmouse == 560 and self.dragobject is None:
                     s = "RS"
@@ -942,9 +934,11 @@ class BaseEditor:
                 if quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
                     self.dragobject = None
                     if flagsmouse == 2088:
+                        import mdlentities
                         mdlentities.PaintManager(self, view, x, y, flagsmouse, None)
                     else:
                         if handle is not None and isinstance(handle, mdlhandles.VertexHandle):
+                            import mdlentities
                             mdlentities.PaintManager(self, view, x, y, flagsmouse, handle.index)
                             s = view.info["viewname"] + " view"
                             if view.info["viewname"] == "XY":
@@ -1001,7 +995,7 @@ class BaseEditor:
                 mdleditor.commonhandles(self)
 
         if flags & MB_DRAGEND: ### This is when the mouse button(s) is ACTUALLY released.
-            if isinstance(self, mdleditor.ModelEditor) and view.info["viewname"] == "skinview" and (flagsmouse == 2072 or flagsmouse == 2088):
+            if self.MODE == SS_MODEL and view.info["viewname"] == "skinview" and (flagsmouse == 2072 or flagsmouse == 2088):
                 try:
                     skindrawobject = self.Root.currentcomponent.currentskin
                 except:
@@ -1009,7 +1003,7 @@ class BaseEditor:
                 mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                 self.finishdrawing(view)
             if self.dragobject is not None:
-                if isinstance(self, mdleditor.ModelEditor):
+                if self.MODE == SS_MODEL:
                     if view.info["viewname"] == "skinview":
                         if flagsmouse == 2064 or flagsmouse == 2080 or flagsmouse == 2096:
                             if self.Root.currentcomponent is None and self.Root.name.endswith(":mr"):
@@ -1044,7 +1038,7 @@ class BaseEditor:
                     self.dragobject.ok(self, x, y, flags)
                     flagsmouse = holdflagsmouse
 
-                if isinstance(self, mdleditor.ModelEditor):
+                if self.MODE == SS_MODEL:
                     if (flagsmouse == 2056 or flagsmouse == 2064 or flagsmouse == 2072 or flagsmouse == 2080):
                         mdleditor.commonhandles(self)
                         try:
@@ -1078,7 +1072,7 @@ class BaseEditor:
                 if editor == None:
                     return
                 else:
-                    if isinstance(editor, mdleditor.ModelEditor):
+                    if self.MODE == SS_MODEL:
                         if flagsmouse == 16384 and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
                             import mdlentities
                             mdlentities.vtxpaintcursor(editor)
@@ -1100,7 +1094,7 @@ class BaseEditor:
                 if list[0]==list[3]: tag = 1
                 if list[1]==list[4]: tag = tag + 2
                 if list[2]==list[5]: tag = tag + 4
-                if not isinstance(self, mdleditor.ModelEditor):
+                if self.MODE == SS_MAP:
                     try:
                         # Show width(x)/depth(y)/height(z) of selected polyhedron(s),
                         # but only when the mousepointer is inside the selection
@@ -1140,7 +1134,7 @@ class BaseEditor:
                             if   tag==6: s = "Xview y:" + " y:" + list[1] + " z:" + list[2]
                             elif tag==5: s = "Yview x:" + " x:" + list[0] + " z:" + list[2]
                             elif tag==3: s = "Zview x:" + " x:" + list[0] + " y:" + list[1]
-                else:
+                elif self.MODE == SS_MODEL:
                     import mdlhandles
                     try:
                         # This returns during Linear Handle drag so that actual drag hints will appear properly in the 'Help box'.
@@ -1195,7 +1189,7 @@ class BaseEditor:
                             elif tag==5: s = "Yview x:" + list[0] + " z:" + list[2]
                             elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1]
             else:
-                if isinstance(self, mdleditor.ModelEditor):
+                if self.MODE == SS_MODEL:
                     if view.info["viewname"] == "skinview":
                         if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
                             try:
@@ -1290,7 +1284,7 @@ class BaseEditor:
                                     s = handle.hint.strip() + "  x,y,z: %s"%handle.pos
                         except:
                             pass
-                else:
+                elif self.MODE == SS_MAP:
                     s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
 
@@ -1315,7 +1309,7 @@ class BaseEditor:
                         self.dragobject.dragto(x, y, flags)
                     else:
                         self.dragobject.dragto(x, y, flags)
-            if isinstance(self, mdleditor.ModelEditor):
+            if self.MODE == SS_MODEL:
                 # This section for True3Dmode drags.
                 try:
                     if flagsmouse != 1048 and quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
@@ -1609,8 +1603,7 @@ class BaseEditor:
         if self.layout is not None:
             self.layout.setgrid(self)
         self.savesetupinfos()
-        import mdleditor
-        if isinstance(self, mdleditor.ModelEditor):
+        if self.MODE == SS_MODEL:
             import mdlutils
             mdlutils.Update_Editor_Views(self)
         else:
@@ -1799,6 +1792,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.157  2017/06/23 19:25:41  danielpharos
+#Replaced a whole bunch of magic constants with their proper variable.
+#
 #Revision 1.156  2016/06/17 19:27:27  danielpharos
 #Fixed a typo.
 #
