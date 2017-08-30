@@ -278,7 +278,7 @@ class BaseLayout:
         floating.rect = r[2:]
 
         self.views.append(view)
-        if self.editor.MODE == 3:
+        if self.editor.MODE == SS_MODEL:
             mdlhandles.AddRemoveEyeHandles(self.editor, view)
         floating.show()
         self.floating3DWindows.append(floating)
@@ -306,7 +306,7 @@ class BaseLayout:
             self.buttons["3D"].state = qtoolbar.normal
             self.buttons["Full3D"].state = qtoolbar.normal
             quarkx.update(self.editor.form)
-        if self.editor.MODE == 3:
+        if self.editor.MODE == SS_MODEL:
             pass
         else:
             #Trigger a rebuild of the handles and a refresh of the views
@@ -344,7 +344,7 @@ class BaseLayout:
         fullscreen.onclose = self.closefull3Dview
 
         self.views.append(view)
-        if self.editor.MODE == 3:
+        if self.editor.MODE == SS_MODEL:
             mdlhandles.AddRemoveEyeHandles(self.editor, view)
         self.fullscreen3DWindows.append(fullscreen)
         fullscreen.show()
@@ -363,7 +363,7 @@ class BaseLayout:
             self.buttons["3D"].state = qtoolbar.normal
             self.buttons["Full3D"].state = qtoolbar.normal
             quarkx.update(self.editor.form)
-        if self.editor.MODE == 3:
+        if self.editor.MODE == SS_MODEL:
             pass
         else:
             #Trigger a rebuild of the handles and a refresh of the views
@@ -663,6 +663,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.46  2016/06/12 13:05:11  danielpharos
+#Removed the fullscreen size option for Glide.
+#
 #Revision 1.44  2016/02/10 18:57:27  danielpharos
 #Fixed a Python error due to the new 3D options when opening the layout menu, and added shortcuts for the same new 3D options.
 #
