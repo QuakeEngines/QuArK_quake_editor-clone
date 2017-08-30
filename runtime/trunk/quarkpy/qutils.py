@@ -660,11 +660,10 @@ def SetupChanged(level):
         if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
             import mdlmgr
             mdlmgr.treeviewselchanged = 0
-        for s in SetupRoutines:
-            s(level)
     except:
-        for s in SetupRoutines:
-            s(level)
+        pass
+    for s in SetupRoutines:
+        s(level)
 
 
 #
@@ -977,6 +976,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.59  2016/02/13 12:36:20  danielpharos
+#Raise a proper exception.
+#
 #Revision 1.58  2011/05/26 22:59:26  cdunde
 #DanielPharos fix to change bbox icons when hidden.
 #
