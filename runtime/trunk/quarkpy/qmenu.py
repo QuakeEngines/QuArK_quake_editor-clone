@@ -71,9 +71,8 @@ def macroitem(text, macro, hint=None, infobaselink=""):
 
 def macroclick(m):
     if not (quarkx.clickform is None):
-        import mdleditor
-        if isinstance(quarkx.clickform.info, mdleditor.ModelEditor) and (m.macro == "UNDO" or m.macro == "REDO" or m.macro == "MURD"):
-            editor = quarkx.clickform.info
+        editor = quarkx.clickform.info
+        if editor.MODE == SS_MODEL and (m.macro == "UNDO" or m.macro == "REDO" or m.macro == "MURD"):
             import mdlutils
             mdlutils.SaveTreeView(editor)
         quarkx.clickform.macro(m.macro)   # returns True (1) or False (0) depending on success or failure
@@ -192,6 +191,9 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.12  2010/10/20 06:40:37  cdunde
+#Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
+#
 #Revision 1.11  2009/05/03 08:06:06  cdunde
 #Edit menu, moved Duplicate and separated Delete from other items.
 #
