@@ -11,7 +11,7 @@
   {$DEFINE SYSUTILS}
 {$ENDIF}
 
-Unit StrUtils;
+Unit ZStrUtils; //DanielPharos: Renamed to avoid conflict with Delphi's StrUtils
 
 interface
 

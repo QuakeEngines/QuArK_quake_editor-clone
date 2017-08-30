@@ -15,7 +15,7 @@ interface
 
 uses
   {$IFDEF DEBUG}
-  strutils,
+  Zstrutils,
   {$ENDIF}
   zutil, zlib;
 

@@ -43,7 +43,7 @@ interface
 
 uses
   {$ifdef DEBUG}
-  strutils,
+  Zstrutils,
   {$ENDIF}
   zutil, zlib;
 
