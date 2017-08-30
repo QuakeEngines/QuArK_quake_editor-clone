@@ -257,12 +257,12 @@ class BaseLayout:
         ### Calling this function causes the 3D view mouse maneuvering to change,
         ### rotation is based on the center of the editor view or the model (0,0,0).
         ### But only for the Model Editor, so we first test for that.
-        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+        if self.editor.MODE == SS_MODEL:
             view.viewtype = "editor"
             quarkpy.qhandles.flat3Dview(view, self)
             del view.info["noclick"]
             view.info["viewname"]="3Dwindow"
-            import mdlmgr, mdlhandles
+            import mdlmgr
             mdlmgr.treeviewselchanged = 0
 
         setprojmode(view)
@@ -279,6 +279,7 @@ class BaseLayout:
 
         self.views.append(view)
         if self.editor.MODE == SS_MODEL:
+            import mdlhandles
             mdlhandles.AddRemoveEyeHandles(self.editor, view)
         floating.show()
         self.floating3DWindows.append(floating)
@@ -330,12 +331,12 @@ class BaseLayout:
         ### Calling this function causes the 3D view mouse maneuvering to change,
         ### rotation is based on the center of the editor view or the model (0,0,0).
         ### But only for the Model Editor, so we first test for that.
-        if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+        if self.editor.MODE == SS_MODEL:
             view.viewtype = "editor"
             quarkpy.qhandles.flat3Dview(view, self)
             del view.info["noclick"]
             view.info["viewname"]="3Dwindow"
-            import mdlmgr, mdlhandles
+            import mdlmgr
             mdlmgr.treeviewselchanged = 0
 
         setprojmode(view)
@@ -345,6 +346,7 @@ class BaseLayout:
 
         self.views.append(view)
         if self.editor.MODE == SS_MODEL:
+            import mdlhandles
             mdlhandles.AddRemoveEyeHandles(self.editor, view)
         self.fullscreen3DWindows.append(fullscreen)
         fullscreen.show()
@@ -487,7 +489,7 @@ class BaseLayout:
             bb.margins = (2,1)
         except:
             try:
-                if isinstance(self.editor, quarkpy.mdleditor.ModelEditor):
+                if self.editor.MODE == SS_MODEL:
                     if not ico_dict.has_key('mdlobjs'):
                         ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
                     ico_mdlobjs = ico_dict['mdlobjs']
@@ -662,6 +664,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.48  2017/08/30 18:18:13  danielpharos
+#Rewrote a mapeditor import.
+#
 #Revision 1.47  2017/08/30 17:48:11  danielpharos
 #Fixed a few magic constants.
 #

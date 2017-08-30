@@ -976,28 +976,29 @@ class RedImageDragObject(DragObject):
             self.drawredimages(self.view, 1) # 1 is 'internal' value. If commented out draws green rectangle.
             self.redimages = ri
 
-       ### This is for the Model Editor Skin-view RedImageDragObject use only.
-            try:
-                import mdlhandles
-                if self.view.info["viewname"] == "skinview":
-                    if isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
-                        ### To stop the Model Editor from drawing incorrect component image in Skin-view.
-                        pass
+            ### This is for the Model Editor Skin-view RedImageDragObject use only.
+            if self.editor.MODE == SS_MODEL:
+                try:
+                    import mdlhandles
+                    if self.view.info["viewname"] == "skinview":
+                        if isinstance(self.editor.dragobject.handle, mdlhandles.SkinHandle):
+                            ### To stop the Model Editor from drawing incorrect component image in Skin-view.
+                            pass
+                        else:
+                            if self.redimages is not None:
+                                mode = DM_OTHERCOLOR|DM_BBOX
+                                special, refresh = self.ricmd()
+                                if refresh is not None:
+                                    rectanglecolor = MapColor("SkinVertexSelListColor", SS_MODEL)
+                                    for r in self.redimages: # Draws selected vertex rectangles while dragging.
+                                        self.view.drawmap(r, mode, rectanglecolor)
                     else:
-                        if self.redimages is not None:
-                            mode = DM_OTHERCOLOR|DM_BBOX
-                            special, refresh = self.ricmd()
-                            if refresh is not None:
-                                rectanglecolor = MapColor("SkinVertexSelListColor", SS_MODEL)
-                                for r in self.redimages: # Draws selected vertex rectangles while dragging.
-                                    self.view.drawmap(r, mode, rectanglecolor)
-                else:
-                    import plugins.mdlcamerapos
-                    if isinstance(self.editor.dragobject.handle, plugins.mdlcamerapos.CamPosHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.CenterHandle):
-                        self.drawredimages(self.view, 1)
-                        self.drawredimages(self.view, 2)
-            except:
-                pass
+                        import plugins.mdlcamerapos
+                        if isinstance(self.editor.dragobject.handle, plugins.mdlcamerapos.CamPosHandle) or isinstance(self.editor.dragobject.handle, mdlhandles.CenterHandle):
+                            self.drawredimages(self.view, 1)
+                            self.drawredimages(self.view, 2)
+                except:
+                    pass
 
             if flags&MB_DRAGGING:
                 self.drawredimages(self.view, 2)
@@ -1278,9 +1279,6 @@ class HandleDragObject(RedImageDragObject):
 
 def refreshtimer(obj):
     editor = obj.editor
-    if editor is None:
-        import mdleditor
-        editor = mdleditor.mdleditor
     if editor.MODE == SS_MODEL:
         from qbaseeditor import flagsmouse
         if flagsmouse == 16384:
@@ -2215,6 +2213,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.110  2017/08/30 18:48:26  danielpharos
+#Removed several unused globals.
+#
 #Revision 1.109  2017/08/30 18:46:04  danielpharos
 #Really fixed the circular import this time.
 #
