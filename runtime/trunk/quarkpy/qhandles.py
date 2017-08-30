@@ -22,7 +22,6 @@ Generic Mouse handles code.
 from qeditor import *
 from qdictionnary import Strings
 import qmenu
-import qbaseeditor
 
 MOUSEZOOMFACTOR = math.sqrt(2)     # with this value, the zoom factor doubles every two click
 STEP3DVIEW = 64.0
@@ -46,8 +45,9 @@ skinviewold = None
 skinviewnew = None
 skinviewdraghandle = None
 
-def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
-    oldfinish(editor, view)
+def newfinishdrawing(editor, view): #, oldfinish=qbaseeditor.BaseEditor.finishdrawing
+    import qbaseeditor
+    qbaseeditor.BaseEditor.finishdrawing_original(editor, view)
 
 
 def aligntogrid(v, mode):
@@ -1065,6 +1065,7 @@ class RedImageDragObject(DragObject):
                                     else:
                                         type = view.info["type"]
                                         if type == "3D":
+                                            import qbaseeditor
                                             qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                                             return
         if self.redimages is not None:
@@ -1141,11 +1142,13 @@ class RedImageDragObject(DragObject):
                                              #   TG goes here AFTER mouse release
                                              #   for multi faces drag in 3D view
                                                 view.update()
+                                                import qbaseeditor
                                                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                                                 return
                                             else:
                                                 view.drawmap(r, mode, self.redcolor)
                                           #      self.view.invalidate()
+                                                import qbaseeditor
                                                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                                                 return
                                         if self.handle is not None:
@@ -1191,6 +1194,7 @@ class RedImageDragObject(DragObject):
                 if isinstance(self.handle, mdlhandles.PFaceHandle) or isinstance(self.handle, mdlhandles.PolyHandle) or isinstance(self.handle, mdlhandles.PVertexHandle):
                     old = self.dragto(x, y, flags)
                     if (self.redimages is None) or (len(old)!=len(self.redimages)):
+                        import qbaseeditor
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         return
                 elif self.view.info['viewname'] != "skinview" and  quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
@@ -1204,6 +1208,7 @@ class RedImageDragObject(DragObject):
         else:
             old = self.dragto(x, y, flags)
             if (self.redimages is None) or (len(old)!=len(self.redimages)):
+                import qbaseeditor
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
@@ -1219,6 +1224,7 @@ class RedImageDragObject(DragObject):
                         if type == "3D":
                             self.view.invalidate()
                         editor.invalidateviews()
+                        import qbaseeditor
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         break
 
@@ -1228,6 +1234,7 @@ class RedImageDragObject(DragObject):
                 for i in range(0,len(old)):
                     undo.exchange(old[i], self.redimages[i])
                 self.handle.ok(editor, undo, old, self.redimages)
+                import qbaseeditor
                 qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                 return
 
@@ -2213,6 +2220,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.108  2017/08/30 18:30:51  danielpharos
+#Moved a global-statement to its proper position.
+#
 #Revision 1.107  2017/08/30 18:18:49  danielpharos
 #Removed a global hanging on to the editor, and rewrote to remove a lot of imports. Also, some improvements in editor retrieval.
 #

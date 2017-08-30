@@ -616,6 +616,8 @@ class BaseEditor:
         if self.dragobject is not None:
             self.dragobject.drawredimages(view)
 
+    #Store the original finishdrawing
+    finishdrawing_original = finishdrawing #To resolve a circular import with qhandles!
 
     def drawmapsel(self, view):     # draw the selection only (for the 3D view page in the multi-pages-panel)
         ex = self.layout.explorer
@@ -1792,6 +1794,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.158  2017/08/30 18:41:20  danielpharos
+#Fixed another bunch of editor type checks.
+#
 #Revision 1.157  2017/06/23 19:25:41  danielpharos
 #Replaced a whole bunch of magic constants with their proper variable.
 #
