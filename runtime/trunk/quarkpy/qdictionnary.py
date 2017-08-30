@@ -824,7 +824,7 @@ Strings = {
     5570: "(switch back to %s game mode)",
     5571: "'%s' is not a Quake 2 MD2 file//%d-%d should be %d-%d",
     5572: "'%s' looks like a Quake-2 (or one of its game descendants) BSP file,\nbut its BSP-version is not recognized and therefore not supported.//%d should be %d",
-    5573: "QuArK does not know if '%s' is a Quake 1 or Hexen II file. Is it an Hexen II map ?",
+    5573: "Cannot determine if '%s' is a Quake 1 or Hexen II file. Is it a Hexen II map?",
     5574: "Missing information : QuArK cannot determine the target game for this file//Specific 'Game' missing",
     # 5575: "The skin path in this Model is ambiguous : several .pcx files with the same name exist in various paths. QuArK may have chosen a wrong one.",
     5575: "Missing skin image file '%s' in model '%s'",
@@ -1137,6 +1137,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.177  2016/06/12 12:59:57  danielpharos
+#Moved a string to the dictionary.
+#
 #Revision 1.176  2016/05/14 13:46:48  danielpharos
 #Moved some strings to the dictionary.
 #
