@@ -41,9 +41,6 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 modelcenter = None
-skinviewold = None
-skinviewnew = None
-skinviewdraghandle = None
 
 def newfinishdrawing(editor, view): #, oldfinish=qbaseeditor.BaseEditor.finishdrawing
     import qbaseeditor
@@ -1202,8 +1199,6 @@ class RedImageDragObject(DragObject):
                     return
             except:
                 pass
-            global skinviewdraghandle
-            skinviewdraghandle = self
             old = self.dragto(x, y, flags)
         else:
             old = self.dragto(x, y, flags)
@@ -2220,6 +2215,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.109  2017/08/30 18:46:04  danielpharos
+#Really fixed the circular import this time.
+#
 #Revision 1.108  2017/08/30 18:30:51  danielpharos
 #Moved a global-statement to its proper position.
 #
