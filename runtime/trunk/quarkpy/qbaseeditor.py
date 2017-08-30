@@ -1067,24 +1067,18 @@ class BaseEditor:
         elif flags & MB_MOUSEMOVE:
             s = ""
             if handle is None:
-                if mapeditor() is not None:
-                    editor = mapeditor()
-                else:
-                    editor = self
-                if editor == None:
-                    return
-                else:
-                    if self.MODE == SS_MODEL:
-                        if flagsmouse == 16384 and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
-                            import mdlentities
-                            mdlentities.vtxpaintcursor(editor)
-                        elif editor.layout.toolbars["tb_paintmodes"] is not None:
-                            plugins.mdlpaintmodes.paintcursor(editor)
-                    elif editor.layout.toolbars["tb_terrmodes"] is not None:
-                        tb2 = editor.layout.toolbars["tb_terrmodes"]
-                        i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
-                        if i < 20 and i != 0:
-                            plugins.mapterrainmodes.TerrainManager(editor, view, x, y, flags, handle)
+                editor = self
+                if self.MODE == SS_MODEL:
+                    if flagsmouse == 16384 and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] is not None and quarkx.setupsubset(SS_MODEL, "Options")['VertexPaintMode'] == "1":
+                        import mdlentities
+                        mdlentities.vtxpaintcursor(editor)
+                    elif editor.layout.toolbars["tb_paintmodes"] is not None:
+                        plugins.mdlpaintmodes.paintcursor(editor)
+                elif editor.layout.toolbars["tb_terrmodes"] is not None:
+                    tb2 = editor.layout.toolbars["tb_terrmodes"]
+                    i = quarkx.setupsubset(SS_MAP, "Building").getint("TerrMode")
+                    if i < 20 and i != 0:
+                        plugins.mapterrainmodes.TerrainManager(editor, view, x, y, flags, handle)
 
             if handle is None:
                 try:
@@ -1794,6 +1788,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.159  2017/08/30 18:46:04  danielpharos
+#Really fixed the circular import this time.
+#
 #Revision 1.158  2017/08/30 18:41:20  danielpharos
 #Fixed another bunch of editor type checks.
 #
