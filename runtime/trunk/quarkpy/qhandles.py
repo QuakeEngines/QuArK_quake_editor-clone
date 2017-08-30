@@ -22,7 +22,7 @@ Generic Mouse handles code.
 from qeditor import *
 from qdictionnary import Strings
 import qmenu
-import qbaseeditor
+from qbaseeditor import BaseEditor
 
 MOUSEZOOMFACTOR = math.sqrt(2)     # with this value, the zoom factor doubles every two click
 STEP3DVIEW = 64.0
@@ -47,7 +47,7 @@ skinviewold = None
 skinviewnew = None
 skinviewdraghandle = None
 
-def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+def newfinishdrawing(editor, view, oldfinish=BaseEditor.finishdrawing):
     oldfinish(editor, view)
 
 
@@ -1081,7 +1081,7 @@ class RedImageDragObject(DragObject):
                                     else:
                                         type = view.info["type"]
                                         if type == "3D":
-                                            qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                            BaseEditor.finishdrawing = newfinishdrawing
                                             return
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -1157,12 +1157,12 @@ class RedImageDragObject(DragObject):
                                              #   TG goes here AFTER mouse release
                                              #   for multi faces drag in 3D view
                                                 view.update()
-                                                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                                BaseEditor.finishdrawing = newfinishdrawing
                                                 return
                                             else:
                                                 view.drawmap(r, mode, self.redcolor)
                                           #      self.view.invalidate()
-                                                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                                                BaseEditor.finishdrawing = newfinishdrawing
 
                                                 return
                                         if self.handle is not None:
@@ -1210,7 +1210,7 @@ class RedImageDragObject(DragObject):
                 if isinstance(self.handle, mdlhandles.PFaceHandle) or isinstance(self.handle, mdlhandles.PolyHandle) or isinstance(self.handle, mdlhandles.PVertexHandle):
                     old = self.dragto(x, y, flags)
                     if (self.redimages is None) or (len(old)!=len(self.redimages)):
-                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        BaseEditor.finishdrawing = newfinishdrawing
                         return
                 elif self.view.info['viewname'] != "skinview" and  quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
                     self.handle.ok(editor, None, None, self.redimages, self.view)
@@ -1222,7 +1222,7 @@ class RedImageDragObject(DragObject):
         else:
             old = self.dragto(x, y, flags)
             if (self.redimages is None) or (len(old)!=len(self.redimages)):
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                BaseEditor.finishdrawing = newfinishdrawing
                 return
 
 ## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
@@ -1238,7 +1238,7 @@ class RedImageDragObject(DragObject):
                         if type == "3D":
                             self.view.invalidate()
                         editor.invalidateviews()
-                        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                        BaseEditor.finishdrawing = newfinishdrawing
                         break
 
 ## Deals with Sandard Selector movement, face drawing is in drawredimages section
@@ -1247,7 +1247,7 @@ class RedImageDragObject(DragObject):
                 for i in range(0,len(old)):
                     undo.exchange(old[i], self.redimages[i])
                 self.handle.ok(editor, undo, old, self.redimages)
-                qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                BaseEditor.finishdrawing = newfinishdrawing
                 return
 
 ## Deals with Model Editor Skin-view movement, face drawing is in python\mdlhandles.py class SkinHandle section
@@ -2240,6 +2240,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.104  2015/09/20 13:03:06  danielpharos
+#Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+#
 #Revision 1.103  2015/09/06 12:35:40  danielpharos
 #Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
 #
