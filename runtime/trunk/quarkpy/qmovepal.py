@@ -27,11 +27,7 @@ def readmpvalues(spec, mode):
 
 
 def btnclick(btn, mode=SS_MAP):
-    if mode == 3:
-        import mdleditor
-        editor = mdleditor.mdleditor
-    else:
-        editor = mapeditor(mode)
+    editor = mapeditor(mode)
     if editor is None: return
     offset = matrix = inflate = val = None
     try:
@@ -422,6 +418,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.24  2009/06/03 05:16:22  cdunde
+#Over all updating of Model Editor improvements, bones and model importers.
+#
 #Revision 1.23  2009/04/28 21:30:56  cdunde
 #Model Editor Bone Rebuild merge to HEAD.
 #Complete change of bone system.
