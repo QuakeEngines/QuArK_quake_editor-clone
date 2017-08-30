@@ -1183,7 +1183,6 @@ class RedImageDragObject(DragObject):
 
 
     def ok(self, editor, x, y, flags, view=None):   # default behaviour is to create an object out of the red image
-        global skinviewold, skinviewnew, skinviewdraghandle  # used for model editor
         self.autoscroll_stop()
 
         if editor.MODE == SS_MODEL:
@@ -1199,6 +1198,7 @@ class RedImageDragObject(DragObject):
                     return
             except:
                 pass
+            global skinviewdraghandle
             skinviewdraghandle = self
             old = self.dragto(x, y, flags)
         else:
@@ -2213,6 +2213,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.107  2017/08/30 18:18:49  danielpharos
+#Removed a global hanging on to the editor, and rewrote to remove a lot of imports. Also, some improvements in editor retrieval.
+#
 #Revision 1.106  2017/08/30 17:47:54  danielpharos
 #Put it back; that didn't help.
 #
