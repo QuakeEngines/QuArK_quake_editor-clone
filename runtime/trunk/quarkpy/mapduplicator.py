@@ -121,7 +121,7 @@ class StandardDuplicator(DuplicatorManager):
         #
         if tex_sub:
             if not Dup_Tex_Dicts.has_key(tex_sub):
-                tex_dict=Dup_Tex_Dicts[tex_sub]={}
+                tex_dict={}
                 try:
                     texfile=open(quarkx.exepath+tex_sub,'r')
                     try:
@@ -132,8 +132,9 @@ class StandardDuplicator(DuplicatorManager):
                             line=texfile.readline()
                     finally:
                         texfile.close()
-                except:
-                    quarkx.msgbox("didn't find texture substition file "+tex_sub, MT_INFORMATION, MB_OK)
+                    Dup_Tex_Dicts[tex_sub]=tex_dict
+                except (IOError):
+                    quarkx.msgbox("Unable to read the texture substitution file "+quarkx.exepath+tex_sub, MT_WARNING, MB_OK)
         sourcelist = self.sourcelist()
         #
         # fancy linear mappings stuff
@@ -716,6 +717,9 @@ DupCodes = {"dup origin" : OriginDuplicator,
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.31  2017/08/30 06:45:33  danielpharos
+#Explained some magic numbers, and other small cleanups.
+#
 #Revision 1.30  2016/02/13 12:35:01  danielpharos
 #Return a boolean instead of an integer.
 #
