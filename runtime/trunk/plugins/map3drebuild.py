@@ -19,6 +19,7 @@ Info = {
    "quark":         "Version 6" }
 
 
+import quarkpy.mapeditor
 import quarkpy.mapoptions
 from quarkpy.qutils import *
 
@@ -42,6 +43,9 @@ quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.7  2015/01/09 20:08:45  danielpharos
+#Changed default hotkey of Rebuild3D to a more conventional one.
+#
 #Revision 1.6  2008/02/22 09:52:22  danielpharos
 #Move all finishdrawing code to the correct editor, and some small cleanups.
 #
