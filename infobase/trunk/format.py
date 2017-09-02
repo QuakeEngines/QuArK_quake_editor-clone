@@ -7,7 +7,7 @@ EXTENSION = ".txt"
 #
 # Location for zip etc. archives for non-local version
 #
-ZIPLOC = "ftp://ftp.fileplanet.com/"
+ZIPLOC = "http://quark.sourceforge.net/infobase/" #Was: ftp://ftp.fileplanet.com/
 
 HEADER_BEGIN = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
