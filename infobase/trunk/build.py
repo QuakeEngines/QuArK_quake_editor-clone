@@ -6,7 +6,6 @@
 
 import string, htmlentitydefs, time, os, sys
 
-EXTENSION = ".txt"
 OutputPath = "output"
 
 
@@ -645,6 +644,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.35  2016/12/24 19:42:17  danielpharos
+# Don't force everything (including URL's) to lowercase; this can break stuff.
+#
 # Revision 1.34  2015/01/26 21:33:29  danielpharos
 # Fixed some more cases where paragraphs were being wrongly added.
 #
