@@ -39,7 +39,7 @@ In that folder is <b>one</b> of the compiling programs I spoke about briefly abo
 files.
 
 The other folder shown below that is the <b>second</b> compiling program folder and
-its files. You will need to download the <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">q3map_2.5.16_win32_x86.zip</a>
+its files. You will need to download the <link download_gamepaks>q3map_2.5.16_win32_x86.zip</link>
 file from the Official QuArK site.
 
 Also, see the <a href="intro.configuration.games.specificgames.rtcw.html#misc">Misc. Info.</a>
@@ -54,7 +54,7 @@ section below for more detailed instructions on its installation.
 <tr><td valign=top align=left>
 <b>Part 2 – QuArK game pack download</b>
 
-This is the QuArK RTCW game support package. Download the <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">QuArK_RTCW.zip</a>
+This is the QuArK RTCW game support package. Download the <link download_gamepaks>QuArK_RTCW.zip</link>
 file and extract it, using the folders path option, to the game folder location where you have RTCW installed on your computer.
 
 All the paths to the "Main" sub-folder have already been set in the zip file.

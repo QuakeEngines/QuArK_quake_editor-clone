@@ -32,7 +32,7 @@ is shown two images below.
 
 But before we do that, go to your <b>Wolfenstein - Enemy Territory</b> game folder and create a new
 sub-folder named <b>QuArK files</b>. This is where the compiling program folder and its files will be placed.
-You will need to download the <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">q3map_2.5.16_win32_x86.zip</a>
+You will need to download the <link download_gamepaks>q3map_2.5.16_win32_x86.zip</link>
 file from the Official QuArK site.
 
 Also, see the <a href="intro.configuration.games.specificgames.rtcw-et.html#misc">Misc. Info.</a>
@@ -47,7 +47,7 @@ section below for more detailed instructions on its installation.
 <tr><td valign=top align=left>
 <b>Part 2 – QuArK game pack download</b>
 
-This is the QuArK RTCW-ET game support package. Download the <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">QuArK_RTCW-ET.zip</a>
+This is the QuArK RTCW-ET game support package. Download the <link download_gamepaks>QuArK_RTCW-ET.zip</link>
 file and extract it, using the folders path option, to the game folder location where you have RTCW-ET installed on your computer.
 
 All the paths to the "etmain" sub-folder have already been set in the zip file.

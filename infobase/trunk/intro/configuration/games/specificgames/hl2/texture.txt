@@ -76,7 +76,7 @@ The compiler made a text file now in the same folder where your .tga is. Please,
 
 There are a few default values which can be used, and to get ready for our .vmt file creation a good program called "VMTMak0r" needs to be mentioned. It helps to set all needed stuff in your .vmt.
 
-Download the English version from <a href="http://quark.planetquake.gamespy.com/download_tools.php3">here</a>.
+Download the English version from <link download_tools>here</link>.
 
 Ok, so "VMTMak0r" handles the .vtf file by drag and drop, so go in <i>...GameTypeFolder\materials\YourFolderName</i> and drag and drop the .vtf file on to "VMTMak0r".
 

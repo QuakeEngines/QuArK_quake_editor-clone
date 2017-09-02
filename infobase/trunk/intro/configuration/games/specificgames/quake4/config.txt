@@ -43,12 +43,11 @@ folders path option, to the game folder location where you have Quake 4 installe
 
 All the paths to the "q4base" sub-folder have already been set in these zip files.
 
-You need to download the base 
-<a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">QuArK_Quake4.zip</a>
+You need to download the base <link download_gamepaks>QuArK_Quake4.zip</link>
 game support package from the Official QuArK site to display all textures and updated shader files.
 The zip file is about 12.6 MB and will take around 30 seconds with cable or DSL.
 
-The second <a href="http://quark.planetquake.gamespy.com/download_gamepaks.php3">QuArK_Quake4md3.zip</a>
+The second <link download_gamepaks>QuArK_Quake4md3.zip</link>
 file is optional, but required if you wish to actually see the models for placement in the QuArK editor 3D views.
 It was done this way because it is a much larger file, about 365 MB and will take around 15 minutes with cable or DSL.
 

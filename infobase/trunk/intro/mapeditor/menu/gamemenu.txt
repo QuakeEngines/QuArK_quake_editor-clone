@@ -3,7 +3,7 @@ author: Decker
 
 <img border=0 align=right>game.png</img>
 <i>Menu Overview</i> The commands in this menu lets you run your map with the game. The most common commands are the first few ones, which lets you try your map as a one-step operation.
-Before a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of the game you wish to map for, where you must tell QuArK where these build programs are installed. The programs themselves are available in Tool Packs, one for each game you want to make maps for, and that can be downloaded from <a href="http://quark.planetquake.gamespy.com/download_tools.php3">QuArK's download tools-page</a>. 
+Before a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of the game you wish to map for, where you must tell QuArK where these build programs are installed. The programs themselves are available in Tool Packs, one for each game you want to make maps for, and that can be downloaded from <link download_tools>QuArK's download tools-page</link>. 
 
 <i>GO!</i> does the whole sheebang.
 
