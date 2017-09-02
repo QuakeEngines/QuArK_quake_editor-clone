@@ -6,7 +6,7 @@ author: Decker
 <dt><a name=".ACE">   </a>.ACE   <dd>(binary)               A compressed archive of files. See <a target=_blank href="http://www.winace.com">http://www.winace.com</a>.
 <dt><a name=".BMP">   </a>.BMP   <dd>(binary)               The Windows <b>B</b>it<b>m</b>a<b>p</b> file format for storing graphical images.
 <dt><a name=".BSP">   </a>.BSP   <dd>(binary)               A compiled level for the <a href="#fps">FPS-game</a>. See also <a href="#bsp">bsp</a> and <a href="#buildtools">build tools</a>.
-<dt><a name=".DDS">   </a>.DDS   <dd>(binary)               A DirectDraw surface. Used by DirectX for textures.
+<dt><a name=".DDS">   </a>.DDS   <dd>(binary)               A DirectDraw surface. Used by <a href="#directx">DirectX</a> for textures.
 <dt><a name=".DEF">   </a>.DEF   <dd>(text)                 A <b>QER</b>adiant or game definition file. Can <u>not</u> be read by QuArK, see <a href="#.QRK">.QRK</a> instead.
 <dt><a name=".DLL">   </a>.DLL   <dd>(binary)               <b>D</b>ynamic <b>L</b>ink <b>L</b>ibrary. Contains executable code, which can be shared/used by many .EXE programs, or one .EXE program can change between different .DLLs to get new functionality.
 <dt><a name=".EXE">   </a>.EXE   <dd>(executable)           An executable program.
