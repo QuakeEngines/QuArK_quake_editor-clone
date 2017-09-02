@@ -69,9 +69,8 @@ QuArK will work but your new command won't appear on the menu.
 </UL>
 
 If all else fails, the file <tt>maptagside0.py</tt> in
-<a href="zips">plugin_examples.zip</a>
-contains what is hopefully a working version of the code for this
-section.
+<zip>plugin_examples.zip</zip> contains what is hopefully a working
+version of the code for this section.
 
 I'll also say a bit more about what goes on when modules are loaded.
 When a module is loaded, it is first `compiled' into a file with the

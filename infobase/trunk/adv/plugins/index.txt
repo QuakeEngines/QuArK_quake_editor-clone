@@ -21,6 +21,6 @@ functionality enabled.
 
 Probably the best way to get a feel for plugins is to
 first work thru a tutorial, then look at some existing
-examples.  There is an archive here, <a href="zips">plugin_examples.zip</a>,
+examples.  There is an archive here, <zip>plugin_examples.zip</zip>,
 of working examples for this tutorial (and others) in the
 'zips' sub-folder of your QuArK-help folder on your hard drive.

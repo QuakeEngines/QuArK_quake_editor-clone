@@ -177,7 +177,7 @@ WindowClick)) # adds it to the 'Options' menu
 Now we can save this 'plugin' file as well, calling it something like ' mapcircles.py ',
 to the plugins folder. You can either cut-n-paste these scripts to a text editor
 to create your own files as we have discussed, or use the ones provided here,
-<a href="zips">OOP_examples.zip</a>, of working examples for this tutorial (and others)
+<zip>OOP_examples.zip</zip>, of working examples for this tutorial (and others)
 in the 'zips' sub-folder of your QuArK-help folder on your hard drive.
 
 For a concrete example of some rather basic classes, look at the
@@ -185,7 +185,7 @@ two kinds of menu items defined in quarkpy.qmenu, 'item', and 'popup'.
 These classes have only constructors, and no other methods, and all
 the constructors do is attach the same parameters as data members,
 and add in some extra default stuff, such as 'normal' as a value
-of 'state'.    Note that functions, such as 'onclick'. can be attached
+of 'state'.    Note that functions, such as 'onclick', can be attached
 to objects by constructors (but these aren't methods).
 
 

@@ -32,4 +32,4 @@ It can't be made perfect, because Python doesn't have any
 a module.
 
 A tested version of what you ought to have now is
-<tt>maptagside1.py</tt> in <a href="zips">plugin_examples.zip</a>
+<tt>maptagside1.py</tt> in <zip>plugin_examples.zip</zip>
