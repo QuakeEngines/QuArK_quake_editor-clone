@@ -17,7 +17,7 @@ command-line arguments it should run.
 
 You must also specify where QuArK can find the specific build tools, which are
 needed to build (compile) a map to something that the FPS-game can read and
-understand. On <a href="http://quark.sourceforge.net/download_tools.php">http://quark.sourceforge.net/download_tools.php</a>
+understand. On <link download_tools>our website</link>
 you can find file-archives with build tools for the FPS-games that QuArK
 supports.
 
