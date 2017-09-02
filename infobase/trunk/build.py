@@ -187,7 +187,7 @@ def processtext(root, self, data):
                 refname = string.strip(datastring[idx+1:])
             except (ValueError):
                 pathname = datastring
-                refname = "";
+                refname = ""
             return findref(root, pathname, refname, kw, string.strip(extraargs))
 
         def perform_link_action(extraargs, datastring, root, kw):
@@ -644,6 +644,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.36  2017/09/02 08:29:08  danielpharos
+# Removed unneeded global variable.
+#
 # Revision 1.35  2016/12/24 19:42:17  danielpharos
 # Don't force everything (including URL's) to lowercase; this can break stuff.
 #
