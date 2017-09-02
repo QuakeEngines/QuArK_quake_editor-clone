@@ -2,4 +2,4 @@ title: Heavy Metal: FAKK2
 desc: origin
 
 If you have any questions, problems or find solutions regarding this topic, please post them in the
-<a href="http://quark.planetquake.gamespy.com/forums/">QuArK forum/mailing-list</a>.
+<link communication>QuArK forum/mailing-list</link>.
