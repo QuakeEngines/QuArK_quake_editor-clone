@@ -123,7 +123,7 @@ def proclink(kw, targetname, extraargs):  #DanielPharos
 def procpic(kw, path, extraargs):  #tiglari
     if (string.find(path, "/") > -1) or (string.find(path, "\\") > -1) or (path[:1] == "."):
         raise "Illegal picture filename: [%s]" % path
-    picrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
+    picrl = PICLOC + string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     if extraargs == '':
         img = '<img src="%s">' % (picrl)
     else:
@@ -612,6 +612,10 @@ def run(filewriter):
             print "---" + text + "-"*(80-len(text)-3-1)
     # load format file
     execfile("format.py", globals(), globals())
+    # create additional output directories, if needed
+    if PICLOC<>'':
+        if not os.path.exists(OutputPath+'/'+PICLOC):
+            os.mkdir(OutputPath+'/'+PICLOC)
     # recursively load everything in memory
     printline("FINDING ALL FILES")
     root = Folder("", (), ())
@@ -639,11 +643,16 @@ for flag in sys.argv:
         verboseMode=1
 if not os.path.exists(OutputPath):
     os.mkdir(OutputPath)
+else:
+    print "WARNING: Output directory already exists!"
 
 run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.37  2017/09/02 08:44:23  danielpharos
+# Removed a stray semi-colon.
+#
 # Revision 1.36  2017/09/02 08:29:08  danielpharos
 # Removed unneeded global variable.
 #
