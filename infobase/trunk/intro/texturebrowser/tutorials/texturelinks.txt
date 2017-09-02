@@ -112,8 +112,5 @@ If you look in QuArK's main folder you will also find your newly created texture
 to stay where it is or you will break the links. You will also notice that it is a very small file.
 That is because it only contains the main path to where you actually have your texture folders and files.
 
-Once again, <b> remember to save it before you uninstall QuArK for an updated version in the future.</b>
+Once again, <b>remember to save it before you uninstall QuArK for an updated version in the future</b>.
 You should be able to use the same Addon .QRK file in the new version.
-
-
-
