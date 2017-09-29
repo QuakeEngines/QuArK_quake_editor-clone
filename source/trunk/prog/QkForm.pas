@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2015/09/20 13:03:13  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.26  2015/08/21 18:23:55  danielpharos
 Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
 
@@ -140,7 +143,7 @@ const
  wp_FileMenu             = 115;
  wp_InvFaces             = 116;
  wp_UpdateInternals      = 117;
- wp_ClearDelayedCanvas   = 118;
+ //wp_ClearDelayedCanvas   = 118;
  wp_ToolbarButton1       = 119;
  wp_SetFormCfg           = 120;
  wp_SetMarsCap           = 121;
@@ -218,7 +221,7 @@ type
     function GetRestoredRect : TRect;
     procedure SetRestoredRect(const R: TRect);
   protected
-    DelayedCanvas: HDC;
+    //DelayedCanvas: HDC;
    {procedure wmNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure wmNCActivate(var Msg: TMessage); message WM_NCACTIVATE;
     procedure DefaultHandler(var Msg); override;}   { MARSCAPFIX }
@@ -504,8 +507,8 @@ end;
 procedure TQkForm.wmInternalMessage(var Msg: TMessage);
 var
  Control: TWinControl;
- Brush: HBrush;
- Rect: TRect;
+ (*Brush: HBrush;
+ Rect: TRect;*)
 {$IFNDEF NoMarsCaption}
  V: Boolean;
 {$ENDIF}
@@ -521,7 +524,7 @@ begin
         TPropListView(Control).SubEditor:=True;}
       end;
     end;
-  wp_ClearDelayedCanvas:
+  (*wp_ClearDelayedCanvas:
     if DelayedCanvas<>0 then
      begin
       FillChar(Rect, SizeOf(Rect), 0);
@@ -530,7 +533,7 @@ begin
       FillRect(DelayedCanvas, Rect, Brush);
       DeleteObject(Brush);
       DelayedCanvas:=0;
-     end;
+     end;*)
   wp_ToolbarButton1:
     if not MacroCommand(Msg.lParam) then
      begin
