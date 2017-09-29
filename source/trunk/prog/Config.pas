@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2014/09/27 14:27:11  danielpharos
+Fixed the Reset-button in the Configuration to do what people expected it to do.
+
 Revision 1.22  2009/09/22 18:12:40  danielpharos
 TList --> TQList
 
@@ -125,6 +128,8 @@ type
     procedure TrashBtnClick(Sender: TObject);
   private
     SetupQrk: QFileObject;
+    Explorer: TConfigExplorer;
+    FormCfg1: TFormCfg;
     AncienSel: String;
     IsModal, ClickedOk: Boolean;
     DisableTimer: Boolean;
@@ -139,9 +144,6 @@ type
   protected
     procedure wmHelp(var Msg: TMessage); message wm_Help;
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
-  public
-    Explorer: TConfigExplorer;
-    FormCfg1: TFormCfg;
   end;
 
  {------------------------}
