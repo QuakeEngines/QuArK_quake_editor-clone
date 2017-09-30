@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.93  2014/09/27 14:27:11  danielpharos
+Fixed the Reset-button in the Configuration to do what people expected it to do.
+
 Revision 1.92  2014/08/26 10:46:53  danielpharos
 Fixed possible TStringList leak on error code path.
 
@@ -388,8 +391,7 @@ between gamemodes.}
  mjFAKK2        = 's';  { Heavy Metal - FAKK2 }
  mjAlice        = 't';  { American McGee's Alice }
  mjWarsow       = 'v';  { Warsow }
- mjWildWest     = 'w';  { WildWest }   
- mjModelEditor  = 'x';  { QuArK Model editor }
+ mjWildWest     = 'w';  { WildWest }
  mjNEXUIZ       = 'z';  { NEXUIZ }
 
  mjAny          = #1;
@@ -468,7 +470,6 @@ procedure StorePakExtensions; {--CONVEX--}
 
 function CharModeJeu: Char;
 function ModeJeuQuake2: Boolean;
-function ModeJeuQuake4: Boolean;
 function CurrentQuake1Mode: Char;
 function CurrentQuake2Mode: Char;
 function GetGameName(nMode: Char) : String;
@@ -1243,11 +1244,6 @@ end;
 function ModeJeuQuake2: Boolean;
 begin
  Result := CharModeJeu >= mjQuake2;
-end;
-
-function ModeJeuQuake4: Boolean;
-begin
- Result := CharModeJeu >= mjQuake4;
 end;
 
 function CurrentQuake1Mode: Char;
