@@ -40,6 +40,6 @@ thing you need to do, is to tell QuArK where it can find the build-tools, and if
 you use other named build-tools than the default supplied, you need to change
 that too.
 
-There are lot of useful information to be found, regarding the QuArK build-tool
+There is a lot of useful information to be found, regarding the QuArK build-tool
 configuration, in the fly-over hints. So keep your mouse-cursor steady on an
 item and read the hint.
