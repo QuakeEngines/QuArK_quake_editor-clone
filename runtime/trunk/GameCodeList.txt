@@ -61,17 +61,3 @@ Code    abbreviation            Name          or Screen name    taken
 Note: Some of the above Authors and dates may not be correct
 due to full documentation was not available for older,
 original versions.
-
-Additional Notes:
-================
-
-When setting up for new game support please place the (game name):config and 
-Game(game name):form sections, in the Defaults.qrk file, in alphabetical order 
-so they will show up on the Games menu and config sections that way. This 
-allows for easier and more consistency in location of these sections.
-
-Also, be sure to update your copy before making any changes to ensure that 
-a file(s) you have been working on have not been changed during your work. I 
-speak from my own bumbling experiences!  <|8-\
-
-cdunde
