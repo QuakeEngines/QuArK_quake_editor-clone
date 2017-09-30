@@ -46,7 +46,7 @@ Code    abbreviation            Name          or Screen name    taken
  k      HL2             Half-Life 2           Alexander         11/08/04
  l      JA              Jedi Academy          Nazar             11/29/04
  m      Quake 4         Quake 4               cdunde            04/27/06
- n      RTCW-ET         RTCW-Enemy Territory  cdunde            25/06/06
+ n      RTCW-ET         RTCW-Enemy Territory  cdunde            06/25/06
  o      EF2             Star Trek: Elite      DanielPharos      04/16/07
                         Force 2
  p      CoD1            Call of Duty          DanielPharos      05/22/07
