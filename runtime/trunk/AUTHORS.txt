@@ -98,7 +98,7 @@ The developers of used libraries/programs
 
 - FastMM:
                         Pierre le Riche
-                        http://fastmm.sourceforge.net/
+                        https://github.com/pleriche/FastMM4
 
 - FastMove:
                         John O'Harrow
