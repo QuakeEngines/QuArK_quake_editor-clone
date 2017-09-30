@@ -341,7 +341,7 @@ class md3Object(object):
         return self
 
 
-def Import(basepath, filename):
+def Import(editor, basepath, filename):
     global tobj, logging, importername, textlog
 
     logging, tobj, starttime = ie_utils.default_start_logging(importername, textlog, filename, "IM") ### Use "EX" for exporter text, "IM" for importer text.
@@ -617,7 +617,7 @@ def Import(basepath, filename):
                     shaderfiles = os.listdir(shaderspath)
                 except:
                     quarkx.msgbox("Folder Not Found!\n\nThe folder 'scripts' can not be found in the game folder:\n    " + BasePath + "\nExtract the 'scripts' folder to that location and try again.", MT_ERROR, MB_OK)
-                    return
+                    return None, None, "", None, None, ""
                 for shaderfile in shaderfiles:
                     if shaderfile.endswith(".shader") and foundshader is None:
                         read_shader_file=open(shaderspath+"/"+shaderfile,"r")
@@ -877,8 +877,8 @@ def Import(basepath, filename):
 
     if ComponentList == []:
         if logging == 1:
-            tobj.logcon ("Can't read file %s" %filename)
-        return [None, None, ""]
+            tobj.logcon ("Can't read file %s" % filename)
+        return None, None, "", None, None, ""
 
     ### Use the 'ModelRoot' below to test opening the QuArK's Model Editor with, needs to be qualified with main menu item.
     ModelRoot = quarkx.newobj('Model:mr')
@@ -893,7 +893,6 @@ def loadmodel(root, filename, gamename, nomessage=0):
     "gamename is None."
     "For example:  C:\Quake 3 Arena\baseq3\models\mapobjects\banner\banner5.md3"
 
-    global editor, basepath
     import quarkpy.mdleditor
     editor = quarkpy.mdleditor.mdleditor
     # Step 1 to import model from QuArK's Explorer.
@@ -921,10 +920,10 @@ def loadmodel(root, filename, gamename, nomessage=0):
 
     ### Line below just runs the importer without the editor being open.
     ### Need to figure out how to open the editor with it & complete the ModelRoot.
-  #  Import( basepath, filename)
+  #  Import(editor, basepath, filename)
 
     ### Lines below here loads the model into the opened editor's current model.
-    ModelRoot, ComponentList, message, tagsgroup, ModelFolder, ModelName = Import(basepath, filename)
+    ModelRoot, ComponentList, message, tagsgroup, ModelFolder, ModelName = Import(editor, basepath, filename)
 
     if ModelRoot is None or ComponentList is None or ComponentList == []:
         quarkx.beep() # Makes the computer "Beep" once if a file is not valid.
@@ -1410,6 +1409,9 @@ def dataforminput(o):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.30  2017/05/10 16:06:26  danielpharos
+# Fixed a typo in a comment, and added a simple warning if the numbers of tags don't match.
+#
 # Revision 1.29  2015/09/20 12:59:58  danielpharos
 # Added a missing import statement.
 #
