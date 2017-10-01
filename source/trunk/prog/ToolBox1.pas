@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2015/02/16 19:19:08  danielpharos
+Made some class members private.
+
 Revision 1.19  2014/12/22 10:48:36  danielpharos
 Mousewheel scrolling in more places, and fixes a variable type.
 
@@ -168,7 +171,7 @@ type
     SetupInfo: QToolBox;
    {ModifiedFiles: TQList;}
     SelectEventWnd: HWnd;
-    SelectedObject: QObject;
+   {SelectedObject: QObject;}
     OnTopState: Boolean;
     procedure BrowseToolBox(const ToolBoxName: String);
     function DefaultTarget : TQkExplorer;
