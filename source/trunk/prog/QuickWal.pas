@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2014/08/26 10:59:25  danielpharos
+Fixed several leaks on error code paths, and moved an error message string to qdictionnary.
+
 Revision 1.55  2012/04/21 19:13:46  danielpharos
 Consted a string parameter.
 
@@ -238,7 +241,7 @@ implementation
 
 uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
   Quarkx, QkExceptions, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
-  Setup, QkQ3, OsFolder, QkD3, QkApplPaths;
+  Setup, Logging, QkQ3, OsFolder, QkD3, QkApplPaths;
 
 {$R *.DFM}
 
@@ -1004,77 +1007,79 @@ var
  Pak: QPakFolder;
  DiskFolder: QObject;
 begin
-    Path:=ConcatPaths([QuakeDir, Base]);
-    DiskFolder:=QTextureList.Create('Directories',Nil);
-    try
-     { Find Quake-3:Arena .shader files in directory }
-     S:=ConcatPaths([Path, GameShadersPath]);
-     DiskFolder:=ParseRec(S, Base, '', DiskFolder);
-    except
-     (*do nothing*)
-    end;
-    try
-     { Find 'game' textures in directory }
-     S:=ConcatPaths([Path, GameTexturesPath]);
-     DiskFolder:=ParseRec(S, Base, '', DiskFolder);
-    except
-     (*do nothing*)
-    end;
+ Path:=ConcatPaths([QuakeDir, Base]);
+ DiskFolder:=QTextureList.Create('Directories',Nil);
+ try
+  { Find Quake-3:Arena .shader files in directory }
+  S:=ConcatPaths([Path, GameShadersPath]);
+  DiskFolder:=ParseRec(S, Base, '', DiskFolder);
+ except
+  (*do nothing*)
+ end;
+ try
+  { Find 'game' textures in directory }
+  S:=ConcatPaths([Path, GameTexturesPath]);
+  DiskFolder:=ParseRec(S, Base, '', DiskFolder);
+ except
+  (*do nothing*)
+ end;
 
-    if DiskFolder.SubElements.Count>0 then
-    begin
-      DiskFolder.Fparent:=Q;
-      Q.SubElements.Add(DiskFolder);
-    end
-    else
-    begin
-      DiskFolder.Free;
-    end;
-    
-    FindError:=FindFirst(ConcatPaths([Path, '*'+SetupGameSet.Specifics.Values['PakExt']]), faAnyFile, F);
+ if DiskFolder.SubElements.Count>0 then
+ begin
+   DiskFolder.Fparent:=Q;
+   Q.SubElements.Add(DiskFolder);
+ end
+ else
+ begin
+   DiskFolder.Free;
+ end;
+
+ FindError:=FindFirst(ConcatPaths([Path, '*'+SetupGameSet.Specifics.Values['PakExt']]), faAnyFile, F);
+ try
+  while FindError=0 do
+   begin
+    Pak:=ExactFileLink(ConcatPaths([Path, F.Name]), Nil, False) as QPakFolder;
+    Pak.AddRef(+1);
     try
-     while FindError=0 do
+     Pak.Acces;
+     SearchResultList:=Nil;
+     try
+      { Find Quake-3:Arena .shader files in PK3's }
+      if (Pak is QZipFolder) then
+        SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
+      else
+        SearchFolder:=Pak.GetFolder(GameShadersPath);
+      if SearchFolder<>Nil then
+       SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
+     except
+      on E:Exception do
+       Log(LOG_WARNING, LoadStr1(5788)+' '+E.Message);
+     end;
+     try
+      { Find 'game' textures in package-files }
+      if (Pak is QZipFolder) then
+        SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
+      else
+        SearchFolder:=Pak.GetFolder(GameTexturesPath);
+      if SearchFolder<>Nil then
+       SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
+     except
+      on E:Exception do
+       Log(LOG_WARNING, LoadStr1(5788)+' '+E.Message);
+     end;
+     if SearchResultList<>Nil then
       begin
-       Pak:=ExactFileLink(ConcatPaths([Path, F.Name]), Nil, False) as QPakFolder;
-       Pak.AddRef(+1);
-       try
-        Pak.Acces;
-        SearchResultList:=Nil;
-        try
-         { Find Quake-3:Arena .shader files in PK3's }
-         if (Pak is QZipFolder) then
-           SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
-         else
-           SearchFolder:=Pak.GetFolder(GameShadersPath);
-         if SearchFolder<>Nil then
-          SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
-        except
-         (*do nothing*)
-        end;
-        try
-         { Find 'game' textures in package-files }
-         if (Pak is QZipFolder) then
-           SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
-         else
-           SearchFolder:=Pak.GetFolder(GameTexturesPath);
-         if SearchFolder<>Nil then
-          SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
-        except
-         (*do nothing*)
-        end;
-        if SearchResultList<>Nil then
-         begin
-          SearchResultList.Name:=F.Name;
-          LinkFolder(SearchResultList, Q, '');
-         end;
-       finally
-        Pak.AddRef(-1);
-       end;
-       FindError:=FindNext(F);
+       SearchResultList.Name:=F.Name;
+       LinkFolder(SearchResultList, Q, '');
       end;
     finally
-     FindClose(F);
+     Pak.AddRef(-1);
     end;
+    FindError:=FindNext(F);
+   end;
+ finally
+  FindClose(F);
+ end;
 end;
 
 procedure GetShaderList(Base : String; var List: TStringList);

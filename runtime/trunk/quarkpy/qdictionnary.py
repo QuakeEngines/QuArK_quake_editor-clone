@@ -1042,6 +1042,7 @@ Strings = {
     5785: "Unable to retrieve face data!",
     5786: "Object %s is being created in a non-allowed parent! This might produce errors!",
     5787: "RMF: String longer than 128 characters. This will overflow most other editors!",
+    5788: "Unable to load a game file!",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
@@ -1137,6 +1138,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.178  2017/08/30 15:32:33  danielpharos
+#Slightly improved wording of a message.
+#
 #Revision 1.177  2016/06/12 12:59:57  danielpharos
 #Moved a string to the dictionary.
 #
