@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.132  2016/05/14 13:46:50  danielpharos
+Moved some strings to the dictionary.
+
 Revision 1.131  2016/05/14 13:36:33  danielpharos
 Consted a TStrings object.
 
@@ -1413,8 +1416,8 @@ begin
   try
     LoadInternal(Source, SourceSize);
     FFlags:=FFlags and not ofNotLoadedToMemory;
-    QStreamRelease(FNode);
   finally {AiV}
+    QStreamRelease(FNode);
     if Source is TQStream then
       TQStream(Source).Release
     else
