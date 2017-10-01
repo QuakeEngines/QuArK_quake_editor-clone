@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2017/10/01 09:09:37  danielpharos
+Fixed a memory leak on game file loading errors. (The return variable of functions is not set on exit, so all the partially loaded content leaked.)
+
 Revision 1.58  2017/10/01 08:47:55  danielpharos
 Fixed calling the wrong overloaded function, losing the index-information.
 
@@ -1008,14 +1011,16 @@ begin
   S:=ConcatPaths([Path, GameShadersPath]);
   ParseRec(S, Base, '', DiskFolder);
  except
-  (*do nothing*)
+  on E:Exception do
+   Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
  end;
  try
   { Find 'game' textures in directory }
   S:=ConcatPaths([Path, GameTexturesPath]);
   ParseRec(S, Base, '', DiskFolder);
  except
-  (*do nothing*)
+  on E:Exception do
+   Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
  end;
 
  if DiskFolder.SubElements.Count>0 then
@@ -1047,7 +1052,7 @@ begin
        ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
      except
       on E:Exception do
-       Log(LOG_WARNING, LoadStr1(5788)+' '+E.Message);
+       Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
      end;
      try
       { Find 'game' textures in package-files }
@@ -1059,7 +1064,7 @@ begin
        ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
      except
       on E:Exception do
-       Log(LOG_WARNING, LoadStr1(5788)+' '+E.Message);
+       Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
      end;
      if SearchResultList<>Nil then
       begin
@@ -1169,11 +1174,12 @@ begin
   if not (PakFilter or FolderFilter) then
   { Get Shaders }
   try
-     { Find Quake-3:Arena .shader files in directory }
-     S:=ConcatPaths([Path, GameShadersPath]);
-     ParseShaderFiles(S, Base, '', Q, ShaderList, FoundShaders);
+   { Find Quake-3:Arena .shader files in directory }
+   S:=ConcatPaths([Path, GameShadersPath]);
+   ParseShaderFiles(S, Base, '', Q, ShaderList, FoundShaders);
   except
-     (*do nothing*)
+   on E:Exception do
+    Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
   end;
 
   if not FolderFilter then
@@ -1197,7 +1203,8 @@ begin
           ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList, FoundShaders);
         end;
       except
-        (*do nothing*)
+       on E:Exception do
+        Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
       end;
     finally
       Pak.AddRef(-1);
@@ -1208,15 +1215,16 @@ begin
      shader) }
   if not (PakFilter or ShaderFilter) then
   try
-     { Find 'game' textures in directory }
-     S:=ConcatPaths([Path, GameTexturesPath]);
-     if FolderFilter then
-       S:=ConcatPaths([S,Filter]);
-     if Filter<>'' then
-       Filter:=Filter+'/';
-     ParseTextureFolders(S, Base, Filter, Q);
+   { Find 'game' textures in directory }
+   S:=ConcatPaths([Path, GameTexturesPath]);
+   if FolderFilter then
+     S:=ConcatPaths([S,Filter]);
+   if Filter<>'' then
+     Filter:=Filter+'/';
+   ParseTextureFolders(S, Base, Filter, Q);
   except
-     (*do nothing*)
+   on E:Exception do
+    Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
   end;
 
   if not (ShaderFilter or FolderFilter) then
@@ -1238,7 +1246,8 @@ begin
         if SearchFolder<>Nil then
           ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
       except
-        (*do nothing*)
+       on E:Exception do
+        Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
       end;
     finally
       Pak.AddRef(-1);
