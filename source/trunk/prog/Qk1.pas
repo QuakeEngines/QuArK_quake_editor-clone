@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.98  2017/04/16 13:06:57  danielpharos
+Added checkbox for AMD driver bug check.
+
 Revision 1.97  2017/02/26 08:57:16  danielpharos
 Fixed DLL hijacking vulnerability on Windows XP SP1 and later. Also, improved speed parsing environmental block, and removed its 1024 character cut-off.
 
@@ -1867,7 +1870,15 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
+var
+ Done: Boolean;
 begin
+ //Forcefully process idle jobs.
+ //DanielPharos: This prevents memory leaks of the idle jobs. Perhaps we could simply dispose of them?
+ Done:=False;
+ while not Done do
+  AppIdle(Nil, Done);
+
  try
   SaveSetupNow;
  except
