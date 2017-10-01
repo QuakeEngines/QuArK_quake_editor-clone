@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2017/10/01 08:24:49  danielpharos
+Added logging when failing to load a game file (texture or shader).
+
 Revision 1.56  2014/08/26 10:59:25  danielpharos
 Fixed several leaks on error code paths, and moved an error message string to qdictionnary.
 
@@ -525,7 +528,7 @@ begin
         Q.Specifics.Values['h']:=Copy(Tex.TypeInfo, 7, 1);
       end;
     end;
-   LinkFolder(Folder, ResultFolder, FolderName);
+   LinkFolder(Folder, ResultFolder, FolderName, Index);
   end
  else
  if CompareText(ExtractFileExt(Name), '.tga') = 0 then
@@ -568,7 +571,7 @@ begin
        Q.Specifics.Values['b']:=Name;
       end;
     end;
-   LinkFolder(Folder, ResultFolder, FolderName);
+   LinkFolder(Folder, ResultFolder, FolderName, Index);
   end
  else
  if CompareText(ExtractFileExt(Name), '.mtr') = 0 then
@@ -590,7 +593,7 @@ begin
        Q.Specifics.Values['b']:=Name;
       end;
     end;
-   LinkFolder(Folder, ResultFolder, FolderName);
+   LinkFolder(Folder, ResultFolder, FolderName, Index);
   end;
 end;
 
