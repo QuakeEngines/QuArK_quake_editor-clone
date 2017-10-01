@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2017/10/01 09:32:52  danielpharos
+Skip sub-data in shader stages to prevent syntax errors when reading these shaders.
+
 Revision 1.42  2012/09/05 18:06:10  danielpharos
 Move implementation of FloatSpec internally to QkObjects.
 
@@ -593,6 +596,7 @@ var
                     where it doesn't seem to set checks in the Mohradiant
                     surf inspector }
  EditableSurfaceParms : boolean;
+ NestDepth: Integer;
 
   procedure SyntaxError;
   begin
@@ -746,11 +750,16 @@ begin
            SkipSpaces;
            if Source^='}' then Break;   { end of stage }
            if Source^='{' then
-            begin   { stage data. For example: texEnvCombine }
+            begin   { stage data. For example: texEnvCombine, nvRegCombiners }
              //FIXME: Currently cannot handle this; skip it!
+             NestDepth:=1;
              repeat
               Inc(Source);
-             until Source^='}';
+              if Source^='{' then
+               Inc(NestDepth);
+              if Source^='}' then
+               Dec(NestDepth);
+             until NestDepth=0;
              Inc(Source);   { skip the closing brace }
             end
            else
