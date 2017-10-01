@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2014/08/26 10:11:14  danielpharos
+Fixed several leaks in error code paths.
+
 Revision 1.35  2012/03/08 20:38:49  danielpharos
 Fixed an access violation if no texture-folder was found in a bsp-file, and fixed some memory leaks in crash code-flow.
 
@@ -665,8 +668,11 @@ var
     ExistingAddons: QFileObject;
   begin
     ExistingAddons:=MakeAddonsList;
-    StringListFromEntityLump(e_lump, ExistingAddons, text_entities);
-    ExistingAddons.AddRef(-1);
+    try
+      StringListFromEntityLump(e_lump, ExistingAddons, text_entities);
+    finally
+      ExistingAddons.AddRef(-1);
+    end;
   end;
 
   Function GetObject(nname, ntypeinfo, s: String): QObject;
