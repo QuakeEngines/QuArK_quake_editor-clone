@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2014/08/26 12:42:54  danielpharos
+Fixed a debug output printing the wrong name.
+
 Revision 1.30  2010/10/14 20:03:30  danielpharos
 Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
 
@@ -216,7 +219,6 @@ type
    {function AddRoot(Q: QObject) : TTreeNode;
     procedure RemoveRoot(I: Integer);}
     function FindRootFromSpec(Q: QObject) : QObject;
-   {destructor Destroy; override;}
     procedure InitEl(El: QObject; Charger: Boolean);
     procedure ControlerEtatNoeud(El: QObject);
    {function EnumSel(var Q: QObject) : Boolean;
