@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.6  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -70,7 +73,8 @@ function FindNextAvailablePakFilename(Force: Boolean) : String;
 
 implementation
 
-uses StrUtils, SysUtils, Setup, Game, QkPak, Quarkx, QkExceptions, QkApplPaths;
+uses StrUtils, SysUtils, Setup, Game, QkPak, Quarkx, Logging,
+  QkExceptions, QkApplPaths;
 
 function IsPakTemp(const theFilename: String) : Boolean;
 var
@@ -110,7 +114,6 @@ end;
 constructor TGetPakNames.Create;
 begin
   StrList := TStringList.Create;
-  StrList.Sorted := True;
 end;
 
 destructor TGetPakNames.Destroy;
@@ -125,6 +128,59 @@ begin
    StrListIter:=StrList.Count
  else
    StrListIter:=-1; //-- will be increased in GetNextPakName --
+end;
+
+function StringListCompareOfficialPakFiles(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  PakOfficialFormat, S: String;
+  I: Integer;
+  Filename1, Filename2: String;
+  PakNumber1, PakNumber2: Integer;
+begin
+  PakOfficialFormat:=SetupGameSet.Specifics.Values['PakOfficialFormat'];
+  //This function only works properly when fed filename already in the right format!
+  I:=Pos('*', PakOfficialFormat);
+  if I=0 then
+    raise InternalE('Invalid official pak filename format!');
+
+  //Note: The length calculation is simplified from:
+  //  (Length(Filename)-I)-(Length(PakOfficialFormat)-I)+1
+
+  Filename1:=ExtractFilename(List[Index1]);
+  S:=Copy(Filename1, I, Length(Filename1)-Length(PakOfficialFormat)+1);
+  if SetupGameSet.Specifics.Values['PakFormatHex']<>'' then
+    try
+      PakNumber1:=StrToInt('$'+S);
+    except
+      Log(LOG_WARNING, LoadStr1(5789), [Filename1]);
+      PakNumber1:=0;
+    end
+  else
+    try
+      PakNumber1:=StrToInt(S);
+    except
+      Log(LOG_WARNING, LoadStr1(5789), [Filename1]);
+      PakNumber1:=0;
+    end;
+
+  Filename2:=ExtractFilename(List[Index2]);
+  S:=Copy(Filename2, I, Length(Filename2)-Length(PakOfficialFormat)+1);
+  if SetupGameSet.Specifics.Values['PakFormatHex']<>'' then
+    try
+      PakNumber2:=StrToInt('$'+S);
+    except
+      Log(LOG_WARNING, LoadStr1(5789), [Filename2]);
+      PakNumber2:=0;
+    end
+  else
+    try
+      PakNumber2:=StrToInt(S);
+    except
+      Log(LOG_WARNING, LoadStr1(5789), [Filename2]);
+      PakNumber2:=0;
+    end;
+
+ Result := PakNumber2 - PakNumber1;
 end;
 
 procedure TGetPakNames.CreatePakList(const Path, CustomFilter: String; Backwards: Boolean; SearchForTemp: Boolean);
@@ -150,43 +206,65 @@ begin
  if PakFileFilter='' then
  begin
    if PakFileExt<>'' then
-     PakFileFilter:='PAK#'+PakFileExt
+     PakFileFilter:='*'+PakFileExt
    else
-     PakFileFilter:='PAK#.PAK';
+     PakFileFilter:='*.PAK';
  end;
  I:=Pos('#', PakFileFilter);
  if I>0 then
  begin
-   PakFileMaxNumber:=SetupGameSet.IntSpec['PakMaxNumber'];
+   if SetupGameSet.Specifics.Values['PakFormatHex']<>'' then
+     PakFileMaxNumber:=StrToInt('$'+SetupGameSet.Specifics.Values['PakMaxNumber'])
+   else
+     PakFileMaxNumber:=SetupGameSet.IntSpec['PakMaxNumber'];
    if PakFileMaxNumber<=0 then
      PakFileMaxNumber:=9;
    //Setup a list of strings; example: "PAK0.PAK", "PAK1.PAK", ...
    for J:=0 to PakFileMaxNumber do
    begin
-     S := LeftStr(PakFileFilter, I-1) + IntToStr(J) + RightStr(PakFileFilter, Length(PakFileFilter) - I);
-     StrList.Add(ConcatPaths([Path, S]));
+     if SetupGameSet.Specifics.Values['PakFormatHex']<>'' then
+       S := LeftStr(PakFileFilter, I-1) + IntToHex(J, 1) + RightStr(PakFileFilter, Length(PakFileFilter) - I)
+     else
+       S := LeftStr(PakFileFilter, I-1) + IntToStr(J) + RightStr(PakFileFilter, Length(PakFileFilter) - I);
+     if FileExists(ConcatPaths([Path, S])) then
+       StrList.Add(ConcatPaths([Path, S]));
    end;
  end
  else
  begin
+   //First, let's find all the official pak-files.
+   if SetupGameSet.Specifics.Values['PakOfficialFormat']<>'' then
+   begin
+     if FindFirst(ConcatPaths([Path, SetupGameSet.Specifics.Values['PakOfficialFormat']]), faAnyFile, sr) = 0 then
+     begin
+       try
+         repeat
+           S := ConcatPaths([Path, sr.Name]);
+           if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
+             StrList.Add(S);
+         until FindNext(sr) <> 0;
+       finally
+         FindClose(sr);
+       end;
+     end;
+     StrList.CustomSort(StringListCompareOfficialPakFiles);     
+   end;
+
    //Get the list of strings, by looking in the path for files matching the filefilter
    if FindFirst(ConcatPaths([Path, PakFileFilter]), faAnyFile, sr) = 0 then
    begin
-     S := ConcatPaths([Path, sr.Name]);
-     if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
-       StrList.Add(S);
-     while FindNext(sr) = 0 do
-     begin
-       S := ConcatPaths([Path, sr.Name]);
-       if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
-         StrList.Add(S);
+     try
+       repeat
+         S := ConcatPaths([Path, sr.Name]);
+         if (not SearchForTemp) or (SearchForTemp and IsPakTemp(S)) then
+           if StrList.IndexOf(S)=-1 then
+             StrList.Add(S);
+       until FindNext(sr) <> 0;
+     finally
+       FindClose(sr);
      end;
-     FindClose(sr);
    end;
  end;
-
- //Do correct sorting: Quake games load the official PAK-files FIRST,
- //then any others in alphabetical order. (StrList.Sorted := True;)
 
  ResetIter(Backwards);
 end;

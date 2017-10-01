@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Corrected the loading order of pak file: now official pak files are loaded first,
+          - just like the games do.
+
 * [DanielPharos]: Fixed a bug where QuArK lost track of game file folders if it failed to load
           - one of the files in it, causing missing textures and shaders, and a memory leak.
 
