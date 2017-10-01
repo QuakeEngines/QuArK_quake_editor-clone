@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2015/08/21 18:23:55  danielpharos
+Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
+
 Revision 1.29  2014/12/20 15:37:22  danielpharos
 Added mouse scroll wheel support in various places.
 
@@ -173,6 +176,7 @@ type
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     EditInfo: PTVEditing;
+    DropTarget: QObject;
     MaxPixelWidth: Integer; //DanielPharos: A workaround to get the horizontal scrollbar working
     procedure WMPaint(var Message: TMessage); message WM_PAINT;
     procedure Expanding(Q: QObject); dynamic;
@@ -194,7 +198,6 @@ type
     procedure DisplayDetails(ParentSel: Boolean; Item: QObject; var Etat: TDisplayDetails); virtual;
     {procedure ClearSelection;}
   public
-    DropTarget: QObject;
     AllowEditing: (aeNo, aeUndo, aeFree);
     RightButtonDrag: Boolean;
     NoKeyboardDelay: Boolean;
