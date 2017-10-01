@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2012/09/05 18:06:10  danielpharos
+Move implementation of FloatSpec internally to QkObjects.
+
 Revision 1.41  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -223,6 +226,8 @@ begin
  Info.FileObjectDescriptionText:=LoadStr1(5174);
  Info.FileExt:=803;
 end;
+
+{------------------------}
 
 procedure Q_CFile.ObjectState(var E: TEtatObjet);
 begin
@@ -585,14 +590,13 @@ var
  masked: boolean; { Mohaa (tiglari): I'm guessing that this means that some
                     of the surfaceparms should be loaded into the editor as
                     flags.  'surfaceparm' appears an various other contexts
-                    where it doesn't seem to set checks in the Mohraidant
+                    where it doesn't seem to set checks in the Mohradiant
                     surf inspector }
  EditableSurfaceParms : boolean;
- Filename: String; //Used in SyntaxError for display purposes
 
   procedure SyntaxError;
   begin
-   Raise EErrorFmt(5694, [Filename, LineNumber]);
+   Raise EErrorFmt(5694, [Self.GetFullName(), LineNumber]);
   end;
 
   procedure SkipSpaces;
@@ -673,12 +677,10 @@ var
   end;
 
 begin
- Filename:=Self.GetFullName;
-
  EditableSurfaceParms:=SetupGameSet.Specifics.Values['EditableSurfaceParms']<>'';
 
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       ProgressIndicatorStart(5453, FSize div ProgressStep); try
       SetLength(Data, FSize);
       Source:=PChar(Data);
@@ -743,7 +745,16 @@ begin
             { read one stage attribute per loop }
            SkipSpaces;
            if Source^='}' then Break;   { end of stage }
-           ReadAttribute(Stage);
+           if Source^='{' then
+            begin   { stage data. For example: texEnvCombine }
+             //FIXME: Currently cannot handle this; skip it!
+             repeat
+              Inc(Source);
+             until Source^='}';
+             Inc(Source);   { skip the closing brace }
+            end
+           else
+            ReadAttribute(Stage);
           until False;
           Inc(Source);   { skip the closing brace }
 
@@ -802,7 +813,7 @@ var
  Data: String;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       for I:=0 to SubElements.Count-1 do
        begin
         Q:=SubElements[I];
@@ -829,4 +840,3 @@ initialization
   RegisterQObject(QShaderStage, 'a');
   RegisterQObject(QShaderFile, 'p');
 end.
-
