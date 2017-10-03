@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.570  2017/10/01 14:19:54  danielpharos
+//Corrected the loading order of pak file: now official pak files are loaded first, just like the games do.
+//
 //Revision 1.569  2017/08/17 19:48:28  danielpharos
 //Moved ZIP settings to their own section, and added internal memory usage during compression option.
 //
@@ -2365,6 +2368,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pk3"
         PakOfficialFormat = "PAK*.PK3"
+        //PakOfficialFormat = "PAKUO*.PK3" #For United Offensive
         PakFormatHex = "1"
         Console = "1"
         LightEntityScale = '0.9'
@@ -5355,6 +5359,8 @@ QQRKSRC1
         Txt = "Call of Duty command-line"
         Items = "CoDSP.exe +set sv_pure 0"
              $0D"CoDMP.exe +set sv_pure 0"
+             $0D"CoDUOSP.exe +set sv_pure 0"
+             $0D"CoDUOMP.exe +set sv_pure 0"
         t_ProgramHint=!
       }
       Directory: =
@@ -6825,48 +6831,6 @@ QQRKSRC1
         Hint = "check this to have QuArK write both .WAL and .TGA textures (kpBSP can't read .TGA textures)"
       }
       t_GameBuildPgms=!
-    }
-
-    QuArKModelEditor:form =
-    {
-      Style = "3"
-      sep: = {Typ="S" Txt="--- Texture Settings ---"}
-      Directory: =
-      {
-        Txt = "The 'Textures' folder to use"
-        Typ = "ED"      // Edit Directory
-        Hint = "Path to (and including) the 'textures' folder, there MUST be one."$0D"However, it can be with a capital 'T'."
-      }
-      CD: =
-      {
-        Txt = "Textures CD-ROM drive"
-        Typ = "ED"      // Edit Directory
-        Hint = "If you want to use textures on a CD, this is the drive of the CD-ROM."
-      }
-      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
-      {
-        Typ = "+"
-        Txt = "Installed Add-ons"
-        Cap = "Add-ons..."
-        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
-               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
-               $666000407787877866608777777777784448444844487F785C77CF77CC487778
-               $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMx"}    // switches to Model Editor (cmd=GAM, game=x)
-        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
-      }
-      Outp:tbbtn =
-      {
-        Typ = "+"
-        Txt = "Paths and files to create"
-        Cap = "Output directories..."
-        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
-               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
-               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
-               $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMx"}    // switches to Model Editor (cmd=GAM, game=x)
-        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
-      }
     }
 
     GameMOHAA:form =

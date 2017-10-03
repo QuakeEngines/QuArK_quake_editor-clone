@@ -1,0 +1,1773 @@
+QQRKSRC1
+// Call of Duty 1 United Offensive Entities file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Call of Duty: United Offensive Entities"
+
+  Toolbox Folders.qtx =
+  {
+    Toolbox = "New map items..."
+    Root = "CoDUO (Call of Duty United Offensive) Entities.qtxfolder"
+    CoDUO (Call of Duty United Offensive) Entities.qtxfolder =
+    {
+      ;desc = "Created from coduo.def"
+      func_* entities.qtxfolder =
+      {
+        func_bobbing:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_cullgroup:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_group:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_pendulum:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_static:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      info_* entities.qtxfolder =
+      {
+        info_grenade_hint:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_notnull:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_notnull_big:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_null:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_start:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_vehicle_node:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_vehicle_node_rotate:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      item_* entities.qtxfolder =
+      {
+        item_ammo_stielhandgranate_closed:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_ammo_stielhandgranate_open:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health_large:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        item_health_small:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      misc_* entities.qtxfolder =
+      {
+        misc_mg42:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_model:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_portal_camera:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_portal_surface:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_turret:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      mp_* entities.qtxfolder =
+      {
+        mp_target_location:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      node_* entities.qtxfolder =
+      {
+        node_balcony:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_concealment_crouch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_concealment_prone:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_concealment_stand:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_crouch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_left:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_prone:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_right:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_stand:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_wide_left:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_cover_wide_right:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_negotiation_begin:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_negotiation_end:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_pathnode:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_reacquire:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_scripted:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        node_stack:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      other entities.qtxfolder =
+      {
+        corona:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        light:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        worldspawn:b =
+        {
+        }
+      }
+      props_* entities.qtxfolder =
+      {
+        props_skyportal:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      script_* entities.qtxfolder =
+      {
+        script_brushmodel:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        script_model:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        script_origin:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        script_vehicle:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      trigger_* entities.qtxfolder =
+      {
+        trigger_damage:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_friendlychain:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_hurt:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_lookat:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_mount:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_multiple:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_once:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_use:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+    }
+  }
+  Entity Forms.fctx =
+  {
+    info_grenade_hint:form =
+    {
+      help = "AI will try to get a grenade to go through this point in space w"
+       "hen throwing a grenade.  This is how AI understand throwing grenades t"
+       "hrough windows and doors."
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    info_player_start:form =
+    {
+      help = "equivelant to info_player_deathmatch"
+      bbox = '-16 -16 0 16 16 72'
+    }
+    func_group:form =
+    {
+      help = "Used to group brushes together just for editor convenience.  The"
+       "y are turned into normal brushes by the utilities."
+    }
+    func_cullgroup:form =
+    {
+      help = "Used to group brushes together for culling in the portal-based r"
+       "enderer.  They are turned into world brushes by the utilities."
+    }
+    info_null:form =
+    {
+      help = "Used as a positional target for calculations in the utilities (s"
+       "potlights, etc), but removed during gameplay."
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    info_notnull:form =
+    {
+      help = "Used as a positional target for in-game calculation, like jumppa"
+       "d targets."
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    info_notnull_big:form =
+    {
+      help = "info_notnull with a bigger box for ease of positioning"
+      bbox = '-16 -16 -24 16 16 32'
+    }
+    light:form =
+    {
+      help = "Non-displayed light."$0D"Lights pointed at a target will be spot"
+       "lights."$0D22"light"$22" overrides the default 300 intensity."$0D22"ra"
+       "dius"$22" overrides the default 64 unit radius of a spotlight at the t"
+       "arget point."$0D22"overbrightShift"$22" controls overbright radius.  0"
+       " is default, 1 is no overbrighting at all, fractions in between do lin"
+       "ear interpolation."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    misc_model:form =
+    {
+      help = "If the misc_model has a targetname, it is kept as a server-side "
+       "entity, so game scripts can modify it."$0D"If the misc_model does not "
+       "have a targetname, it is only in the renderer on the client, so it can"
+       "not change."$0D22"model"$22"            arbitrary xmodel file to displ"
+       "ay"$0D22"modelscale"$22"    scale multiplier (defaults to 1x, and scal"
+       "es uniformly)"$0D22"modelscale_vec"$22"    scale multiplier (defaults "
+       "to 1 1 1, scales each axis as requested)"$0D"ORIENT_LOD - if flagged, "
+       "the entity will yaw towards the player when the LOD switches"$0D"NO_SH"
+       "ADOW - the opaque surfaces will not cast shadows"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "ORIENT_LOD"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NO_SHADOW"
+      }
+    }
+    misc_portal_surface:form =
+    {
+      help = "The portal surface nearest this entity will show a view from the"
+       " targeted misc_portal_camera, or a mirror view if untargeted."$0D"This"
+       " must be within 64 world units of the surface!"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    misc_portal_camera:form =
+    {
+      help = "The target for a misc_portal_director.  You can set either angle"
+       "s or target another entity to determine the direction of view."$0D22"r"
+       "oll"$22" an angle modifier to orient the camera around the target vect"
+       "or;"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "slowrotate"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "fastrotate"
+      }
+    }
+    corona:form =
+    {
+      help = "Use color picker to set color or key "$22"color"$22".  values ar"
+       "e 0.0-1.0 for each color (rgb)."$0D22"scale"$22" will designate a mult"
+       "iplier to the default size.  (so 2.0 is 2xdefault size, 0.5 is half)"
+      bbox = '-4 -4 -4 4 4 4'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_OFF"
+      }
+    }
+    misc_mg42:form =
+    {
+      help = "weaponinfo - weapon info"$0D"leftarc - horizonal left fire arc."$0D
+       "rightarc - horizonal left fire arc."$0D"toparc - vertical top fire arc"
+       "."$0D"bottomarc - vertical bottom fire arc."$0D"convergencetime - time"
+       " (in seconds) to converge to target."$0D"maxrange - maximum firing/sig"
+       "ht range."$0D"damage - determines how much the weapon will inflict if "
+       "a non player uses it"$0D"accuracy - all guns are 100% accurate a value"
+       " of 0.5 would make it 50%"
+      bbox = '-16 -16 0 16 16 56'
+    }
+    misc_turret:form =
+    {
+      help = "weaponinfo - weapon info"$0D"leftarc - horizonal left fire arc."$0D
+       "rightarc - horizonal left fire arc."$0D"toparc - vertical top fire arc"
+       "."$0D"bottomarc - vertical bottom fire arc."$0D"convergencetime - time"
+       " (in seconds) to converge to target."$0D"maxrange - maximum firing/sig"
+       "ht range."$0D"damage - determines how much the weapon will inflict if "
+       "a non player uses it"$0D"accuracy - all guns are 100% accurate a value"
+       " of 0.5 would make it 50%"
+      bbox = '-16 -16 0 16 16 56'
+    }
+    func_door:form =
+    {
+      help = "TOGGLE      wait in both the start and end states for a trigger "
+       "event."$0D"START_OPEN  the door to moves to its destination when spawn"
+       "ed, and operate in reverse.  It is used to temporarily or permanently "
+       "close off an area when triggered (not useful for touch or takedamage d"
+       "oors)."$0D"NOMONSTER   monsters will not trigger this door"$0D"SHOOT-T"
+       "HRU    Bullets don't stop when they hit the door.  Set "$22"shoot_thru"
+       "_scale"$22" with bullet damage scale (see below)"$0D22"key"$22"       "
+       "set to any non-zero value to start door as locked"$0D22"angle"$22"    "
+       "    determines the opening direction"$0D22"targetname"$22" if set, no "
+       "touch field will be spawned and a remote button or trigger field activ"
+       "ates the door."$0D22"speed"$22"        movement speed (100 default)"$0D
+       $22"closespeed"$22" optional different movement speed for door closing"$0D
+       $22"wait"$22"      wait before returning (3 default, -1 = never return)"
+       $0D22"lip"$22"       lip remaining at end of move (8 default)"$0D22"dmg"
+       $22"       damage to inflict when blocked (2 default)"$0D22"color"$22" "
+       "    constantLight color"$0D22"light"$22"     constantLight radius"$0D22
+       "health"$22"    if set, the door must be shot open"$0D22"teamname"$22" "
+       "   team name.  other doors with same team name will open/close in sync"
+       "ronicity"$0D22"noisescale"$22"multiplier for how far the noise from th"
+       "e door will travel to alert AI"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_OPEN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "TOGGLE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "CRUSHER"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "TOUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "SHOOT-THRU"
+      }
+    }
+    func_static:form =
+    {
+      help = "A bmodel that just sits there, doing nothing.  Can be used for c"
+       "onditional walls and models."$0D22"color"$22"        constantLight col"
+       "or"$0D22"light"$22"        constantLight radius"$0D22"start_invis"$22" "
+       "will start the entity as non-existant"$0D"If targeted, it will toggle "
+       "existance when triggered"$0D"pain will use its target"$0D"When using p"
+       "ain you will need to specify the delay time"$0D"value of 1 = 1 sec 2 ="
+       " 2 sec so on..."$0D"default is 1 sec you can use decimals"$0D"example "
+       ":"$0D"delay"$0D"1.27"$0D"painEFX will spawn a shards"$0D"example:"$0D"s"
+       "hard"$0D"4"$0D"will spawn rubble"$0D"shard default is 4"$0D"shard ="$0D
+       "shard_glass = 0,"$0D"shard_wood = 1,"$0D"shard_metal = 2,"$0D"shard_ce"
+       "ramic = 3,"$0D"shard_pebbles = 4"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "start_invis"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "pain"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "painEFX"
+      }
+    }
+    func_rotating:form =
+    {
+      help = "You need to have an origin brush as part of this entity."$0D"The"
+       " center of that brush will be the point around which it is rotated. It"
+       " will rotate around the Z axis by default.  You can check either the X"
+       "_AXIS or Y_AXIS box to change that."$0D22"speed"$22"        determines"
+       " how fast it moves; default value is 100."$0D22"dmg"$22"        damage"
+       " to inflict when blocked (2 default)"$0D22"color"$22"        constantL"
+       "ight color"$0D22"light"$22"        constantLight radius"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_ON"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "STARTINVIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "Y_AXIS"
+      }
+    }
+    func_bobbing:form =
+    {
+      help = "Normally bobs on the Z axis"$0D22"height"$22"    amplitude of bo"
+       "b (32 default)"$0D22"speed"$22"        seconds to complete a bob cycle"
+       " (4 default)"$0D22"phase"$22"        the 0.0 to 1.0 offset in the cycl"
+       "e to start at"$0D22"dmg"$22"        damage to inflict when blocked (2 "
+       "default)"$0D22"color"$22"        constantLight color"$0D22"light"$22" "
+       "       constantLight radius"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "Y_AXIS"
+      }
+    }
+    func_pendulum:form =
+    {
+      help = "You need to have an origin brush as part of this entity."$0D"Pen"
+       "dulums always swing north / south on unrotated models.  Add an angles "
+       "field to the model to allow rotation in other directions."$0D"Pendulum"
+       " frequency is a physical constant based on the length of the beam and "
+       "gravity."$0D22"speed"$22"        the number of degrees each way the pe"
+       "ndulum swings, (30 default)"$0D22"phase"$22"        the 0.0 to 1.0 off"
+       "set in the cycle to start at"$0D22"dmg"$22"        damage to inflict w"
+       "hen blocked (2 default)"$0D22"color"$22"        constantLight color"$0D
+       $22"light"$22"        constantLight radius"
+    }
+    func_door_rotating:form =
+    {
+      help = "You need to have an origin brush as part of this entity."$0D"The"
+       " center of that brush will be the point around which it is rotated. It"
+       " will rotate around the Z axis by default.  You can check either the X"
+       "_AXIS or Y_AXIS box to change that (only one axis allowed. If both X a"
+       "nd Y are checked, the default of Z will be used)."$0D"FORCE        doo"
+       "r opens even if blocked"$0D22"key"$22"       set to any non-zero value"
+       " to start door as locked"$0D22"degrees"$22"   determines how many degr"
+       "ees it will turn (90 default)"$0D22"speed"$22"        movement speed ("
+       "100 default)"$0D22"closespeed"$22" optional different movement speed f"
+       "or door closing"$0D22"time"$22"      how many milliseconds it will tak"
+       "e to open 1 sec = 1000"$0D22"dmg"$22"       damage to inflict when blo"
+       "cked (2 default)"$0D22"color"$22"     constantLight color"$0D22"light"$22
+       "     constantLight radius"$0D22"teamname"$22"    team name.  other doo"
+       "rs with same team name will open/close in syncronicity"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_OPEN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "TOGGLE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "Y_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "REVERSE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "FORCE"
+      }
+    }
+    trigger_use:form =
+    {
+    }
+    props_skyportal:form =
+    {
+      help = $22"fov"$22" for the skybox default is 90"$0D"To have the portal "
+       "sky fogged, enter any of the following values:"$0D22"fogcolor"$22" (r "
+       "g b) (values 0.0-1.0)"$0D22"fognear"$22" distance from entity to start"
+       " fogging"$0D22"fogfar"$22" distance from entity that fog is opaque"
+      bbox = '-8 -8 0 8 8 16'
+    }
+    script_brushmodel:form =
+    {
+      help = $22"color"$22"     constantLight color"$0D22"light"$22"     const"
+       "antLight radius"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DYNAMICPATH"
+      }
+    }
+    script_model:form =
+    {
+      help = $22"color"$22"     constantLight color"$0D22"light"$22"     const"
+       "antLight radius"$0D"MP_TREEFALL will only work in multiplayer. Tanks w"
+       "ill push this"$0D"entity over when checked"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "MP_TREEFALL"
+      }
+    }
+    script_origin:form =
+    {
+      help = $22"color"$22"     constantLight color"$0D22"light"$22"     const"
+       "antLight radius"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    info_vehicle_node:form =
+    {
+      help = $22"targetname"$22" - name of this node"$0D22"target"$22" - name "
+       "of next node in this path"$0D22"speed"$22" - speed[mph] vehicle should"
+       " have at this node"$0D22"lookahead"$22" - time[sec] vehicle should loo"
+       "k ahead at this node"
+      bbox = '-24 -24 -24 24 24 24'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_NODE"
+      }
+    }
+    info_vehicle_node_rotate:form =
+    {
+      help = $22"targetname"$22" - name of this node"$0D22"target"$22" - name "
+       "of next node in this path"$0D22"speed"$22" - speed[mph] vehicle should"
+       " have at this node"$0D22"lookahead"$22" - time[sec] vehicle should loo"
+       "k ahead at this node"
+      bbox = '-24 -24 -24 24 24 24'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_NODE"
+      }
+    }
+    script_vehicle:form =
+    {
+      help = $22"targetname"$22" - name of this vehicle"$0D22"model"$22" - xmo"
+       "del file to use as vehicle"$0D22"vehicletype"$22" - name of vehicle ty"
+       "pe to use in AssetManager"$0D22"delay"$22" - wait before vehicle respa"
+       "wns. default is 10."$0D"Multipleayer specific stuff:"$0D"NO_RESPAWN is"
+       " multiplayer specific, vehicle will not respawn automatically"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "USABLE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NO_RESPAWN"
+      }
+    }
+    worldspawn:form =
+    {
+      help = "Every map should have exactly one worldspawn."$0D22"music"$22"  "
+       "   Music wav file. Can optionally specify intro & loop files to play"$0D
+       $22"ambienttrack"$22" Ambient wav file."$0D22"gravity"$22"   800 is def"
+       "ault gravity"$0D22"message"$22" Text to print during connection proces"
+       "s"$0D22"ambient"$22"  Ambient light value (single scale, 1 = full brig"
+       "ht, 2 = full overbright, must use '_color')"$0D22"_color"$22"    Ambie"
+       "nt light color (RGB triple, must be used with 'ambient')"$0D22"sun"$22
+       "        Shader to use for 'sun' image"$0D22"suncolor"$22"    RGB value"
+       "s for direct sunlight color (color only, not brightness, 0-1 scale, wo"
+       "rks with 'sunlight')"$0D22"sunlight"$22"    Intensity of the sun (1 = "
+       "fullbright, 2 = full overbright for something facing directly at the s"
+       "un, must use 'suncolor')"$0D22"sundiffusecolor"$22"  RGB values for di"
+       "ffuse sunlight color (color only, not brightness, 0-1 scale, works wit"
+       "h 'diffusefraction')"$0D22"diffusefraction"$22" fraction of sunlight i"
+       "ntensity to come from the diffuse lighting (in range 0-1; eg, 0.5, wor"
+       "ks with 'sundiffusecolor')"$0D22"sundirection"$22" pitch-yaw-roll for "
+       "direction to sun (eg, sundirection -45 135 0)"$0D22"minlight"$22"  min"
+       "imum intensity for a lightmap pixel (does not affect models in-game)"$0D
+       $22"minlightcolor"$22"  color to clamp to for minlight (color gets norm"
+       "alized)"$0D22"northyaw"$22"  yaw angle that denotes the direction of n"
+       "orth"$0D"Multiplayer specific stuff:"$0D"NO_GT_WOLF specifies no objec"
+       "tive mode for this map"$0D"NO_STOPWATCH specifies no stopwatch mode fo"
+       "r this map"$0D"NO_CHECKPOINT specifies no checkpoint mode for this map"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "sun_cameraflare"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "NO_GT_WOLF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "NO_STOPWATCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "NO_CHECKPOINT"
+      }
+    }
+    trigger_multiple:form =
+    {
+      help = $22"wait"$22" : Seconds between triggerings, 0.5 default, -1 = on"
+       "e time only."$0D22"random"$22"    wait variance, default is 0"$0D"Vari"
+       "able sized repeatable trigger.  Must be targeted at one or more entiti"
+       "es."$0D"so, the basic time between firing is a random time between"$0D
+       "(wait - random) and (wait + random)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "AI_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "AI_ALLIES"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "AI_NEUTRAL"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "NOTPLAYER"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "VEHICLE"
+      }
+    }
+    trigger_friendlychain:form =
+    {
+      help = "Forces any touching entity to be considered on the targeted frie"
+       "ndly chain."
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "AI_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "AI_ALLIES"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "AI_NEUTRAL"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "NOTPLAYER"
+      }
+    }
+    trigger_hurt:form =
+    {
+      help = "Any entity that touches this will be hurt."$0D"It does dmg point"
+       "s of damage each server frame"$0D"Targeting the trigger will toggle it"
+       "s on / off state."$0D"PLAYER_ONLY   - only damages the player"$0D"SILE"
+       "NT        - supresses playing the sound"$0D"NO_PROTECTION - *nothing* "
+       "stops the damage"$0D"SLOW          - changes the damage rate to once p"
+       "er second"$0D22"dmg"$22"            default 5 (whole numbers only)"$0D
+       $22"life"$22"    time this brush will exist if value is zero will live "
+       "for ever ei 0.5 sec 2.sec"$0D"default is zero"$0D"the entity must be u"
+       "sed first before it will count down its life"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "START_OFF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "PLAYER_ONLY"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "SILENT"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "NO_PROTECTION"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "SLOW"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "ONCE"
+      }
+    }
+    trigger_once:form =
+    {
+      help = "Must be targeted at one or more entities."$0D"Once triggered, th"
+       "is entity is destroyed"$0D"(you can actually do the same thing with tr"
+       "igger_multiple with a wait of -1)"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "AI_AXIS"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "AI_ALLIES"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "AI_NEUTRAL"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "NOTPLAYER"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "VEHICLE"
+      }
+    }
+    trigger_damage:form =
+    {
+      help = "Trigger that responds to taking damage."$0D22"wait"$22"         "
+       "   base time between triggering all targets, default is 1"$0D22"random"
+       $22"        wait variance, default is 0"$0D"so, the basic time between "
+       "firing is a random time between"$0D"(wait - random) and (wait + random"
+       ")"$0D22"accumulate"$22"    If set, this much damage must be accumulate"
+       "d before it will trigger"$0D22"threshold"$22"        If set, the min a"
+       "mount of damage that must be done to it to trigger it"$0D"Note that ac"
+       "cumulate & threshold can used at the same time."$0D"PISTOL_NO turns of"
+       "f response to pistol damage"$0D"RIFLE_NO turns off response to rifle d"
+       "amage"$0D"PROJ_NO turns off response to projectile damage"$0D"SPLASH_N"
+       "O turns off response to splash damage"$0D"MELEE_NO turns off response "
+       "to melee damage"$0D"FLAME_NO turns off response to fire damage"$0D"MIS"
+       "C_NO turns off response to all other misc types of damage"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "PISTOL_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "RIFLE_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "PROJ_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "EXPLOSION_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "SPLASH_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "MELEE_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "FLAME_NO"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "MISC_NO"
+      }
+    }
+    trigger_lookat:form =
+    {
+    }
+    trigger_mount:form =
+    {
+      help = "Trigger that determines where a lmg mount point is."$0D"CROUCH t"
+       "his is a crouch mount point"
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "CROUCH"
+      }
+    }
+    node_pathnode:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - face this way when"
+       " at this node on a friendly chain"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "DONT_RUN"
+      }
+    }
+    node_cover_stand:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_cover_crouch:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_cover_prone:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+    }
+    node_cover_right:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_cover_left:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_cover_wide_right:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_cover_wide_left:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - cover is valid aga"
+       "inst enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_concealment_stand:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - concealment is val"
+       "id against enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_concealment_crouch:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - concealment is val"
+       "id against enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_concealment_prone:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - concealment is val"
+       "id against enemies from this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+    }
+    node_stack:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - face this directio"
+       "n while stacking here"$0D"This node must target a cover node or anothe"
+       "r stack node.  It is treated as overflow for the first targeted non-st"
+       "ack node."
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_reacquire:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - node can reacquire"
+       " against enemies in this direction"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_balcony:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"NO_RAILING - the balcony is"
+       " against a ledge and not a railing"$0D"angles - the edge is in this di"
+       "rection"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "NO_RAILING"
+      }
+    }
+    node_scripted:form =
+    {
+      help = "DONT_LINK - node is not included in navigation data"$0D"NOT_CHAI"
+       "N - node cannot start a friendly chain"$0D"angles - orients the node f"
+       "or the animation"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "DONT_LINK"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "NOT_CHAIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    node_negotiation_begin:form =
+    {
+      help = "STOP_FIRST - if set, the AI comes to a complete stop before star"
+       "ting the node's animation script"$0D22"animscript"$22" - name without "
+       "path or extension of the animation script to play when you reach this "
+       "node.  This script must be in "$22"animscripts/traverse/"$22"."$0D"Mus"
+       "t target a single "$22"node_negotiation_end"$22"."$0D"Always contribut"
+       "es to navigation data."$0D"Can never be included in a friendly chain."
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "STOP_FIRST"
+      }
+    }
+    node_negotiation_end:form =
+    {
+      help = "Must be targeted by a "$22"node_negotiation_begin"$22"."$0D"Alwa"
+       "ys contributes to navigation data."$0D"Can never be included in a frie"
+       "ndly chain."
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "DONT_STAND"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "DONT_CROUCH"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "DONT_PRONE"
+      }
+    }
+    mp_target_location:form =
+    {
+      help = "Set "$22"message"$22" to the name of this location."$0D"Set "$22
+       "count"$22" to 0-7 for color."$0D"0:white 1:red 2:green 3:yellow 4:blue"
+       " 5:cyan 6:magenta 7:white"$0D"Closest target_location in sight used fo"
+       "r the location, if none"$0D"in site, closest in distance"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    item_ammo_stielhandgranate_open:form =
+    {
+      help = "-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY -----"
+       "---"$0D"defaultmdl="$22"xmodel/ammo_stielhandgranate1"$22
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "SUSPENDED"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "SPIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "RESPAWN"
+      }
+    }
+    item_ammo_stielhandgranate_closed:form =
+    {
+      help = "-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY -----"
+       "---"$0D"defaultmdl="$22"xmodel/ammo_stielhandgranate2"$22
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "SUSPENDED"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "SPIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "RESPAWN"
+      }
+    }
+    item_health_small:form =
+    {
+      help = "-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY -----"
+       "---"$0D"defaultmdl="$22"xmodel/health_small"$22
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "SUSPENDED"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "SPIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "RESPAWN"
+      }
+    }
+    item_health:form =
+    {
+      help = "-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY -----"
+       "---"$0D"defaultmdl="$22"xmodel/health_medium"$22
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "SUSPENDED"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "SPIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "RESPAWN"
+      }
+    }
+    item_health_large:form =
+    {
+      help = "-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY -----"
+       "---"$0D"defaultmdl="$22"xmodel/health_large"$22
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "SUSPENDED"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "SPIN"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "RESPAWN"
+      }
+    }
+  }
+}

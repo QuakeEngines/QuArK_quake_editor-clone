@@ -1,0 +1,301 @@
+QQRKSRC1
+// CoD1 United Offensive Textures file for Quark
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
+
+{
+  QuArKProtected = "1"
+  Description = "CoD1UO Textures"
+
+  Textures.qtx =
+  {
+    Toolbox = "Texture Browser..."
+    Root = "CoD1UO Textures.qtxfolder"
+    HTML = "intro.texturebrowser.html"
+
+    t_coduo:incl                      = { a="uo" }
+    t_cod1uoshader_ba:incl            = { a="uo" b="ba.shader" }
+    t_cod1uoshader_common:incl        = { a="uo" b="common.shader" }
+    t_cod1uoshader_gmi_ardennes:incl  = { a="uo" b="gmi_ardennes.shader" }
+    t_cod1uoshader_gmi_sky:incl       = { a="uo" b="gmi_sky.shader" }
+    t_cod1uoshader_gmi_terrain:incl   = { a="uo" b="gmi_terrain.shader" }
+    t_cod1uoshader_gmi_ukraine:incl   = { a="uo" b="gmi_ukraine.shader" }
+    t_cod1uoshader_gmi_water:incl     = { a="uo" b="gmi_water.shader" }
+    t_cod1uoshader_kursk:incl         = { a="uo" b="kursk.shader" }
+    t_cod1uoshader_pi_ukraine:incl    = { a="uo" b="pi_ukraine.shader" }
+    t_cod1uoshader_ra_stanjel:incl    = { a="uo" b="ra_stanjel.shader" }
+    t_cod1uoshader_sfx_materials:incl = { a="uo" b="sfx_materials.shader" }
+    t_cod1uoshader_sicily2:incl       = { a="uo" b="sicily2.shader" }
+
+    CoD1UO Textures.qtxfolder =
+    {
+      ardennes.txlist =
+      {
+        ardennes/terrain/dirtysnow1.wl                = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/dirtysnow1_blend.wl          = { t_cod1uoshader_gmi_terrain=! }
+        ardennes/terrain/dirtysnow2.wl                = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/dirtysnow3.wl                = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/dirtysnow4.wl                = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/dirtysnow5.wl                = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/dirtysnow6.wl                = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/road_bastogne.wl             = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/road_bastogne2.wl            = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/terrain/road_noville2_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        ardennes/terrain/softsnow.wl                  = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/transparents/foy_field_fence.wl      = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/transparents/foy_field_fence_snow.wl = { t_cod1uoshader_gmi_ardennes=! }
+        ardennes/windows/firewindow.wl                = { t_cod1uoshader_ba=! }
+        ardennes/windows/firewindow1.wl               = { t_cod1uoshader_ba=! }
+      }
+      belgium.txlist =
+      {
+        belgium/foliage/copse1_b1.wl             = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse1_b1_l.wl           = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse1_b2.wl             = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse1_foy.wl            = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse1_foyn.wl           = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse2_b1.wl             = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse2_b1_l.wl           = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse2_b2.wl             = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse2_foy.wl            = { t_cod1uoshader_ba=! }
+        belgium/foliage/copse2_foyn.wl           = { t_cod1uoshader_ba=! }
+        belgium/foliage/singletree1_b1.wl        = { t_cod1uoshader_ba=! }
+        belgium/foliage/singletree1_b1_l.wl      = { t_cod1uoshader_ba=! }
+        belgium/foliage/singletree1_b2.wl        = { t_cod1uoshader_ba=! }
+        belgium/foliage/singletree1_foy.wl       = { t_cod1uoshader_ba=! }
+        belgium/foliage/singletree1_foyn.wl      = { t_cod1uoshader_ba=! }
+        belgium/foliage/winter_fir1_b1.wl        = { t_cod1uoshader_ba=! }
+        belgium/foliage/winter_fir1_b1_l.wl      = { t_cod1uoshader_ba=! }
+        belgium/foliage/winter_fir1_b2.wl        = { t_cod1uoshader_ba=! }
+        belgium/foliage/winter_fir1_foy.wl       = { t_cod1uoshader_ba=! }
+        belgium/foliage/winter_fir1_foyn.wl      = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_c_b1.wl   = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_c_b1_l.wl = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_c_b2.wl   = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_c_foy.wl  = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_c_foyn.wl = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_l_b1.wl   = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_l_b1_l.wl = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_l_b2.wl   = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_l_foy.wl  = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_l_foyn.wl = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_r_b1.wl   = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_r_b1_l.wl = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_r_b2.wl   = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_r_foy.wl  = { t_cod1uoshader_ba=! }
+        belgium/foliage/wintertreeline_r_foyn.wl = { t_cod1uoshader_ba=! }
+        belgium/ground/footpath_solid_blend.wl   = { t_cod1uoshader_gmi_terrain=! }
+        belgium/ground/lightfill_rubble_blend.wl = { t_cod1uoshader_gmi_terrain=! }
+      }
+      common.txlist =
+      {
+        common/aitrig.wl                    = { t_cod1uoshader_common=! }
+        common/areaportal.wl                = { t_cod1uoshader_common=! }
+        common/blackish.wl                  = { t_cod1uoshader_common=! }
+        common/caulk.wl                     = { t_cod1uoshader_common=! }
+        common/clip.wl                      = { t_cod1uoshader_common=! }
+        common/clip_item.wl                 = { t_cod1uoshader_common=! }
+        common/clip_metal.wl                = { t_cod1uoshader_common=! }
+        common/clip_nosight.wl              = { t_cod1uoshader_common=! }
+        common/clip_nosight_dirt.wl         = { t_cod1uoshader_common=! }
+        common/clip_nosight_metal.wl        = { t_cod1uoshader_common=! }
+        common/clip_nosight_metal_shadow.wl = { t_cod1uoshader_common=! }
+        common/clip_nosight_nothing.wl      = { t_cod1uoshader_common=! }
+        common/clip_nosight_novehicle.wl    = { t_cod1uoshader_common=! }
+        common/clip_nosight_rock.wl         = { t_cod1uoshader_common=! }
+        common/clip_nosight_shadow.wl       = { t_cod1uoshader_common=! }
+        common/clip_wood.wl                 = { t_cod1uoshader_common=! }
+        common/clipfoliage.wl               = { t_cod1uoshader_common=! }
+        common/clipfull.wl                  = { t_cod1uoshader_common=! }
+        common/clipmissile.wl               = { t_cod1uoshader_common=! }
+        common/clipmissile_nosight_metal.wl = { t_cod1uoshader_common=! }
+        common/clipmonster.wl               = { t_cod1uoshader_common=! }
+        common/cliponeway.wl                = { t_cod1uoshader_common=! }
+        common/clipplayer.wl                = { t_cod1uoshader_common=! }
+        common/clipweap.wl                  = { t_cod1uoshader_common=! }
+        common/clipweap_glass.wl            = { t_cod1uoshader_common=! }
+        common/clipweap_metal.wl            = { t_cod1uoshader_common=! }
+        common/cushion.wl                   = { t_cod1uoshader_common=! }
+        common/hint.wl                      = { t_cod1uoshader_common=! }
+        common/hmgcrouching.wl              = { t_cod1uoshader_common=! }
+        common/hmgstanding.wl               = { t_cod1uoshader_common=! }
+        common/ladder.wl                    = { t_cod1uoshader_common=! }
+        common/ladder_wood.wl               = { t_cod1uoshader_common=! }
+        common/mirror.wl                    = { t_cod1uoshader_common=! }
+        common/nodraw.wl                    = { t_cod1uoshader_common=! }
+        common/nodraw_decal.wl              = { t_cod1uoshader_common=! }
+        common/nodraw_notsolid.wl           = { t_cod1uoshader_common=! }
+        common/nodrawnonsolid.wl            = { t_cod1uoshader_common=! }
+        common/nodrop.wl                    = { t_cod1uoshader_common=! }
+        common/nosight_noclip.wl            = { t_cod1uoshader_common=! }
+        common/occluder.wl                  = { t_cod1uoshader_common=! }
+        common/origin.wl                    = { t_cod1uoshader_common=! }
+        common/playerclip_metal.wl          = { t_cod1uoshader_common=! }
+        common/portal.wl                    = { t_cod1uoshader_common=! }
+        common/portalnodraw.wl              = { t_cod1uoshader_common=! }
+        common/return_ai_trigger.wl         = { t_cod1uoshader_common=! }
+        common/return_spawner_trigger.wl    = { t_cod1uoshader_common=! }
+        common/shadow.wl                    = { t_cod1uoshader_common=! }
+        common/skip.wl                      = { t_cod1uoshader_common=! }
+        common/slick.wl                     = { t_cod1uoshader_common=! }
+        common/spawner_trigger.wl           = { t_cod1uoshader_common=! }
+        common/trigger.wl                   = { t_cod1uoshader_common=! }
+        common/vehicleclip.wl               = { t_cod1uoshader_common=! }
+        common/water.wl                     = { t_cod1uoshader_common=! }
+        common/water_clip.wl                = { t_cod1uoshader_common=! }
+      }
+      holland.txlist =
+      {
+        holland/terrain/blend_rubble2b.wl = { t_cod1uoshader_gmi_terrain=! }
+      }
+      italy.txlist =
+      {
+        italy/terrain/beach_sand_blend.wl          = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/cave_wall-06_blend.wl        = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/cliff_wall-01_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/cliff_wall-02_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/cliff_wall-03_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/cliff_wall-03_blend_blend.wl = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/cliff_wall-04_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/grass-01_blend.wl            = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/grass-02_blend.wl            = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-01_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-02_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-03_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-04_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-04b_blend.wl          = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-05_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-06_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-07_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-08_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-09_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-10_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/ground-11_blend.wl           = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/muddy_road-01_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/paved_road-01_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/paved_road-04a_blend.wl      = { t_cod1uoshader_gmi_terrain=! }
+        italy/terrain/trail-01_blend.wl            = { t_cod1uoshader_gmi_terrain=! }
+      }
+      mp.txlist =
+      {
+        mp/terrain/grass_blend.wl            = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/grass_dirty_blend.wl      = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/grass_dirty_edge_blend.wl = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/road_blend.wl             = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/sand_blend.wl             = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/sand_dirty_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/sand_wet_a_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        mp/terrain/sand_wet_b_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+      }
+      normandy.txlist =
+      {
+        normandy/ground/hay_blend.wl       = { t_cod1uoshader_gmi_terrain=! }
+        normandy/ground/rubble_2a_blend.wl = { t_cod1uoshader_gmi_terrain=! }
+      }
+      ra_stanjel.txlist =
+      {
+        ra_stanjel/poolwater.wl              = { t_cod1uoshader_ra_stanjel=! }
+        ra_stanjel/ra_metal_clip.wl          = { t_cod1uoshader_ra_stanjel=! }
+        ra_stanjel/sfx/dove_anim.wl          = { t_cod1uoshader_ra_stanjel=! }
+        ra_stanjel/sfx/simple_water.wl       = { t_cod1uoshader_ra_stanjel=! }
+        ra_stanjel/sky/mp_stanjel.wl         = { t_cod1uoshader_ra_stanjel=! }
+        ra_stanjel/windows/backlit_window.wl = { t_cod1uoshader_ra_stanjel=! }
+      }
+      sfx.txlist =
+      {
+        sfx/arnhemwater.wl               = { t_cod1uoshader_gmi_water=! }
+        sfx/foywater.wl                  = { t_cod1uoshader_gmi_water=! }
+        sfx/ground/snowycreekbed_COPY.wl = { t_cod1uoshader_kursk=! }
+        sfx/kursk_river.wl               = { t_cod1uoshader_kursk=! }
+        sfx/kursk_water.wl               = { t_cod1uoshader_pi_ukraine=! }
+        sfx/kursk_water_OLD.wl           = { t_cod1uoshader_kursk=! }
+        sfx/mp_italywater.wl             = { t_cod1uoshader_gmi_water=! }
+        sfx/mp_sicilywater.wl            = { t_cod1uoshader_gmi_water=! }
+        sfx/mpberlinwater.wl             = { t_cod1uoshader_gmi_water=! }
+        sfx/rhinewater.wl                = { t_cod1uoshader_gmi_water=! }
+        sfx/shoreline_ripple_rv.wl       = { t_cod1uoshader_sfx_materials=! }
+        sfx/sicily2fountain.wl           = { t_cod1uoshader_sicily2=! }
+        sfx/sicily2water.wl              = { t_cod1uoshader_sicily2=! }
+        sfx/trainwater.wl                = { t_cod1uoshader_gmi_water=! }
+        sfx/trencheswater.wl             = { t_cod1uoshader_gmi_water=! }
+        sfx/wave_shoreline_a.wl          = { t_cod1uoshader_gmi_water=! }
+        sfx/wave_shorline_a.wl           = { t_cod1uoshader_sfx_materials=! }
+      }
+      skies.txlist =
+      {
+        skies/bastogne1.wl   = { t_cod1uoshader_gmi_sky=! }
+        skies/bastogne2.wl   = { t_cod1uoshader_gmi_sky=! }
+        skies/bomber.wl      = { t_cod1uoshader_gmi_sky=! }
+        skies/foy.wl         = { t_cod1uoshader_gmi_sky=! }
+        skies/mpberlin.wl    = { t_cod1uoshader_gmi_sky=! }
+        skies/noville.wl     = { t_cod1uoshader_gmi_sky=! }
+        skies/trainbridge.wl = { t_cod1uoshader_gmi_sky=! }
+      }
+      sky.txlist =
+      {
+        sky/bastogne1.wl  = { t_cod1uoshader_gmi_sky=! }
+        sky/bastogne2.wl  = { t_cod1uoshader_gmi_sky=! }
+        sky/bomber.wl     = { t_cod1uoshader_gmi_sky=! }
+        sky/foy.wl        = { t_cod1uoshader_gmi_sky=! }
+        sky/foynight.wl   = { t_cod1uoshader_gmi_sky=! }
+        sky/kharkov1.wl   = { t_cod1uoshader_gmi_sky=! }
+        sky/kharkov2.wl   = { t_cod1uoshader_gmi_sky=! }
+        sky/kursk.wl      = { t_cod1uoshader_gmi_sky=! }
+        sky/moonlight.wl  = { t_cod1uoshader_gmi_sky=! }
+        sky/mp_arnhem.wl  = { t_cod1uoshader_gmi_sky=! }
+        sky/mp_kharkov.wl = { t_cod1uoshader_gmi_sky=! }
+        sky/mpitaly.wl    = { t_cod1uoshader_gmi_sky=! }
+        sky/mpkursk.wl    = { t_cod1uoshader_gmi_sky=! }
+        sky/mpponyri.wl   = { t_cod1uoshader_pi_ukraine=! }
+        sky/mpsicily.wl   = { t_cod1uoshader_gmi_sky=! }
+        sky/sicily1.wl    = { t_cod1uoshader_gmi_sky=! }
+        sky/sicily2.wl    = { t_cod1uoshader_gmi_sky=! }
+        sky/trenches.wl   = { t_cod1uoshader_gmi_sky=! }
+      }
+      ukraine.txlist =
+      {
+        ukraine/foliage/2048_single_fb.wl           = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/2048_treeline_fb.wl         = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/single_trees_01_fb_p.wl     = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/single_trees_green_p.wl     = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_01_fb_p.wl         = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_2_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_3_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_4_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_5_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_6_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_7_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_8_fb.wl      = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/foliage/treeline_green_fb.wl        = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/terrain/deadgrass_cl_blend.wl       = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/deadgrass_dirt_cl_blend.wl  = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/dirt2_blend.wl              = { t_cod1uoshader_gmi_terrain=! }
+        ukraine/terrain/dirt_kursk_dirt2_blend.wl   = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/terrain/grass_ponyri_01_blend.wl    = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/terrain/grass_yellowgrass2_blend.wl = { t_cod1uoshader_gmi_terrain=! }
+        ukraine/terrain/grass_yellowgrass_blend.wl  = { t_cod1uoshader_gmi_terrain=! }
+        ukraine/terrain/k_rubble1_blend.wl          = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/kursk_riverbed.wl           = { t_cod1uoshader_pi_ukraine=! }
+        ukraine/terrain/lp_brecort1_blend.wl        = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/oldpacked_large_blend.wl    = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/r_rubble2_blend.wl          = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/riverbed_cl_blend.wl        = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/riverwall_cl_blend.wl       = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/straw_dirt_cl_blend.wl      = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/trench_goundalt2_blend.wl   = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/terrain/trench_goundbase_blend.wl   = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/transparents/facade_tiler1_k.wl     = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/transparents/facade_tiler1top_k.wl  = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/transparents/facade_tiler2_k.wl     = { t_cod1uoshader_gmi_ukraine=! }
+        ukraine/transparents/facade_tiler2top_k.wl  = { t_cod1uoshader_gmi_ukraine=! }
+      }
+      Misc.txlist =
+      {
+        REGION.wl = { t_cod1uoshader_common=! }
+      }
+    }
+  }
+}
