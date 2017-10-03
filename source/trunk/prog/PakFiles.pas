@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2017/10/01 14:19:56  danielpharos
+Corrected the loading order of pak file: now official pak files are loaded first, just like the games do.
+
 Revision 1.7  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -180,7 +183,7 @@ begin
       PakNumber2:=0;
     end;
 
- Result := PakNumber2 - PakNumber1;
+ Result := PakNumber1 - PakNumber2;
 end;
 
 procedure TGetPakNames.CreatePakList(const Path, CustomFilter: String; Backwards: Boolean; SearchForTemp: Boolean);
