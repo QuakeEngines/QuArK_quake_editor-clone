@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.572  2017/10/06 14:25:09  danielpharos
+//Added missing new IWI Image option.
+//
 //Revision 1.571  2017/10/03 20:49:57  danielpharos
 //Added Call of Duty 1: United Offensive support.
 //
@@ -11168,6 +11171,7 @@ QQRKSRC1
       PAKs and Archives.qtxfolder = {
         Pak.pak = { }
         GCF.gcf = { }
+        VPK.vpk = { }
         ZIP Archive.zip = { }
       }
       Images and Textures.qtxfolder =
