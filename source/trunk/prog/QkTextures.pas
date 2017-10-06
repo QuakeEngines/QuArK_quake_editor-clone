@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.81  2017/10/06 14:13:39  danielpharos
+Big reworking to push game-specific BSP loading into the game files.
+
 Revision 1.80  2017/03/05 12:45:56  danielpharos
 Fixed a typo in a comment.
 
@@ -1192,7 +1195,7 @@ begin
       P:=@P^.Next;
     end;
     P^:=Next;  { breaks the linked list }
-    Link.AddRef(-1); //FIXME: Apparently, this not always destroys Link?!?
+    Link.AddRef(-1);
     Link:=Nil;
   end;
 end;
@@ -1259,7 +1262,14 @@ begin
           Link:=NeedGameFileBase(S, ConcatPaths([GameTexturesPath, TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt]), '') as QPixelSet;
 
         Link.AddRef(+1);
-        Link.Acces;  { we found the linked texture }
+        try
+          Link.Acces;  { we found the linked texture }
+        except
+          //Failed to load; drop it
+          Link.AddRef(-1);
+          Link:=nil;
+          raise;
+        end;
 {start --- kingpin texture flag hack}
        {mac tiglari =- FIXME: we should have these flags
         read directly from the text file in the .pak
@@ -1336,7 +1346,14 @@ begin
           Link:=NeedGameFileBase(S, ConcatPaths([GameTexturesPath, TexName+SetupGameSet.Specifics.Values['TextureFormat']]), '') as QPixelSet;
 
         Link.AddRef(+1);
-        Link.Acces;  { we found the linked texture }
+        try
+          Link.Acces;  { we found the linked texture }
+        except
+          //Failed to load; drop it
+          Link.AddRef(-1);
+          Link:=nil;
+          raise;
+        end;
       end
       else
       begin
@@ -1368,7 +1385,14 @@ begin
               Raise EErrorFmt(5524, [TexName, S]);
 
             Link.AddRef(+1);
-            Link.Acces;  { we found the linked texture }
+            try
+              Link.Acces;  { we found the linked texture }
+            except
+              //Failed to load; drop it
+              Link.AddRef(-1);
+              Link:=nil;
+              raise;
+            end;
           finally
             TexList.AddRef(-1);
           end;
@@ -1391,7 +1415,14 @@ begin
               if Link=Nil then
                 Raise EErrorFmt(5524, [TexName, S]);
               Link.AddRef(+1);
-              Link.Acces;  { we found the linked texture }
+              try
+                Link.Acces;  { we found the linked texture }
+              except
+                //Failed to load; drop it
+                Link.AddRef(-1);
+                Link:=nil;
+                raise;
+              end;
             finally
               TexList.AddRef(-1);
             end;
