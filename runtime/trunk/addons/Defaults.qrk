@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.571  2017/10/03 20:49:57  danielpharos
+//Added Call of Duty 1: United Offensive support.
+//
 //Revision 1.570  2017/10/01 14:19:54  danielpharos
 //Corrected the loading order of pak file: now official pak files are loaded first, just like the games do.
 //
@@ -11177,6 +11180,7 @@ QQRKSRC1
         DDS Image.dds = { ;incl = "EmptyImage" }
         VTF Image.vtf = { ;incl = "EmptyImage" }
         FTX Image.ftx = { ;incl = "EmptyImage" }
+        IWI Image.iwi = { ;incl = "EmptyImage" }
       }
       Text.txt = { }
       Configuration file.cfg = { }
