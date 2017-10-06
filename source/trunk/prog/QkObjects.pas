@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.133  2017/10/01 08:37:54  danielpharos
+Release the file stream on exceptions too.
+
 Revision 1.132  2016/05/14 13:46:50  danielpharos
 Moved some strings to the dictionary.
 
@@ -1417,7 +1420,8 @@ begin
     LoadInternal(Source, SourceSize);
     FFlags:=FFlags and not ofNotLoadedToMemory;
   finally {AiV}
-    QStreamRelease(FNode);
+    if (FFlags and ofNotLoadedToMemory = 0) then
+      QStreamRelease(FNode);
     if Source is TQStream then
       TQStream(Source).Release
     else
