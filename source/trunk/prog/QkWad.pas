@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2017/10/06 14:44:48  danielpharos
+Replaced magic constant.
+
 Revision 1.40  2015/08/21 18:23:55  danielpharos
 Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
 
@@ -776,6 +779,7 @@ begin
  try
    QObj:=Q.LoadPixelSet;
  except
+   Log(LOG_WARNING,'Unable to load pixelset from '+Q.GetFullName()); //FIXME: Move to dict!
    Exit;
  end;
  if not (QObj is QTextureFile) then
