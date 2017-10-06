@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2017/10/06 14:13:39  danielpharos
+Big reworking to push game-specific BSP loading into the game files.
+
 Revision 1.76  2013/01/17 03:22:32  cdunde
 Removed game support for Xonotic due to improper texture paths.
 
@@ -559,10 +562,11 @@ const
 const
  // Note: Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
  cSignatureBspQ3      = $50534252; {"RBSP" 4-letter header}
- cSignatureMohaa      = $35313032;
+ cSignatureBspMOHAA   = $35313032; {"2015" 4-letter header}
 
  cVersionBspJK2JA     = $00000001; {JK2 or JA .BSP}
  cVersionBspSin       = $00000001; {SiN .BSP}
+ cVersionBspMOHAA     = $00000013; {MOHAA .BSP} //FIXME: Untested
 
 (***********  FAKK .bsp format  ***********)
 const
@@ -894,12 +898,12 @@ begin
         cSignatureBspQ3:
         begin
           case Version of
-            cVersionBspJK2JA: { Jedi Knight II or Jedi Academy}
+            cVersionBspJK2JA: { Jedi Knight II or Jedi Academy }
             begin
               FFileHandler:=QBsp3FileHandler.Create(Self); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
               FFileHandler.LoadBsp(F, StreamSize);
-              if CharModeJeu<mjQ3A then
-                ObjectGameCode := mjQ3A
+              if (CharModeJeu <> mjJK2) and (CharModeJeu <> mjJA) then
+                ObjectGameCode := mjJK2
               else
                 ObjectGameCode := CharModeJeu;
             end;
@@ -918,9 +922,9 @@ begin
           end;
         end;
 
-        cSignatureMohaa: { Moh:aa }
+        cSignatureBspMOHAA: { Moh:aa }
         begin
-          Raise EErrorFmt(5602, [LoadName, Version, cSignatureMohaa]);
+          Raise EErrorFmt(5602, [LoadName, Version, cSignatureBspMOHAA]);
 
 (* Non functional
           FFileHandler:=QBsp3FileHandler.Create(Self); {Decker - try using the Q3 .BSP loader for Moh:aa maps}
@@ -928,6 +932,27 @@ begin
           ObjectGameCode := mjMohaa;
 *)
         end;
+
+(* Currently not supported
+        cSignatureBspFAKK:
+        begin
+          case Version of
+            cVersionBspFAKK: { Heavy Metal: FAKK2 }
+            begin
+              LoadBsp3(F, StreamSize);
+              ObjectGameCode := mjFAKK2;
+            end;
+
+            cVersionBspAlice: { American McGee's Alice }
+            begin
+              LoadBsp3(F, StreamSize);
+              ObjectGameCode := mjAlice;
+            end;
+
+            else {version unknown}
+              Raise EErrorFmt(5572, [LoadName, Version, cVersionBspFAKK]);
+            end;
+        end;*)
 
         cSignatureHL2: { HL2 }
         begin
