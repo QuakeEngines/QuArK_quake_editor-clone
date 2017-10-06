@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.122  2016/06/17 19:25:42  danielpharos
+Fixed some confusing whitespacing.
+
 Revision 1.121  2016/05/14 13:48:24  danielpharos
 Added brushDef2 and brushDef3 OriginBrush support.
 
@@ -491,7 +494,7 @@ uses
   Setup, Undo, Quarkx, qmatrices, Qk3D, PyMath, QkQuakeMap, QkApplPaths,
   Graphics, StrUtils, Game, QkExceptions, Travail, QkConsts, Logging,
   PyForms, Bezier, Duplicator, QkPixelSet, Qk6DX, QkVMF, QkSylphis, QkQ2,
-  { tiglari } QkSin, { /tiglari } QkBspHulls, MapError, QkObjectClassList;
+  { tiglari } QkSin, { /tiglari } MapError, QkObjectClassList;
 
 {$R *.DFM}
 
@@ -2082,7 +2085,7 @@ expected one.
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
     if Denom=0 then
     begin
-      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
+      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1)); //FIXME: Move to dict!
       Denom := 0.000001;
     end;
     P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
@@ -2196,7 +2199,7 @@ expected one.
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
     if Denom=0 then
     begin
-      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
+      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1)); //FIXME: Move to dict! Everywhere!
       Denom := 0.000001;
     end;
     P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
@@ -2710,7 +2713,7 @@ begin
        begin
         EntitePoly:=TTreeMapSpec(HullList[I]);
         if EntitePoly<>Nil then
-         EntitePoly.SubElements.Add(TBSPHull.CreateHull(BSP, I, EntitePoly as TTreeMapGroup));
+         EntitePoly.SubElements.Add(BSP.CreateHull(I, EntitePoly as TTreeMapGroup));
        end;
 
      if not WorldSpawn then
@@ -3106,7 +3109,7 @@ var
  MapSaveSettings: TMapSaveSettings;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Root:=SubElements.FindName(Specifics.Values['Root']);
       if (Root=Nil) or not (Root is TTreeMapBrush) then
        Raise EError(5558);

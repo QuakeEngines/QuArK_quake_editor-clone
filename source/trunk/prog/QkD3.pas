@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2012/09/05 18:06:10  danielpharos
+Move implementation of FloatSpec internally to QkObjects.
+
 Revision 1.14  2009/07/17 10:49:26  danielpharos
 Removed redundant uses.
 
@@ -508,7 +511,7 @@ begin
  EditableSurfaceParms:=SetupGameSet.Specifics.Values['EditableSurfaceParms']<>'';
 
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       ProgressIndicatorStart(5453, FSize div ProgressStep); try
       SetLength(Data, FSize);
       Source:=PChar(Data);
@@ -695,7 +698,7 @@ var
  Data: String;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       for I:=0 to SubElements.Count-1 do
        begin
         Q:=SubElements[I];

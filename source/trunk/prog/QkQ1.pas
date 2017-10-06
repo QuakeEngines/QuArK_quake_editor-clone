@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.13  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -85,6 +88,7 @@ uses
   QkObjects,
   QkFileObjects,
   QkTextures,
+  QkBsp,
   Sysutils,
   Dialogs,
   QkImages;
@@ -111,13 +115,91 @@ type
                class function CustomParams : Integer; override;
              end;
 
+ QBsp1FileHandler = class(QBspFileHandler)
+  public
+   procedure LoadBsp(F: TStream; StreamSize: Integer); override;
+   procedure SaveBsp(Info: TInfoEnreg1); override;
+   function GetEntryName(const EntryIndex: Integer) : String; override;
+   function GetLumpEdges: Integer; override;
+   function GetLumpEntities: Integer; override;
+   function GetLumpFaces: Integer; override;
+   function GetLumpLeafs: Integer; override;
+   function GetLumpLeafFaces: Integer; override;
+   function GetLumpModels: Integer; override;
+   function GetLumpNodes: Integer; override;
+   function GetLumpPlanes: Integer; override;
+   function GetLumpSurfEdges: Integer; override;
+   function GetLumpTexInfo: Integer; override;
+   function GetLumpTextures: Integer; override;
+   function GetLumpVertexes: Integer; override;
+ end;
+
 function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
 
 
 implementation
 
 uses
-  Quarkx, QkExceptions, Setup, QkObjectClassList;
+  Travail, Quarkx, QkExceptions, Setup, QkText, QkWad, QkObjectClassList;
+
+const
+ LUMP_ENTITIES = 0;
+ LUMP_PLANES = 1;
+ LUMP_TEXTURES = 2;
+ LUMP_VERTEXES = 3;
+ LUMP_VISIBILITY = 4;
+ LUMP_NODES = 5;
+ LUMP_TEXINFO = 6;
+ LUMP_FACES = 7;
+ LUMP_LIGHTING = 8;
+ LUMP_CLIPNODES = 9;
+ LUMP_LEAFS = 10;
+ LUMP_MARKSURFACES = 11;
+ LUMP_EDGES = 12;
+ LUMP_SURFEDGES = 13;
+ LUMP_MODELS = 14;
+
+ HEADER_LUMPS = 15;
+
+type
+ TBspEntries = record
+               EntryPosition: LongInt;
+               EntrySize: LongInt;
+              end;
+
+ TBsp1Header = record
+               Signature: LongInt;
+               Entries: array[0..HEADER_LUMPS-1] of TBspEntries;
+              end;
+
+const
+ Bsp1EntryNames : array[0..HEADER_LUMPS-1] of String =
+   (              {Actually a 'FilenameExtension' - See TypeInfo()}
+    'Entities'    + '.a.bsp1'   // eEntities
+   ,'Planes'      + '.b.bsp1'   // ePlanes
+   ,'MipTex'      + '.c.bsp1'   // eMipTex
+   ,'Vertices'    + '.d.bsp1'   // eVertices
+   ,'VisiList'    + '.e.bsp1'   // eVisiList
+   ,'Nodes'       + '.f.bsp1'   // eNodes
+   ,'TexInfo'     + '.g.bsp1'   // eTexInfo
+   ,'Surfaces'    + '.h.bsp1'   // eSurfaces
+   ,'Lightmaps'   + '.i.bsp1'   // eLightmaps
+   ,'BoundNodes'  + '.j.bsp1'   // eBoundNodes
+   ,'Leaves'      + '.k.bsp1'   // eLeaves
+   ,'ListSurf'    + '.l.bsp1'   // eListSurf
+   ,'Edges'       + '.m.bsp1'   // eEdges
+   ,'ListEdges'   + '.n.bsp1'   // eListEdges
+   ,'Hulls'       + '.o.bsp1'   // eHulls
+   );
+
+type
+  QBsp1   = class(QFileObject)  protected class function TypeInfo: String; override; end;
+  QBsp1a  = class(QZText)       protected class function TypeInfo: String; override; end;
+  QBsp1c  = class(QTextureList) protected class function TypeInfo: String; override; end;
+
+class function QBsp1 .TypeInfo; begin TypeInfo:='.bsp1';                       end;
+class function QBsp1a.TypeInfo; begin TypeInfo:='.a.bsp1'; {'Entities.a.bsp1'} end;
+class function QBsp1c.TypeInfo; begin TypeInfo:='.c.bsp1'; {'MipTex.c.bsp1'}   end;
 
  { --------------- }
 
@@ -195,7 +277,7 @@ var
   Base, Taille1, Max: LongInt;
 begin
   case ReadFormat of
-  1:
+  rf_Default:
     begin  { as stand-alone file }
         if FSize<SizeOf(Header) then
           Raise EError(5519);
@@ -233,7 +315,7 @@ begin
   with Info do
   begin
     case Format of
-    1:
+    rf_Default:
       SaveAsQuake1(F);  { as stand-alone file }
     else
       inherited;
@@ -289,7 +371,154 @@ begin
   Result:=mjNotQuake2;
 end;
 
+ { --------------- }
+
+procedure QBsp1FileHandler.LoadBsp(F: TStream; StreamSize: Integer);
+var
+ Header: TBsp1Header;
+ Origine: LongInt;
+ Q: QObject;
+ I: Integer;
+begin
+  if StreamSize < SizeOf(Header) then
+    Raise EError(5519);
+
+  Origine:=F.Position;
+  F.ReadBuffer(Header, SizeOf(Header));
+
+  for I:=0 to HEADER_LUMPS-1 do
+  begin
+    if (Header.Entries[I].EntryPosition+Header.Entries[I].EntrySize > StreamSize)
+    or (Header.Entries[I].EntryPosition < SizeOf(Header))
+    or (Header.Entries[I].EntrySize < 0) then
+      Raise EErrorFmt(5509, [82]);
+
+    F.Position := Origine + Header.Entries[I].EntryPosition;
+    Q := OpenFileObjectData(F, Bsp1EntryNames[I], Header.Entries[I].EntrySize, FBsp);
+    {if (I=LUMP_TEXTURES) and (Header.Signature = cSignatureBspHL) then
+      Q.SetSpecificsList.Values['TextureType']:='.wad3_C';}
+    FBsp.SubElements.Add(Q);
+    LoadedItem(rf_Default, F, Q, Header.Entries[I].EntrySize);
+  end;
+end;
+
+procedure QBsp1FileHandler.SaveBsp(Info: TInfoEnreg1);
+var
+ Header: TBsp1Header;
+ Origine, Fin: LongInt;
+ Zero: Integer;
+ Q: QObject;
+ I: Integer;
+begin
+  ProgressIndicatorStart(5450, HEADER_LUMPS);
+  try
+    Origine := Info.F.Position;
+    Info.F.WriteBuffer(Header, SizeOf(Header));  { updated later }
+
+    { write .bsp entries }
+    for I:=0 to HEADER_LUMPS-1 do
+    begin
+      Q := FBsp.BspEntry[I];
+      Header.Entries[I].EntryPosition := Info.F.Position;
+
+      Q.SaveFile1(Info);   { save in non-QuArK file format }
+
+      Header.Entries[I].EntrySize := Info.F.Position - Header.Entries[I].EntryPosition;
+      Dec(Header.Entries[I].EntryPosition, Origine);
+
+      Zero:=0;
+      Info.F.WriteBuffer(Zero, (-Header.Entries[I].EntrySize) and 3);  { align to 4 bytes }
+
+      ProgressIndicatorIncrement;
+    end;
+
+    { update header }
+    Fin := Info.F.Position;
+    Info.F.Position := Origine;
+    if FBsp.NeedObjectGameCode =mjHalfLife then
+      Header.Signature := cSignatureBspHL
+    else
+      Header.Signature := cSignatureBspQ1H2;
+    Info.F.WriteBuffer(Header, SizeOf(Header));
+
+    Info.F.Position := Fin;
+  finally
+    ProgressIndicatorStop;
+  end;
+end;
+
+function QBsp1FileHandler.GetEntryName(const EntryIndex: Integer) : String;
+begin
+  if (EntryIndex<0) or (EntryIndex>=HEADER_LUMPS) then
+    raise InternalE('Tried to retrieve name of invalid BSP lump!');
+  Result:=Bsp1EntryNames[EntryIndex];
+end;
+
+function QBsp1FileHandler.GetLumpEdges: Integer;
+begin
+  Result:=LUMP_EDGES;
+end;
+
+function QBsp1FileHandler.GetLumpEntities: Integer;
+begin
+  Result:=LUMP_ENTITIES;
+end;
+
+function QBsp1FileHandler.GetLumpFaces: Integer;
+begin
+  Result:=LUMP_FACES;
+end;
+
+function QBsp1FileHandler.GetLumpLeafs: Integer;
+begin
+  Result:=LUMP_LEAFS;
+end;
+
+function QBsp1FileHandler.GetLumpLeafFaces: Integer;
+begin
+  Result:=-1;
+end;
+
+function QBsp1FileHandler.GetLumpModels: Integer;
+begin
+  Result:=LUMP_MODELS;
+end;
+
+function QBsp1FileHandler.GetLumpNodes: Integer;
+begin
+  Result:=LUMP_NODES;
+end;
+
+function QBsp1FileHandler.GetLumpPlanes: Integer;
+begin
+  Result:=LUMP_PLANES;
+end;
+
+function QBsp1FileHandler.GetLumpSurfEdges: Integer;
+begin
+  Result:=LUMP_SURFEDGES;
+end;
+
+function QBsp1FileHandler.GetLumpTexInfo: Integer;
+begin
+  Result:=LUMP_TEXINFO;
+end;
+
+function QBsp1FileHandler.GetLumpTextures: Integer;
+begin
+  Result:=LUMP_TEXTURES;
+end;
+
+function QBsp1FileHandler.GetLumpVertexes: Integer;
+begin
+  Result:=LUMP_VERTEXES;
+end;
+
 initialization
   RegisterQObject(QTexture1, 'a');
+
+  RegisterQObject(QBsp1,  ' ');
+  RegisterQObject(QBsp1a, 'a');
+  RegisterQObject(QBsp1c, 'a');
 end.
 

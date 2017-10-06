@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2013/01/17 03:22:32  cdunde
+Removed game support for Xonotic due to improper texture paths.
+
 Revision 1.75  2012/12/18 02:19:23  cdunde
 Setup a new game support for Xonotic with .md3 model displaying.
 
@@ -270,69 +273,7 @@ uses
   Forms, Dialogs, QkObjects, QkFileObjects, QkForm, QkMapObjects, qmath,
   StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown, TB97;
 
-type
- TBsp1EntryTypes =
-   (eEntities
-   ,ePlanes
-   ,eMipTex
-   ,eVertices
-   ,eVisiList
-   ,eNodes
-   ,eTexInfo
-   ,eSurfaces
-   ,eLightmaps
-   ,eBoundNodes
-   ,eLeaves
-   ,eListSurf
-   ,eEdges
-   ,eListEdges
-   ,eHulls);
-
- TBsp2EntryTypes =
-   (lump_entities
-   ,lump_planes
-   ,lump_vertexes
-   ,lump_visibility
-   ,lump_nodes
-   ,lump_texinfo
-   ,lump_faces
-   ,lump_lighting
-   ,lump_leafs
-   ,lump_leaffaces
-   ,lump_leafbrushes
-   ,lump_edges
-   ,lump_surfedges
-   ,lump_models
-   ,lump_brushes
-   ,lump_brushsides
-   ,lump_pop
-   ,lump_areas
-   ,lump_areaportals);
-
-  TBsp3EntryTypes =
-   (eBsp3_entities
-   ,eBsp3_texinfo
-   ,eBsp3_planes
-   ,eBsp3_nodes
-   ,eBsp3_leafs
-   ,eBsp3_leaffaces
-   ,eBsp3_leafbrushes
-   ,eBsp3_models
-   ,eBsp3_brushes
-   ,eBsp3_brushsides
-   ,eBsp3_vertexes
-   ,eBsp3_meshvertexes
-   ,eBsp3_effects
-   ,eBsp3_faces
-   ,eBsp3_lighting
-   ,eBsp3_lightvol
-   ,eBsp3_visibility);
-
  const
-  NoBsp1 = TBsp1EntryTypes(-1);
-  NoBsp2 = TBsp2EntryTypes(-1);
-  NoBsp3 = TBsp3EntryTypes(-1);
-
   { these are the game codes for the default games
      with these surface types (organization of face
      lump }
@@ -340,18 +281,17 @@ type
   bspTypeQ1 =     '1';
   bspTypeQ2 =     'A';
   bspTypeQ3 =     'a';
+  bspTypeHL2 =    'k';
 
+  hullQ1 =     '1';
+  hullHx =     '2';
+  hullQ2 =     'A';
+  hullQ3 =     'a';
 
   bspSurfQ12 = '1'; { surface type for Q1/2 engine games }
   bspSurfQ3 = 'a';  { surface/type for Q3 engine games }
 
 type
- TIntegerPair = record
-                 first, second : Integer;
-                end;
- TBoundBox = record
-              Min, Max: vec3_t;
-             end;
 (*SurfaceList = ^TSurfaceList;
  TSurfaceList = record
                  Next: PSurfaceList;
@@ -360,6 +300,9 @@ type
  PVertexList = ^TVertexList;
  {sleazy trick below, memory will be reserved for pointers to this }
  TVertexList = array[0..0] of TVect;
+ 
+ PQ1Vertex = ^TQ1Vertex;
+ TQ1Vertex = vec3_t;
 
  PQ3Vertex = ^TQ3Vertex;
  TQ3Vertex = record
@@ -369,8 +312,8 @@ type
               Color : array[0..3] of Byte;
              end;
 
- PbPlane = ^TbPlane;
- TbPlane = record
+ PQ1Plane = ^TQ1Plane;
+ TQ1Plane = record
             normal: vec3_t;
             dist: scalar_t;
             flags: Integer;
@@ -390,27 +333,25 @@ type
 
  PQ1Node = ^TQ1Node;
  TQ1Node = record
-             plane: LongWord; { plane index (uint32) }
-             firstchild, secondchild: Short; {child indices, neg if leaf }
+             plane: Integer; { plane index (int32) }
+             firstchild, secondchild: SmallInt; {child indices, neg if leaf }
              mins, maxs: array [0..2] of SmallInt; {bbox}
-             first_face, num_faces: WORD;
+             first_face, num_faces: Word;
            end;
 
  PQ2Node = ^TQ2Node;
  TQ2Node = record
-             plane: LongWord; { plane index (uint32) }
+             plane: Integer; { plane index (int32) }
              firstchild, secondchild: Integer; {child indices, neg if leaf }
              mins, maxs: array [0..2] of SmallInt; {bbox}
-             first_face, num_faces: WORD;
+             first_face, num_faces: Word;
            end;
-
 
  PQ3Node = ^TQ3Node;
  TQ3Node = record
             plane: Integer; { plane index }
-            firstchild: Integer; {child indices, neg if leaf }
-            secondchild: Integer;
-            mins, maxs: array [0..2] of integer; {bbox}
+            firstchild, secondchild: Integer; {child indices, neg if leaf }
+            mins, maxs: array [0..2] of Integer; {bbox}
            end;
 
  { This is an intermediate 'wrapper-like' class
@@ -428,34 +369,43 @@ type
      Plane: Integer;
      firstchild: Integer; {child indices, neg if leaf }
      secondchild: Integer;
-     mins, maxs: array [0..2] of integer; {bbox}
+     mins, maxs: array [0..2] of Integer; {bbox}
      constructor Create(SourcePtr: PChar; GameCode: Char);
     end;
 
-  PQ1Leaf = ^TQ1Leaf;
-  TQ1Leaf = record
+ PQ1Leaf = ^TQ1Leaf;
+ TQ1Leaf = record
             contents: Integer; { or of all brush info }
             visofs: Integer; { cluster index (?) }
             mins, maxs: array [0..2] of SmallInt; {bbox}
-            first_leafface, num_leaffaces: WORD;
-            first_leafbrush, num_leafbrushes: WORD;
+            first_marksurface, num_marksurfaces: Word;
+            ambient_level: array[0..3] of Byte; //@@@NUM_AMBIENTS = 4;
            end;
+
+ PSOFLeaf = ^TSOFLeaf; //FIXME: Unused!
+ TSOFLeaf = record
+             contents: Integer; { or of all brush info }
+             cluster, area, region: SmallInt;
+             mins, maxs: array [0..2] of SmallInt; {bbox}
+             first_leafface, num_leaffaces: Word;
+             first_leafbrush, num_leafbrushes: Word;
+            end;
 
  PQ2Leaf = ^TQ2Leaf;
  TQ2Leaf = record
-            contents: LongWord; { or of all brush info }
-            cluster: Integer; { cluster index }
-            area: Integer; { areaportal area }
+            contents: Integer; { or of all brush info }
+            cluster: SmallInt; { cluster index }
+            area: SmallInt; { areaportal area }
             mins, maxs: array [0..2] of SmallInt; {bbox}
-            first_leafface, num_leaffaces: WORD;
-            first_leafbrush, num_leafbrushes: WORD;
+            first_leafface, num_leaffaces: Word;
+            first_leafbrush, num_leafbrushes: Word;
            end;
 
  PQ3Leaf = ^TQ3Leaf;
  TQ3Leaf = record
             cluster: Integer; { cluster index }
             area: Integer; { areaportal area }
-            mins, maxs: array [0..2] of integer; {bbox}
+            mins, maxs: array [0..2] of Integer; {bbox}
             first_leafface, num_leaffaces: Integer;
             first_leafbrush, num_leafbrushes: Integer;
            end;
@@ -477,7 +427,6 @@ type
                emptyleafs: Integer;
               end;
 
-
  QBsp = class;
 
  TTreeBspPlane = class(TTreeMapGroup)
@@ -486,7 +435,7 @@ type
    Dist: TDouble;
    Source: PChar;
    Number: Integer;
-   constructor Create(const nName: String; nParent: QObject; Source: PbPlane; Index: Integer); overload;
+   constructor Create(const nName: String; nParent: QObject; Source: PQ1Plane; Index: Integer); overload;
 
    class function TypeInfo: String; override;
    function GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
@@ -507,21 +456,44 @@ type
    function PyGetAttr(attr: PChar) : PyObject; override;
  end;
 
-
+ QBspFileHandler = class
+  protected
+   FBsp: QBsp;
+  public
+   constructor Create(nBsp: QBsp);
+   procedure LoadBsp(F: TStream; StreamSize: Integer); virtual; abstract;
+   procedure SaveBsp(Info: TInfoEnreg1); virtual; abstract;
+   function GetHullType(Game: Char) : Char;
+   class function BspType : Char; overload;
+   class function BspType(mj : Char) : Char; overload;
+   function GetSurfaceType(const GameMode : Char) : Char;
+   function GetEntryName(const EntryIndex: Integer) : String; virtual; abstract;
+   function GetLumpEdges: Integer; virtual; abstract;
+   function GetLumpEntities: Integer; virtual; abstract;
+   function GetLumpFaces: Integer; virtual; abstract;
+   function GetLumpLeafs: Integer; virtual; abstract;
+   function GetLumpLeafFaces: Integer; virtual; abstract;
+   function GetLumpModels: Integer; virtual; abstract;
+   function GetLumpNodes: Integer; virtual; abstract;
+   function GetLumpPlanes: Integer; virtual; abstract;
+   function GetLumpSurfEdges: Integer; virtual; abstract;
+   function GetLumpTexInfo: Integer; virtual; abstract;
+   function GetLumpTextures: Integer; virtual; abstract;
+   function GetLumpVertexes: Integer; virtual; abstract;
+ end;
 
  QBsp = class(QFileObject)
         private
+          FFileHandler: QBspFileHandler;
           FStructure: TTreeMapBrush;
           FVerticesRefCount: Integer;
           function GetStructure : TTreeMapBrush;
-          function GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes) : QFileObject;
-          procedure LoadBsp1(F: TStream; StreamSize: Integer);
+          function GetBspEntry(const EntryIndex: Integer) : QFileObject;
           function DetermineGameCodeForBsp1() : Char;
-          procedure LoadBsp2(F: TStream; StreamSize: Integer);
-          procedure LoadBsp3(F: TStream; StreamSize: Integer);
-          procedure SaveBsp1(Info: TInfoEnreg1);
-          procedure SaveBsp2(Info: TInfoEnreg1);
-          procedure SaveBsp3(Info: TInfoEnreg1);
+          procedure GetPlanes(var L: TQList);
+          function GetNodes: QObject;
+          function GetBspNode(Node: PChar; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
+          function GetClosePlanes(Close:TDouble): PyObject;
         protected
           function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
@@ -539,8 +511,9 @@ type
           procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-          property BspEntry[E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes] : QFileObject read GetBspEntry;
-          function GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes; var P: PChar) : Integer;
+          property FileHandler: QBspFileHandler read FFileHandler;
+          property BspEntry[const EntryIndex: Integer] : QFileObject read GetBspEntry;
+          function GetBspEntryData(const EntryIndex: Integer; var P: PChar) : Integer;
           procedure ReLoadStructure;
           procedure CloseStructure;
           procedure VerticesAddRef(Delta: Integer);
@@ -550,10 +523,7 @@ type
           Function GetTextureFolder: QObject;
           (*Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;*)
           function GetEntityLump : String;
-          procedure GetPlanes(var L: TQList);
-          function GetNodes: QObject;
-          function GetBspNode(Node: PChar; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
-          function GetClosePlanes(Close:TDouble): PyObject;
+          function CreateHull(Index: Integer; nParent: QObject): QObject; //A TBSPHull, but that would create a circular include
         end;
 
 type
@@ -568,58 +538,11 @@ type
   public
   end;
 
- {------------------------}
-
-Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
-function BspSurfaceType(const GameMode : Char) : Char;
-function BspType(mj : Char) : Char; overload;
-function BspType : Char; overload;
-
-implementation
-
-uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls, QkApplPaths,
-     Undo, Quarkx, QkExceptions, PyForms, QkObjectClassList, ToolBox1,
-     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
-
-{$R *.DFM}
-
-type
- TBspEntries = record
-               EntryPosition: LongInt;
-               EntrySize: LongInt;
-              end;
-
 (***********  Quake 1, Hexen II and Half-Life .bsp format  ***********)
 
 const
  cSignatureBspQ1H2 = $0000001D; {Quake-1/Hexen-2 .BSP, 4-digit header}
  cSignatureBspHL   = $0000001E; {Half-Life .BSP, 4-digit header}
-
-const
- Bsp1EntryNames : array[TBsp1EntryTypes] of String =
-   (              {Actually a 'FilenameExtension' - See TypeInfo()}
-    'Entities'    + '.a.bsp1'   // eEntities
-   ,'Planes'      + '.b.bsp1'   // ePlanes
-   ,'MipTex'      + '.c.bsp1'   // eMipTex
-   ,'Vertices'    + '.d.bsp1'   // eVertices
-   ,'VisiList'    + '.e.bsp1'   // eVisiList
-   ,'Nodes'       + '.f.bsp1'   // eNodes
-   ,'TexInfo'     + '.g.bsp1'   // eTexInfo
-   ,'Surfaces'    + '.h.bsp1'   // eSurfaces
-   ,'Lightmaps'   + '.i.bsp1'   // eLightmaps
-   ,'BoundNodes'  + '.j.bsp1'   // eBoundNodes
-   ,'Leaves'      + '.k.bsp1'   // eLeaves
-   ,'ListSurf'    + '.l.bsp1'   // eListSurf
-   ,'Edges'       + '.m.bsp1'   // eEdges
-   ,'ListEdges'   + '.n.bsp1'   // eListEdges
-   ,'Hulls'       + '.o.bsp1'   // eHulls
-   );
-
-type
- TBsp1Header = record
-               Signature: LongInt;
-               Entries: array[TBsp1EntryTypes] of TBspEntries;
-              end;
 
 (***********  Quake 2 .bsp format  ***********)
 
@@ -630,37 +553,6 @@ const
  cVersionBspQ3   = $0000002E; {Quake-3 or STVEF or Nexuiz .BSP}
  cVersionBspDK   = $00000029; {Daikatana .BSP}
  cVersionBspRTCW = $0000002F; {RTCW .BSP}
-  
-const
- Bsp2EntryNames : array[TBsp2EntryTypes] of String =
-   (              {Actually a 'FilenameExtension' - See TypeInfo()}
-    'entities'    + '.a.bsp2'   // lump_entities
-   ,'planes'      + '.b.bsp2'   // lump_planes
-   ,'vertexes'    + '.c.bsp2'   // lump_vertexes
-   ,'visibility'  + '.d.bsp2'   // lump_visibility
-   ,'nodes'       + '.e.bsp2'   // lump_nodes
-   ,'texinfo'     + '.f.bsp2'   // lump_texinfo
-   ,'faces'       + '.g.bsp2'   // lump_faces
-   ,'lighting'    + '.h.bsp2'   // lump_lighting
-   ,'leafs'       + '.i.bsp2'   // lump_leafs
-   ,'leaffaces'   + '.j.bsp2'   // lump_leaffaces
-   ,'leafbrushes' + '.k.bsp2'   // lump_leafbrushes
-   ,'edges'       + '.l.bsp2'   // lump_edges
-   ,'surfedges'   + '.m.bsp2'   // lump_surfedges
-   ,'models'      + '.n.bsp2'   // lump_models
-   ,'brushes'     + '.o.bsp2'   // lump_brushes
-   ,'brushsides'  + '.p.bsp2'   // lump_brushsides
-   ,'pop'         + '.q.bsp2'   // lump_pop
-   ,'areas'       + '.r.bsp2'   // lump_areas
-   ,'areaportals' + '.s.bsp2'   // lump_areaportals
-   );
-
-type
- TBsp2Header = record
-           Signature: LongInt;
-           Version: LongInt;
-           Entries: array[TBsp2EntryTypes] of TBspEntries;
-          end;
 
 (***********  Quake-3 .bsp format  ***********)
 
@@ -671,35 +563,6 @@ const
 
  cVersionBspJK2JA     = $00000001; {JK2 or JA .BSP}
  cVersionBspSin       = $00000001; {SiN .BSP}
-
-const
- Bsp3EntryNames : array[TBsp3EntryTypes] of String =
-   (              {Actually a 'FilenameExtension' - See TypeInfo()}
-    'entities'    + '.a.bsp3'   // eBsp3_entities
-   ,'texinfo'     + '.b.bsp3'   // eBsp3_texinfo
-   ,'planes'      + '.c.bsp3'   // eBsp3_planes
-   ,'nodes'       + '.d.bsp3'   // eBsp3_nodes
-   ,'leafs'       + '.e.bsp3'   // eBsp3_leafs
-   ,'leaffaces'   + '.f.bsp3'   // eBsp3_leaffaces
-   ,'leafbrushes' + '.g.bsp3'   // eBsp3_leafbrushes
-   ,'models'      + '.h.bsp3'   // eBsp3_models
-   ,'brushes'     + '.i.bsp3'   // eBsp3_brushes
-   ,'brushsides'  + '.j.bsp3'   // eBsp3_brushsides
-   ,'vertexes'    + '.k.bsp3'   // eBsp3_vertexes
-   ,'meshvertexes'+ '.l.bsp3'   // eBsp3_meshvertexes
-   ,'effects'     + '.m.bsp3'   // eBsp3_effects
-   ,'faces'       + '.n.bsp3'   // eBsp3_faces
-   ,'lighting'    + '.o.bsp3'   // eBsp3_lighting
-   ,'lightvol'    + '.p.bsp3'   // eBsp3_lightvol
-   ,'visibility'  + '.q.bsp3'   // eBsp3_visibility
-   );
-
-type
- TBsp3Header = record
-           Signature: LongInt;
-           Version: LongInt;
-           Entries: array[TBsp3EntryTypes] of TBspEntries;
-          end;
 
 (***********  FAKK .bsp format  ***********)
 const
@@ -727,8 +590,9 @@ const
 
  cVersionBspHL2       = $00000013; {HL2}
  cVersionBspHL2HDR    = $00000014; {HL2 with HDR lighting}
+ cVersionBspHL2V21    = $00000015; {HL2 with various changes}
 
-const
+(*const
   HEADER_LUMPS = 64; //From HL2's bspfile.h
 
 type
@@ -746,30 +610,64 @@ type
       mapRevision: LongInt;
  end;
 
-//FIXME: Lots of stuff missing here
+//FIXME: Lots of stuff missing here*)
 
-(***********  QuArK objects  ***********)
+ {------------------------}
 
-type
-  QBsp1   = class(QFileObject)  protected class function TypeInfo: String; override; end;
-  QBsp1a  = class(QZText)       protected class function TypeInfo: String; override; end;
-  QBsp1c  = class(QTextureList) protected class function TypeInfo: String; override; end;
+Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
 
-  QBsp2   = class(QFileObject)  protected class function TypeInfo: String; override; end;
-  QBsp2a  = class(QZText)       protected class function TypeInfo: String; override; end;
+implementation
 
-  QBsp3   = class(QFileObject)  protected class function TypeInfo: String; override; end;
-  QBsp3a  = class(QZText)       protected class function TypeInfo: String; override; end;
+uses Travail, QkWad, Setup, QkMap, QkBspHulls, QkApplPaths,
+     Undo, Quarkx, QkExceptions, PyForms, QkObjectClassList, ToolBox1,
+     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkFormCfg,
+     QkQ1, QkQ2, QkQ3;
 
-class function QBsp1 .TypeInfo; begin TypeInfo:='.bsp1';                       end;
-class function QBsp1a.TypeInfo; begin TypeInfo:='.a.bsp1'; {'Entities.a.bsp1'} end;
-class function QBsp1c.TypeInfo; begin TypeInfo:='.c.bsp1'; {'MipTex.c.bsp1'}   end;
+{$R *.DFM}
 
-class function QBsp2 .TypeInfo; begin TypeInfo:='.bsp2';                       end;
-class function QBsp2a.TypeInfo; begin TypeInfo:='.a.bsp2'; {'entities.a.bsp2'} end;
+ {------------------------}
 
-class function QBsp3 .TypeInfo; begin TypeInfo:='.bsp3';                       end;
-class function QBsp3a.TypeInfo; begin TypeInfo:='.a.bsp3'; {'entities.a.bsp3'} end;
+constructor QBspFileHandler.Create(nBsp: QBsp);
+begin
+ FBSP:=nBsp;
+end;
+
+function QBspFileHandler.GetHullType(Game: Char) : Char;
+begin
+  if Game=mjHexen then
+    Result:=mjHexen
+  else
+    Result:=bspType(Game)
+end;
+
+class function QBspFileHandler.BspType : Char;
+begin
+  Result:=BspType(CharModeJeu);
+end;
+
+class function QBspFileHandler.BspType(mj : Char) : Char;
+begin
+ if (mj>='1') and (mj<='9') then
+   Result:=bspTypeQ1
+ else if (mj>='A') and (mj<='E') then
+   Result:=bspTypeQ2
+ else if (mj>'a') and (mj<='z') then
+   if (mj='k') then
+     Result:=bspTypeHL2
+   else
+     Result:=bspTypeQ3
+ {FIXME: a dubious step for dealing with the 'any' codes}
+ else
+   Result:=mj
+end;
+
+function QBspFileHandler.GetSurfaceType(const GameMode : Char) : Char;
+begin
+  if BspType(GameMode)=BspTypeQ3 then
+    Result:=BspTypeQ3
+  else
+    Result:=BspTypeQ1
+end;
 
  {------------------------}
 
@@ -817,70 +715,19 @@ begin
   ];
 end;
 
-function QBsp.GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes) : QFileObject;
+function QBsp.GetBspEntry(const EntryIndex: Integer) : QFileObject;
 var
  Q: QObject;
  S: String;
- C: Char;
 begin
+  if (EntryIndex<0) then
+   begin
+    Result:=Nil;
+    Exit;
+   end;
+
   Acces;
-
-(* truly I don't get what's supposed to be going on
-  here; this seems to work a bit better *)
-
-(*
-  if (E2=NoBsp2) and (E3=NoBsp3) then
-    S:=Bsp1EntryNames[E1]
-  else
-  if  ((NeedObjectGameCode>=mjQuake2) and (NeedObjectGameCode<mjQ3A)) then
-    S:=Bsp2EntryNames[E2]
-  else
-  if (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjSTVEF) then
-    S:=Bsp3EntryNames[E3]
-  else
-    S:=Bsp1EntryNames[E1];
- *)
-
-
-  (* this is set when the .bsp is opened, from the version,
-      why isn't it just used below?
-  if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjSTVEF) then
-    S:=Bsp3EntryNames[E3]
-  else
-  if (ObjectGameCode>=mjQuake2) and (ObjectGameCode<mjQ3A) then
-    S:=Bsp2EntryNames[E2]
-  else
-  if E2=NoBsp2 then
-    S:=Bsp1EntryNames[E1]
-  else
-  if (E1=NoBsp1) or (NeedObjectGameCode>=mjQuake2) then
-    S:=Bsp2EntryNames[E2]
-  else
-    S:=Bsp1EntryNames[E1];
-
-  *)
-
-  C := BspType(ObjectGameCode);
-  case C of
-    bspTypeQ1: S:= Bsp1EntryNames[E1];
-    bspTypeQ2: S:= Bsp2EntryNames[E2];
-    bspTypeQ3: S:= Bsp3EntryNames[E3];
-  else
-    { these are for when the bsp type isn't known yet,
-       such as when if the signature is for Q1, it could
-       be Q1 or Hexen II.  This is just copied from
-       above, I don't understand what all the cases do }
-    if E2=NoBsp2 then
-      S:=Bsp1EntryNames[E1]
-    else
-    if (E1=NoBsp1) or (BspType(NeedObjectGameCode)=bspTypeQ2) then
-      S:=Bsp2EntryNames[E2]
-    else
-      S:=Bsp1EntryNames[E1];
-
-  end;
-
-
+  S := FFileHandler.GetEntryName(EntryIndex);
   Q := SubElements.FindName(S);
   if (Q=Nil) or not (Q is QFileObject) then
     Raise EError(5521);
@@ -888,64 +735,35 @@ begin
   Result := QFileObject(Q);
 end;
 
-function QBsp.GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes; var P: PChar) : Integer;
+function QBsp.GetBspEntryData(const EntryIndex: Integer; var P: PChar) : Integer;
 const
  Start = Length('Data=');
 var
  Q: QObject;
  S: String;
 begin
- Q:=BspEntry[E1, E2, E3];
+ Q:=BspEntry[EntryIndex];
  Q.Acces;
  S:=Q.GetSpecArg('Data');
  P:=PChar(S)+Start;
  Result:=Length(S)-Start;
  {$IFDEF Debug}
- if Result<0 then Raise InternalE(Format('No BSP Data for %d, %d', [Ord(E1), Ord(E2)]));
+ if Result<0 then Raise InternalE(Format('No BSP Data for %d', [EntryIndex, ]));
  {$ENDIF}
 end;
 
 function QBsp.GetAltTextureSrc : QObject;
 var
- Code: Char;
+ EntryIndex: Integer;
 begin
- Code := NeedObjectGameCode;
- if (Code >= mjQuake2) {or (Code = mjHalfLife)} then
+ EntryIndex := FFileHandler.GetLumpTexInfo();
+ if (EntryIndex<0) then
   Result := Nil
  else
-  Result := BspEntry[eMipTex, NoBsp2, NoBsp3];
+  Result := BspEntry[EntryIndex];
 end;
 
  {----------------------}
-
-procedure QBsp.LoadBsp1(F: TStream; StreamSize: Integer);
-var
- Header: TBsp1Header;
- Origine: LongInt;
- E: TBsp1EntryTypes;
- Q: QObject;
-begin
-  if StreamSize < SizeOf(Header) then
-    Raise EError(5519);
-
-  Origine:=F.Position;
-  F.ReadBuffer(Header, SizeOf(Header));
-
-  for E:=Low(E) to High(E) do
-  begin
-    if (Header.Entries[E].EntryPosition+Header.Entries[E].EntrySize > StreamSize)
-    or (Header.Entries[E].EntryPosition < SizeOf(Header))
-    or (Header.Entries[E].EntrySize < 0) then
-      Raise EErrorFmt(5509, [82]);
-
-    F.Position := Origine + Header.Entries[E].EntryPosition;
-    Q := OpenFileObjectData(F, Bsp1EntryNames[E], Header.Entries[E].EntrySize, Self);
-    {if (E=eMipTex) and (Header.Signature = cSignatureBspHL) then
-      Q.SetSpecificsList.Values['TextureType']:='.wad3_C';}
-    SubElements.Add(Q);
-    LoadedItem(rf_Default, F, Q, Header.Entries[E].EntrySize);
-  end;
-end;
 
 function QBsp.DetermineGameCodeForBsp1() : char;
 { (Comment by Decker 2001-01-21)
@@ -960,8 +778,8 @@ begin
     { determine map game : Quake 1 or Hexen II }
   FFlags := FFlags and not ofNotLoadedToMemory;  { to prevent infinite loop on "Acces" }
 
-  FaceCount := GetBspEntryData(eSurfaces, NoBsp2, NoBsp3, P) div SizeOf(TbSurface);
-  Taille1   := GetBspEntryData(eHulls, NoBsp2, NoBsp3,P);
+  FaceCount := GetBspEntryData(FFileHandler.GetLumpFaces(), P) div SizeOf(TbSurface);
+  Taille1   := GetBspEntryData(FFileHandler.GetLumpModels(), P);
 
   ModeQ1 := CheckQ1Hulls(PHull(P), Taille1, FaceCount);
   ModeH2 := CheckH2Hulls(PHullH2(P), Taille1, FaceCount);
@@ -982,84 +800,6 @@ begin
       Raise EErrorFmt(5509, [84]);
 end;
 
-procedure QBsp.LoadBsp2(F: TStream; StreamSize: Integer);
-var
- Header: TBsp2Header;
- Origine: LongInt;
- Q: QObject;
- E: TBsp2EntryTypes;
-begin
-  if StreamSize < SizeOf(Header) then
-    Raise EError(5519);
-
-  Origine:=F.Position;
-  F.ReadBuffer(Header, SizeOf(Header));
-
-  for E:=Low(E) to High(E) do
-  begin
-    if Header.Entries[E].EntrySize < 0 then
-      Raise EErrorFmt(5509, [84]);
-
-    if Header.Entries[E].EntrySize = 0 then
-      Header.Entries[E].EntryPosition := SizeOf(Header)
-    else
-    begin
-      if Header.Entries[E].EntryPosition < SizeOf(Header) then
-        Raise EErrorFmt(5509, [85]);
-
-      if Header.Entries[E].EntryPosition+Header.Entries[E].EntrySize > StreamSize then
-      begin
-        Header.Entries[E].EntrySize := StreamSize - Header.Entries[E].EntryPosition;
-        GlobalWarning(LoadStr1(5641));
-      end;
-    end;
-
-    F.Position:=Origine + Header.Entries[E].EntryPosition;
-    Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Header.Entries[E].EntrySize, Self);
-    SubElements.Add(Q);
-    LoadedItem(rf_Default, F, Q, Header.Entries[E].EntrySize);
-  end;
-end;
-
-procedure QBsp.LoadBsp3(F: TStream; StreamSize: Integer);
-var
- Header: TBsp3Header;
- Origine: LongInt;
- Q: QObject;
- E: TBsp3EntryTypes;
-begin
-  if StreamSize < SizeOf(Header) then
-    Raise EError(5519);
-
-  Origine:=F.Position;
-  F.ReadBuffer(Header, SizeOf(Header));
-
-  for E:=Low(E) to High(E) do
-  begin
-    if Header.Entries[E].EntrySize < 0 then
-      Raise EErrorFmt(5509, [84]);
-
-    if Header.Entries[E].EntrySize = 0 then
-      Header.Entries[E].EntryPosition := SizeOf(Header)
-    else
-    begin
-      if Header.Entries[E].EntryPosition < SizeOf(Header) then
-        Raise EErrorFmt(5509, [85]);
-
-      if Header.Entries[E].EntryPosition+Header.Entries[E].EntrySize > StreamSize then
-      begin
-        Header.Entries[E].EntrySize := StreamSize - Header.Entries[E].EntryPosition;
-        GlobalWarning(LoadStr1(5641));
-      end;
-    end;
-
-    F.Position:=Origine + Header.Entries[E].EntryPosition;
-    Q:=OpenFileObjectData(F, Bsp3EntryNames[E], Header.Entries[E].EntrySize, Self);
-    SubElements.Add(Q);
-    LoadedItem(rf_Default, F, Q, Header.Entries[E].EntrySize);
-  end;
-end;
-
 procedure QBsp.LoadFile(F: TStream; StreamSize: Integer);
 { (Comment by Decker 2001-01-21)
  Loads 4 bytes of signature, and 4 bytes of version, to determine what type of
@@ -1070,7 +810,7 @@ var
  Version: LongInt;
 begin
   case ReadFormat of
-    1: { as stand-alone file }
+    rf_Default: { as stand-alone file }
     begin
       if StreamSize < SizeOf(Signature)+SizeOf(Version) then
         Raise EError(5519);
@@ -1082,13 +822,15 @@ begin
       case Signature of
         cSignatureBspQ1H2: { Quake-1 or Hexen-2 }
         begin
-          LoadBsp1(F, StreamSize);
+          FFileHandler:=QBsp1FileHandler.Create(Self);
+          FFileHandler.LoadBsp(F, StreamSize);
           ObjectGameCode := DetermineGameCodeForBsp1();
         end;
 
         cSignatureBspHL: { Half-Life }
         begin
-          LoadBsp1(F, StreamSize);
+          FFileHandler:=QBsp1FileHandler.Create(Self);
+          FFileHandler.LoadBsp(F, StreamSize);
           ObjectGameCode := mjHalfLife;
         end;
 
@@ -1098,16 +840,18 @@ begin
 { FIXME: SOF don't load, got same Sig/Vers as Q3 (!!)
           if CharModeJeu=mjSOF then
           begin
-              LoadBsp2(F, StreamSize);
+              FFileHandler:=QBsp2FileHandler.Create(Self)
+              FFileHandler.LoadBsp(F, StreamSize);
               ObjectGameCode := mjSOF;
           end else
 }
           case Version of
             cVersionBspQ2: { Quake-2 }
             begin
-              if BspType(CharModeJeu)<>bspTypeQ2 then
+              if QBspFileHandler.BspType(CharModeJeu)<>bspTypeQ2 then
                 ChangeGameMode(mjQuake2,true);
-              LoadBsp2(F, StreamSize);
+              FFileHandler:=QBsp2FileHandler.Create(Self);
+              FFileHandler.LoadBsp(F, StreamSize);
               ObjectGameCode := CurrentQuake2Mode;
             end;
 
@@ -1117,11 +861,13 @@ begin
               if CharModejeu=mjSOF then
               begin
                 ObjectGameCode := mjSOF;
-                LoadBsp2(F, StreamSize);
+                FFileHandler:=QBsp2FileHandler.Create(Self);
+                FFileHandler.LoadBsp(F, StreamSize);
               end
               else
               begin
-                LoadBsp3(F, StreamSize);
+                FFileHandler:=QBsp3FileHandler.Create(Self);
+                FFileHandler.LoadBsp(F, StreamSize);
                 if CharModeJeu<mjQ3A then
                   ObjectGameCode := mjQ3A
                 else
@@ -1133,7 +879,8 @@ begin
             cVersionBspRTCW:  { RTCW }
             begin
           (*
-              LoadBSP3(F, StreamSize);
+              FFileHandler:=QBsp3FileHandler.Create(Self);
+              FFileHandler.LoadBsp(F, StreamSize);
               ObjectGameCode := mjRTCW;
           *)
               Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
@@ -1149,7 +896,8 @@ begin
           case Version of
             cVersionBspJK2JA: { Jedi Knight II or Jedi Academy}
             begin
-              LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
+              FFileHandler:=QBsp3FileHandler.Create(Self); {Decker - try using the Q3 .BSP loader for JK2/JA maps}
+              FFileHandler.LoadBsp(F, StreamSize);
               if CharModeJeu<mjQ3A then
                 ObjectGameCode := mjQ3A
               else
@@ -1160,7 +908,8 @@ begin
 //            begin
 //              { This is a Quake 2 engine game! Somebody else should ALSO be shot! }
 //              Raise EErrorFmt(5602, [LoadName, Version, cVersionBspSin]);
-//(*              LoadBsp2(F, StreamSize);
+//(*              FFileHandler:=QBsp2FileHandler.Create(Self);
+//                FFileHandler.LoadBsp(F, StreamSize);
 //              ObjectGameCode := mjSin;*)
 //            end;
 
@@ -1173,8 +922,9 @@ begin
         begin
           Raise EErrorFmt(5602, [LoadName, Version, cSignatureMohaa]);
 
-(* Non functiona
-          LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for Moh:aa maps}
+(* Non functional
+          FFileHandler:=QBsp3FileHandler.Create(Self); {Decker - try using the Q3 .BSP loader for Moh:aa maps}
+          FFileHandler.LoadBsp(F, StreamSize);
           ObjectGameCode := mjMohaa;
 *)
         end;
@@ -1194,6 +944,12 @@ begin
 (*              ObjectGameCode := mjHL2;*)
             end;
 
+            cVersionBspHL2V21: {HL2 with various changes}
+            begin
+              Raise EErrorFmt(5602, [LoadName, Version, cVersionBspHL2V21]);
+(*              ObjectGameCode := mjHL2;*)
+            end;
+
             else {version unknown}
               Raise EErrorFmt(5572, [LoadName, Version, cVersionBspHL2]);
           end;
@@ -1208,168 +964,17 @@ begin
   end;
 end;
 
-procedure QBsp.SaveBsp1(Info: TInfoEnreg1);
-var
- Header: TBsp1Header;
- Origine, Fin: LongInt;
- Zero: Integer;
- Q: QObject;
- E: TBsp1EntryTypes;
-begin
-  ProgressIndicatorStart(5450, Ord(High(E)) - Ord(Low(E)) + 1);
-  try
-    Origine := Info.F.Position;
-    Info.F.WriteBuffer(Header, SizeOf(Header));  { updated later }
-
-    { write .bsp entries }
-    for E:=Low(E) to High(E) do
-    begin
-      Q := BspEntry[E, NoBsp2, NoBsp3];
-      Header.Entries[E].EntryPosition := Info.F.Position;
-
-      Q.SaveFile1(Info);   { save in non-QuArK file format }
-
-      Header.Entries[E].EntrySize := Info.F.Position - Header.Entries[E].EntryPosition;
-      Dec(Header.Entries[E].EntryPosition, Origine);
-
-      Zero:=0;
-      Info.F.WriteBuffer(Zero, (-Header.Entries[E].EntrySize) and 3);  { align to 4 bytes }
-
-      ProgressIndicatorIncrement;
-    end;
-
-    { update header }
-    Fin := Info.F.Position;
-    Info.F.Position := Origine;
-    if NeedObjectGameCode =mjHalfLife then
-      Header.Signature := cSignatureBspHL
-    else
-      Header.Signature := cSignatureBspQ1H2;
-    Info.F.WriteBuffer(Header, SizeOf(Header));
-
-    Info.F.Position := Fin;
-  finally
-    ProgressIndicatorStop;
-  end;
-end;
-
-procedure QBsp.SaveBsp2(Info: TInfoEnreg1);
-var
-  Header: TBsp2Header;
-  Origine, Fin: LongInt;
-  Zero: Integer;
-  Q: QObject;
-  E: TBsp2EntryTypes;
-begin
-  ProgressIndicatorStart(5450, Ord(High(E)) - Ord(Low(E)) + 1);
-  try
-    Origine := Info.F.Position;
-    Info.F.WriteBuffer(Header, SizeOf(Header));  { updated later }
-
-    { write .bsp entries }
-    for E:=Low(E) to High(E) do
-    begin
-      Q := BspEntry[NoBsp1, E, NoBsp3];
-      Header.Entries[E].EntryPosition := Info.F.Position;
-
-      Q.SaveFile1(Info);   { save in non-QuArK file format }
-
-      Header.Entries[E].EntrySize := Info.F.Position - Header.Entries[E].EntryPosition;
-      Dec(Header.Entries[E].EntryPosition, Origine);
-
-      Zero:=0;
-      Info.F.WriteBuffer(Zero, (-Header.Entries[E].EntrySize) and 3);  { align to 4 bytes }
-
-      ProgressIndicatorIncrement;
-    end;
-
-    { update header }
-    Fin := Info.F.Position;
-
-    Info.F.Position := Origine;
-    Header.Signature := cSignatureBspQ2;
-    Header.Version := cVersionBspQ2;
-    Info.F.WriteBuffer(Header, SizeOf(Header));
-
-    Info.F.Position := Fin;
-  finally
-    ProgressIndicatorStop;
-  end;
-end;
-
-procedure QBsp.SaveBsp3(Info: TInfoEnreg1);
-var
-  Header: TBsp3Header;
-  Origine, Fin: LongInt;
-  Zero: Integer;
-  Q: QObject;
-  E: TBsp3EntryTypes;
-begin
-  ProgressIndicatorStart(5450, Ord(High(E)) - Ord(Low(E)) + 1);
-  try
-    Origine := Info.F.Position;
-    Info.F.WriteBuffer(Header, SizeOf(Header));  { updated later }
-
-    { write .bsp entries }
-    for E:=Low(E) to High(E) do
-    begin
-      Q := BspEntry[NoBsp1, NoBsp2, E];
-      Header.Entries[E].EntryPosition := Info.F.Position;
-
-      Q.SaveFile1(Info);   { save in non-QuArK file format }
-
-      Header.Entries[E].EntrySize := Info.F.Position - Header.Entries[E].EntryPosition;
-      Dec(Header.Entries[E].EntryPosition, Origine);
-
-      Zero:=0;
-      Info.F.WriteBuffer(Zero, (-Header.Entries[E].EntrySize) and 3);  { align to 4 bytes }
-
-      ProgressIndicatorIncrement;
-    end;
-
-    { update header }
-    Fin := Info.F.Position;
-
-    Info.F.Position := Origine;
-    Header.Signature := cSignatureBspQ2;
-    Header.Version := cVersionBspQ3;
-    Info.F.WriteBuffer(Header, SizeOf(Header));
-
-    Info.F.Position := Fin;
-  finally
-    ProgressIndicatorStop;
-  end;
-end;
-
-
 procedure QBsp.SaveFile(Info: TInfoEnreg1);
-var
-  C : Char;
 begin
   case Info.Format of
-    1: { as stand-alone file }
-{
+    rf_Default: { as stand-alone file }
     begin
-      if NeedObjectGameCode >= mjQuake2 then
-        SaveBsp2(Info)
-      else
-        SaveBsp1(Info);
-    end;
-}
-    begin
-      C := BspType(NeedObjectGameCode);
-      case C of
-        bspTypeQ1: SaveBsp1(Info);
-        bspTypeQ2: SaveBsp2(Info);
-        bspTypeQ3: SaveBsp3(Info);
-      end;
+      FFileHandler.SaveBsp(Info);
     end
   else
     inherited;
   end;
 end;
-
- {------------------------}
 
 destructor QBsp.Destroy;
 begin
@@ -1403,14 +1008,14 @@ end;
 function QBsp.GetStructure;
 var
  Q: QObject;
- P: vec3_p;
+ P: PQ1Vertex;
  PQ3: PQ3Vertex;
  I : Integer;
  Dest: PVect;
  SurfType: Char;
  Pozzie: vec3_t;
 begin
-  SurfType:=BspSurfaceType(NeedObjectGameCode);
+  SurfType:=FFileHandler.GetSurfaceType(NeedObjectGameCode);
   if FStructure=Nil then
   begin
     if FVertices<>Nil then
@@ -1422,19 +1027,18 @@ begin
 
       if SurfType=bspSurfQ12 then
       begin
-        VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
-        ReallocMem(FVertices, VertexCount*SizeOf(TVect));
-        PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,   eBsp3_planes,   Planes)   div SizeOf(TbPlane);
-        PlaneSize:=SizeOf(TbPlane);
+        VertexCount:=GetBspEntryData(FFileHandler.GetLumpVertexes(), PChar(P)) div SizeOf(TQ1Vertex);
+        PlaneCount:=GetBspEntryData(FFileHandler.GetLumpPlanes(), Planes) div SizeOf(TQ1Plane);
+        PlaneSize:=SizeOf(TQ1Plane);
       end
       else
       begin
-        VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
+        VertexCount:=GetBspEntryData(FFileHandler.GetLumpVertexes(), Q3Vertices) div SizeOf(TQ3Vertex);
         PQ3:=PQ3Vertex(Q3Vertices);
-        ReallocMem(FVertices, VertexCount*SizeOf(TQ3Vertex));
-        PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,   eBsp3_planes,   Planes)     div SizeOf(TQ3Plane);
+        PlaneCount:=GetBspEntryData(FFileHandler.GetLumpPlanes(), Planes) div SizeOf(TQ3Plane);
         PlaneSize:=Sizeof(TQ3Plane);
       end;
+      ReallocMem(FVertices, VertexCount*SizeOf(TVect));
 
       Dest:=PVect(FVertices);
 
@@ -1469,12 +1073,12 @@ begin
       end;
       FStructure:=TTreeMapBrush.Create('', Self);
       FStructure.AddRef(+1);
-      Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
+      Q:=BspEntry[FFileHandler.GetLumpEntities()];
       Q.Acces;
       NonFaces:=0;
       ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
       if NonFaces>0 then
-        ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
+        ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored'); //FIXME: Move to dict!
     finally
       ProgressIndicatorStop;
     end;
@@ -1482,6 +1086,7 @@ begin
   GetStructure:=FStructure;
 end;
 
+//This function gets called if the editor containing this BSP file closes. Update the BSP lump with the modified data.
 procedure QBsp.ReLoadStructure;
 var
  Dest: TStringList;
@@ -1501,13 +1106,16 @@ begin
    finally
     Dest.Free;
    end;
-   Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
+   Q:=BspEntry[FFileHandler.GetLumpEntities()];
    Q.Acces;
    Action(Q, TSpecificUndo.Create(LoadStr1(614), 'Data', S, sp_Auto, Q));
   end;
 end;
 
- {------------------------}
+function QBsp.CreateHull(Index: Integer; nParent: QObject): QObject;
+begin
+  Result:=TBSPHull.Create(Self, Index, nParent);
+end;
 
 procedure QBsp.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
 var
@@ -1524,10 +1132,14 @@ begin
  S:=ConcatPaths([GameMapPath, S+TypeInfo]);
  SaveInFile(rf_Default, OutputFile(S));
  mapname:=PyString_FromString(PChar(S));
- PyList_Append(extracted, mapname);
- Py_DECREF(mapname);
+ try
+   PyList_Append(extracted, mapname);
+ finally
+   Py_DECREF(mapname);
+ end;
 end;
 
+ {------------------------}
 
 function qReloadStructure(self, args: PyObject) : PyObject; cdecl;
 begin
@@ -1667,7 +1279,7 @@ convert this:
 
 into a stringlist for each entity (entity = { ... } )
 *)
-Function EntityTextToStringList(S0: String): TStringList;
+Function EntityTextToStringList(const S0: String): TStringList;
 var
   S, Spec, Arg: String;
   I: Integer;
@@ -1706,48 +1318,51 @@ begin
       S:=S+S0[i];
   i:=1;
   Es:=TStringlist.Create;
-  while i<length(S)+1 do
-  begin
-    case s[i] of
-      '{': E1:=TStringlist.Create;
-      '"': begin
-        Spec:='';
-        Arg:='';
-        while true do
-        begin
+  try
+    while i<length(S)+1 do
+    begin
+      case s[i] of
+        '{': E1:=TStringlist.Create;
+        '"': begin
+          Spec:='';
+          Arg:='';
+          while true do
+          begin
+            inc(i);
+            if s[i] = '"' then
+              break;
+            Spec:=Spec+s[i];
+          end;
+          while s[i]='"' do
+            inc(i);
           inc(i);
-          if s[i] = '"' then
-            break;
-          Spec:=Spec+s[i];
+          while s[i]='"' do
+            inc(i);
+          while true do
+          begin
+            if s[i] = '"' then
+              break;
+            arg:=arg+s[i];
+            inc(i);
+          end;
+          E1.Add(Spec+'='+Arg);
         end;
-        while s[i]='"' do
-          inc(i);
-        inc(i);
-        while s[i]='"' do
-          inc(i);
-        while true do
-        begin
-          if s[i] = '"' then
-            break;
-          arg:=arg+s[i];
-          inc(i);
-        end;
-        E1.Add(Spec+'='+Arg);
+        '}': Es.AddObject('', E1);
       end;
-      '}': Es.AddObject('', E1);
+      inc(i);
     end;
-    inc(i);
+    for i:=Es.Count-1 downto 0 do
+    begin
+      CreateFullEntity(TStringList(Es.Objects[i]));
+      TStringList(Es.Objects[i]).Free;
+      Es.Delete(i);
+    end;
+  finally
+    Es.Free;
   end;
-  for i:=Es.Count-1 downto 0 do
-  begin
-    CreateFullEntity(TStringList(Es.Objects[i]));
-    TStringList(Es.Objects[i]).Free;
-    Es.Delete(i);
-  end;
-  Es.Free;
 end;
 
-Function GetBaseDir(F: String; inPak: Boolean): String;
+Function GetBaseDir(const F: String; inPak: Boolean): String;
 var
   i: Integer;
   slashCount, wSlashCount: Integer;
@@ -1818,11 +1433,9 @@ var
   I: Integer;
 begin
   Acces;
-  e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
+  e:=GetBspEntry(FFileHandler.GetLumpEntities());
   if e=nil then
-  begin
-    raise Exception.Create('No Entities in BSP');
-  end;
+    raise Exception.Create('No Entities in BSP'); //FIXME: Move to dict!
   e.acces;
   S:=e.Specifics.Values['Data'];
   for I:=Length(S) downto 1 do
@@ -1896,8 +1509,8 @@ var
   Planes2: PChar;
   Q: QObject;
 begin
-  if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
-    PlaneSize:=SizeOf(TbPlane)
+  if FFileHandler.GetSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
+    PlaneSize:=SizeOf(TQ1Plane)
   else
     PlaneSize:=SizeOf(TQ3Plane);
   Planes2:=Planes;
@@ -1905,11 +1518,10 @@ begin
   begin
     {if the plane is created with Self as parent, it can't
       be stuck into a subitems list by Python code }
-    Q:=TTreeBspPlane.Create('plane '+IntToStr(I), Nil,PbPlane(Planes2), I);
+    Q:=TTreeBspPlane.Create('plane '+IntToStr(I), Nil, PQ1Plane(Planes2), I);
     L.Add(Q);
     Inc(Planes2, PlaneSize);
   end;
-  {ShowMessage('Planes: '+IntToStr(PlaneCount));}
 end;
 
 function QBsp.GetNodes : QObject;
@@ -1917,7 +1529,7 @@ var
   Stats: TNodeStats;
   bspkind: Char;
 begin
-  bspkind:=BspType(NeedObjectGameCode);
+  bspkind:=FFileHandler.BspType(NeedObjectGameCode);
   case bspkind of
       bspTypeQ1:
        begin
@@ -1935,9 +1547,8 @@ begin
          LeafSize:=SizeOf(TQ3Leaf);
        end
   end;
-  NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     FirstNode)   div NodeSize;
-  LeafCount:= GetBspEntryData(eLeaves,    lump_leafs,    eBsp3_leafs,     FirstLeaf)   div LeafSize;
-     { ShowMessage('Nodes: '+IntToStr(NodeCount)); }
+  NodeCount:= GetBspEntryData(FFileHandler.GetLumpNodes(), FirstNode) div NodeSize;
+  LeafCount:= GetBspEntryData(FFileHandler.GetLumpLeafs(), FirstLeaf) div LeafSize;
   Result:=GetBspNode(FirstNode, 'Root Node', Nil, Stats);
 end;
 
@@ -1973,7 +1584,7 @@ begin
   Result:=TTreeBspNode.Create(Name, Parent, NodeWrapper, Stats);
   with NodeWrapper do
   begin
-    TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PbPlane(Planes+plane*Planesize), plane);
+    TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PQ1Plane(Planes+plane*Planesize), plane); //PQ3Plane???
     Result.SubElements.Add(TreePlane);
     Result.Plane:=TreePlane;
     AddChild(Result, firstchild, 'First', FirstStats);
@@ -2028,9 +1639,9 @@ var
 begin
   Result:=PyList_New(0);
   HalfPlaneCount:=(PlaneCount-1) div 2;
-  SurfType:=BspSurfaceType(NeedObjectGameCode);
+  SurfType:=FFileHandler.GetSurfaceType(NeedObjectGameCode);
   if SurfType=bspSurfQ12 then
-    PlaneSize:=SizeOf(TbPlane)
+    PlaneSize:=SizeOf(TQ1Plane)
   else
     PlaneSize:=SizeOf(TQ3Plane);
   PlaneInc:=2*PlaneSize;
@@ -2051,40 +1662,13 @@ begin
   end;
 end;
 
-
-function BspType : Char; overload;
-begin
-  Result:=BspType(CharModeJeu);
-end;
-
-function BspType(mj : Char) : Char;
-begin
- if (mj>='1') and (mj<='9') then
-   Result:=bspTypeQ1
- else if (mj>='A') and (mj<='E') then
-   Result:=bspTypeQ2
- else if (mj>'a') and (mj<='z') then
-   Result:=bspTypeQ3
- {FIXME: a dubious step for dealing with the 'any' codes}
- else
-   Result:=mj
-end;
-
-function bspSurfaceType(const GameMode : Char) : Char;
-begin
-  if BspType(GameMode)=BspTypeQ3 then
-    Result:=BspTypeQ3
-  else
-    Result:=BspTypeQ1
-end;
-
 (*
 Function QBsp.CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
 var
   e: QObject;
 begin
   Acces;
-  e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
+  e:=GetBspEntry(FFileHandler.GetLumpEntities());
   if e=nil then
   begin
     raise Exception.Create('No Entities in BSP');
@@ -2104,7 +1688,7 @@ begin
   Acces;
   e:=nil;
   try
-    e:=GetBspEntry(eMipTex, NoBsp2, NoBsp3);
+    e:=GetBspEntry(FFileHandler.GetLumpTextures());
   except
     { nothing }
   end;
@@ -2136,7 +1720,9 @@ begin
   Result:=TexFolder;
 end;
 
-constructor TTreeBspPlane.Create(const nName: String; nParent: QObject; Source: PbPlane; Index: Integer);
+ {------------------------}
+
+constructor TTreeBspPlane.Create(const nName: String; nParent: QObject; Source: PQ1Plane; Index: Integer);
 begin
   inherited Create(nName, nParent);
   Dist:=Source^.dist;
@@ -2149,7 +1735,6 @@ begin
     Self.Source:=PChar(Source);
   end;
 end;
-
 
 class function TTreeBspPlane.TypeInfo: String;
 begin
@@ -2166,9 +1751,9 @@ begin
   with Bsp do
   begin
     HalfPlaneCount:=(PlaneCount-1) div 2;
-    SurfType:=BspSurfaceType(NeedObjectGameCode);
+    SurfType:=FFileHandler.GetSurfaceType(NeedObjectGameCode);
     if SurfType=bspSurfQ12 then
-      PlaneSize:=SizeOf(TbPlane)
+      PlaneSize:=SizeOf(TQ1Plane)
     else
       PlaneSize:=SizeOf(TQ3Plane);
     PlaneInc:=2*PlaneSize;
@@ -2239,6 +1824,7 @@ begin
   end;
 end;
 
+ {------------------------}
 
 constructor BspNode.Create(SourcePtr: PChar; GameCode: Char);
 var
@@ -2249,7 +1835,7 @@ var
   I: Integer;
 begin
   Source:=SourcePtr;
-  bspkind:=BspType(GameCode);
+  bspkind:=QBspFileHandler.BspType(GameCode);
   case bspkind of
    bspTypeQ1:
      begin
@@ -2290,6 +1876,8 @@ begin
   end;
 end;
 
+ {------------------------}
+
 constructor BspLeaf.Create(SourcePtr: PChar; GameCode: Char);
 var
   SourceQ1: TQ1Leaf;
@@ -2299,12 +1887,12 @@ var
   I: Integer;
 begin
   Source:=SourcePtr;
-  bspkind:=BspType(GameCode);
+  bspkind:=QBspFileHandler.BspType(GameCode);
   case bspkind of
    bspTypeQ1:
      begin
        SourceQ1:=PQ1Leaf(Source)^;
-       num_leaffaces:=SourceQ1.num_leaffaces;
+       num_leaffaces:=SourceQ1.num_marksurfaces;
        for I:=0 to 2 do
        begin
          mins[I]:=SourceQ1.mins[I];
@@ -2333,6 +1921,8 @@ begin
      end;
   end
 end;
+
+ {------------------------}
 
 constructor TTreeBspNode.Create(const nName: String; nParent: QObject; NodeSource: BspNode; var Stats: TNodeStats);
 begin
@@ -2388,7 +1978,7 @@ begin
    with PQ3Leaf(Source)^ do
    begin
      { leaffaces are integer sized in both Q2/Q3 }
-     Bsp.GetBspEntryData(NoBsp1,lump_leaffaces,eBsp3_leaffaces, FirstLFace);
+     Bsp.GetBspEntryData(Bsp.FileHandler.GetLumpLeafFaces(), FirstLFace);
      for LFaceIndex:=first_leafface to first_leafface+num_leaffaces do
      begin
         PyList_Append(L,PyInt_FromLong(LFaceIndex));
@@ -2435,15 +2025,6 @@ end;
 initialization
   RegisterQObject(QBsp, 's');
 
-  RegisterQObject(QBsp1,  ' ');
-  RegisterQObject(QBsp1a, 'a');
-  RegisterQObject(QBsp1c, 'a');
-
-  RegisterQObject(QBsp2,  ' ');
-  RegisterQObject(QBsp2a, 'a');
-
-  RegisterQObject(QBsp3,  ' ');
-  RegisterQObject(QBsp3a, 'a');
   RegisterQObject(TTreeBspPlane, 'a');
   RegisterQObject(TTreeBspNode, 'a');
 end.

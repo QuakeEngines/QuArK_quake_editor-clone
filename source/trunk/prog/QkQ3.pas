@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2017/10/01 09:54:40  danielpharos
+Shader stage sub-data can have multiple levels. Skip them all (for now).
+
 Revision 1.43  2017/10/01 09:32:52  danielpharos
 Skip sub-data in shader stages to prevent syntax errors when reading these shaders.
 
@@ -150,7 +153,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, QkZip2, QkFileObjects, QkObjects, QkText,
-  QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
+  QkTextures, QkBsp, Setup, QkWad, QkPixelSet;
 
 type
   Q_CFile = class(QCfgFile)
@@ -206,10 +209,92 @@ type
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                   function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                 end;
+ QBsp3FileHandler = class(QBspFileHandler)
+  public
+   procedure LoadBsp(F: TStream; StreamSize: Integer); override;
+   procedure SaveBsp(Info: TInfoEnreg1); override;
+   function GetEntryName(const EntryIndex: Integer) : String; override;
+   function GetLumpEdges: Integer; override;
+   function GetLumpEntities: Integer; override;
+   function GetLumpFaces: Integer; override;
+   function GetLumpLeafs: Integer; override;
+   function GetLumpLeafFaces: Integer; override;
+   function GetLumpModels: Integer; override;
+   function GetLumpNodes: Integer; override;
+   function GetLumpPlanes: Integer; override;
+   function GetLumpSurfEdges: Integer; override;
+   function GetLumpTexInfo: Integer; override;
+   function GetLumpTextures: Integer; override;
+   function GetLumpVertexes: Integer; override;
+ end;
 
 implementation
 
 uses QuarkX, QkExceptions, Game, Travail, QkObjectClassList, Logging;
+
+const
+ LUMP_ENTITIES = 0;
+ LUMP_SHADERS = 1;
+ LUMP_PLANES = 2;
+ LUMP_NODES = 3;
+ LUMP_LEAFS = 4;
+ LUMP_LEAFSURFACES = 5;
+ LUMP_LEAFBRUSHES = 6;
+ LUMP_MODELS = 7;
+ LUMP_BRUSHES = 8;
+ LUMP_BRUSHSIDES = 9;
+ LUMP_DRAWVERTS = 10;
+ LUMP_DRAWINDEXES = 11;
+ LUMP_FOGS = 12;
+ LUMP_SURFACES = 13;
+ LUMP_LIGHTMAPS = 14;
+ LUMP_LIGHTGRID = 15;
+ LUMP_VISIBILITY = 16;
+
+ HEADER_LUMPS = 17;
+
+type
+ TBspEntries = record
+               EntryPosition: LongInt;
+               EntrySize: LongInt;
+              end;
+ TBsp3Header = record
+           Signature: LongInt;
+           Version: LongInt;
+           Entries: array[0..HEADER_LUMPS-1] of TBspEntries;
+          end;
+
+const
+ Bsp3EntryNames : array[0..HEADER_LUMPS-1] of String =
+   (              {Actually a 'FilenameExtension' - See TypeInfo()}
+    'entities'    + '.a.bsp3'   // eBsp3_entities
+   ,'texinfo'     + '.b.bsp3'   // eBsp3_texinfo
+   ,'planes'      + '.c.bsp3'   // eBsp3_planes
+   ,'nodes'       + '.d.bsp3'   // eBsp3_nodes
+   ,'leafs'       + '.e.bsp3'   // eBsp3_leafs
+   ,'leaffaces'   + '.f.bsp3'   // eBsp3_leaffaces
+   ,'leafbrushes' + '.g.bsp3'   // eBsp3_leafbrushes
+   ,'models'      + '.h.bsp3'   // eBsp3_models
+   ,'brushes'     + '.i.bsp3'   // eBsp3_brushes
+   ,'brushsides'  + '.j.bsp3'   // eBsp3_brushsides
+   ,'vertexes'    + '.k.bsp3'   // eBsp3_vertexes
+   ,'meshvertexes'+ '.l.bsp3'   // eBsp3_meshvertexes
+   ,'effects'     + '.m.bsp3'   // eBsp3_effects
+   ,'faces'       + '.n.bsp3'   // eBsp3_faces
+   ,'lighting'    + '.o.bsp3'   // eBsp3_lighting
+   ,'lightvol'    + '.p.bsp3'   // eBsp3_lightvol
+   ,'visibility'  + '.q.bsp3'   // eBsp3_visibility
+   );
+
+type
+
+  QBsp3   = class(QFileObject)  protected class function TypeInfo: String; override; end;
+  QBsp3a  = class(QZText)       protected class function TypeInfo: String; override; end;
+
+class function QBsp3 .TypeInfo; begin TypeInfo:='.bsp3';                       end;
+class function QBsp3a.TypeInfo; begin TypeInfo:='.a.bsp3'; {'entities.a.bsp3'} end;
+
+{------------------------}
 
 procedure Q_HFile.ObjectState(var E: TEtatObjet);
 begin
@@ -841,6 +926,158 @@ end;
 
  {------------------------}
 
+procedure QBsp3FileHandler.LoadBsp(F: TStream; StreamSize: Integer);
+var
+ Header: TBsp3Header;
+ Origine: LongInt;
+ Q: QObject;
+ I: Integer;
+begin
+  if StreamSize < SizeOf(Header) then
+    Raise EError(5519);
+
+  Origine:=F.Position;
+  F.ReadBuffer(Header, SizeOf(Header));
+
+  for I:=0 to HEADER_LUMPS-1 do
+  begin
+    if Header.Entries[I].EntrySize < 0 then
+      Raise EErrorFmt(5509, [84]);
+
+    if Header.Entries[I].EntrySize = 0 then
+      Header.Entries[I].EntryPosition := SizeOf(Header)
+    else
+    begin
+      if Header.Entries[I].EntryPosition < SizeOf(Header) then
+        Raise EErrorFmt(5509, [85]);
+
+      if Header.Entries[I].EntryPosition+Header.Entries[I].EntrySize > StreamSize then
+      begin
+        Header.Entries[I].EntrySize := StreamSize - Header.Entries[I].EntryPosition;
+        GlobalWarning(LoadStr1(5641));
+      end;
+    end;
+
+    F.Position:=Origine + Header.Entries[I].EntryPosition;
+    Q:=OpenFileObjectData(F, Bsp3EntryNames[I], Header.Entries[I].EntrySize, FBsp);
+    FBsp.SubElements.Add(Q);
+    LoadedItem(rf_Default, F, Q, Header.Entries[I].EntrySize);
+  end;
+end;
+
+procedure QBsp3FileHandler.SaveBsp(Info: TInfoEnreg1);
+var
+  Header: TBsp3Header;
+  Origine, Fin: LongInt;
+  Zero: Integer;
+  Q: QObject;
+  I: Integer;
+begin
+  ProgressIndicatorStart(5450, HEADER_LUMPS);
+  try
+    Origine := Info.F.Position;
+    Info.F.WriteBuffer(Header, SizeOf(Header));  { updated later }
+
+    { write .bsp entries }
+    for I:=0 to HEADER_LUMPS-1 do
+    begin
+      Q := FBsp.BspEntry[I];
+      Header.Entries[I].EntryPosition := Info.F.Position;
+
+      Q.SaveFile1(Info);   { save in non-QuArK file format }
+
+      Header.Entries[I].EntrySize := Info.F.Position - Header.Entries[I].EntryPosition;
+      Dec(Header.Entries[I].EntryPosition, Origine);
+
+      Zero:=0;
+      Info.F.WriteBuffer(Zero, (-Header.Entries[I].EntrySize) and 3);  { align to 4 bytes }
+
+      ProgressIndicatorIncrement;
+    end;
+
+    { update header }
+    Fin := Info.F.Position;
+
+    Info.F.Position := Origine;
+    Header.Signature := cSignatureBspQ2;
+    Header.Version := cVersionBspQ3;
+    Info.F.WriteBuffer(Header, SizeOf(Header));
+
+    Info.F.Position := Fin;
+  finally
+    ProgressIndicatorStop;
+  end;
+end;
+
+function QBsp3FileHandler.GetEntryName(const EntryIndex: Integer) : String;
+begin
+  if (EntryIndex<0) or (EntryIndex>=HEADER_LUMPS) then
+    raise InternalE('Tried to retrieve name of invalid BSP lump!');
+  Result:=Bsp3EntryNames[EntryIndex];
+end;
+
+function QBsp3FileHandler.GetLumpEdges: Integer;
+begin
+  Result:=-1;
+end;
+
+function QBsp3FileHandler.GetLumpEntities: Integer;
+begin
+  Result:=LUMP_ENTITIES;
+end;
+
+function QBsp3FileHandler.GetLumpFaces: Integer;
+begin
+  Result:=LUMP_SURFACES;
+end;
+
+function QBsp3FileHandler.GetLumpLeafs: Integer;
+begin
+  Result:=LUMP_LEAFS;
+end;
+
+function QBsp3FileHandler.GetLumpLeafFaces: Integer;
+begin
+  Result:=LUMP_LEAFSURFACES;
+end;
+
+function QBsp3FileHandler.GetLumpModels: Integer;
+begin
+  Result:=LUMP_MODELS;
+end;
+
+function QBsp3FileHandler.GetLumpNodes: Integer;
+begin
+  Result:=LUMP_NODES;
+end;
+
+function QBsp3FileHandler.GetLumpPlanes: Integer;
+begin
+  Result:=LUMP_PLANES;
+end;
+
+function QBsp3FileHandler.GetLumpSurfEdges: Integer;
+begin
+  Result:=-1;
+end;
+
+function QBsp3FileHandler.GetLumpTexInfo: Integer;
+begin
+  Result:=LUMP_SHADERS;
+end;
+
+function QBsp3FileHandler.GetLumpTextures: Integer;
+begin
+  Result:=-1;
+end;
+
+function QBsp3FileHandler.GetLumpVertexes: Integer;
+begin
+  Result:=LUMP_DRAWVERTS;
+end;
+
+ {------------------------}
+
 initialization
   RegisterQObject(Q3Pak, 's');
   RegisterQObject(Q_CFile, 's');
@@ -848,4 +1085,7 @@ initialization
   RegisterQObject(QShader, 'a');
   RegisterQObject(QShaderStage, 'a');
   RegisterQObject(QShaderFile, 'p');
+
+  RegisterQObject(QBsp3,  ' ');
+  RegisterQObject(QBsp3a, 'a');
 end.

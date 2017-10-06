@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2015/05/23 16:10:26  danielpharos
+Unwrap texture coordinates on .map export. This allows .bsp compilers to merge texinfo structures, to avoid hitting the "too many surfaces" limit too soon.
+
 Revision 1.35  2015/05/19 17:30:29  danielpharos
 Added some logging for BSP file format limits.
 
@@ -133,72 +136,80 @@ interface
 uses Windows, SysUtils, Classes, QkObjects, QkMapObjects, QkBsp,
      qmath, QkFileObjects;
 
-const
-  hullQ1 =     '1';
-  hullHx =     '2';
-  hullQ2 =     'A';
-  hullQ3 =     'a';
-
+     const
+     MAX_MAP_HULLS = 4; //8 FOR HEXEN2!!!
 
 type
- PHull = ^THull;
+ TBytePair = record
+              first, second: Byte;
+             end;
+ TSmallIntPair = record
+                  first, second: SmallInt;
+                 end;
+ TIntegerPair = record
+                 first, second : Integer;
+                end;
+ TBoundBox = record
+              Min, Max: vec3_t;
+             end;
+
+ PHull = ^THull; //@@@RENAME: TQ1Hull AND THE OTHERS TOO
  THull = record
           Bound: TBoundBox;
           Origin: vec3_t;
-          Node_id0, Node_id1, Node_id2, Node_id3: LongInt;
-          NumLeafs, Face_id, Face_num: LongInt;
+          Node_id: array[0..MAX_MAP_HULLS-1] of Integer; //4@@@
+          NumLeafs, Face_id, Face_num: Integer;
          end;
  PHullH2 = ^THullH2;
  THullH2 = record
             Bound: TBoundBox;
             Origin: vec3_t;
-            Node_id0, Node_id1, Node_id2, Node_id3: LongInt;
-            Bidon0, Bidon1, Bidon2, Bidon3: LongInt;
-            NumLeafs, Face_id, Face_num: LongInt;
+            Node_id: array[0..8-1] of Integer; //@@@MAX_MAP_HULLS
+            NumLeafs, Face_id, Face_num: Integer;
            end;
  PHullQ2 = ^THullQ2;
  THullQ2 = record
             Bound: TBoundBox;
             Origin: vec3_t;
-            HeadNode, Face_id, Face_num: LongInt;
+            HeadNode, Face_id, Face_num: Integer;
            end;
  PHullQ3 = ^THullQ3;
  THullQ3 = record
             Bound: TBoundBox;
-           { Origin: vec3_t;
-           { HeadNode, Face_id, Face_num: LongInt; }
             Face_id, Face_num: Integer;
             Brush_id, Brush_num: Integer;
            end;
 
- PbSurface = ^TbSurface;
+ PbSurface = ^TbSurface; //@@@Rename: Q1!
  TbSurface = record
-              Plane_id, Side: Word;
-              LEdge_id: LongInt;
-              LEdge_num, TexInfo_id: Word;
-              LightStyles: array[0..3] of Char;
-              LightMap: LongInt;
+              Plane_id, Side: SmallInt;
+              LEdge_id: Integer;
+              LEdge_num, TexInfo_id: SmallInt;
+              LightStyles: array[0..3] of Byte; //@@@ MAXLIGHTMAPS
+              LightMap: Integer;
              end;
 
  PbSOFSurface = ^TbSOFSurface;
  TbSOFSurface = record
-              Plane_id, Side: Word;
-              LEdge_id: LongInt;
-              LEdge_num, TexInfo_id: Word;
-              LightStyles: array[0..3] of Char;
-              LightMap: LongInt;
-              Unknown: array [0..23] of Byte { actually nothing after
-                TexInfo_id is known }
+              Plane_id: Word;
+              Side: SmallInt;
+              LEdge_id: Integer;
+              LEdge_num, TexInfo_id: SmallInt;
+              Region_id: SmallInt;
+              RegionFace_id: Integer;
+              RegionFace_num: SmallInt;
+              LightStyles: array[0..3] of Byte; //@MAXLIGHTMAPS = 4;
+	            Lightofs: Integer;
+              Lm_Size, Lm_Start : TBytePair;
+              Texturemins: TSmallIntPair;
+              Extents: TSmallIntPair;
              end;
-
-
-
 
  PbQ3Surface = ^TbQ3Surface;
  TbQ3Surface = record
                 TexInfo_id: Integer;
                 Effect_id: Integer;
-                Face_Type: Integer; { 1=polygon, 2=patch, 3=mesh, 4=billboard }
+                Face_Type: Integer; { 0=bad, 1=planer (polygon), 2=patch, 3=mesh (triangle soup), 4=billboard (flare) }
                 Vertex_id, Vertex_num, Meshvert_id, Meshvert_num : Integer;
                 Lightmap_id : Integer;
                 Lm_Start, Lm_Size : TIntegerPair;
@@ -206,24 +217,6 @@ type
                 Normal: vec3_t;
                 PatchDim: TIntegerPair;
                end;
-   { texture item structure from Kekoa Proudfoot Unofficial Quake3 Map
-       Specs:
-      int texture  Texture index.
-      int effect  Index into lump 12 (Effects), or -1.
-      int type  Face type. 1=polygon, 2=patch, 3=mesh, 4=billboard
-      int vertex  Index of first vertex.
-      int n_vertexes  Number of vertices.
-      int meshvert  Index of first meshvert.
-      int n_meshverts  Number of meshverts.
-      int lm_index  Lightmap index.
-      int[2] lm_start  Corner of this face's lightmap image in lightmap.
-      int[2] lm_size  Size of this face's lightmap image in lightmap.
-      float[3] lm_origin  World space origin of lightmap.
-      float[2][3] lm_vecs  World space lightmap s and t unit vectors.
-      float[3] normal  Surface normal.
-      int[2] size  Patch dimensions.
-
-  }
 
  TLEdge = LongInt;
  PLEdge = ^TLEdge;
@@ -239,7 +232,7 @@ type
              miptex: Integer;
              flags: Integer;
             end;
- PTexInfoQ2 = ^TTexInfoQ2;
+ PTexInfoQ2 = ^TTexInfoQ2; //@Also used by SOF!
  TTexInfoQ2 = record
                vecs: TTexInfoVecs;             // [s/t][xyz offset]
                flags: Integer;                 // miptex flags + overrides
@@ -248,9 +241,12 @@ type
                nexttexinfo: Integer;           // for animations, -1 = end of chain
               end;
 
+const
+ MAX_QPATH = 64; //Q3@@@
+type
  PTexInfoQ3 = ^ TTexInfoQ3;
  TTexInfoQ3 = record
-                texture: array[0..62] of Byte;
+                texture: array[0..MAX_QPATH-1] of Byte;
                 flags: Integer;
                 content: Integer;
               end;
@@ -263,7 +259,7 @@ type
               NbFaces, FirstFace: Integer;
               SurfaceList: PChar;
             public
-              constructor CreateHull(nBsp: QBSP; Index: Integer; nParent: QObject);
+              constructor Create(nBsp: QBSP; Index: Integer; nParent: QObject);
               destructor Destroy; override;
               class function TypeInfo: String; override;
               procedure ObjectState(var E: TEtatObjet); override;
@@ -286,15 +282,6 @@ uses QkExceptions, QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D,
      QkObjectClassList, Dialogs, Travail, Logging;
 
  {------------------------}
-
-
-function GetHullType(Game: Char) : Char;
-begin
-   if Game=mjHexen then
-       Result:=mjHexen
-   else
-       Result:=bspType(Game)
-end;
 
 function CheckQ1Hulls(Hulls: PHull; Size, FaceCount: Integer) : Boolean;
 var
@@ -354,7 +341,7 @@ end;
 
  {------------------------}
 
-constructor TBSPHull.CreateHull(nBsp: QBSP; Index: Integer; nParent: QObject);
+constructor TBSPHull.Create(nBsp: QBSP; Index: Integer; nParent: QObject);
 var
  HullType: Char;
  Delta, Size1: Integer;
@@ -405,8 +392,8 @@ begin
  try
   InvFaces:=0;
   cTexInfo:=0;
-  HullType:=GetHullType(FBsp.NeedObjectGameCode);
-  q12surf:=BspSurfaceType(HullType)=bspSurfQ12;
+  HullType:=FBsp.FileHandler.GetHullType(FBsp.NeedObjectGameCode);
+  q12surf:=FBsp.FileHandler.GetSurfaceType(HullType)=bspSurfQ12;
   miptex:=SetupSubSet(ssGames, GetGameName(FBsp.NeedObjectGameCode)).Specifics.Values['UsesMipTex']<>'';
   case HullType of
    HullQ1:  Size1:=SizeOf(THull);
@@ -415,7 +402,7 @@ begin
    HullQ3:  Size1:=SizeOf(THullQ3);
   else Exit;
   end;
-  I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
+  I:=FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpModels(), P);
   Delta:=Size1*Succ(Index);
   if I<Delta then
    Raise EErrorFmt(5635, [1]);
@@ -450,7 +437,7 @@ begin
    TextureList:=Nil
   else
    begin
-    TextureList:=FBsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
+    TextureList:=FBsp.BspEntry[FBsp.FileHandler.GetLumpTextures()] as QTextureList;
     TextureList.Acces;
    end;
   if q12surf then
@@ -459,23 +446,23 @@ begin
       SurfaceSize:=SizeOf(TbSOFSurface)
     else
       SurfaceSize:=SizeOf(TbSurface);
-    {J:=  FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));}
-    if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
+    {J:=  FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpFaces(), PChar(Faces));}
+    if FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpFaces(), PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
        Raise EErrorFmt(5635, [2]);
     Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
-    cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3,  LEdges)   div SizeOf(TLEdge);
-    cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     NoBsp3,      Edges)    div SizeOf(TEdge);
-    Log(LOG_INFO, 'Loading BSP file: Got %d list edges!', [cLEdges]); //FIXME: Dictionary!
+    cLEdges  :=FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpSurfEdges(), LEdges) div SizeOf(TLEdge);
+    cEdges   :=FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpEdges(), Edges) div SizeOf(TEdge);
+    Log(LOG_INFO, 'Loading BSP file: Got %d surf edges!', [cLEdges]); //FIXME: Dictionary!
     Log(LOG_INFO, 'Loading BSP file: Got %d edges!', [cEdges]); //FIXME: Dictionary!
   end else
   begin
     SurfaceSize:=Sizeof(TbQ3Surface);
-    if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Q3Faces)) < (FirstFace+NbFaces)*SurfaceSize then
+    if FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpFaces(), PChar(Q3Faces)) < (FirstFace+NbFaces)*SurfaceSize then
       Raise EErrorFmt(5635, [2]);
     Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
   end;
-  cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
-  { cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
+  cTexInfo :=FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpTexInfo(), TexInfo) div cTexInfo;
+  { cPlanes  :=FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpPlanes(), Planes) div SizeOf(TQ1Plane);
   { FBsp.FVertices, VertexCount are previously computed
     by FBsp.GetStructure }
 
@@ -515,7 +502,7 @@ begin
       end
       else
         Inc(FBsp.NonFaces);
-        { we'll be wanting to do something smarter with patches etc }
+        {FIXME: we'll be wanting to do something smarter with patches etc}
     end;
   end;
   GetMem(SurfaceList, Size1);
@@ -530,7 +517,7 @@ begin
     if q12surf then
     begin
       Inc(PChar(Faces), SurfaceSize);
-      PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge)
+      PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge);
     end
     else
     begin
@@ -547,7 +534,7 @@ begin
       begin
         Inc(InvFaces); LastError:='Err Plane_id'; Continue;
       end;
-      with PbPlane(Planes + Faces^.Plane_id * SizeOf(TbPlane))^ do
+      with PQ1Plane(Planes + Faces^.Plane_id * SizeOf(TQ1Plane))^ do
       begin
         NN.X:=normal[0];
         NN.Y:=normal[1];
@@ -822,12 +809,12 @@ begin
    Exit
  end;
 
- if BspSurfaceType(FBsp.NeedObjectGameCode)=bspSurfQ12 then
+ if FBsp.FileHandler.GetSurfaceType(FBsp.NeedObjectGameCode)=bspSurfQ12 then
  begin
-   FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
+   FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpFaces(), PChar(Faces));
    Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
-   FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3, LEdges);
-   FBsp.GetBspEntryData(eEdges, lump_edges, NoBsp3, Edges);
+   FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpSurfEdges(), LEdges);
+   FBsp.GetBspEntryData(FBsp.FileHandler.GetLumpEdges(), Edges);
    Vertices:=PChar(FBsp.FVertices);
  end
  else

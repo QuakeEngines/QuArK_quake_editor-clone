@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.80  2017/03/05 12:45:56  danielpharos
+Fixed a typo in a comment.
+
 Revision 1.79  2012/12/29 13:41:44  danielpharos
 Fixed some log messages being empty.
 
@@ -1380,7 +1383,7 @@ begin
           Bsp:=NeedGameFileBase(Arg, ConcatPaths([GameMapPath, S+'.bsp']), '') as QBsp;
           Bsp.AddRef(+1);
           try
-            TexList:=Bsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
+            TexList:=Bsp.BspEntry[Bsp.FileHandler.GetLumpTextures()] as QTextureList;
             TexList.AddRef(+1);
             try
               TexList.Acces;
