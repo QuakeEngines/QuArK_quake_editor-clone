@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2015/08/21 18:23:55  danielpharos
+Added mousewheel scrolling to texture browser, and now using system parameter for scrollspeed in treeview.
+
 Revision 1.39  2012/11/24 10:37:19  danielpharos
 Final fix for reading in unknown stuff from BSP files.
 
@@ -323,7 +326,7 @@ var
  Prefix: String;
 begin
   case ReadFormat of
-  1: { as stand-alone file }
+  rf_Default: { as stand-alone file }
     begin
       if FSize<SizeOf(Header) then
         Raise EError(5519);
@@ -425,7 +428,7 @@ var
  Wad3, HalfLifeWad3: Boolean;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Origine:=F.Position;
       F.WriteBuffer(Header, SizeOf(Header));  { updated later }
       Header.Signature:=SignatureWad2;
@@ -569,7 +572,7 @@ var
  I: Integer;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if FSize<SizeOf(Count) then
        {Raise EError(5519);}Exit;   { assume an empty list }
       Origine:=F.Position;
@@ -665,7 +668,7 @@ var
  TexFile: QTextureFile;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Origine:=F.Position;
       Count:=SubElements.Count;
       F.WriteBuffer(Count, SizeOf(Count));

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2015/02/16 19:19:07  danielpharos
+Made some class members private.
+
 Revision 1.15  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -216,7 +219,7 @@ var
  Q: QUnknown;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Q:=QUnknown.Create('Data', Self);
       SubElements.Add(Q);
       LoadedItem(rf_Default, F, Q, FSize);  { delayed read }
@@ -231,7 +234,7 @@ var
  Taille: Integer;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Taille:=GetReadStream(Src); try
       if Taille=0 then
        Raise EError(5611);

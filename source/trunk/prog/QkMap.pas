@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.123  2017/10/06 14:13:39  danielpharos
+Big reworking to push game-specific BSP loading into the game files.
+
 Revision 1.122  2016/06/17 19:25:42  danielpharos
 Fixed some confusing whitespacing.
 
@@ -3080,7 +3083,7 @@ var
  Source: String;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       SetLength(Source, FSize);
       F.ReadBuffer(Source[1], FSize);
       Racine:=TTreeMapBrush.Create('', Self);

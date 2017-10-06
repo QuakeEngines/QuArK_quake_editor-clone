@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2009/07/19 18:54:27  danielpharos
+Moved PByte, PInteger and sLineBreak to ExtraFunctionality.
+
 Revision 1.6  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -109,7 +112,7 @@ var
   DestImg, DestAlpha: PChar;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if FSize<=SizeOf(Header) then
        Raise EError(5519);
       F.ReadBuffer(Header, SizeOf(Header));
@@ -217,7 +220,7 @@ var
   I, J: Integer;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       PSD:=Description;
       try
         Header.width:=PSD.size.x;

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.7  2009/02/21 17:10:12  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -169,7 +172,7 @@ var
 
 begin
   case ReadFormat of
-    1:
+    rf_Default:
     begin  { as stand-alone file }
       Flags:=CustomParams;
 
@@ -286,7 +289,7 @@ var
 begin
   with Info do
     case Format of
-      1:
+      rf_Default:
       begin  { as stand-alone file }
         Header:=BuildQ2Header;
         F.WriteBuffer(Header, SizeOf(Header));

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2010/04/02 16:53:01  danielpharos
+Fixed a typo.
+
 Revision 1.3  2009/07/20 20:43:31  danielpharos
 Updated website link.
 
@@ -96,7 +99,7 @@ procedure QIwi.LoadFile(F: TStream; FSize: Integer);
 begin
   Log(LOG_VERBOSE,'Loading IWI file: %s',[self.name]);
   case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LoadFileDevIL(F, FSize)
   end;
   else
@@ -109,7 +112,7 @@ begin
  Log(LOG_VERBOSE,'Saving IWI file: %s',[self.name]);
  with Info do
   case Format of
-  1:  begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     raise exception.create('Cannot save IWI files (yet)');
     //FIXME
 

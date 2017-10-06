@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/06/15 18:04:48  danielpharos
+Attempt to fix .qkl files being saved with the wrong extension.
+
 Revision 1.27  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -921,7 +924,7 @@ var
 
 begin
   case ReadFormat of
-    1: begin { as stand-alone file }
+    rf_Default: begin { as stand-alone file }
         if FSize < SizeOf(mdl) then
           raise EError(5519);
         F.ReadBuffer(mdl, SizeOf(mdl));
@@ -1170,7 +1173,7 @@ var
 begin
   with Info do begin
     case Format of
-      1: begin
+      rf_Default: begin
           Root := Self.GetRoot;
           if Root.CurrentComponent = nil then
             Root.CurrentComponent := Root.GetComponentFromIndex(0);

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2017/08/17 15:49:52  danielpharos
+Big cleanup of the code, fixing several memory leaks on error paths.
+
 Revision 1.32  2010/10/16 20:43:26  danielpharos
 Fixed a memory leak during certain failures to save zip files.
 
@@ -402,7 +405,7 @@ var
 begin
   with Info do begin
     case Format of
-      1: begin  { as stand-alone file }
+      rf_Default: begin  { as stand-alone file }
         Fin:=0;
         Origine:=F.Position;
         { write .pak entries }
@@ -450,7 +453,7 @@ begin
   try
     err:=UnZipFile(Ref^.Self, mem, Ref^.Position);
     if err<>0 then
-      raise Exception.CreateFmt('Error decompressing file (%d)', [err]);
+      raise Exception.CreateFmt('Error decompressing file (%d)', [err]); //FIXME: Move to DICT!
     Result:=mem.Size;
     mem.Position:=0;
     S:=mem;
@@ -476,7 +479,7 @@ var
   eocd_found: boolean;
 begin
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       Dossier:=Self;
       CheminPrec:='';
       org:=f.position;

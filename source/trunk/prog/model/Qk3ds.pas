@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.10  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -317,7 +320,7 @@ var
   Root: QModelRoot;
 begin
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       Root:=Loaded_Root;
       BeginOfFile:=F.Position;
       ObjectGameCode:=mjAny;
@@ -337,7 +340,7 @@ procedure Q3DSFile.SaveFile(Info: TInfoEnreg1);
 begin
   with Info do begin
     case Format of
-      1: begin  { write the .3ds file }
+      rf_Default: begin  { write the .3ds file }
         raise EQObjectSavingNotSupported.Create('Saving 3DS files is currently not supported.');
       end;
       else

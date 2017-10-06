@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2010/04/16 21:18:45  danielpharos
+Move some version-stuff about. quarkpy now also checks the minor version number.
+
 Revision 1.28  2009/07/15 10:38:00  danielpharos
 Updated website link.
 
@@ -978,7 +981,7 @@ var
 begin
  Log(LOG_VERBOSE,'load vmf file %s',[self.name]);
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       SetLength(Source, FSize);
       F.ReadBuffer(Source[1], FSize);
       Root:=TTreeMapBrush.Create('', Self);
@@ -1007,7 +1010,7 @@ var
  MapSaveSettings : TMapSaveSettings;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Root:=SubElements.FindName(Specifics.Values['Root']);
       if (Root=Nil) or not (Root is TTreeMapBrush) then
        Raise EError(5558);

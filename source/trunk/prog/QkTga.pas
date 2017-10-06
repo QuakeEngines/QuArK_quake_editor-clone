@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.22  2009/03/19 09:50:40  danielpharos
 Fix error when trying to save TGA with DevIL.
 
@@ -183,7 +186,7 @@ var
 begin
   Log(LOG_VERBOSE,'Loading TGA file: %s',[self.name]);;
   case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'TGA').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
       LoadFileDevIL(F, FSize)
@@ -204,14 +207,14 @@ begin
  Log(LOG_VERBOSE,'Saving TGA file: %s',[self.name]);
  with Info do
   case Format of
-  1:  begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'TGA').Specifics.Values['SaveLibrary'];
     if LibraryToUse='DevIL' then
       SaveFileDevIL(Info)
     else if LibraryToUse='FreeImage' then
       SaveFileFreeImage(Info)
     else
-      LogAndRaiseError('Unable to save TGA file. No valid saving library selected.');
+      LogAndRaiseError('Unable to save TGA file. No valid saving library selected.'); //FIXME: Move to dict!
   end
   else
     inherited;

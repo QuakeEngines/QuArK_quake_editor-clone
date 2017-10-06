@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.17  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -169,7 +172,7 @@ var
  P: PChar;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if FSize<=SizeOf(Header) then
        Raise EError(5519);
       Base:=F.Position;
@@ -252,7 +255,7 @@ var
  Cl: array[0..2] of TDouble;
  begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       FillChar(Header, SizeOf(Header), 0);
       StrPLCopy(Header.Name, GetTexName, SizeOf(Header.Name));
       if not GetFloatsSpec('Size', V) then

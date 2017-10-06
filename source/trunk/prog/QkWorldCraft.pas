@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2016/06/12 12:59:58  danielpharos
+Moved a string to the dictionary.
+
 Revision 1.5  2016/01/02 20:01:10  danielpharos
 Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
 
@@ -424,7 +427,7 @@ var
 
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Racine:=TTreeMapBrush.Create('', Self);
       Racine.AddRef(+1);
       try
@@ -514,7 +517,7 @@ end;
 procedure QRmfMapFile.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       raise EQObjectSavingNotSupported.Create('Saving RMF files is currently not supported.');
      end;
  else

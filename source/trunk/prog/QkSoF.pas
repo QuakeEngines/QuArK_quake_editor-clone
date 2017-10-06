@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2016/01/03 08:02:21  danielpharos
+Many fixes for .m32 texture saving. It will now produce something that at least has a chance of working...
+
 Revision 1.19  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -152,7 +155,7 @@ var
   SourceAlpha: PByte;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     FillChar(m32header, sizeOf(m32header), 0);
     PSD.Init;
     OldPSD:=Description;
@@ -303,7 +306,7 @@ var
   V: array[1..2] of Single;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
      org:=F.Position;
      F.readbuffer(m32header, sizeof(m32header));
      if m32header.Id <> MIP32_VERSION then

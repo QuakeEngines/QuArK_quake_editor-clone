@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.21  2011/02/11 19:07:53  cdunde
 Fixed upside down texture display.
 
@@ -178,7 +181,7 @@ var
  Data: String;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if FSize<=SizeOf(Header) then
        Raise EError(5519);
       Base:=F.Position;
@@ -227,7 +230,7 @@ var
  S: String;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Q2:=BuildWalFileHeader;
       FillChar(Header, SizeOf(Header), 0);
       Header.Version:=MIP_VERSION;
@@ -304,7 +307,7 @@ var
  CTris: PComponentTris;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Origine:=F.Position;
       FillChar(mdl, SizeOf(mdl), 0);
       Delta:=0;
@@ -376,7 +379,7 @@ begin
         end;}
      end;
 
-  1: begin  { write the .fm file }
+  rf_Default: begin  { write the .fm file }
       raise EQObjectSavingNotSupported.Create('Saving Heretic II models is currently not supported.');
      end;
  else inherited;

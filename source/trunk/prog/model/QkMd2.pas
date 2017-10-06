@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2010/06/15 18:04:49  danielpharos
+Attempt to fix .qkl files being saved with the wrong extension.
+
 Revision 1.14  2009/07/15 10:38:06  danielpharos
 Updated website link.
 
@@ -154,7 +157,7 @@ var
   Origine: LongInt;
 begin
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       if FSize<SizeOf(mdl) then
         Raise EError(5519);
       Origine:=F.Position;
@@ -538,7 +541,7 @@ begin
      end;
     end;
 
-    1: begin  { write the .md2 file and skin .pcx file(s) }
+    rf_Default: begin  { write the .md2 file and skin .pcx file(s) }
 
       if Info.TempObject=Nil then
        Root:=Saving_Root

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2013/01/17 03:22:32  cdunde
+Removed game support for Xonotic due to improper texture paths.
+
 Revision 1.49  2012/12/18 02:19:23  cdunde
 Setup a new game support for Xonotic with .md3 model displaying.
 
@@ -866,7 +869,7 @@ var
   misc: QMiscGroup;
 begin
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       if Taille<SizeOf(TMD3Header) then
         Raise EError(5519);
       org:=f.position;
@@ -1016,7 +1019,7 @@ begin
        Components.free;
      end;
    end;
-   1: begin  { write the .md3 file }
+   rf_Default: begin  { write the .md3 file }
      if Info.TempObject=Nil then
        Root:=Saving_Root
      else

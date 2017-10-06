@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.21  2009/03/16 08:47:21  danielpharos
 Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
 
@@ -175,7 +178,7 @@ var
 begin
   Log(LOG_VERBOSE,'Loading PNG file: %s',[self.name]);;
   case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'PNG').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
       LoadFileDevIL(F, FSize)
@@ -196,7 +199,7 @@ begin
  Log(LOG_VERBOSE,'Saving PNG file: %s',[self.name]);
  with Info do
   case Format of
-  1:  begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'PNG').Specifics.Values['SaveLibrary'];
     if LibraryToUse='DevIL' then
       SaveFileDevIL(Info)

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2010/12/11 22:29:32  danielpharos
+Added CoD2 bsp file type.
+
 Revision 1.30  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -283,7 +286,7 @@ var
  Q: QObject;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if FSize<SizeOf(TIntroPak) then
        Raise EError(5519);
       Origine:=F.Position;
@@ -488,7 +491,7 @@ var
  Origine, Fin: LongInt;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
        { cannot use AccesCopying because the .pak folder hierarchy is not stored directly in the .pak }
       Origine:=F.Position;
       Header.Intro.Signature:=0;

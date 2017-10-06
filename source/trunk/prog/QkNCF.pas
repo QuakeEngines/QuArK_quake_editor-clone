@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2017/05/05 17:25:14  danielpharos
+Removed left-overs from the steamaccess-protocol code.
+
 Revision 1.3  2016/01/02 20:01:10  danielpharos
 Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
 
@@ -202,7 +205,7 @@ var
 begin
   Log(LOG_VERBOSE,'Loading NCF file: %s',[self.name]);
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
          if not HLLoaded then
          begin
            if not LoadHLLib then
@@ -250,7 +253,7 @@ procedure QNCFFolder.SaveFile(Info: TInfoEnreg1);
 begin
  Log(LOG_VERBOSE,'Saving NCF file: %s',[self.name]);
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if not HLLoaded then
       begin
         if not LoadHLLib then

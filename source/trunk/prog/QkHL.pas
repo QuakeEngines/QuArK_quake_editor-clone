@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.15  2009/03/16 08:42:04  danielpharos
 Small clean-up.
 
@@ -176,7 +179,7 @@ var
 *)
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       SaveAsHalfLife(F);
 (*
       SaveAsQuake1(F);

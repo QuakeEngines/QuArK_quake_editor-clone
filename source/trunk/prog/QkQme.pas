@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.19  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -702,7 +705,7 @@ var
  I: Integer;
 begin
  case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       if FSize<SizeOf(Intro) then
        Raise EError(5519);
       Origine:=F.Position;
@@ -729,7 +732,7 @@ end;
 procedure QQme.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       Raise EQObjectSavingNotSupported.Create(LoadStr1(5554));   { not implemented }
      end;
  else inherited;

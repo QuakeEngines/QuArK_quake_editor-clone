@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2010/03/09 21:44:42  danielpharos
+Use ConcatPaths.
+
 Revision 1.27  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -205,7 +208,7 @@ var
 begin
   Log(LOG_VERBOSE,'Loading DDS file: %s',[self.name]);;
   case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
       LoadFileDevIL(F, FSize)
@@ -261,7 +264,7 @@ begin
  Log(LOG_VERBOSE,'Saving DDS file: %s',[self.name]);
  with Info do
   case Format of
-  1:
+  rf_Default:
   begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveLibrary'];
     if LibraryToUse='DevIL' then

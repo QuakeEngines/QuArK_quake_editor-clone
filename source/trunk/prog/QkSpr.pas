@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2016/01/02 20:01:10  danielpharos
+Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
+
 Revision 1.23  2015/12/06 11:17:48  danielpharos
 Fixed an unsafe typecast warning.
 
@@ -200,7 +203,7 @@ var
   spr: QSprite;
 begin
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       ID_SPRHEADER:=(ord('P') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
       org:=f.Position;
       f.ReadBuffer(head,4);
@@ -543,7 +546,7 @@ var
 begin
   with Info do begin
     case Format of
-      1: begin  { as stand-alone file }
+      rf_Default: begin  { as stand-alone file }
         ID_SP2Header:=(ord('2') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
         f.WriteBuffer(ID_SP2HEADER,4);
         ver:=2;
@@ -575,14 +578,14 @@ var
 begin
   with Info do
     case Format of
-      1: begin  { as stand-alone file }
+      rf_Default: begin  { as stand-alone file }
         fg:=ObjectGameCode;
         if fg=mjQuake then
           WriteQ1Spr(Info.F)
         else if fg=mjHalfLife then
           WriteHLSpr(Info.F)
         else
-          raise Exception.CreateFmt('Invalid format (Only Quake 1 & Half-Life) ~ (%s)',[fg]);
+          raise Exception.CreateFmt('Invalid format (Only Quake 1 & Half-Life) ~ (%s)',[fg]); //FIXME: Move to dict!
        end;
     else
       inherited;

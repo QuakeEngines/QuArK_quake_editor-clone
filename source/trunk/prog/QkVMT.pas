@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2017/03/05 11:26:35  danielpharos
+Changes to get VMT files working again under the new Steam file layout.
+
 Revision 1.27  2011/09/05 17:44:04  danielpharos
 Fixed a variable type and added two safety-checks.
 
@@ -396,7 +399,7 @@ var
 begin
   Log(LOG_VERBOSE,'load vmt %s',[self.name]);;
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       if not VMTLoaded then
       begin
         if not LoadVTFLib then
@@ -507,7 +510,7 @@ var
 begin
  Log(LOG_VERBOSE,'save vmt %s',[self.name]);
  with Info do case Format of
-  1:
+  rf_Default:
   begin  { as stand-alone file }
 
     if not VMTLoaded then

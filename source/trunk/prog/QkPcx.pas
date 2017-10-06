@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2009/07/15 10:38:01  danielpharos
+Updated website link.
+
 Revision 1.22  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -188,7 +191,7 @@ var
 begin
   Log(LOG_VERBOSE,'Loading PCX file: %s',[self.name]);
   case ReadFormat of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'PCX').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
       LoadFileDevIL(F, FSize)
@@ -315,7 +318,7 @@ var
  OutBuffer: String;
 begin
  with Info do case Format of
-  1: begin  { as stand-alone file }
+  rf_Default: begin  { as stand-alone file }
       NotTrueColor;  { FIXME }
       FillChar(Header, SizeOf(Header), 0);
       Header.Signature:=pcxSignature;

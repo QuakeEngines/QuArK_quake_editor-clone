@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2010/10/16 21:47:40  danielpharos
+Reworked GCF file loading. HLLib now directly called. Updated to HLLib 2.3.0. Fixed JPG-library setting being used in VTF file saving.
+
 Revision 1.48  2010/04/16 19:08:17  danielpharos
 Added default value for ForceUnload argument.
 
@@ -307,7 +310,7 @@ var
 begin
   Log(LOG_VERBOSE,'Loading VTF file: %s',[self.name]);
   case ReadFormat of
-    1: begin  { as stand-alone file }
+    rf_Default: begin  { as stand-alone file }
       LibraryToUse:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['LoadLibrary'];
       if LibraryToUse='DevIL' then
         LoadFileDevIL(F, FSize)
@@ -475,7 +478,7 @@ begin
  Log(LOG_VERBOSE,'Saving VTF file: %s',[self.name]);
  with Info do
   case Format of
-  1:
+  rf_Default:
   begin  { as stand-alone file }
     LibraryToUse:=SetupSubSet(ssFiles, 'VTF').Specifics.Values['LoadLibrary'];
     if LibraryToUse='DevIL' then
