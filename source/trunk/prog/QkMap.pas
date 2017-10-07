@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.124  2017/10/06 14:44:47  danielpharos
+Replaced magic constant.
+
 Revision 1.123  2017/10/06 14:13:39  danielpharos
 Big reworking to push game-specific BSP loading into the game files.
 
@@ -1545,19 +1548,19 @@ expected one.
  begin
    //FIXME: We need to do this right. At the moment, we're just dumping the data!
 
-   //Lightmap name...
+   //Lightmap name
    ReadSymbol(sStringToken);
-   //Param 1
+   //Lightmap size X
    ReadSymbol(sNumValueToken);
-   //Param 2
+   //Lightmap size Y
    ReadSymbol(sNumValueToken);
-   //Param 3
+   //Lightmap shift X
    ReadSymbol(sNumValueToken);
-   //Param 4
+   //Lightmap shift Y
    ReadSymbol(sNumValueToken);
-   //Param 5
+   //Lightmap rotate 1
    ReadSymbol(sNumValueToken);
-   //Param 6
+   //Lightmap rotate 2
    ReadSymbol(sNumValueToken);
  end;
 
@@ -1994,8 +1997,11 @@ expected one.
         NumericValue1:=Round(NumericValue);
         ReadSymbol(sNumValueToken);
         if SymbolType<>sNumValueToken then
-         Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
-         //Could also be bad Call of Duty 2 file (when the 'iwmap 4' header is missing)
+         begin
+          Result:=mjHexen;
+          P.Specifics.Values['H2_light']:=IntToStr(Round(NumericValue));
+          //FIXME: Could also be bad Call of Duty 2 file (when the 'iwmap 4' header is missing)
+         end
         else
          begin  { Quake 2, Heretic2 and Mohaa : read the three fields }
           ContentsFlags:=NumericValue1;
@@ -4068,14 +4074,14 @@ begin
        S:=S+IntToStr(R)
       else
        S:=S+FloatToStrF(Z, ffFixed, 20, DecimalPlaces);
- 
+
       if MapSaveSettings.MapFormat=HL2Type then
         S:=S+') '
       else
         S:=S+' ) ';
- 
+
      end;
- 
+
    if MapSaveSettings.MapFormat=HL2Type then
      S[Length(S)]:='"'; //Change last space into quote
   end
@@ -4089,8 +4095,8 @@ begin
    S:=S+FloatToStrF(-F.Dist, ffFixed, 20, DecimalPlaces);
    S:=S+' ) ';
   end;
- 
- {start writing out a texture coordinates}
+
+ {start writing out texture coordinates}
  if MapSaveSettings.MapFormat=BPType then
   with F do
    begin
@@ -4101,30 +4107,30 @@ begin
     write3vect(PY,S);
     S:=S+') ';
    end;
- 
- 
+
+
  {start writing out a texture name and tx coordinates}
  with F do
   begin
- 
+
    {texture name}
    TextureName:=NomTex;
    if MapSaveSettings.MapFormat=HL2Type then
      S:= S+#13#10'    "material" "';
- 
+
    if MapSaveSettings.MapVersion>1 then
      TextureName:='"'+ConcatPaths([GameTexturesPath, TextureName])+'"';
- 
+
    if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
      TextureName:=UpperCase(TextureName);
    if not (SetupGameSet.Specifics.Values['TextureNameDontReverseSlashes']<>'') then
      TextureName:=ReverseSlashes(TextureName);
- 
+
    S:=S+TextureName;
- 
+
    if MapSaveSettings.MapFormat=HL2Type then
      S:= S+'"';
- 
+
    {texture coordinates}
    case MapSaveSettings.MapFormat of
     V220Type:
@@ -4133,14 +4139,14 @@ begin
       Valve220MapParams(MapSaveSettings,True,Normale, F, S);
     CoD2Type:
       CoD2MapParams(MapSaveSettings,Normale, F, S);
- 
+
     else {case}
       if not (MapSaveSettings.MapFormat=BPType) then
       begin
         SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
- 
+
         ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
- 
+
         if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
         begin
           //DanielPharos: Normalize the texture shift. If we don't do this,
@@ -4164,7 +4170,7 @@ begin
               Params[2]:=Params[2] + Size.Y;
           end;
         end;
- 
+
         for I:=1 to 2 do
           S:=S+' '+IntToStr(Round(Params[I]));
         for I:=3 to 5 do
@@ -4180,7 +4186,12 @@ begin
  end; {with f}
 
  if MapSaveSettings.GameCode=mjHexen then
-   S:=S+' -1'
+  begin
+   if (F.FParent<>nil) and (F.FParent is TPolyhedron) and (TPolyhedron(F.FParent).Specifics.Values['H2_light']<>'') then
+    S:=S+' '+TPolyhedron(F.FParent).Specifics.Values['H2_light']
+   else
+    S:=S+' -1';
+  end
  else
  if MapSaveSettings.GameCode=mjSin then
  { tiglari: Sin/KP/SOF/Q2 code below manages the content/
