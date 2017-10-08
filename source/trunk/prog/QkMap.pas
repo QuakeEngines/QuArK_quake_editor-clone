@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.125  2017/10/07 14:35:10  danielpharos
+Start handling Hexen 2 brush light values.
+
 Revision 1.124  2017/10/06 14:44:47  danielpharos
 Replaced magic constant.
 
@@ -2020,8 +2023,8 @@ expected one.
           else if SymbolType=sNumValueToken then //CoD1
           begin
             Result:=mjCoD;
-            //FIXME: What does this number mean?
             ReadSymbol(sNumValueToken);
+            Surface.Specifics.Add('CoD_samplesize='+IntToStr(Round(NumericValue)));
           end;
          end;
        end
@@ -4265,12 +4268,6 @@ begin
      S:=S+' '+S1+' '+S2+' '+S3;
   end
   else
-  if (MapSaveSettings.GameCode=mjCOD) then
-  begin
-    //FIXME: Output right flags
-    S:=S+' 0 0 0 0';
-  end
-  else
   if (MapSaveSettings.GameCode=mjCOD2) then
   begin
     //FIXME: Output right flags
@@ -4295,9 +4292,11 @@ begin
       if S2='' then S2:='0';
       if S3='' then S3:='0';
       S:=S+' '+S1+' '+S2+' '+S3;
-  
+
       if MapSaveSettings.GameCode=mjMOHAA then
-        MohaaSurfaceParms(F, S);
+        MohaaSurfaceParms(F, S)
+      else if (MapSaveSettings.GameCode=mjCOD) then
+        S:=S+' '+F.Specifics.Values['CoD_samplesize'];
   
     end;
   end;
