@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.573  2017/10/06 14:26:48  danielpharos
+//Added missing new VPK file option.
+//
 //Revision 1.572  2017/10/06 14:25:09  danielpharos
 //Added missing new IWI Image option.
 //
@@ -9529,10 +9532,10 @@ QQRKSRC1
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
       sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
-      MaxRecentFiles = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 20)"}
-      //ConsoleWidth = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
-      ConsoleHeight = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
-      OnlineHelp = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted help file is not available locally."}
+      MaxRecentFiles: = {Txt="Maximum number of recent files" Typ="EF1" Hint="Maximum amount of recent files to keep track of (0 .. 20)"}
+      //ConsoleWidth: = {Txt="Width of console" Typ="EF1" Hint="Amount of character per line in the console (80 .. 80)"}
+      ConsoleHeight: = {Txt="Height of console" Typ="EF1" Hint="Maximum amount of lines in the console (60 .. 600)"}
+      OnlineHelp: = {Txt="Online help" Typ="X" Cap="Enabled" Hint="This will cause QuArK to open up the online help when the wanted help file is not available locally."}
     }
     General3DView:form =
     {
@@ -10064,7 +10067,7 @@ QQRKSRC1
         Typ="S"
         Txt = "Importers \ Exporters:"
       }
-      ExpComponentChecks        = {Typ="X"  Txt="When Exporting"                 Cap="Perform checks first" Hint="When checked = "$0D"Selected components are checked"$0D"for errors before exporting,"$0D"such as existence of unused vertexes"$0D"and number of frames matching."}
+      ExpComponentChecks:       = {Typ="X"  Txt="When Exporting"                 Cap="Perform checks first" Hint="When checked = "$0D"Selected components are checked"$0D"for errors before exporting,"$0D"such as existence of unused vertexes"$0D"and number of frames matching."}
       IELogging:                = {Typ="CL" Txt="Logging" Hint="Not all importer\exporter files will have this feature."$0D"The 'Text Log' will be written to QuArK's main folder"$0D"and will give details about the file being loaded."
                           items = "No Logging"$0D "Text Log Only"$0D "Text Log & Console"    values = "0"$0D "1"$0D "2"     }
       IELogAll:                 = {Typ="X"  Txt="Log All"                        Cap="Log all imports\exports" Hint="Unchecked = Only logs current import\export."$0D"Checked = Logs all imports\exports."}
