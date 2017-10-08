@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2009/07/15 10:38:00  danielpharos
+Updated website link.
+
 Revision 1.12  2009/02/21 17:06:18  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -123,8 +126,22 @@ var
   I: Integer;
   S: String;
 begin
-  I := QObjectClassList.Count;
+  //Workaround for file without file extensions (I'm looking at you, CoD2!)
+  if (ExtractFileExt(Name)='') and (Pos(':', Name)=0) then
+  begin
+    I := QObjectClassList.Count;
+    repeat
+      if (I=0) then
+        break;
+      Dec(I);
+      S := QObjectClassList[I];
+    until (QObjectClass(QObjectClassList.Objects[I]).TypeInfo = '')
+      and (QFileObjectClass(QObjectClassList.Objects[I]).CanLoadBlankFileExt(Name, nParent));
+    Result := QObjectClass(QObjectClassList.Objects[I]).Create(Name, nParent);
+    Exit;
+  end;
 
+  I := QObjectClassList.Count;
   repeat
     if (I=0) then
       break;

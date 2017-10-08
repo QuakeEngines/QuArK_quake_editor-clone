@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2017/05/05 17:25:14  danielpharos
+Removed left-overs from the steamaccess-protocol code.
+
 Revision 1.77  2016/01/02 20:01:10  danielpharos
 Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
 
@@ -366,6 +369,7 @@ type
                   ReadFormat: Integer;
                   destructor Destroy; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); virtual;
+                  class function CanLoadBlankFileExt(const Filename: String; nParent: QObject): boolean; virtual;
                   procedure ObjectState(var E: TEtatObjet); override;
                   function OpenInWindow(nParent: TWinControl) : TQForm1;
                   procedure OpenStandAloneWindow(ParentPanel: TWinControl; FullParentPanel: Boolean);
@@ -1754,6 +1758,11 @@ begin
  FillChar(Info, SizeOf(Info), 0);
  Info.FileObjectDescriptionText:=TypeInfo;
  Info.DefaultExt:=Copy(Info.FileObjectDescriptionText, 2, MaxInt);
+end;
+
+class function QFileObject.CanLoadBlankFileExt(const Filename: String; nParent: QObject): Boolean;
+begin
+ Result:=False;
 end;
 
 procedure QFileObject.ObjectState(var E: TEtatObjet);

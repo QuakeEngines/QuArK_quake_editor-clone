@@ -288,6 +288,7 @@ Strings = {
     826: "Steam No Cache File (*.ncf)|*.ncf",
     827: "WorldCraft Rich Map Format file (*.rmf)|*.rmf",
     828: "Call of Duty 2 Bsp Files (*.d3dbsp)|*.d3dbsp",
+    829: "Call of Duty 2 Material Files (*.)|*.",
 
     2368: "Skins",
     2369: "Frames",
@@ -591,6 +592,7 @@ Strings = {
     5149: "Sylphis Map file",
     5150: "WorldCraft Rich Map Format file",
     5151: "Call of Duty 2 Bsp file",
+    5152: "Call of Duty 2 Material file",
 
     5155: "Quake Context",
     5156: "Tool bar",
@@ -1139,6 +1141,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.181  2017/10/01 14:19:54  danielpharos
+#Corrected the loading order of pak file: now official pak files are loaded first, just like the games do.
+#
 #Revision 1.180  2017/10/01 09:15:15  danielpharos
 #Added warning on failure to load game file to all other places too.
 #

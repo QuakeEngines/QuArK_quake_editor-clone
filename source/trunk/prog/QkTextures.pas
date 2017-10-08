@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.82  2017/10/06 15:00:41  danielpharos
+Don't hang on to a link that failed to load.
+
 Revision 1.81  2017/10/06 14:13:39  danielpharos
 Big reworking to push game-specific BSP loading into the game files.
 
@@ -493,7 +496,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx, QkExceptions,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkFormCfg, Logging,
-  QkQ1, QkQ2, QkQ3, QkObjectClassList, QkD3, QkApplPaths{, ExtraFunctionality};
+  QkQ1, QkQ2, QkQ3, QkCoD2, QkObjectClassList, QkD3, QkApplPaths{, ExtraFunctionality};
 
 {$R *.DFM}
 
@@ -1339,6 +1342,8 @@ begin
             if DefaultImageName<>'' then
               Link.Specifics.Values['q']:=DefaultImageName;
            end
+          else if ShaderType=mjCoD2 then
+            Link:=NeedGameFileBase(S, ConcatPaths([GameShadersPath, TexName]), '') as QCoD2Material
           else
            Raise EErrorFmt(4461, [ShaderType, 'ShadersType'])
         end
