@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2017/10/06 14:13:39  danielpharos
+Big reworking to push game-specific BSP loading into the game files.
+
 Revision 1.12  2009/07/15 10:38:01  danielpharos
 Updated website link.
 
@@ -603,6 +606,6 @@ end;
 initialization
   RegisterQObject(QTexture2, 'n');
 
-  RegisterQObject(QBsp2,  ' ');
+  RegisterQObject(QBsp2,  '!');
   RegisterQObject(QBsp2a, 'a');
 end.

@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2017/10/06 14:13:39  danielpharos
+Big reworking to push game-specific BSP loading into the game files.
+
 Revision 1.44  2017/10/01 09:54:40  danielpharos
 Shader stage sub-data can have multiple levels. Skip them all (for now).
 
@@ -1086,6 +1089,6 @@ initialization
   RegisterQObject(QShaderStage, 'a');
   RegisterQObject(QShaderFile, 'p');
 
-  RegisterQObject(QBsp3,  ' ');
+  RegisterQObject(QBsp3,  '!');
   RegisterQObject(QBsp3a, 'a');
 end.
