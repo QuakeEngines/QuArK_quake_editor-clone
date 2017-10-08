@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2017/10/08 16:46:37  danielpharos
+Added experimental support for loading CoD2 material files.
+
 Revision 1.6  2010/12/11 22:29:32  danielpharos
 Added CoD2 bsp file type.
 
@@ -163,8 +166,15 @@ class function QCoD2Material.CanLoadBlankFileExt(const Filename: String; nParent
 begin
  Result:=False;
  if CharModeJeu=mjCoD2 then
-  if IncludeTrailingPathDelimiter(nParent.Name)=GameShadersPath then
-   Result:=True;
+   while (nParent<>nil) do
+   begin
+     if IncludeTrailingPathDelimiter(nParent.Name)=GameShadersPath then
+     begin
+       Result:=True;
+       break;
+     end;
+     nParent:=nParent.FParent;
+   end;
 end;
 
 function QCoD2Material.IsExplorerItem(Q: QObject) : TIsExplorerItem;
