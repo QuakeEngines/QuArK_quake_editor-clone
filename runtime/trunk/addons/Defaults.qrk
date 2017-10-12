@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.574  2017/10/08 14:48:32  danielpharos
+//Fixed a couple of settings missing colons.
+//
 //Revision 1.573  2017/10/06 14:26:48  danielpharos
 //Added missing new VPK file option.
 //
@@ -2331,7 +2334,7 @@ QQRKSRC1
         BuildPgmsDir = "C:\Program Files\Call of Duty\Tools\bin"
         MapCommentsPrefix = "//"
         OutputMapFormat = "Quark etp"
-        ForceFaceFlags = ""
+        ForceFaceFlags = "1"
         StupidBuildToolKludge = "1" //those guys should get shot for that
         AlwaysWriteThreeFields = "1"
         SupportsBrushPrim = "1"
