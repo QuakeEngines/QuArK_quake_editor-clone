@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.576  2017/10/14 16:16:49  danielpharos
+//Enabled support for Call of Duty 2.
+//
 //Revision 1.575  2017/10/12 18:33:04  danielpharos
 //CoD1 .map files always need face flags to be exported.
 //
@@ -2458,8 +2461,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %gamedir%" // +set r_vc_compile 2
         RunMapCmdLine = "+devmap %filename%"
-        //AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD2.qrk" //$0D"CoD2Entities.qrk"$0D"CoD2Textures.qrk"
-        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD2.qrk"$0D"CoD2Textures.qrk"
+        AddOns = "Bezier_Library.qrk"$0D"Q3ArchLib.qrk"$0D"DataCoD2.qrk"$0D"CoD2Entities.qrk"$0D"CoD2Textures.qrk"
         AlwaysPak = ""
         PakExt = ".iwd"
         Console = "1"
