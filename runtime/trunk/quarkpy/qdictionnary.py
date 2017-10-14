@@ -751,6 +751,7 @@ Strings = {
     5464: "Exporting .map worldspawn...",
     5465: "Could not load texture %s; cannot unwrap texture coordinates!",
     5466: "Loading BSP file: Going to load index %d...",
+    5467: "Could not load texture %s; texture coordinates may be wrong!",
 
     5502: "Sprite object not found!",
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
@@ -1141,6 +1142,9 @@ Strings = {
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.182  2017/10/08 16:46:36  danielpharos
+#Added experimental support for loading CoD2 material files.
+#
 #Revision 1.181  2017/10/01 14:19:54  danielpharos
 #Corrected the loading order of pak file: now official pak files are loaded first, just like the games do.
 #
