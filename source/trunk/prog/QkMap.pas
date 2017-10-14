@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.126  2017/10/08 11:50:21  danielpharos
+Completed support for surface flags in Call of Duty 1 .map files.
+
 Revision 1.125  2017/10/07 14:35:10  danielpharos
 Start handling Hexen 2 brush light values.
 
@@ -422,7 +425,6 @@ type
      V220Type,  { Valve Mapformat 220 }
      BPType,     { Brush Primitives }
      HL2Type,    {that one used in hl2 tools}
-     CoD2Type,   { Call of Duty 2 }
      UnknownType
   );
 
@@ -573,7 +575,6 @@ begin
   else if StrComp(S, 'Valve 220')        = 0 then Result := V220Type
   else if StrComp(S, 'Brush Primitives') = 0 then Result := BPType
   else if StrComp(S, 'HL2')              = 0 then Result := HL2Type
-  else if StrComp(S, 'CoD2')             = 0 then Result := CoD2Type
   else
   begin
     Log(LOG_WARNING,LoadStr1(5702)+'\nDefaulting to Classic Quake',[S]);
@@ -1521,7 +1522,7 @@ expected one.
        NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
        SetThreePointsEx(NP0,NP1,NP2,Normale);
      except
-       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
+       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1)); //FIXME: Move to dict!
      end;
   end;
  end;
@@ -1547,24 +1548,33 @@ expected one.
    end;
  end;
 
- procedure ReadCOD2SurfaceParams;
+ procedure ReadCOD2SurfaceParams(Surface: TTexturedTreeMap);
  begin
-   //FIXME: We need to do this right. At the moment, we're just dumping the data!
-
    //Lightmap name
    ReadSymbol(sStringToken);
-   //Lightmap size X
+   Surface.Specifics.Values['CoD2_lightmap']:=S;
+
+   //Lightmap size
+   ReadSymbol(sNumValueToken); //X
+   S:=FloatToStrF(NumericValue,ffFixed,7,2);
+   ReadSymbol(sNumValueToken); //Y
+   S:=S+' '+FloatToStrF(NumericValue,ffFixed,7,2);
+   Surface.Specifics.Values['CoD2_lightmap_size']:=S;
+
+   //Lightmap shift
+   ReadSymbol(sNumValueToken); //X
+   S:=FloatToStrF(NumericValue,ffFixed,7,2);
+   ReadSymbol(sNumValueToken); //Y
+   S:=S+' '+FloatToStrF(NumericValue,ffFixed,7,2);
+   Surface.Specifics.Values['CoD2_lightmap_shift']:=S;
+
+   //Lightmap rotate
    ReadSymbol(sNumValueToken);
-   //Lightmap size Y
+   Surface.Specifics.Values['CoD2_lightmap_rotate']:=FloatToStrF(NumericValue,ffFixed,7,2);
+
+   //Lightmap skew
    ReadSymbol(sNumValueToken);
-   //Lightmap shift X
-   ReadSymbol(sNumValueToken);
-   //Lightmap shift Y
-   ReadSymbol(sNumValueToken);
-   //Lightmap rotate 1
-   ReadSymbol(sNumValueToken);
-   //Lightmap rotate 2
-   ReadSymbol(sNumValueToken);
+   Surface.Specifics.Values['CoD2_lightmap_skew']:=FloatToStrF(NumericValue,ffFixed,7,2);
  end;
 
  procedure ReadPatchDef2;
@@ -1932,6 +1942,9 @@ expected one.
  var
    I: Integer;
    Surface: TFace;
+   tmpReorder: TDouble;
+   Q: QPixelset;
+   Size: TPoint;
  begin
   P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
   EntitePoly.SubElements.Add(P);
@@ -1978,7 +1991,7 @@ expected one.
         Params[I]:=NumericValue;
         ReadSymbol(sNumValueToken);
        end;
-      if charmodejeu=mjGenesis3D then
+      if CharModeJeu=mjGenesis3D then
       begin
         if PointsToPlane(Surface.Normale)='X' then
            Params[4]:=-Params[4];
@@ -1987,11 +2000,38 @@ expected one.
     {/DECKER}
     if Result=mjCOD2 then
     begin
-      //What is this 6th number...?
+      //CoD2 stored these slightly different, and in different order. Let's reverse the "damage"...
+      tmpReorder:=Params[1];
+      Params[1]:=Params[3];
+      Params[3]:=Params[5];
+      Params[5]:=Params[2];
+      Params[2]:=Params[4];
+      Params[4]:=tmpReorder;
+
+      //And adjust the scale
+      Q:=GlobalFindTexture(Surface.NomTex, Nil);
+      if Q<>Nil then
+       try
+        Size:=Q.GetSize;
+       except
+        Log(LOG_WARNING, LoadStr1(5467), [Surface.NomTex]);
+        Q:=Nil;
+       end;
+      if Q<>Nil then
+      begin
+        //Params[1]:=Params[1] / Size.X; //@
+        //Params[2]:=Params[2] / Size.Y; //@
+        Params[1]:=Params[1] / Params[4];
+        Params[2]:=Params[2] / Params[5];
+        Params[4]:=Params[4] / Size.X;
+        Params[5]:=Params[5] / Size.Y;
+      end;
+
+      //FIXME: What is this 6th number...?
       NumericValue1:=Round(NumericValue);
       ReadSymbol(sNumValueToken);
 
-      ReadCOD2SurfaceParams;
+      ReadCOD2SurfaceParams(Surface);
     end
     else
     begin
@@ -2984,37 +3024,6 @@ begin
 
 end;
 
-procedure CoD2MapParams(MapSaveSettings: TMapSaveSettings; const Normale: TVect; const F: TFace; var S: String);
-var
-  PT: TThreePoints;
-  Mirror: Boolean;
-  DecimalPlaces: Integer;
-begin
-  DecimalPlaces := MapSaveSettings.DecimalPlaces;
-
-  with F do
-   begin
-    //FIXME: Wrong!
-    SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
-
-    (*S:=S+' ';
-    S:=S+FloatToStrF(PT[1].X, ffFixed, 20, DecimalPlaces);
-    S:=S+' ';
-    S:=S+FloatToStrF(PT[1].Y, ffFixed, 20, DecimalPlaces);
-    S:=S+' ';
-    S:=S+FloatToStrF(PT[2].X, ffFixed, 20, DecimalPlaces);
-    S:=S+' ';
-    S:=S+FloatToStrF(PT[2].Y, ffFixed, 20, DecimalPlaces);
-    S:=S+' ';
-    S:=S+FloatToStrF(PT[3].X, ffFixed, 20, DecimalPlaces);
-    S:=S+' ';
-    S:=S+FloatToStrF(PT[3].Y, ffFixed, 20, DecimalPlaces);*)
-
-    S:=S+' 256 256 0 0 0 0'; //Texture scales?
-   end;
-end;
-
-
 procedure ApproximateParams(MapSaveSettings: TMapSaveSettings; const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
   PX, PY: array[1..3] of TDouble;
@@ -3218,7 +3227,7 @@ begin
     Result:=false;
 end;
 
-function EqualVect(V1, V2 : TVect) : boolean;
+function EqualVect(V1, V2 : TVect) : boolean; //FIXME: Move to qmath!
 begin
   if (V1.X=V2.X) and (V1.Y=V2.Y) and (V1.Z=V2.Z) then
     Result:=true
@@ -3260,7 +3269,7 @@ var
 begin
   { get basis vectors for affine plane of face }
   GetAxisBase(Normal, texS, texT);
-  { origin of plane's coordindate system }
+  { origin of plane's coordinate system }
   texO:=VecScale(Dist, Normal);
   { get the texture points.  V has been provided by
      Face.GetThreePointsUserTex, so if texture scale
@@ -3740,6 +3749,7 @@ var
  TextureName: String;
  Mirror, EtpMirror: Boolean;
  DecimalPlaces: Integer;
+ tmpReorder: TDouble;
  type
    FlagDef = record
     name: Pchar;
@@ -4140,8 +4150,6 @@ begin
       Valve220MapParams(MapSaveSettings,False,Normale, F, S);
     HL2Type:
       Valve220MapParams(MapSaveSettings,True,Normale, F, S);
-    CoD2Type:
-      CoD2MapParams(MapSaveSettings,Normale, F, S);
 
     else {case}
       if not (MapSaveSettings.MapFormat=BPType) then
@@ -4174,6 +4182,34 @@ begin
           end;
         end;
 
+        if MapSaveSettings.GameCode=mjCoD2 then
+        begin
+          //Adjust the scale
+          Q:=GlobalFindTexture(NomTex, Nil);
+          if Q<>Nil then
+           try
+            Size:=Q.GetSize;
+           except
+            Log(LOG_WARNING, LoadStr1(5467), [NomTex]);
+            Q:=Nil;
+           end;
+          if Q<>Nil then
+          begin
+            Params[4]:=Params[4] * Size.X;
+            Params[5]:=Params[5] * Size.Y;
+            Params[1]:=Params[1] * Params[4];
+            Params[2]:=Params[2] * Params[5];
+          end;
+
+          //Re-order the params for CoD2
+          tmpReorder:=Params[1];
+          Params[1]:=Params[4];
+          Params[4]:=Params[2];
+          Params[2]:=Params[5];
+          Params[5]:=Params[3];
+          Params[3]:=tmpReorder;
+        end;
+
         for I:=1 to 2 do
           S:=S+' '+IntToStr(Round(Params[I]));
         for I:=3 to 5 do
@@ -4183,6 +4219,12 @@ begin
             S:=S+' '+IntToStr(R)
           else
             S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, DecimalPlaces);
+        end;
+
+        if MapSaveSettings.GameCode=mjCoD2 then
+        begin
+          //Output the unknown number
+          S:=S+' 0';
         end;
     end;
    end;{case MapFormat}
@@ -4270,8 +4312,26 @@ begin
   else
   if (MapSaveSettings.GameCode=mjCOD2) then
   begin
-    //FIXME: Output right flags
-    S:=S+' X 0 0 0 0 0 0';
+    if F.Specifics.Values['CoD2_lightmap']<>'' then
+      S:=S+' '+F.Specifics.Values['CoD2_lightmap']
+    else
+      S:=S+' lightmap_gray';
+    if F.Specifics.Values['CoD2_lightmap_size']<>'' then
+      S:=S+' '+F.Specifics.Values['CoD2_lightmap_size']
+    else
+      S:=S+' 16384 16384';
+    if F.Specifics.Values['CoD2_lightmap_shift']<>'' then
+      S:=S+' '+F.Specifics.Values['CoD2_lightmap_shift']
+    else
+      S:=S+' 0 0';
+    if F.Specifics.Values['CoD2_lightmap_rotate']<>'' then
+      S:=S+' '+F.Specifics.Values['CoD2_lightmap_rotate']
+    else
+      S:=S+' 0';
+    if F.Specifics.Values['CoD2_lightmap_skew']<>'' then
+      S:=S+' '+F.Specifics.Values['CoD2_lightmap_skew']
+    else
+      S:=S+' 0';
   end
   else
    { and in Q2, default flags get written into the map
