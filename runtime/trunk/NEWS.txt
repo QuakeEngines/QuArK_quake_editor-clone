@@ -14,6 +14,9 @@ $Id$
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Cache texture sizes during map loading and saving for a big speed improvement
+          - with certain games.
+
 * [DanielPharos]: Enabled support for Call of Duty 2. All basic operations are functional!
 
 * [DanielPharos]: Added experimental support for loading CoD2 material files.

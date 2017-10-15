@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.127  2017/10/14 15:20:32  danielpharos
+Significantly improved CoD2 .map importing and exporting.
+
 Revision 1.126  2017/10/08 11:50:21  danielpharos
 Completed support for surface flags in Call of Duty 1 .map files.
 
@@ -505,7 +508,7 @@ uses
   Setup, Undo, Quarkx, qmatrices, Qk3D, PyMath, QkQuakeMap, QkApplPaths,
   Graphics, StrUtils, Game, QkExceptions, Travail, QkConsts, Logging,
   PyForms, Bezier, Duplicator, QkPixelSet, Qk6DX, QkVMF, QkSylphis, QkQ2,
-  { tiglari } QkSin, { /tiglari } MapError, QkObjectClassList;
+  { tiglari } QkSin, { /tiglari } MapError, PixelSetSizeCache, QkObjectClassList;
 
 {$R *.DFM}
 
@@ -513,6 +516,7 @@ uses
 
 var
   EntityNoCounting: Integer;
+  TextureSizes: TPixelSetSizeCache;
 
 function GetFirstEntityNo: Integer;
 begin
@@ -772,6 +776,7 @@ var
  SpecIndex: integer; {Decker}
  UAxis, VAxis : TVect;  {wc3.3 stuff/tiglari}
  UShift, VShift: Double;
+ TextureSizesFree: Boolean;
 
  { tiglari, for sin stuff }
  ThreeSing: array[0..2] of Single;
@@ -786,14 +791,6 @@ var
 
  //For MOHAA's patchDef2 detection:
  MOHAAPatchDef2Detected: Boolean;
-
- function ReadInt(str : string) : LongInt;
- begin
-   if str = '' then
-     Result:=0
-   else
-     Result:=StrToInt(str)
- end;
 
  procedure SetSinFlag;
    {DECKER - since SetFlagPos is only used by SetSinFlag, it can as well be a private-local procedure/}
@@ -1943,7 +1940,6 @@ expected one.
    I: Integer;
    Surface: TFace;
    tmpReorder: TDouble;
-   Q: QPixelset;
    Size: TPoint;
  begin
   P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
@@ -2009,23 +2005,19 @@ expected one.
       Params[4]:=tmpReorder;
 
       //And adjust the scale
-      Q:=GlobalFindTexture(Surface.NomTex, Nil);
-      if Q<>Nil then
-       try
-        Size:=Q.GetSize;
-       except
-        Log(LOG_WARNING, LoadStr1(5467), [Surface.NomTex]);
-        Q:=Nil;
-       end;
-      if Q<>Nil then
+      Size:=TextureSizes.GetSize(Surface.NomTex);
+      if (Size.X=0) and (Size.Y=0) then
       begin
-        //Params[1]:=Params[1] / Size.X; //@
-        //Params[2]:=Params[2] / Size.Y; //@
-        Params[1]:=Params[1] / Params[4];
-        Params[2]:=Params[2] / Params[5];
-        Params[4]:=Params[4] / Size.X;
-        Params[5]:=Params[5] / Size.Y;
+        Log(LOG_WARNING, LoadStr1(5467), [Surface.NomTex]);
+        Size.X:=EchelleTexture;
+        Size.Y:=EchelleTexture;
       end;
+      //Params[1]:=Params[1] / Size.X; //@
+      //Params[2]:=Params[2] / Size.Y; //@
+      Params[1]:=Params[1] / Params[4];
+      Params[2]:=Params[2] / Params[5];
+      Params[4]:=Params[4] / Size.X;
+      Params[5]:=Params[5] / Size.Y;
 
       //FIXME: What is this 6th number...?
       NumericValue1:=Round(NumericValue);
@@ -2443,6 +2435,13 @@ expected one.
  end;
 
 begin
+  if TextureSizes=nil then
+  begin
+    TextureSizes:=TPixelSetSizeCache.Create(nil);
+    TextureSizesFree:=True;
+  end
+  else
+    TextureSizesFree:=False;
   ProgressIndicatorStart(5451, Length(SourceFile) div Granularite);
   try
     Source:=PChar(SourceFile);
@@ -2779,6 +2778,11 @@ begin
     Racine.FixupAllReferences;
   finally
     ProgressIndicatorStop;
+    if TextureSizesFree then
+    begin
+      TextureSizes.Free;
+      TextureSizes:=nil;
+    end;
   end;
 
   if (Result=mjQuake) and Q2Tex then
@@ -2830,268 +2834,6 @@ begin
     GlobalWarning(FmtLoadStr1(256, [InvPoly]));
 end;
 
-procedure Valve220MapParams(MapSaveSettings: TMapSaveSettings; HL2: boolean; const Normale: TVect; const F: TFace; var S: String);
-var
-  Plan: Char;
-  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2:TVect;
-
-  S1, S2, UOff, VOff : Double;
-  Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
-  QV0, QV1, UAxis, VAxis : TVect; // from Zoners
-  Q: QPixelSet;
-  Size: TPoint;
-  DecimalPlaces : Integer;
-
-  procedure write4vect(const V: TVect; D : Double; var S: String);
-  begin
-    S:=S+' [ ';
-    S:=S+FloatToStrF(V.X, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+FloatToStrF(V.Y, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+FloatToStrF(V.Z, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+FloatToStrF(D, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+'] ';
-  end;
-
-  procedure write4vectHL2(const V: TVect; D : Double; var S: String);
-  begin
-    S:=S+'[';
-    S:=S+FloatToStrF(V.X, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+FloatToStrF(V.Y, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+FloatToStrF(V.Z, ffFixed, 20, DecimalPlaces)+' ';
-    S:=S+FloatToStrF(D, ffFixed, 20, DecimalPlaces);
-    S:=S+']';
-  end;
-
-begin
-  DecimalPlaces := MapSaveSettings.DecimalPlaces;
-
-  Plan:=PointsToPlane(Normale);
-  case Plan of
-   'X' : Axis := MakeVect(1, 0, 0);
-   'Y' : Axis := MakeVect(0, 1, 0);
-   'Z' : Axis := MakeVect(0, 0, 1);
-  end;
-
-  Origin:=MakeVect(0,0,0);
-
-
-  F.GetThreePointsT(PP0, PP1, PP2);
-(*
-   this code seems to show that the results of
-     GetThreePointsT are the same as getting the
-     simulated 3points, and swapping P2 and P1 when
-     the mirror bit is set
-
-  F.SimulateEnhTex(V0, V1, V2, Mirror);
-  if Mirror then
-  begin
-   // ShowMessage('Mirror');
-    V2b:=V2;
-    V2:=V1;
-    V1:=V2b;
-  end;
-  if VecLength(VecDiff(V0,P0))>rien then
-  begin
-    ShowMessage('P0 discrepancy');
-  end;
-   if VecLength(VecDiff(V1,P1))>rien then
-  begin
-    ShowMessage('P1 discrepancy');
-  end;
-   if VecLength(VecDiff(V2,P2))>rien then
-  begin
-    ShowMessage('P2 discrepancy');
-  end;
-
- *)
-
-  P0:=ProjectPointToPlane(PP0, Axis, Origin, Axis);
-  P1:=ProjectPointToPlane(PP1, Axis, Origin, Axis);
-  P2:=ProjectPointToPlane(PP2, Axis, Origin, Axis);
-
-  // D1|D2 = Zoner's TexPt[0|1]
-  D1:= VecScale(1.0/EchelleTexture, VecDiff(P1, P0));
-  D2:= VecScale(1.0/EchelleTexture, VecDiff(P2, P0));
- {
-        dot22 = DotProduct(TexPt[0], TexPt[0]);
-        dot23 = DotProduct(TexPt[0], TexPt[1]);
-        dot33 = DotProduct(TexPt[1], TexPt[1]);
-        mdet = dot22 * dot33 - dot23 * dot23;
- }
-
-  Dot22:=Dot(D1, D1);
-  Dot23:=Dot(D1, D2);
-  Dot33:=Dot(D2, D2);
-  Mdet:= Dot22*Dot33 - Dot23*Dot23;
-
- {
-         mdet = 1.0 / mdet;
-         aa = dot33 * mdet;
-         bb = -dot23 * mdet;
-         dd = dot22 * mdet;
-  }
-
-  Mdet := 1.0/MDet;
-  aa:=Dot33*MDet;
-  bb:=-Dot23*Mdet;
-  dd:= Dot22*Mdet;
-
-(*
-     for (j = 0; j < 3; j++)
-     {
-       side->td.vects.quark.vects[0][j] = aa * TexPt[0][j] + bb * TexPt[1][j];
-       side->td.vects.quark.vects[1][j] = -( /*cc */ bb * TexPt[0][j] + dd * TexPt[1][j]);
-     }
-*)
-  QV0:=VecSum(VecScale(aa, D1), VecScale(bb, D2));
-  QV1:=VecSum(VecScale(-bb, D1), VecScale(-dd, D2));
-
-  {
-    side->td.vects.quark.vects[0][3] = -DotProduct(side->td.vects.quark.vects[0], side->planepts[0]);
-    side->td.vects.quark.vects[1][3] = -DotProduct(side->td.vects.quark.vects[1], side->planepts[0]);
-  }
-
-  UOff:=-Dot(QV0,P0);
-  VOff:=-Dot(QV1,P0);
-
-  if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
-  begin
-    //DanielPharos: Normalize the texture shift. If we don't do this,
-    //this causes a *lot* of texture info entries in the BSP file.
-    Q:=GlobalFindTexture(F.NomTex, Nil);
-    if Q<>Nil then
-     try
-      Size:=Q.GetSize;
-     except
-      Log(LOG_WARNING, LoadStr1(5465), [F.NomTex]);
-      Q:=Nil;
-     end;
-    if Q<>Nil then
-    begin
-      //We're going to round later anyway, and we need integers here!
-      UOff:=Round(UOff) mod Cardinal(Size.X);
-      VOff:=Round(VOff) mod Cardinal(Size.Y);
-      if UOff < 0 then
-        UOff:=UOff + Size.X;
-      if VOff < 0 then
-        VOff:=VOff + Size.Y;
-    end;
-  end;
-
-  { up to this point, QV0,UOff and QV1,VOff seem to be identical to the
-     quark.vects structure in zoner's }
-
-  UAxis:=QV0;
-  VAxis:=QV1;
-
-
-  Normalise(QV0, S1);
-  Normalise(QV1, S2);
-
-
-  if HL2 then
-  begin
-    S1:=1.0/S1;
-    S2:=1.0/S2;
-
-    S:=S+#13#10'    "uaxis" "';
-    write4vectHL2(QV0, UOff, S);
-    S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces)+'"';
-    S:=S+#13#10'    "vaxis" "';
-    write4vectHL2(QV1, VOff, S);
-    S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces)+'"';
-  end
-  else
-  begin
-//  if (veclength(qv0)>1) or (veclength(qv1)>1) then
-//    Raise InternalE('veclength(qv0)>1) or (veclength(qv1)>1');
-    write4vect(QV0, UOff, S);
-    write4vect(QV1, VOff, S);
-
-(*
-    write4vect(D1, -PP0.X/S1, S);
-    write4vect(D2, PP0.Y/S2, S);
-*)
-
-    S1:=1.0/S1;
-    S2:=1.0/S2;
-
-    S:=S+' 0 ';
-    S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces);
-    { sign flip engineered into Scale }
-    S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces);
-  end;
-
-end;
-
-procedure ApproximateParams(MapSaveSettings: TMapSaveSettings; const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
-var
-  PX, PY: array[1..3] of TDouble;
-  A, P2, S, C: TDouble;
-  I: Integer;
-  Plan: Char;
-begin
-  Plan:=PointsToPlane(Normale);
-  for I:=1 to 3 do
-    case Plan of
-      'X': begin
-             PX[I]:=V[I].Y;
-             PY[I]:=V[I].Z;
-           end;
-      'Y': begin
-             PX[I]:=V[I].X;
-             PY[I]:=V[I].Z;
-           end;
-      'Z': begin
-             PX[I]:=V[I].X;
-             PY[I]:=V[I].Y;
-           end;
-  end;
-  if not Mirror then
-  begin
-    P2:=PX[2]; PX[2]:=PX[3]; PX[3]:=P2;
-    P2:=PY[2]; PY[2]:=PY[3]; PY[3]:=P2;
-  end;
-  PY[3]:=PY[3]-PY[1];
-  PX[2]:=PX[2]-PX[1];
-  PY[2]:=PY[2]-PY[1];
-  if Abs(PY[2])<rien then
-    Params[3]:=0
-  else
-  begin
-    A:=AngleXY(PX[2], PY[2]);
-    S:=Sin(A);
-    C:=Cos(A);
-   {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
-    PX[2]:=PX[2]*C + PY[2]*S;
-    Params[3]:=A*(180/pi);
-
-    PX[3]:=PX[3]-PX[1];
-    PY[3]:=PY[3]*C - PX[3]*S;
-
-    P2:=PX[1];
-    PX[1]:=P2*C + PY[1]*S;
-    PY[1]:=PY[1]*C - P2*S;
-  end;
-  Params[4]:=PX[2] / EchelleTexture;
-  if MapSaveSettings.GameCode=mjGenesis3d then
-  begin
-    Params[3]:=Round(Params[3]);
-    if Plan='Y' then
-      Params[3]:=-Params[3];
-  end;
-  Params[5]:=PY[3] / EchelleTexture;  { approximation is here : we ignore the angle that the third vector may do }
-  if Abs(Params[4])<rien2 then A:=1 else A:=1/Params[4];
-  Params[1]:=-PX[1]*A;
-  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
-  Params[2]:=PY[1]*A;
-  if MapSaveSettings.GameCode=mjGenesis3d then
-  begin
-    if Plan='X' then
-      Params[4]:=-Params[4]
-  end
-end;
-
  {------------------------}
 
 procedure QMapFile.LoadFile(F: TStream; FSize: Integer);
@@ -3128,6 +2870,7 @@ var
  saveflags : Integer;
  MapOptionSpecs : TSpecificsList;
  MapSaveSettings: TMapSaveSettings;
+ TextureSizesFree: Boolean;
 begin
  with Info do case Format of
   rf_Default: begin  { as stand-alone file }
@@ -3198,8 +2941,23 @@ begin
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
        //FIXME: ObjectGameCode is not always defined...
-       SaveAsMapText(Root, MapSaveSettings, List, Dest, saveflags, HxStrings);
-       Dest.SaveToStream(F);
+       if TextureSizes=nil then
+       begin
+         TextureSizes:=TPixelSetSizeCache.Create(nil);
+         TextureSizesFree:=True;
+       end
+       else
+         TextureSizesFree:=False;
+       try
+         SaveAsMapText(Root, MapSaveSettings, List, Dest, saveflags, HxStrings);
+         Dest.SaveToStream(F);
+       finally
+         if TextureSizesFree then
+         begin
+           TextureSizes.Free;
+           TextureSizes:=nil;
+         end;
+       end;
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;
       finally
@@ -3750,6 +3508,8 @@ var
  Mirror, EtpMirror: Boolean;
  DecimalPlaces: Integer;
  tmpReorder: TDouble;
+ TextureSizesFree: Boolean;
+
  type
    FlagDef = record
     name: Pchar;
@@ -3898,10 +3658,273 @@ var
 }   S:=S+') ';
   end;
 
+  procedure Valve220MapParams(HL2: boolean; const Normale: TVect; const F: TFace; var S: String);
+  var
+    Plan: Char;
+    Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2:TVect;
+
+    S1, S2, UOff, VOff : Double;
+    Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
+    QV0, QV1, UAxis, VAxis : TVect; // from Zoners
+    Size: TPoint;
+    DecimalPlaces : Integer;
+
+    procedure write4vect(const V: TVect; D : Double; var S: String);
+    begin
+      S:=S+' [ ';
+      S:=S+FloatToStrF(V.X, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+FloatToStrF(V.Y, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+FloatToStrF(V.Z, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+FloatToStrF(D, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+'] ';
+    end;
+
+    procedure write4vectHL2(const V: TVect; D : Double; var S: String);
+    begin
+      S:=S+'[';
+      S:=S+FloatToStrF(V.X, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+FloatToStrF(V.Y, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+FloatToStrF(V.Z, ffFixed, 20, DecimalPlaces)+' ';
+      S:=S+FloatToStrF(D, ffFixed, 20, DecimalPlaces);
+      S:=S+']';
+    end;
+
+  begin
+    DecimalPlaces := MapSaveSettings.DecimalPlaces;
+
+    Plan:=PointsToPlane(Normale);
+    case Plan of
+     'X' : Axis := MakeVect(1, 0, 0);
+     'Y' : Axis := MakeVect(0, 1, 0);
+     'Z' : Axis := MakeVect(0, 0, 1);
+    end;
+
+    Origin:=MakeVect(0,0,0);
+
+    F.GetThreePointsT(PP0, PP1, PP2);
+(*
+     this code seems to show that the results of
+       GetThreePointsT are the same as getting the
+       simulated 3points, and swapping P2 and P1 when
+       the mirror bit is set
+
+    F.SimulateEnhTex(V0, V1, V2, Mirror);
+    if Mirror then
+    begin
+     // ShowMessage('Mirror');
+      V2b:=V2;
+      V2:=V1;
+      V1:=V2b;
+    end;
+    if VecLength(VecDiff(V0,P0))>rien then
+    begin
+      ShowMessage('P0 discrepancy');
+    end;
+     if VecLength(VecDiff(V1,P1))>rien then
+    begin
+      ShowMessage('P1 discrepancy');
+    end;
+     if VecLength(VecDiff(V2,P2))>rien then
+    begin
+      ShowMessage('P2 discrepancy');
+    end;
+*)
+
+    P0:=ProjectPointToPlane(PP0, Axis, Origin, Axis);
+    P1:=ProjectPointToPlane(PP1, Axis, Origin, Axis);
+    P2:=ProjectPointToPlane(PP2, Axis, Origin, Axis);
+
+    // D1|D2 = Zoner's TexPt[0|1]
+    D1:= VecScale(1.0/EchelleTexture, VecDiff(P1, P0));
+    D2:= VecScale(1.0/EchelleTexture, VecDiff(P2, P0));
+    {
+          dot22 = DotProduct(TexPt[0], TexPt[0]);
+          dot23 = DotProduct(TexPt[0], TexPt[1]);
+          dot33 = DotProduct(TexPt[1], TexPt[1]);
+          mdet = dot22 * dot33 - dot23 * dot23;
+    }
+
+    Dot22:=Dot(D1, D1);
+    Dot23:=Dot(D1, D2);
+    Dot33:=Dot(D2, D2);
+    Mdet:= Dot22*Dot33 - Dot23*Dot23;
+
+    {
+           mdet = 1.0 / mdet;
+           aa = dot33 * mdet;
+           bb = -dot23 * mdet;
+           dd = dot22 * mdet;
+    }
+
+    Mdet := 1.0/MDet;
+    aa:=Dot33*MDet;
+    bb:=-Dot23*Mdet;
+    dd:= Dot22*Mdet;
+
+(*
+       for (j = 0; j < 3; j++)
+       {
+         side->td.vects.quark.vects[0][j] = aa * TexPt[0][j] + bb * TexPt[1][j];
+         side->td.vects.quark.vects[1][j] = -( /*cc */ bb * TexPt[0][j] + dd * TexPt[1][j]);
+       }
+*)
+    QV0:=VecSum(VecScale(aa, D1), VecScale(bb, D2));
+    QV1:=VecSum(VecScale(-bb, D1), VecScale(-dd, D2));
+  
+    {
+      side->td.vects.quark.vects[0][3] = -DotProduct(side->td.vects.quark.vects[0], side->planepts[0]);
+      side->td.vects.quark.vects[1][3] = -DotProduct(side->td.vects.quark.vects[1], side->planepts[0]);
+    }
+
+    UOff:=-Dot(QV0,P0);
+    VOff:=-Dot(QV1,P0);
+
+    if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
+    begin
+      //DanielPharos: Normalize the texture shift. If we don't do this,
+      //this causes a *lot* of texture info entries in the BSP file.
+      Size:=TextureSizes.GetSize(F.NomTex);
+      if (Size.X=0) and (Size.Y=0) then
+      begin
+        Log(LOG_WARNING, LoadStr1(5465), [F.NomTex]);
+        Size.X:=EchelleTexture;
+        Size.Y:=EchelleTexture;
+      end;
+
+      //We're going to round later anyway, and we need integers here!
+      UOff:=Round(UOff) mod Cardinal(Size.X);
+      VOff:=Round(VOff) mod Cardinal(Size.Y);
+      if UOff < 0 then
+        UOff:=UOff + Size.X;
+      if VOff < 0 then
+        VOff:=VOff + Size.Y;
+    end;
+
+    { up to this point, QV0,UOff and QV1,VOff seem to be identical to the
+       quark.vects structure in zoner's }
+
+    UAxis:=QV0;
+    VAxis:=QV1;
+
+    Normalise(QV0, S1);
+    Normalise(QV1, S2);
+
+    if HL2 then
+    begin
+      S1:=1.0/S1;
+      S2:=1.0/S2;
+
+      S:=S+#13#10'    "uaxis" "';
+      write4vectHL2(QV0, UOff, S);
+      S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces)+'"';
+      S:=S+#13#10'    "vaxis" "';
+      write4vectHL2(QV1, VOff, S);
+      S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces)+'"';
+    end
+    else
+    begin
+//    if (veclength(qv0)>1) or (veclength(qv1)>1) then
+//      Raise InternalE('veclength(qv0)>1) or (veclength(qv1)>1');
+      write4vect(QV0, UOff, S);
+      write4vect(QV1, VOff, S);
+
+(*
+      write4vect(D1, -PP0.X/S1, S);
+      write4vect(D2, PP0.Y/S2, S);
+*)
+
+      S1:=1.0/S1;
+      S2:=1.0/S2;
+
+      S:=S+' 0 ';
+      S:=S+' '+FloatToStrF(S1, ffFixed, 20, DecimalPlaces);
+      { sign flip engineered into Scale }
+      S:=S+' '+FloatToStrF(S2, ffFixed, 20, DecimalPlaces);
+    end;
+
+  end;
+
+  procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
+  var
+    PX, PY: array[1..3] of TDouble;
+    A, P2, S, C: TDouble;
+    I: Integer;
+    Plan: Char;
+  begin
+    Plan:=PointsToPlane(Normale);
+    for I:=1 to 3 do
+      case Plan of
+        'X': begin
+               PX[I]:=V[I].Y;
+               PY[I]:=V[I].Z;
+             end;
+        'Y': begin
+               PX[I]:=V[I].X;
+               PY[I]:=V[I].Z;
+             end;
+        'Z': begin
+               PX[I]:=V[I].X;
+               PY[I]:=V[I].Y;
+             end;
+    end;
+    if not Mirror then
+    begin
+      P2:=PX[2]; PX[2]:=PX[3]; PX[3]:=P2;
+      P2:=PY[2]; PY[2]:=PY[3]; PY[3]:=P2;
+    end;
+    PY[3]:=PY[3]-PY[1];
+    PX[2]:=PX[2]-PX[1];
+    PY[2]:=PY[2]-PY[1];
+    if Abs(PY[2])<rien then
+      Params[3]:=0
+    else
+    begin
+      A:=AngleXY(PX[2], PY[2]);
+      S:=Sin(A);
+      C:=Cos(A);
+     {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
+      PX[2]:=PX[2]*C + PY[2]*S;
+      Params[3]:=A*(180/pi);
+
+      PX[3]:=PX[3]-PX[1];
+      PY[3]:=PY[3]*C - PX[3]*S;
+
+      P2:=PX[1];
+      PX[1]:=P2*C + PY[1]*S;
+      PY[1]:=PY[1]*C - P2*S;
+    end;
+    Params[4]:=PX[2] / EchelleTexture;
+    if MapSaveSettings.GameCode=mjGenesis3d then
+    begin
+      Params[3]:=Round(Params[3]);
+      if Plan='Y' then
+        Params[3]:=-Params[3];
+    end;
+    Params[5]:=PY[3] / EchelleTexture;  { approximation is here : we ignore the angle that the third vector may do }
+    if Abs(Params[4])<rien2 then A:=1 else A:=1/Params[4];
+    Params[1]:=-PX[1]*A;
+    if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
+    Params[2]:=PY[1]*A;
+    if MapSaveSettings.GameCode=mjGenesis3d then
+    begin
+      if Plan='X' then
+        Params[4]:=-Params[4]
+    end
+  end;
+
 begin
  ResolveMapSaveSettings(MapSaveSettings);
 
  DecimalPlaces := MapSaveSettings.DecimalPlaces;
+
+ if TextureSizes=nil then
+ begin
+   TextureSizes:=TPixelSetSizeCache.Create(nil);
+   TextureSizesFree:=True;
+ end
+ else
+   TextureSizesFree:=False;
+ try
  
  F:=TFace(ObjectToSave);
  if MapSaveSettings.BrushDefVersion < 2 then
@@ -4147,59 +4170,52 @@ begin
    {texture coordinates}
    case MapSaveSettings.MapFormat of
     V220Type:
-      Valve220MapParams(MapSaveSettings,False,Normale, F, S);
+      Valve220MapParams(False,Normale, F, S);
     HL2Type:
-      Valve220MapParams(MapSaveSettings,True,Normale, F, S);
+      Valve220MapParams(True,Normale, F, S);
 
     else {case}
       if not (MapSaveSettings.MapFormat=BPType) then
       begin
         SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
 
-        ApproximateParams(MapSaveSettings, Normale, PT, Params, Mirror); {does scale}
+        ApproximateParams(Normale, PT, Params, Mirror); {does scale}
 
         if (SetupSubSet(ssFiles, 'Textures').Specifics.Values['UnwrapCoordinates']<>'') then
         begin
           //DanielPharos: Normalize the texture shift. If we don't do this,
           //this causes a *lot* of texture info entries in the BSP file.
-          Q:=GlobalFindTexture(NomTex, Nil);
-          if Q<>Nil then
-           try
-            Size:=Q.GetSize;
-           except
-            Log(LOG_WARNING, LoadStr1(5465), [NomTex]);
-            Q:=Nil;
-           end;
-          if Q<>Nil then
+          Size:=TextureSizes.GetSize(NomTex);
+          if (Size.X=0) and (Size.Y=0) then
           begin
-            //We're going to round later anyway, and we need integers here!
-            Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
-            Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
-            if Params[1] < 0 then
-              Params[1]:=Params[1] + Size.X;
-            if Params[2] < 0 then
-              Params[2]:=Params[2] + Size.Y;
+            Log(LOG_WARNING, LoadStr1(5465), [NomTex]);
+            Size.X:=EchelleTexture;
+            Size.Y:=EchelleTexture;
           end;
+
+          //We're going to round later anyway, and we need integers here!
+          Params[1]:=Round(Params[1]) mod Cardinal(Size.X);
+          Params[2]:=Round(Params[2]) mod Cardinal(Size.Y);
+          if Params[1] < 0 then
+            Params[1]:=Params[1] + Size.X;
+          if Params[2] < 0 then
+            Params[2]:=Params[2] + Size.Y;
         end;
 
         if MapSaveSettings.GameCode=mjCoD2 then
         begin
           //Adjust the scale
-          Q:=GlobalFindTexture(NomTex, Nil);
-          if Q<>Nil then
-           try
-            Size:=Q.GetSize;
-           except
-            Log(LOG_WARNING, LoadStr1(5467), [NomTex]);
-            Q:=Nil;
-           end;
-          if Q<>Nil then
+          Size:=TextureSizes.GetSize(NomTex);
+          if (Size.X=0) and (Size.Y=0) then
           begin
-            Params[4]:=Params[4] * Size.X;
-            Params[5]:=Params[5] * Size.Y;
-            Params[1]:=Params[1] * Params[4];
-            Params[2]:=Params[2] * Params[5];
+            Log(LOG_WARNING, LoadStr1(5467), [NomTex]);
+            Size.X:=EchelleTexture;
+            Size.Y:=EchelleTexture;
           end;
+          Params[4]:=Params[4] * Size.X;
+          Params[5]:=Params[5] * Size.Y;
+          Params[1]:=Params[1] * Params[4];
+          Params[2]:=Params[2] * Params[5];
 
           //Re-order the params for CoD2
           tmpReorder:=Params[1];
@@ -4365,6 +4381,14 @@ begin
     S:=S+TxField[(MapSaveSettings.GameCode>='A') and (MapSaveSettings.GameCode<='Z'), EtpMirror];
 
   Brush.Add(S);
+
+  finally
+    if TextureSizesFree then
+    begin
+      TextureSizes.Free;
+      TextureSizes:=nil;
+    end;
+  end;
 end;
 
 procedure SaveAsMapTextTBezier(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);

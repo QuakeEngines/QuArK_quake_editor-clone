@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2015/09/20 13:03:14  danielpharos
+Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
+
 Revision 1.76  2014/08/15 21:50:03  danielpharos
 Added FastMove and FastCode for better performance.
 
@@ -298,6 +301,7 @@ uses
   OsFolder in 'prog\OsFolder.pas',
   Output1 in 'prog\Output1.pas' {OutputDirDlg},
   PakFiles in 'prog\PakFiles.pas',
+  PixelSetSizeCache in 'prog\PixelSetSizeCache.pas',
   Qk1 in 'prog\Qk1.pas' {Form1},
   Qk3D in 'prog\Qk3D.pas',
   Qk6DX in 'prog\Qk6DX.pas',
