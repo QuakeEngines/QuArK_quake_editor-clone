@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.99  2017/10/01 06:55:36  danielpharos
+Fixed a memory leak when there are idle jobs waiting on application exit.
+
 Revision 1.98  2017/04/16 13:06:57  danielpharos
 Added checkbox for AMD driver bug check.
 
@@ -961,6 +964,7 @@ begin
  GlobalDisplayWarnings;
  if IdleJobs<>Nil then
   begin
+   Log(LOG_VERBOSE, 'Now processing idle jobs...');
    {Take first IdleJob in chain, and set the New-Top-IdleJobs pointer
     to the next IdleJob of the chain - tricky tricky!}
    P:=IdleJobs;
