@@ -32,9 +32,12 @@ import quarkx
 import sys
 
 
+#Copied from qutils:
 SILVER    = 0xC0C0C0
 RED       = 0x0000FF
 WHITE     = 0xFFFFFF
+MT_ERROR  = 1
+MB_OK     = 4
 
 
 class console:
@@ -72,13 +75,16 @@ def runprogram(cmdline, currentdir, stdout=0, stderr=None):
             return quarkx.runprogram(cmdline, currentdir, stdout or console(SILVER), stderr or console(RED))
     except:
         print "Could not execute this program."
-        quarkx.msgbox("Cannot execute this program :\n\n    %s\n\nCheck the path and required DLLs." % cmdline, 1, 4)
+        quarkx.msgbox("Cannot execute this program :\n\n    %s\n\nCheck the path and required DLLs." % cmdline, MT_ERROR, MB_OK)
         raise quarkx.aborted
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.5  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
