@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.105  2017/03/05 13:44:43  danielpharos
+Workaround a crash on quit with the Used Textures functionality.
+
 Revision 1.104  2015/09/20 13:03:13  danielpharos
 Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
 
@@ -2199,10 +2202,10 @@ var
  SI: TStartupInfo;
  PI: TProcessInformation;
  nstdout, nstderr: PyObject;
- Flags: Integer;
+ Flags: DWORD;
  Z, Z2: array[0..MAX_PATH] of Char;
  ShInfo: TShFileInfo;
- BinaryType: Integer;
+ BinaryType: DWORD;
 begin
  try
   Result:=Nil;
