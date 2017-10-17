@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2009/07/15 10:38:10  danielpharos
+Updated website link.
+
 Revision 1.10  2009/02/21 17:09:44  danielpharos
 Changed all source files to use CRLF text format, updated copyright and GPL text.
 
@@ -97,13 +100,14 @@ const
  wppn_DataWrite    = wp_ProcessNotifyFirst+1;
  wppn_EndOfData    = wp_ProcessNotifyFirst+2;
 
- PipeBufSize = 256;  { must be a power of 2 }
+ PipeBufSize = 256;
 
 type
  PPipeBuffer = ^TPipeBuffer;
  TPipeBuffer = record
-               {CriticalSection: TRTLCriticalSection;}
-                InQueue, OutQueue: Integer;
+                CriticalSection: TRTLCriticalSection;
+                ReadyForMore: THandle;
+                InQueue, OutQueue: DWORD;
                 Pending: Boolean;
                 Data: array[0..PipeBufSize-1] of Char;
                end;
@@ -121,16 +125,19 @@ begin
 end;
 
 function PipeReader(var Info: TWaiterInfo) : LongInt; stdcall;
+const
+ InputMsgBufferSize = 1024;
 var
  Buffer: PPipeBuffer;
- I, J, Count: Integer;
+ I, Count: DWORD;
  Pipe: THandle;
- InputMsg: array[0..3071] of Char;
+ InputMsg: array[0..InputMsgBufferSize-1] of Char;
 begin
  New(Buffer);
  Info.Extra:=Buffer;
  Pipe:=Info.ReadPipe;
-{InitializeCriticalSection(Buffer^.CriticalSection);}
+ InitializeCriticalSection(Buffer^.CriticalSection);
+ Buffer^.ReadyForMore:=CreateEvent(nil, false, true, nil);
  Buffer^.InQueue:=0;
  Buffer^.OutQueue:=0;
  Buffer^.Pending:=False;
@@ -143,27 +150,43 @@ begin
    end;
   if Count=1 then*)
 
-  if not ReadFile(Pipe, InputMsg, SizeOf(InputMsg), DWORD(Count), Nil) then
+  if not ReadFile(Pipe, InputMsg, SizeOf(InputMsg), Count, Nil) then
    begin
+    //FIXME: Log an error or something?
+    PostMessage(g_Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
+    Result:=1;
+    Exit;
+   end;
+  if Count=0 then
+   begin
+    //No more data; pipe is closed.
     PostMessage(g_Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
     Result:=0;
     Exit;
    end;
-  for J:=0 to Count-1 do
+  I:=0;
+  while (I < Count) do
    begin
-    Buffer^.Data[Buffer^.InQueue]:=InputMsg[J];
+    WaitForSingleObject(Buffer^.ReadyForMore, INFINITE);
+    EnterCriticalSection(Buffer^.CriticalSection);
+    try
+     while (I < Count) do
+      begin
+       Buffer^.Data[Buffer^.InQueue]:=InputMsg[I];
+       I:=I+1;
+       Buffer^.InQueue:=(Buffer^.InQueue+1) mod PipeBufSize;
+       if not Buffer^.Pending then
+        begin
+         Buffer^.Pending:=True;
+         PostMessage(g_Form1Handle, wm_InternalMessage, wppn_DataWrite, LongInt(@Info));
+        end;
 
-    I:=(Buffer^.InQueue+1) and Pred(PipeBufSize);
-    repeat
-     if I <> Buffer^.OutQueue then Break;
-     Sleep(150);   { hack... }
-    until False;
-    Buffer^.InQueue:=I;
-    if not Buffer^.Pending then
-     begin
-      Buffer^.Pending:=True;
-      PostMessage(g_Form1Handle, wm_InternalMessage, wppn_DataWrite, LongInt(@Info));
-     end;
+       //If we caught up with the "end" of the buffer, break to wait.
+       if Buffer^.InQueue = Buffer^.OutQueue then Break;
+      end;
+    finally
+     LeaveCriticalSection(Buffer^.CriticalSection);
+    end;
    end;
  until False;
 end;
@@ -172,12 +195,12 @@ procedure ProcessNotify(wParam, lParam: LongInt);
 var
  Info: ^TWaiterInfo absolute lParam;
  s: PyObject;
- InQueue, OutQueue: Integer;
  Buffer: PPipeBuffer;
  S1: String;
 begin
  case wParam of
   wppn_EndOfProcess:
+    //FIXME: Need to make sure the readers are done!
     try
      CallNotifyEvent(Info^.self, Info^.fnt, True);
     finally
@@ -188,20 +211,26 @@ begin
   wppn_DataWrite:
     begin
      Buffer:=Info^.Extra;
-     Buffer^.Pending:=False;
-     InQueue:=Buffer^.InQueue;
-     OutQueue:=Buffer^.OutQueue;
-     if OutQueue = InQueue then Exit;
-     if OutQueue < InQueue then
-      s:=PyString_FromStringAndSize(PChar(@Buffer^.Data[OutQueue]), InQueue-OutQueue)
-     else
+     with Buffer^ do
       begin
-       SetLength(S1, InQueue+PipeBufSize-OutQueue);
-       Move(Buffer^.Data[OutQueue], S1[1], PipeBufSize-OutQueue);
-       Move(Buffer^.Data, S1[1+PipeBufSize-OutQueue], InQueue);
-       s:=PyString_FromStringAndSize(PChar(S1), Length(S1));
+       EnterCriticalSection(CriticalSection);
+       try
+        Pending:=False;
+        if OutQueue < InQueue then
+         s:=PyString_FromStringAndSize(PChar(@Data[OutQueue]), InQueue-OutQueue)
+        else
+         begin
+          SetLength(S1, InQueue+PipeBufSize-OutQueue);
+          Move(Data[OutQueue], S1[1], PipeBufSize-OutQueue);
+          Move(Data, S1[1+PipeBufSize-OutQueue], InQueue);
+          s:=PyString_FromStringAndSize(PChar(S1), Length(S1));
+         end;
+        OutQueue:=InQueue;
+       finally
+        LeaveCriticalSection(CriticalSection);
+       end;
+       SetEvent(ReadyForMore);
       end;
-     Buffer^.OutQueue:=InQueue;
      if s<>Nil then
       try
        CallNotifyEvent(s, Info^.writefnt, False);
@@ -215,6 +244,8 @@ begin
      PythonCodeEnd;
     finally
      CloseHandle(Info^.ReadPipe);
+     DeleteCriticalSection(Info^.Extra^.CriticalSection);
+     CloseHandle(Info^.Extra^.ReadyForMore);
      Dispose(Info^.Extra);
      Py_DECREF(Info^.writefnt);
      Py_DECREF(Info^.closefnt);
@@ -291,46 +322,46 @@ var
  writefnt, closefnt: PyObject;
    {SA: TSecurityAttributes;}
 begin
-   {Result:=INVALID_HANDLE_VALUE;
-    FillChar(SA, SizeOf(SA), 0);
-    SA.nLength:=SizeOf(SA);
-    SA.bInheritHandle:=True;}
- if not CreatePipe(hRead, hWrite, {@SA}Nil, 1) then
-  Raise InternalE('CreatePipe failed');
+ Info:=nil;
  try
   writefnt:=PyObject_GetAttrString(fileobj, 'write');
   if writefnt=Nil then
    Raise EError(4454);
   closefnt:=PyObject_GetAttrString(fileobj, 'close');
+  if closefnt=Nil then
+   Raise EError(4454);
+ {Result:=INVALID_HANDLE_VALUE;
+  FillChar(SA, SizeOf(SA), 0);
+  SA.nLength:=SizeOf(SA);
+  SA.bInheritHandle:=True;}
+  if not CreatePipe(hRead, hWrite, {@SA}Nil, 0) then
+   Raise InternalE('CreatePipe failed');
   try
-   if closefnt=Nil then
-    Raise EError(4454);
    New(Info);
-  except
-   Py_XDECREF(closefnt);
-   Py_DECREF(writefnt);
-   Raise;
-  end;
-  Info^.writefnt:=writefnt;
-  Info^.closefnt:=closefnt;
-  Info^.ReadPipe:=hRead;
-  Waiter:=CreateThread(Nil, 1024, @PipeReader, Info, 0, Dummy);
-  if Waiter=0 then
-   begin
-    Dispose(Info);
-    Py_DECREF(closefnt);
-    Py_DECREF(writefnt);
+   Info^.writefnt:=writefnt;
+   Info^.closefnt:=closefnt;
+   Info^.ReadPipe:=hRead;
+   Waiter:=CreateThread(Nil, 1024, @PipeReader, Info, 0, Dummy);
+   if Waiter=0 then
     Raise InternalE('CreateThread failed');
+   try
+    SetThreadPriority(Waiter, THREAD_PRIORITY_ABOVE_NORMAL);
+   finally
+    CloseHandle(Waiter);
    end;
-  SetThreadPriority(Waiter, THREAD_PRIORITY_HIGHEST);
-  CloseHandle(Waiter);
-  hRead:=0;
-  DuplicateHandle(GetCurrentProcess, hWrite, GetCurrentProcess, @Result, 0, True, DUPLICATE_SAME_ACCESS);
-     {Result:=hWrite;
-      hWrite:=0;}
- finally
-  if hWrite<>0 then CloseHandle(hWrite);
-  if hRead<>0 then CloseHandle(hRead);
+   //hRead was "handed over" to the thread.
+   hRead:=0;
+   //We're about to close hWrite, so let's return a duplicate.
+   DuplicateHandle(GetCurrentProcess, hWrite, GetCurrentProcess, @Result, 0, True, DUPLICATE_SAME_ACCESS);
+  finally
+   if hWrite<>0 then CloseHandle(hWrite);
+   if hRead<>0 then CloseHandle(hRead);
+  end;
+ except
+  if Info<> nil then Dispose(Info);
+  Py_XDECREF(closefnt);
+  Py_XDECREF(writefnt);
+  Raise;
  end;
 end;
 
@@ -387,16 +418,19 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@fnt]) then
    Exit;
-  New(Info);
-  Info^.self:=PyProcessObject(self);
-  Info^.fnt:=fnt;
- {Info^.TargetWnd:=g_Form1.Handle;}
-  Waiter:=CreateThread(Nil, 512, @WaiterProc, Info, 0, Dummy);
-  if Waiter=0 then
-   begin
-    Dispose(Info);
+  Info:=nil;
+  try
+   New(Info);
+   Info^.self:=PyProcessObject(self);
+   Info^.fnt:=fnt;
+  {Info^.TargetWnd:=g_Form1.Handle;}
+   Waiter:=CreateThread(Nil, 512, @WaiterProc, Info, 0, Dummy);
+   if Waiter=0 then
     Raise InternalE('Cannot start watching thread');
-   end;
+  except
+   Dispose(Info);
+   Raise;
+  end;
   CloseHandle(Waiter);
   Py_INCREF(self);
   Py_INCREF(fnt);
@@ -470,17 +504,20 @@ begin
   RunningProcesses:=TStringList.Create;
  RunningProcesses.AddObject(CmdLine, TObject(Result));
  UpdateRunningProcesses;
- New(Info1);
- Info1^.self:=Result;
- Info1^.fnt:=Nil;
- H:=CreateThread(Nil, 512, @WaiterProc, Info1, 0, Dummy);
- if H=0 then
-  Dispose(Info1)
- else
-  begin
-   CloseHandle(H);
-   Py_INCREF(Result);
-  end;
+ Info1:=nil;
+ try
+  New(Info1);
+  Info1^.self:=Result;
+  Info1^.fnt:=Nil;
+  H:=CreateThread(Nil, 512, @WaiterProc, Info1, 0, Dummy);
+  if H=0 then
+   Raise InternalE('CreateThread failed');
+  CloseHandle(H);
+  Py_INCREF(Result);
+ except
+  Dispose(Info1);
+  Raise;
+ end;
 end;
 
  {-------------------}
