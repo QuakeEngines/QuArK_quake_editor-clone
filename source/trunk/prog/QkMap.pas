@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.128  2017/10/15 09:39:57  danielpharos
+Cache texture sizes during map loading and saving for a big speed improvement with certain games.
+
 Revision 1.127  2017/10/14 15:20:32  danielpharos
 Significantly improved CoD2 .map importing and exporting.
 
@@ -1546,32 +1549,34 @@ expected one.
  end;
 
  procedure ReadCOD2SurfaceParams(Surface: TTexturedTreeMap);
+ var
+   XY: String;
  begin
    //Lightmap name
-   ReadSymbol(sStringToken);
    Surface.Specifics.Values['CoD2_lightmap']:=S;
+   ReadSymbol(sStringToken);
 
    //Lightmap size
-   ReadSymbol(sNumValueToken); //X
-   S:=FloatToStrF(NumericValue,ffFixed,7,2);
-   ReadSymbol(sNumValueToken); //Y
-   S:=S+' '+FloatToStrF(NumericValue,ffFixed,7,2);
-   Surface.Specifics.Values['CoD2_lightmap_size']:=S;
+   XY:=FloatToStrF(NumericValue,ffFixed,7,2);
+   ReadSymbol(sNumValueToken);
+   XY:=XY+' '+FloatToStrF(NumericValue,ffFixed,7,2);
+   Surface.Specifics.Values['CoD2_lightmap_size']:=XY;
+   ReadSymbol(sNumValueToken);
 
    //Lightmap shift
-   ReadSymbol(sNumValueToken); //X
-   S:=FloatToStrF(NumericValue,ffFixed,7,2);
-   ReadSymbol(sNumValueToken); //Y
-   S:=S+' '+FloatToStrF(NumericValue,ffFixed,7,2);
-   Surface.Specifics.Values['CoD2_lightmap_shift']:=S;
+   XY:=FloatToStrF(NumericValue,ffFixed,7,2);
+   ReadSymbol(sNumValueToken);
+   XY:=XY+' '+FloatToStrF(NumericValue,ffFixed,7,2);
+   Surface.Specifics.Values['CoD2_lightmap_shift']:=XY;
+   ReadSymbol(sNumValueToken);
 
    //Lightmap rotate
-   ReadSymbol(sNumValueToken);
    Surface.Specifics.Values['CoD2_lightmap_rotate']:=FloatToStrF(NumericValue,ffFixed,7,2);
+   ReadSymbol(sNumValueToken);
 
    //Lightmap skew
-   ReadSymbol(sNumValueToken);
    Surface.Specifics.Values['CoD2_lightmap_skew']:=FloatToStrF(NumericValue,ffFixed,7,2);
+   ReadSymbol(sNumValueToken);
  end;
 
  procedure ReadPatchDef2;
@@ -2012,8 +2017,6 @@ expected one.
         Size.X:=EchelleTexture;
         Size.Y:=EchelleTexture;
       end;
-      //Params[1]:=Params[1] / Size.X; //@
-      //Params[2]:=Params[2] / Size.Y; //@
       Params[1]:=Params[1] / Params[4];
       Params[2]:=Params[2] / Params[5];
       Params[4]:=Params[4] / Size.X;
