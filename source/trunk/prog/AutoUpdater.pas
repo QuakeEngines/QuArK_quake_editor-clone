@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2011/05/11 20:08:21  danielpharos
+Disabled offline update check.
+
 Revision 1.17  2010/04/16 21:18:45  danielpharos
 Move some version-stuff about. quarkpy now also checks the minor version number.
 
@@ -416,7 +419,7 @@ begin
             FileData.Free;
           end;
 
-          Setup := SetupSubSet(ssGeneral, 'Update');
+          Setup := SetupSubSet(ssGeneral, 'Startup');
           if (Setup.Specifics.Values['CheckForNotifications']<>'') and (UpdateIndexFile.NotificationNR>0) then
           begin
             for I:=0 to UpdateIndexFile.NotificationNR-1 do
@@ -621,7 +624,7 @@ begin
   UpdatesFound:=False;
   if AllowOnline then
   begin
-    if SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheckOnline'] <> '' then
+    if SetupSubSet(ssGeneral, 'Startup').Specifics.Values['UpdateCheckOnline'] <> '' then
     begin
       //Online update
       DoOfflineUpdate := False;
@@ -644,8 +647,7 @@ begin
   else
     DoOfflineUpdate := True;
 
-  //FIXME: Disabling offline update...
-  (*if DoOfflineUpdate then
+  if DoOfflineUpdate then
   begin
     //Offline 'update'
     if DaySpan(Now, QuArKCompileDate) >= QuArKDaysOld then
@@ -657,7 +659,7 @@ begin
           MessageBox(0, 'Unable to open website: Call to ShellExecute failed!' + #13#10#13#10 + 'Please manually go to: ' + QuArKWebsite, 'QuArK', MB_TASKMODAL or MB_ICONEXCLAMATION or MB_OK);
       end;
     end;
-  end;*)
+  end;
 end;
 
  {------------------------}

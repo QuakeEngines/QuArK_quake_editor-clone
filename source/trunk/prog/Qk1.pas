@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.100  2017/10/17 18:07:48  danielpharos
+Added some logging for the processing of idle jobs.
+
 Revision 1.99  2017/10/01 06:55:36  danielpharos
 Fixed a memory leak when there are idle jobs waiting on application exit.
 
@@ -768,7 +771,7 @@ begin
  Log(LOG_VERBOSE, 'Initializing Python...');
  InitPython;
 
- if g_CmdOptions.DoInstance and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['SingleInstance']<>'') then
+ if g_CmdOptions.DoInstance and (SetupSubSet(ssGeneral, 'Startup').Specifics.Values['SingleInstance']<>'') then
  begin
    if MutexError = ERROR_ALREADY_EXISTS then
      begin
@@ -789,7 +792,7 @@ begin
    won't be loaded yet. Change this when the update-screen isn't a nag-screen
    anymore! (Store data in registry?) }
  //Check for updates...
- if g_CmdOptions.DoUpdate and (SetupSubSet(ssGeneral, 'Update').Specifics.Values['UpdateCheck']<>'') then
+ if g_CmdOptions.DoUpdate and (SetupSubSet(ssGeneral, 'Startup').Specifics.Values['UpdateCheck']<>'') then
  begin
    Log(LOG_VERBOSE, 'Checking for updates...');
    DoUpdate(g_CmdOptions.OnlineUpdate, True);
@@ -807,7 +810,7 @@ begin
  end;
 
  // Warn for bugs
- if (SetupSubSet(ssGeneral, 'Update').Specifics.Values['BugCheck']<>'') then
+ if (SetupSubSet(ssGeneral, 'Startup').Specifics.Values['BugCheck']<>'') then
    WarnDriverBugs;
 
  Log(LOG_VERBOSE, 'Preparing QuArK Explorer...');

@@ -27,6 +27,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.577  2017/10/14 19:50:08  danielpharos
+//Added CoD2 entities addon file.
+//
 //Revision 1.576  2017/10/14 16:16:49  danielpharos
 //Enabled support for Call of Duty 2.
 //
@@ -1991,7 +1994,7 @@ QQRKSRC1
         GameBufferSize = '300.0'     // MB
         Form = "GeneralMemory"
       }
-      Update:config =
+      Startup:config =
       {
         UpdateCheck = "1"
         UpdateCheckOnline = "1"
@@ -2000,7 +2003,7 @@ QQRKSRC1
         AutomaticInstall = ""   //Currently hidden
         SingleInstance = "1"
         BugCheck = "1"
-        Form = "GeneralUpdate"
+        Form = "GeneralStartup"
         Notification_Main = "6" //Hidden: Start-index for this version
       }
       QuakeC:config =
@@ -10008,7 +10011,7 @@ QQRKSRC1
       GameFiles: = {Txt="Number of game files" Typ="EF1" Hint="Number of game files to keep in memory (e.g. textures)"}
       GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files (e.g. textures)"}
     }
-    GeneralUpdate:form =
+    GeneralStartup:form =
     {
       Style = "3"
       UpdateCheck: = {Typ="X" Txt="Update check" Cap="Enabled" Hint = "Enables the update check when starting QuArK."}
