@@ -5,3 +5,11 @@ author: DanielPharos
 
 <i>Map version to use for Doom 3</i>. Doom 3 works with two different
 map versions. Map version 2 should be used.
+
+<i>Write comments in .map files</i>. If disabled, no comment lines will be written.
+
+<!--Write //TX# in .map files-->
+
+<i>Write floating-point coords</i>. If disabled, only integer numbers will be written.
+
+<i>Use Integral Vertices as Threepoints</i>.

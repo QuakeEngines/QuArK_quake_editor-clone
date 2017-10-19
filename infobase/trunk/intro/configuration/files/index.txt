@@ -3,6 +3,7 @@ desc: textures
 desc: devil
 desc: bmp
 desc: dds
+desc: def
 desc: jpg
 desc: map
 desc: pcx
@@ -10,6 +11,7 @@ desc: png
 desc: tga
 desc: vmt
 desc: vtf
+desc: zip
 
 In QuArK, many different types of files can be loaded and saved. The most
 important are of course the maps themselves, but QuArK can also handle textures,

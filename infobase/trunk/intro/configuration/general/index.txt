@@ -6,7 +6,7 @@ desc: glide
 desc: opengl
 desc: directx
 desc: memory
-desc: update
+desc: startup
 desc: quakec
 desc: fileassociations
 desc: externaleditors

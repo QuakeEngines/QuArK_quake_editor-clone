@@ -1,0 +1,11 @@
+title: ZIP
+author: DanielPharos
+
+<img align=right>zip.png</img>
+
+<i>Compression Level</i>. Level of Compression to use (0 .. 9)
+
+<i>Size of compression buffer (KB)</i>. Size of memory buffer to allocate when
+compressing files.
+
+<i>Memory usage of internal compression state</i>. Level of memory usage when compressing (1 .. 9)

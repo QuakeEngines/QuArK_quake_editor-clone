@@ -1,7 +1,7 @@
-title: Update
+title: Startup
 author: DanielPharos
 
-<img align=right>update.png</img>
+<img align=right>startup.png</img>
 
 <i>Update check</i>. Enables the update check when starting QuArK.
 
@@ -10,3 +10,5 @@ author: DanielPharos
 <!-- <i>Automatically update</i>. Automatically download and install any updates available. -->
 
 <i>Check for single instance</i>. Enables the check for a single running QuArK (or updater instance) instance on start-up.
+
+<i>Check for bugs</i>. Enables checks that warn about bugs in third-party software that might affect QuArK.

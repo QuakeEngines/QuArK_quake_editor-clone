@@ -1,0 +1,8 @@
+title: DEF
+author: DanielPharos
+
+<img align=right>def.png</img>
+
+<i>Automatically Interpret Help</i>. Automatically try to interpret the help/description of the entities to try and find all the keys. (Only enable when using the DEF converter directly!)
+
+<i>Ignore unknown lines</i>. Automatically ignore lines that cannot be interpreted.
