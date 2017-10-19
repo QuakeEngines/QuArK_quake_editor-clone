@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2017/10/17 18:08:29  danielpharos
+Reworked inner working to remove a Sleep-call.
+
 Revision 1.11  2009/07/15 10:38:10  danielpharos
 Updated website link.
 
@@ -427,11 +430,11 @@ begin
    Waiter:=CreateThread(Nil, 512, @WaiterProc, Info, 0, Dummy);
    if Waiter=0 then
     Raise InternalE('Cannot start watching thread');
+   CloseHandle(Waiter);
   except
    Dispose(Info);
    Raise;
   end;
-  CloseHandle(Waiter);
   Py_INCREF(self);
   Py_INCREF(fnt);
   Result:=PyNoResult;
