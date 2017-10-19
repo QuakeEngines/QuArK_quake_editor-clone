@@ -331,6 +331,11 @@ def fill_md3(md3, QuArK_objects):
     frames = QuArK_objects.comp_list[0].dictitems['Frames:fg'].subitems
     if len(frames) > 1:
         md3.numFrames = len(frames)-1
+        frames_new = []
+        for frame in frames:
+            if not frame.endswith("baseframe"):
+                frames_new.append(frame)
+        frames = frames_new
     else:
         md3.numFrames = len(frames)
     md3.numTags = len(QuArK_objects.tags)
@@ -558,13 +563,21 @@ def savemodel(root, filename, gamename, nomessage=0):
             if len(frames) != anim_frames:
                 quarkx.msgbox("Component " + object.shortname + "\nnumber of animation frames\ndoes not equal other components.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
-            if not frames[len(frames)-1].shortname.endswith("baseframe"):
-                quarkx.msgbox("Component " + object.shortname + "\nlast frame is not a '(frame name) baseframe'.\nAll components to be exported\nmust have a baseframe.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+            FoundABaseFrame = False
+            for frame in frames:
+                if frame.shortname.endswith("baseframe"):
+                    if not FoundABaseFrame:
+                        FoundABaseFrame = True
+                    else:
+                        quarkx.msgbox("Component " + object.shortname + "\nhas multiple frame '(frame name) baseframe'.\nAll components to be exported\nmust have only one baseframe.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
+                        return
+            if not FoundABaseFrame:
+                quarkx.msgbox("Component " + object.shortname + "\nhas no frame '(frame name) baseframe'.\nAll components to be exported\nmust have a baseframe.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
             if len(frames[0].dictspec['Vertices']) == 0:
                 quarkx.msgbox("Component " + object.shortname + "\nhas no frame vertices to export.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
-            if len(frames) == 0:
+            if len(object.dictitems['Skins:sg'].subitems) == 0:
                 quarkx.msgbox("Component " + object.shortname + "\nhas no skin textures to export.\nCan not create model.", quarkpy.qutils.MT_ERROR, quarkpy.qutils.MB_OK)
                 return
 
@@ -736,6 +749,9 @@ def UIExportDialog(root, filename, editor):
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2015/09/20 12:59:58  danielpharos
+# Added a missing import statement.
+#
 # Revision 1.3  2011/03/31 16:13:17  cdunde
 # Small comments corrections.
 #
