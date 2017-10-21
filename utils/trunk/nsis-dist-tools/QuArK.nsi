@@ -1,11 +1,11 @@
 
 ; QuArK installer x.x.x
 ; HomePage: http://quark.sourceforge.net/
-; Version:  NSIS 2.28
 ; Author:  Fredrick Vamstad, DanielPharos & cdunde
 ; Date:     18 Aug. 2005 & 5 January 2007
 ; nullsoft NSIS installer program available at:
 ;   http://nsis.sourceforge.net
+; Please use at least NSIS 2.51.
 ;
 ; Last update April 5, 2007 - cdunde
 ;
@@ -22,15 +22,16 @@
 ; 9) Drag this file, QuArK.nsi, into the compiler window, or use the "File > Load Script" method to open this file.
 ; 10) The finished QuArK installer will be place in the same location as this file, ready for distrubution!
 
-; MUI 1.76 compatible ------
-!include "MUI.nsh"
+; Modern UI 2 ------
+!include "MUI2.nsh"
 SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLER_EXENAME "quark-win32-6.6.0Beta6.exe"
+!define INSTALLER_EXENAME "quark-win32-6.6.0Beta7nightly21oct2017.exe"
 !define PRODUCT_NAME "QuArK"
-!define PRODUCT_VERSION "6.6.0 Beta 6"
+!define PRODUCT_NAME_FULL "Quake Army Knife"
+!define PRODUCT_VERSION "6.6.0 Beta 7"
 !define PRODUCT_WEB_SITE "http://quark.sourceforge.net/"
 !define PRODUCT_WEB_FORUM "http://quark.sourceforge.net/forums/"
 !define PRODUCT_INFOBASE "http://quark.sourceforge.net/infobase/"
@@ -41,7 +42,7 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${INSTALLER_EXENAME}"
-InstallDir "$PROGRAMFILES\QuArK 6.6.0 Beta 6"
+InstallDir "$PROGRAMFILES\QuArK 6.6"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -184,6 +185,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\Alice\*.*"
   SetOutPath "$INSTDIR\addons\CoD1"
   File "${BUILDDIR}\addons\CoD1\*.*"
+  SetOutPath "$INSTDIR\addons\CoD2"
+  File "${BUILDDIR}\addons\CoD2\*.*"
   SetOutPath "$INSTDIR\addons\Crystal_Space"
   File "${BUILDDIR}\addons\Crystal_Space\*.*"
   SetOutPath "$INSTDIR\addons\Doom_3"
@@ -288,7 +291,7 @@ SectionEnd
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\QuArK.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "${PRODUCT_NAME_FULL} (${PRODUCT_NAME})"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\QuArK.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
@@ -329,6 +332,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\EF2\*.*"
   Delete "$INSTDIR\addons\Doom_3\*.*"
   Delete "$INSTDIR\addons\Crystal_Space\*.*"
+  Delete "$INSTDIR\addons\CoD2\*.*"
   Delete "$INSTDIR\addons\CoD1\*.*"
   Delete "$INSTDIR\addons\Alice\*.*"
   Delete "$INSTDIR\addons\6DX\*.*"
@@ -379,6 +383,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\EF2"
   RMDir "$INSTDIR\addons\Doom_3"
   RMDir "$INSTDIR\addons\Crystal_Space"
+  RMDir "$INSTDIR\addons\CoD2"
   RMDir "$INSTDIR\addons\CoD1"
   RMDir "$INSTDIR\addons\Alice"
   RMDir "$INSTDIR\addons\6DX"
