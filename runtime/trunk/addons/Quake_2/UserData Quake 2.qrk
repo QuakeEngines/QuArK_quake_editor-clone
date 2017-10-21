@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2008/06/30 17:31:54  cdunde
+//Updates, additions and a new mod addon by X7.
+//
 //Revision 1.8  2008/05/21 18:15:14  cdunde
 //To add and\or activate Half-Life 2 functions: (all original code by Alexander)
 //1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
@@ -91,7 +94,7 @@ QQRKSRC1
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-      BuildArgs3 = "-v -bounce 16"
+      BuildArgs3 = "-v"
     }
     item: =
     {
@@ -104,7 +107,7 @@ QQRKSRC1
       BuildPgm2 = "1"
       BuildArgs2 = "-fast"
       BuildPgm3 = "1"
-      BuildArgs3 = "-v -bounce 16"
+      BuildArgs3 = "-v"
     }
     item: =
     {
