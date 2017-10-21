@@ -23,6 +23,9 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2014/12/20 22:03:52  danielpharos
+Small fixes for SteamFS.
+
 Revision 1.43  2012/07/01 12:40:42  danielpharos
 Added new Source MP engine.
 
@@ -178,6 +181,7 @@ var
   ClearGCFCacheNeeded: Boolean = false;
   CheckQuArKSAS: Boolean = true;
 
+//FIXME: Not used anymore... More somewhere else? CONST certain parameters?
 function DoFileOperation(Operation: Word; FilesFrom: TStringList; FilesTo: TStringList; FileOpFlags: Word): Boolean;
 
   procedure ParseFiles(Files: TStringList; Target: Pointer);
@@ -249,7 +253,7 @@ end;
 
 function GetSteamCacheDir : String;
 begin
-  Result := ConcatPaths([ExtractFilePath(MakeTempFileName('QSAS')), 'QSAS']);
+  Result := ConcatPaths([ExtractFilePath(MakeTempFileName('QuArKSAS')), 'QuArKSAS']);
 end;
 
 function RunSteam: Boolean;
@@ -407,6 +411,7 @@ begin
     else
     begin
       //Check version!
+      //FIXME: Actually, it's silly to use MD5 for this: we have to read in both files either way!
       QSASMd5Hash:=Md5GetFileHash(ConcatPaths([GetQPath(pQuArKDll), QuArKSASEXE]));
       CurQSASMd5Hash:=Md5GetFileHash(QSASFile);
       if QSASMd5Hash<>CurQSASMd5Hash then
