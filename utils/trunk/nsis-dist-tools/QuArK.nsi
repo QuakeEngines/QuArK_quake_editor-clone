@@ -268,6 +268,8 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
 SectionEnd
 
 Section "$(TEXT_SEC02_TITLE)" SEC02
+  SetOutPath "$INSTDIR\help\pics"
+  File "${BUILDDIR}\help\pics\*.*"
   SetOutPath "$INSTDIR\help"
   File "${BUILDDIR}\help\*.*"
 SectionEnd
@@ -335,6 +337,7 @@ Section Uninstall
   Delete "$INSTDIR\addons\6DX\*.*"
   Delete "$INSTDIR\addons\*.*"
   Delete "$INSTDIR\dlls\*.*"
+  Delete "$INSTDIR\help\pics\*.*"
   Delete "$INSTDIR\help\*.*"
   Delete "$INSTDIR\images\*.*"
   Delete "$INSTDIR\lgicons\*.*"
@@ -385,6 +388,7 @@ Section Uninstall
   RMDir "$INSTDIR\addons\6DX"
   RMDir "$INSTDIR\addons"
   RMDir "$INSTDIR\dlls"
+  RMDir "$INSTDIR\help\pics"
   RMDir "$INSTDIR\help"
   RMDir "$INSTDIR\images"
   RMDir "$INSTDIR\lgicons"
