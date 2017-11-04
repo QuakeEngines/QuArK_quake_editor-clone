@@ -908,17 +908,17 @@ class BaseEditor:
                 setviews(self.layout.views, "scale", scale)
             return
 
-        global flagsmouse, currentview, cursorpos  ### Used for the Model Editor only.
-        flagsmouse = flags                         ### Used for the Model Editor only.
-        currentview = view                         ### Used for the Model Editor only.
-        cursorpos = (x, y)                         ### Used for the Model Editor only.
-        import mdleditor                           ### Used for the Model Editor only.
-        import mdlhandles                          ### Used for the Model Editor only.
-        import plugins.mdlcamerapos                ### Used for the Model Editor only.
-
         ### This section just for Model Editor face selection and editor views drawing manipulation
         ### and to free up L & RMB combo dragging for Model Editor Face selection use.
         if self.MODE == SS_MODEL:
+            global flagsmouse, currentview, cursorpos
+            flagsmouse = flags
+            currentview = view
+            cursorpos = (x, y)
+            import mdleditor
+            import mdlhandles
+            import plugins.mdlcamerapos
+
             if (flagsmouse == 560 or flagsmouse == 1072) and (view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow"):
                 if flagsmouse == 560 and self.dragobject is None:
                     s = "RS"
@@ -1292,16 +1292,16 @@ class BaseEditor:
 
             if self.dragobject is not None:
                 ### To free up L & RMB combo dragging for Model Editor face selection use.
-                if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
+                if (self.MODE == SS_MODEL) and isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
                     pass
                 ### Need to do something here, stops Zoom drag handle when selecting faces but does not always remake handles at end of drag.
-                elif isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject, qhandles.HandleDragObject) and (flagsmouse == 1048):
+                elif (self.MODE == SS_MODEL) and isinstance(self.dragobject, qhandles.HandleDragObject) and (flagsmouse == 1048):
                     self.dragobject = dragobject = None
                 elif flagsmouse == 16384 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
                     self.dragobject = dragobject = None
                     mdleditor.commonhandles(self)
                 else:
-                    if isinstance(self, mdleditor.ModelEditor) and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+                    if (self.MODE == SS_MODEL) and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
                         self.dragobject.dragto(x, y, flags)
                     else:
                         self.dragobject.dragto(x, y, flags)
@@ -1356,7 +1356,7 @@ class BaseEditor:
         #
 
         else:
-            if isinstance(self, mdleditor.ModelEditor) and flagsmouse == 536 and view.info["viewname"] == "skinview":
+            if (self.MODE == SS_MODEL) and flagsmouse == 536 and view.info["viewname"] == "skinview":
                 return
 
             #
@@ -1370,7 +1370,7 @@ class BaseEditor:
             #
 
             if flags & MB_CLICKED:
-                if isinstance(self, mdleditor.ModelEditor):
+                if (self.MODE == SS_MODEL):
                     # To stop mouse button(s) click from causing zooming in all views including Skin-view.
                     if (flagsmouse == 264) or (flagsmouse == 280) or (flagsmouse == 288) or (flagsmouse == 296) or (flagsmouse == 344) or (flagsmouse == 352) or (flagsmouse == 552):
                         if (flagsmouse == 264) or (flagsmouse == 288) and self.layout.toolbars["tb_paintmodes"] is not None:
@@ -1498,7 +1498,7 @@ class BaseEditor:
                 if flags & MB_LEFTBUTTON or handle is None:
                     self.dragobject = self.HandlesModule.MouseDragging(self,view,x,y,s,handle)
 
-                    if isinstance(self, mdleditor.ModelEditor):
+                    if (self.MODE == SS_MODEL):
                         if view.info["viewname"] == "skinview":
                             if flagsmouse == 520 and self.dragobject is None:
                                 view.depth = (-view.clientarea[0], view.clientarea[1])
@@ -1563,7 +1563,7 @@ class BaseEditor:
                 #
                 if self.dragobject is not None:
 
-                    if isinstance(self, mdleditor.ModelEditor):
+                    if (self.MODE == SS_MODEL):
                         if flagsmouse == 520 and view.info["viewname"] == "skinview":
                             self.dragobject.view = view
                             self.dragobject.dragto(x, y, flags | MB_DRAGGING)
@@ -1788,6 +1788,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.161  2017/11/04 13:42:25  danielpharos
+#Various cleanups.
+#
 #Revision 1.160  2017/08/30 19:00:04  danielpharos
 #Removed silly dance to get the editor.
 #

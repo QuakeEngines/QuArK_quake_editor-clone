@@ -1378,9 +1378,8 @@ class SphereMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -1406,9 +1405,6 @@ class SphereMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -1876,9 +1872,8 @@ class PyramidMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -1904,9 +1899,6 @@ class PyramidMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -2433,9 +2425,8 @@ class DoubleConeMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -2461,9 +2452,6 @@ class DoubleConeMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -2951,9 +2939,8 @@ class CylinderMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -2979,9 +2966,6 @@ class CylinderMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -3568,9 +3552,8 @@ class DomeMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -3596,9 +3579,6 @@ class DomeMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -4207,9 +4187,8 @@ class FanMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -4235,9 +4214,6 @@ class FanMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -4775,9 +4751,8 @@ class TorusMakerDragObject(parent):
 
     def drawredimages(self, view, internal=0):
         editor = self.editor
-        import quarkpy.mdleditor
-        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-            pass
+        if editor.MODE != SS_MAP:
+            return
 
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
@@ -4803,9 +4778,6 @@ class TorusMakerDragObject(parent):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-                        import quarkpy.mdleditor
-                        if isinstance(editor, quarkpy.mdleditor.ModelEditor):
-                            return
 ## This causes the red dragging shapes to be drawn
                         for r in self.redimages:
                             view.drawmap(r, mode, self.redcolor)
@@ -4914,6 +4886,9 @@ quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.16  2016/06/17 19:27:27  danielpharos
+# Fixed a typo.
+#
 # Revision 1.15  2015/01/09 20:22:26  danielpharos
 # Typo fixes.
 #
