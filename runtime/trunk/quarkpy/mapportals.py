@@ -80,10 +80,11 @@ def readPortal(pos0, line):
 #  others, see portals.cpp in the bobtoolz source (GtkRadiant)
 #
 def LoadPortalFile(editor, filename):
-    
     f = open(filename, "r")
-    data = f.readlines()
-    f.close()
+    try:
+        data = f.readlines()
+    finally:
+        f.close()
     portals = []
     index = 0
     #
@@ -131,15 +132,18 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
                 pt1 = view.proj(portal[i])
                 cv.line(pt0, pt1)
                 pt0 = pt1
-    except:
+    except AttributeError:
         pass
     oldFinishDrawing(editor, view)
 
 
 mapeditor.MapEditor.finishdrawing = DrawLines
 
-
+# ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11  2007/12/17 00:50:00  danielpharos
+#Fix the map portals not drawing anymore.
+#
 #Revision 1.10  2007/01/09 23:11:46  danielpharos
 #Fixed an annoying crash with map portals (for instance when you set the light-entity's color too high)
 #
@@ -165,4 +169,3 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 #first version, only tested for Q1
 #
 #
-

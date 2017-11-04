@@ -314,7 +314,11 @@ Uses callback functions set using tagdrawfunc().
   
 qbaseeditor.BaseEditor.finishdrawing = _tagfinishdrawing
 
+# ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2008/02/22 09:52:23  danielpharos
+#Move all finishdrawing code to the correct editor, and some small cleanups.
+#
 #Revision 1.7  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

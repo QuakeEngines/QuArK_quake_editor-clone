@@ -170,7 +170,7 @@ class GameConsole(BatchConsole):
             #
             formlist = quarkx.forms()
             if len(formlist):
-                try:    # free some memory and closes 3D views
+                try:    # free some memory and closes 3D views #FIXME: Make closing the 3D views an option!
                     formlist[0].macro("FREE")
                 except:
                     pass
@@ -194,6 +194,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.26  2017/08/17 15:49:01  danielpharos
+#Fixed the bad PAK file output, which was broken in 6.6.0 Beta 2.
+#
 #Revision 1.25  2008/10/08 21:42:12  danielpharos
 #Made map extension changable.
 #

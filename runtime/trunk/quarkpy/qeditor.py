@@ -614,15 +614,13 @@ def CustomZoom(views):
 def getzoommenu(zoombtn):
     def zoomclick(m, views=zoombtn.views):
         editor = mapeditor()
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             import mdlmgr
             mdlmgr.treeviewselchanged = 1
         setviews(views, "scale", m.scale)
     def customzoom(m, views=zoombtn.views):
         editor = mapeditor()
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             import mdlmgr
             mdlmgr.treeviewselchanged = 1
         CustomZoom(views)
@@ -887,8 +885,7 @@ class ZoomBar:
 
     def Update(self, scale1):
         editor = mapeditor()
-        import mdleditor
-        if isinstance(editor, mdleditor.ModelEditor):
+        if editor.MODE == SS_MODEL:
             import mdlmgr
             mdlmgr.treeviewselchanged = 1
         #
@@ -1448,30 +1445,23 @@ def TexModeMenu(editor, view):
     "Menu items to set the textured mode of 'view'."
 
     def setviewmode(menu, editor=editor, view=view):
-        try:
-            import mdleditor
-            if isinstance(editor, mdleditor.ModelEditor):
-                import mdlmgr
-                mdlmgr.treeviewselchanged = 1
-        except:
-            pass
+        if editor.MODE == SS_MODEL:
+            import mdlmgr
+            mdlmgr.treeviewselchanged = 1
         view.viewmode = menu.mode
         editor.lastscale = 0    # force a call to buildhandles()
 
     def reset3Dview(menu, editor=editor, view=view):
-        if editor.dragobject is None:
-            pass
-        else:
+        if editor.dragobject is not None:
             try:
-                if editor.dragobject.handle is None:
-                    pass
-                else:
+                if editor.dragobject.handle is not None:
                     editor.dragobject.handle = None
             except:
                 pass
             editor.dragobject = None
-        import mdlmgr
-        mdlmgr.treeviewselchanged = 0
+        if editor.MODE == SS_MODEL:
+            import mdlmgr
+            mdlmgr.treeviewselchanged = 0
         if view.info["type"] == "2D":
             view.info["scale"] = 2.0
             view.info["angle"] = -0.7
@@ -1497,8 +1487,7 @@ def TexModeMenu(editor, view):
     List = [Mod1, Mod2, Mod3]
     for menu in List:
         menu.state = menu.mode==view.viewmode and qmenu.radiocheck
-    import mdleditor
-    if isinstance(editor, mdleditor.ModelEditor):
+    if editor.MODE == SS_MODEL:
         import mdloptions
         DrawBBoxes = mdloptions.toggleitem("&Draw Bounding Boxes", "DrawBBoxes", (1,1),
             hint="|Draw Bounding Boxes:\n\nWhen checked this activates the display of model bounding boxes if any. Also known as 'hit boxes' for Half-Life and by other names for different model formats.|intro.modeleditor.rmbmenus.html#viewsrmbmenus")
@@ -1583,6 +1572,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.66  2015/08/09 16:30:06  danielpharos
+#Added mousewheel scrolling support in the 2D views.
+#
 #Revision 1.65  2011/10/06 20:13:37  danielpharos
 #Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
 #

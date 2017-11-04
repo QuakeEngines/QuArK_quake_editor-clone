@@ -361,9 +361,10 @@ def autosave(editor):
         return time1
 
 # ----------- REVISION HISTORY ------------
-#
-#
 #$Log$
+#Revision 1.29  2017/03/05 12:48:04  danielpharos
+#Moved the "Used Textures" functionality in the map editor into a plugin.
+#
 #Revision 1.28  2016/03/13 16:13:42  danielpharos
 #Small cleanup in path concatenation.
 #

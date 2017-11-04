@@ -557,14 +557,16 @@ def BBoxIcon(bbox, iconset):
         return icons[53]
 
 def BBoxIconSel(bbox):
-    import mdleditor
-    if not isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+    from qeditor import mapeditor
+    editor = mapeditor()
+    if (editor is None) or (editor.MODE != SS_MODEL):
         return ico_objects[1][iiPolyhedron]
     return BBoxIcon(bbox, 1)
 
 def BBoxIconUnsel(bbox):
-    import mdleditor
-    if not isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
+    from qeditor import mapeditor
+    editor = mapeditor()
+    if (editor is None) or (editor.MODE != SS_MODEL):
         return ico_objects[0][iiPolyhedron]
     return BBoxIcon(bbox, 0)
 
@@ -655,13 +657,6 @@ SetupRoutines = []
 
 def SetupChanged(level):
     "Called by QuArK when the setup is modified."
-    try:
-        import mdleditor
-        if isinstance(mdleditor.mdleditor, mdleditor.ModelEditor):
-            import mdlmgr
-            mdlmgr.treeviewselchanged = 0
-    except:
-        pass
     for s in SetupRoutines:
         s(level)
 
@@ -688,7 +683,7 @@ def LoadPoolObj(tag, loadfn, *loadargs):
 def debug(text):
     import sys
     sys.stderr.write(text+"\n")
-    # rowdy: debug logging
+    # rowdy: debug logging #FIXME: Make this a toggable option
     #o = open('c:/rowdy/QuArK_debug.log', 'a')
     #o.write('%s\n' % text)
     #o.close()
@@ -976,6 +971,9 @@ def sortdictionary(dictionary):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.60  2017/08/30 19:00:22  danielpharos
+#Slight cleanup.
+#
 #Revision 1.59  2016/02/13 12:36:20  danielpharos
 #Raise a proper exception.
 #

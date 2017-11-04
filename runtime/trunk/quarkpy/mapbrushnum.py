@@ -11,14 +11,16 @@ Map editor brush-from-number finder
 #$Header$
 
 import quarkx
-import qmacro
 from maputils import *
-import mapeditor
 
 #
 # an exception
 #
-corrupt = 'corrupt'
+class CorruptError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+    def __str__(self):
+        return self.msg
 
 def findBrush(editor, address):
     "address is a sequence of BrushAddressNodes"
@@ -35,8 +37,8 @@ def findBrush(editor, address):
         last = current
         current = next
     return current
-        
-        
+
+
 class BrushNumDlg(SimpleCancelDlgBox):
     #
     # dialog layout
@@ -91,14 +93,16 @@ class BrushAddressNode:
         index = index.strip()
         index = index[:len(index)-1]
         if index:
-            self.index = eval(index)
+            self.index = int(index)
         else:
             self.index = 0
 
 def getBrushDict(editor, filename):
     f = open(filename, "r")
-    data = f.readlines()
-    f.close()
+    try:
+        data = f.readlines()
+    finally:
+        f.close()
     dict = {}
     commentPrefix=quarkx.setupsubset()["MapCommentsPrefix"]
     commentPrefixLen = len(commentPrefix)
@@ -112,15 +116,15 @@ def getBrushDict(editor, filename):
             continue
         linewords = line.split()
         if linewords[1]=="Entity":
-            entity = eval(linewords[2])
+            entity = int(linewords[2])
             brushCount = -1
             continue
         if linewords[1]!="Brush":
             continue
-        brushNum = eval(linewords[2])
+        brushNum = int(linewords[2])
         brushCount = brushCount+1
         if brushNum!=brushCount:
-            raise corrupt, "Brush %d"%brushNum
+            raise CorruptError("Brush %d"%brushNum)
         i=i+1
         line=data[i]
         if line[:commentPrefixLen]!=commentPrefix:
@@ -135,10 +139,14 @@ def LoadBrushNums(editor, filename):
     try:
         brushDict = getBrushDict(editor, filename)
         BrushNumDlg(quarkx.clickform, editor, brushDict)
-    except corrupt, info:
-        quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%info)
-       
+    except CorruptError, msg:
+        quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%msg)
+
+# ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2015/09/20 13:00:28  danielpharos
+#Added a missing import statement.
+#
 #Revision 1.5  2005/10/15 00:47:57  cdunde
 #To reinstate headers and history
 #

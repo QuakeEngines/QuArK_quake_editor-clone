@@ -74,8 +74,10 @@ class LinesDlg(qmacro.dialogbox):
 
 def LoadLinFile(editor, filename):
     f = open(filename, "r")
-    data = f.readlines()
-    f.close()
+    try:
+        data = f.readlines()
+    finally:
+        f.close()
     pts = []
     for txt in data:
         try:
@@ -170,9 +172,10 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
 mapeditor.MapEditor.finishdrawing = DrawLines
 
 # ----------- REVISION HISTORY ------------
-#
-#
 #$Log$
+#Revision 1.9  2005/10/15 00:47:57  cdunde
+#To reinstate headers and history
+#
 #Revision 1.6  2003/03/21 10:56:08  tiglari
 #support for line-thickness specified by mapoption
 #
@@ -187,6 +190,5 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 #
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
 #
 #

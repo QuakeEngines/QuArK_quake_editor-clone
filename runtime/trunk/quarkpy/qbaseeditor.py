@@ -1788,6 +1788,9 @@ class NeedViewError(Exception):
 #
 #
 #$Log$
+#Revision 1.160  2017/08/30 19:00:04  danielpharos
+#Removed silly dance to get the editor.
+#
 #Revision 1.159  2017/08/30 18:46:04  danielpharos
 #Really fixed the circular import this time.
 #
@@ -2324,6 +2327,5 @@ class NeedViewError(Exception):
 #
 #Revision 1.3  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
 #
 #

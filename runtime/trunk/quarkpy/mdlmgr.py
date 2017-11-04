@@ -57,6 +57,19 @@ check_apply_vtx_weights = None
 check_tag_pos = None
 check_bone_control = None
 
+
+#Don't call this directly! This is where the magic happens...
+def mdlmgr_setupchanged(level):
+    from qeditor import mapeditor
+    editor = mapeditor()
+    if (editor is not None) and (editor.MODE == SS_MODEL):
+        global treeviewselchanged
+        treeviewselchanged = 0
+
+# This registers the 'magic' function above, so it's called whenever the setup is changed
+setupchanged1 = (mdlmgr_setupchanged,)
+apply(SetupRoutines.append, setupchanged1)
+
 class ModelLayout(BaseLayout):
     "An abstract base class for Model Editor screen layouts."
 
@@ -2029,6 +2042,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.140  2017/06/23 19:18:52  danielpharos
+#Fixed circular import.
+#
 #Revision 1.139  2016/06/17 19:27:27  danielpharos
 #Fixed a typo.
 #
