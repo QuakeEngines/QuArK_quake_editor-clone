@@ -1451,8 +1451,11 @@ def commonhandles(self, redraw=1):
         except:
             pass
 
-    if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and (flagsmouse == 2064 or flagsmouse == 2080):
-        return
+    try:
+        if (currentview.info["viewname"] == "editors3Dview" or currentview.info["viewname"] == "3Dwindow") and (flagsmouse == 2064 or flagsmouse == 2080):
+            return
+    except:
+        pass
 
 ### Create EYE handles Section:
 ### ===============================
@@ -1845,6 +1848,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.172  2017/06/23 19:07:50  danielpharos
+#Lots of code cleanup.
+#
 #Revision 1.171  2017/06/23 18:50:57  danielpharos
 #Reduced internal dependencies.
 #
