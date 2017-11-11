@@ -66,7 +66,7 @@ FOOTER = """
   <tr class="headline">
     <td width="99%%" align=center>
       <p class="sm">
-        Copyright (c) 2009, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a>
+        Copyright (c) 2017, GNU General Public License by The QuArK (Quake Army Knife) Community - <a target="_blank" href="http://quark.sourceforge.net/">http://quark.sourceforge.net/</a>
       </p>
     </td>
     <td width="1%%" align=right nowrap>
