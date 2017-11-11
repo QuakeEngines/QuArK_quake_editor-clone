@@ -97,7 +97,7 @@ def findref(root, path, name, fkw, extraargs):
                 for subfiles in root.files:
                     if subfiles.kw["hrefaname"] == path[0]:
                         return ref(REFFILE, REFFILE_NAME, subfiles.kw)
-            raise "Reference not found to " + path0 + " in " + fkw["htmlfile"]
+            raise RuntimeError("Reference not found to " + path0 + " in " + fkw["htmlfile"])
     return ref(REFDIR, REFDIR_NAME, root.kw)
 
 def proc_g(kw, words):
@@ -117,12 +117,12 @@ def proclink(kw, targetname, extraargs):  #DanielPharos
     if linksdict.has_key(extraargs):
         link = linksdict[extraargs]
     else:
-        raise "unknown link: "+extraargs
+        raise RuntimeError("unknown link: "+extraargs)
     return "<a target=\"_blank\" href=\"%s\">%s</a>" % (link, targetname)
 
 def procpic(kw, path, extraargs):  #tiglari
     if (string.find(path, "/") > -1) or (string.find(path, "\\") > -1) or (path[:1] == "."):
-        raise "Illegal picture filename: [%s]" % path
+        raise RuntimeError("Illegal picture filename: [%s]" % path)
     picrl = PICLOC + string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     if extraargs == '':
         img = '<img src="%s">' % (picrl)
@@ -131,7 +131,7 @@ def procpic(kw, path, extraargs):  #tiglari
     try:
         data = open(kw["path"]+path, "rb").read()
     except:
-        raise "open-error for file \"%s\"" % (kw["path"]+path)
+        raise RuntimeError("open-error for file \"%s\"" % (kw["path"]+path))
     f = open(OutputPath+"/"+picrl, "wb")
     try:
         f.write(data)
@@ -224,56 +224,56 @@ def processtext(root, self, data):
             end_tag = string.find(line, "</ref>")
             if end_tag == -1:
                 # A <ref>-tag must have a </ref>-tag on the same line, else this code won't work.
-                raise "<ref>-tag without any </ref>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<ref>-tag without any </ref>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_ref_action(tag[4:-1], line[:end_tag], root, kw)
             line = line[end_tag+len("</ref>"):]
         elif (tag[:5] == "<link"):
             end_tag = string.find(line, "</link>")
             if end_tag == -1:
                 # A <link>-tag must have a </link>-tag on the same line, else this code won't work.
-                raise "<link>-tag without any </link>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<link>-tag without any </link>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_link_action(tag[5:-1], line[:end_tag], root, kw)
             line = line[end_tag+len("</link>"):]
         elif (tag[:4] == "<img"):
             end_tag = string.find(line, "</img>")
             if end_tag == -1:
                 # A <img>-tag must have a </img>-tag on the same line, else this code won't work.
-                raise "<img>-tag without any </img>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<img>-tag without any </img>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_pic_action(tag[4:-1], line[:end_tag], root, kw)
             line = line[end_tag+len("</img>"):]
         elif (tag[:4] == "<pic"):
             end_tag = string.find(line, "</pic>")
             if end_tag == -1:
                 # A <pic>-tag must have a </pic>-tag on the same line, else this code won't work.
-                raise "<pic>-tag without any </pic>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<pic>-tag without any </pic>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_pic_action(tag[4:-1], line[:end_tag], root, kw)
             line = line[end_tag+len("</pic>"):]
         elif (tag[:4] == "<zip"):
             end_tag = string.find(line, "</zip>")
             if end_tag == -1:
                 # A <zip>-tag must have a </zip>-tag on the same line, else this code won't work.
-                raise "<zip>-tag without any </zip>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<zip>-tag without any </zip>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_zip_action(line[:end_tag], root, kw)
             line = line[end_tag+len("</zip>"):]
         elif (tag[:4] == "<rsc"):
             end_tag = string.find(line, "</rsc>")
             if end_tag == -1:
                 # A <rsc>-tag must have a </rsc>-tag on the same line, else this code won't work.
-                raise "<rsc>-tag without any </rsc>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<rsc>-tag without any </rsc>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_rsc_action(line[:end_tag], root, kw)
             line = line[end_tag+len("</rsc>"):]
         elif (tag[:4] == "<act"):
             end_tag = string.find(line, "</act>")
             if end_tag == -1:
                 # A <act>-tag must have a </act>-tag on the same line, else this code won't work.
-                raise "<act>-tag without any </act>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<act>-tag without any </act>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_act_action(line[:end_tag], root, kw)
             line = line[end_tag+len("</act>"):]
         elif (tag[:2] == "<g"):
             end_tag = string.find(line, "</g>")
             if end_tag == -1:
                 # A <g>-tag must have a </g>-tag on the same line, else this code won't work.
-                raise "<g>-tag without any </g>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+                raise RuntimeError("<g>-tag without any </g>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"])
             replacewith = perform_g_action(line[:end_tag], root, kw)
             line = line[end_tag+len("</g>"):]
         elif (tag[:4] == "</i>"):
@@ -282,7 +282,7 @@ def processtext(root, self, data):
                 # Force in a non-breakable-space after end-of-italic.
                 replacewith = replacewith + "&nbsp;"
         elif (tag[:2] == "< "):
-            raise "Illegal use of '<'-char. Use '&lt;' if a single '<' is needed! <File>.TXT title: \"%s\"" % kw["title"]
+            raise RuntimeError("Illegal use of '<'-char. Use '&lt;' if a single '<' is needed! <File>.TXT title: \"%s\"" % kw["title"])
         else:
             replacewith = tag
             if (tag[:4] == "<pre"):
@@ -344,12 +344,12 @@ def processtext(root, self, data):
                             endchar_tag_found = string.find(line, ">")
                             if endchar_tag_found == -1:
                                 # there must exist an endchar_tag on the same line!
-                                raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], self.kw["title"])
+                                raise RuntimeError("'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], self.kw["title"]))
                             else:
                                 tag = (line[:endchar_tag_found+1]).lower()
                                 if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html") or (tag[:6] == "</html"):
                                     # do not allow these tags!
-                                    raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"])
+                                    raise RuntimeError("The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, self.kw["title"]))
                                 if (tag[:3] == "<ul") or (tag[:3] == "<ol") or (tag[:3] == "<dl"):
                                     listing_tags_added += 1
                                 elif (tag[:4] == "</ul") or (tag[:4] == "</ol") or (tag[:4] == "</dl"):
@@ -384,13 +384,13 @@ def processtext(root, self, data):
         data[-1] = data[-1] + "\n"
 
     if listing_tags_added != 0:
-        raise "File ends with an open ul-tag! <File>.TXT title: \"%s\"" % (self.kw["title"], )
+        raise RuntimeError("File ends with an open ul-tag! <File>.TXT title: \"%s\"" % (self.kw["title"], ))
 
 def parse(file):
     try:
         f = open(file, "r")
     except:
-        raise "File missing: %s" % file
+        raise RuntimeError("File missing: %s" % file)
     try:
         kw = { }
         # Read the beginning non-empty lines, which should contain "key: value"'s
@@ -650,6 +650,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.38  2017/09/02 09:06:04  danielpharos
+# Put pictures in their own folder.
+#
 # Revision 1.37  2017/09/02 08:44:23  danielpharos
 # Removed a stray semi-colon.
 #
