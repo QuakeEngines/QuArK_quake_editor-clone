@@ -25,7 +25,7 @@ At the very top and bottom of you file you should setup its version control code
 you send us a copy to go into the Official Set for distribution with furture releases....you ARE going to share
 it with us aren't you? At the very top the header would be as shown below:
 <code>
-#$Header$
+#$Header: /cvsroot/quark/infobase/intro/modeleditor/importexport/codeelements.txt,v 1.2 2008/12/10 03:02:36 cdunde Exp $
 
 
 Info = {
@@ -43,7 +43,10 @@ bottom add the following code for your files history:
 <code>
 # ----------- REVISION HISTORY ------------
 #
-# $Log$
+# $Log: codeelements.txt,v $
+# Revision 1.2  2008/12/10 03:02:36  cdunde
+# Update
+#
 # Revision 1.1  2008/07/28 22:40:28  cdunde
 # Update
 #
