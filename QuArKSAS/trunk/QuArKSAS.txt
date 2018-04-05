@@ -1,13 +1,13 @@
 QuArK SAS (Steam Access System)
 -------------------------------
-Version 1.03
-31 July 2011
+Version 1.04?
+?? ??? ????
 
 
 
 Program description
 -------------------
-QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you should be logged in. It produces a log-file which allows for easy diagnosing when the program for some reason doesn't work properly. It's designed to be as light-weighted as possible (that's why there is no GUI), and run on as many systems as possible.
+QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you should be logged in. It produces a log-file which allows for easy diagnosing when the program for some reason doesn't work properly. It's designed to be as light-weighted as possible (that's why there is no GUI), and to run on as many systems as possible.
 
 The executable file has to be placed in the right folder to work:
 
@@ -20,6 +20,8 @@ source2009 | %Steam%/steamapps/%username%/sourcesdk/bin/orangebox/bin  | QuArKSA
 
 When not placed in the correct directory, QuArK SAS will not be able to find several Steam files (like tier0.dll) and will crash on startup. Also, make sure you've run the Source SDK at least once before (or manually refresh its contents), so the Steam files are set-up properly.
 
+If you're attempting to up- or down-grade the QuArK SAS that comes with QuArK, put it in QuArK's "dlls" directory instead. QuArK will then automatically deploy it to the Source SDK directory.
+
 
 
 Program usage
@@ -31,7 +33,7 @@ QuArKSAS.exe [parameters] <filenames>
 
 Available parameters:
 -g <ID>: Set Steam game number (default: 220 (HL2)).
--gamedir <directory>: The game directory containing the to extract files.
+-gamedir <directory>: The game directory containing the data-files from which to extract.
 -help: Displays this information.
 -o <directory>: Specifies the output directory.
 -overwrite: Overwrite any existing output files.
@@ -73,28 +75,28 @@ This program is primarily made for usage by the map/model editor Quake Army Knif
 Version changes
 ---------------
 Version 1.03 - 31 July 2011:
-    Adjusted for newest Source SDK release, with the new engine naming scheme
-    Cleanup of source-code
+	Adjusted for newest Source SDK release, with the new engine naming scheme.
+	Cleanup of source-code.
 
 Version 1.02 - 6 February 2010:
-    Adjusted for newest Steam release
+	Adjusted for newest Steam release.
 
 Version 1.01 - 5 September 2007:
-    More output is writen to the log-file
-    Log now uses Windows text format
-    Several small clean-up-on-exit fixes
-    Set verbose to its default 20
+	More output is written to the log-file.
+	Log now uses Windows text format.
+	Several small clean-up-on-exit fixes.
+	Set verbose to its default 20.
 
 Version 1.0 - 14 August 2007:
-    Initial release
+	Initial release.
 
 
 
 Credits
 -------
-DanielPharos  - Author of QuArKSAS and developer of QuArK
-cdunde        - Developer of QuArK ("Hail the Master!")
-Mike Durand   - For helping with the technical part
+DanielPharos  - Author of QuArKSAS and developer on QuArK
+cdunde        - Developer on QuArK ("Hail the Master!")
+Mike Durand   - For helping with some of the technical bits
 Valve         - For creating Steam
 
 

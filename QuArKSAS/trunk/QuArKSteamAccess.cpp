@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string>
 #include <sstream>
-#include <windows.h>
+using namespace std;
+
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"
 
 #include "..\public\tier0\basetypes.h"
 #include "..\common\filesystem_tools.h"
@@ -11,7 +14,6 @@
 #include "..\public\tier0\dbg.h"
 
 #include "logger.h"
-using namespace std;
 
 IFileSystem * g_pFullFileSystem = NULL;
 static Logger* sLog = NULL;
@@ -49,7 +51,7 @@ SpewRetval_t mySpewFunc( SpewType_t spewType, tchar const *pMsg )
       break;
     case SPEW_WARNING:
       MessageLevel = 10;
-      break;      
+      break;
     case SPEW_ASSERT:
       MessageLevel = 20;
       break;
