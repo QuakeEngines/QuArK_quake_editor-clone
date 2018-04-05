@@ -1,9 +1,5 @@
 #! /usr/bin/env python
 
-#
-#  $Header$
-#
-
 import string, time, os, sys
 
 FGD_FILENAME = sys.argv[1]
@@ -593,16 +589,3 @@ def run(filename):
 ## --------
 
 run(FGD_FILENAME)
-
-#
-# $Log$
-# Revision 1.3  2001/01/14 15:44:09  decker_dk
-# Will take command-line argument of .FGD filename, instead of hardcoded into .PY source
-#
-# Revision 1.2  2000/12/22 22:59:54  decker_dk
-# Some small changes
-#
-# Revision 1.1  2000/12/15 21:56:58  decker_dk
-# First version
-#
-#

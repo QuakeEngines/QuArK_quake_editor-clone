@@ -3,8 +3,6 @@
 # 
 # GNU PUBLIC SOFTWARE LICENSE
 #
-# $Header$
-#
 
 if ($#ARGV != 0) {die "USAGE: setqversion.pl <versionstring> \n\n";}
 
@@ -73,13 +71,3 @@ $r_lin=&getfile("../runtime/addons/Defaults.qrk");
 $r_lin=&getfile("../runtime/quarkpy/qdictionnary.py");
 &replace2($r_lin,$verstring);
 &putfile($r_lin,"../runtime/quarkpy/qdictionnary.py");
-
-
-################# history ##################################################
-#
-#
-#$Log$
-#
-#
-#
-############################################################################

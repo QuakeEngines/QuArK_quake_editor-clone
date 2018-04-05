@@ -8,8 +8,6 @@ Map Editor Entities manager
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 
 import quarkx,sys,math
 
@@ -747,94 +745,3 @@ def LoadEntityForm(sl):
         if formobj is None:
             formobj = lookupPyForm(f1)
     return formobj
-
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.37  2005/07/30 23:07:07  alexander
-#cone showed for light spots and pitch value automatically set when seleting the entity
-#showing height points for displacements
-#target links shown for source engine
-#
-#Revision 1.36  2004/12/29 16:40:22  alexander
-#introduced new PointSpecHandle which allows to have additional 3d control points on entities.
-#which specifics are used for these points is controlled similar to the angle specific list
-#
-#Revision 1.35  2004/12/26 21:00:00  cdunde
-#To remove file errors and dupe entries.
-#
-#Revision 1.34  2004/12/26 20:08:38  cdunde
-#Added light Color-Picker function for Torque game engine.
-#
-#Revision 1.33  2004/12/26 02:32:35  rowdy
-#modified DefaultDrawEntityLines.drawentitylines to draw trigger->func lines for Doom 3, where the func's 'name' specific is used instead of (or as well as) 'targetname'
-#
-#Revision 1.32  2004/12/23 11:25:09  rowdy
-#Rowdy: added support for specific 'falloff2' which is used in Torque instead of the 'light' specific to indicate the (maximum) radius of a light entity (suggested by cdunde)
-#
-#Revision 1.31  2004/12/19 09:56:44  alexander
-#movedir specific gets angle maphandle
-#
-#Revision 1.30  2003/03/23 07:31:18  tiglari
-#make trigger-target line thickness configurable
-#
-#Revision 1.29  2003/02/13 15:56:53  cdunde
-#To add Cancel Selections function to RMB menu.
-#
-#Revision 1.28  2001/08/16 20:09:29  decker_dk
-#Put 'Add user center' menuitem on Treeview Group's context-menu. Its more visible there.
-#
-#Revision 1.27  2001/04/10 08:52:57  tiglari
-#remove CustomObjectOrigin
-#
-#Revision 1.26  2001/03/31 13:01:35  tiglari
-#usercenter for groups (for rotation)
-#
-#Revision 1.25  2001/03/22 08:14:31  tiglari
-#origin duplicator bugfix
-#
-#Revision 1.24  2001/03/21 21:19:08  tiglari
-#custom origin (center for groups) duplicator support
-#
-#Revision 1.23  2001/02/07 18:40:47  aiv
-#bezier texture vertice page started.
-#
-#Revision 1.22  2001/01/10 20:25:53  tiglari
-#fix bug in registerPyForm
-#
-#Revision 1.21  2000/12/31 02:46:02  tiglari
-#Support for python code to add entity forms
-# (for shape-generator development: lookup/registerPyForm)
-#
-#Revision 1.20  2000/07/29 02:06:35  tiglari
-#my idea of how to do `hardcore' color coding
-#
-#Revision 1.19  2000/07/26 11:34:02  tiglari
-#changes for bezier menu reorganizations
-#
-#Revision 1.18  2000/07/24 12:48:39  tiglari
-#reorganization of bezier texture menu
-#
-#Revision 1.17  2000/07/24 09:09:23  tiglari
-#Put Texture.. (choose) and Texture Flags into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
-#
-#Revision 1.16  2000/07/16 07:56:26  tiglari
-#bezier menu -> menubegin
-#
-#Revision 1.15  2000/06/04 03:22:28  tiglari
-#texture choice item for b2 menu
-#
-#Revision 1.14  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#Revision 1.13  2000/05/26 23:07:39  tiglari
-#fiddled with beziertype entity manager
-#
-#Revision 1.12  2000/05/19 10:13:39  tiglari
-#fixed `snap' in revision history at bottom
-#
-#Revision 1.11  2000/05/19 10:11:13  tiglari
-#added revision history, comments on use of BezierType menu
-#
-#
-

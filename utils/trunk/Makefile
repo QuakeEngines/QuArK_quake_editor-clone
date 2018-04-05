@@ -18,10 +18,6 @@
 #   make clean
 #
 ###########################################################################
-#
-# $Header$
-#
-###########################################################################
 
 ## customize this for your needs
 
@@ -113,20 +109,3 @@ $(SNAPSHOTDIR)/$(EXE): $(RUNTIMEPATH)/$(EXE)
 ### compress test directory
 $(SNAPSHOTPATH)/$(SNAPSHOTNAME).ace: $(SNAPSHOTDIR)/$(EXE)
 	cd $(SNAPSHOTPATH) ; ace a -r $(SNAPSHOTNAME).ace $(SNAPSHOTNAME)
-
-	
-
-###########################################################################
-#
-#----------- CHANGE HISTORY ------------
-#
-# $Log$
-# Revision 1.2  2000/06/02 17:07:44  alexander
-# added: generating changes file
-#
-# Revision 1.1  2000/05/20 00:51:53  alexander
-# initial checkin: Makefile to compile snapshots of quark
-#
-#
-#
-###########################################################################

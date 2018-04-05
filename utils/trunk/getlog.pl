@@ -3,8 +3,6 @@
 # 
 # GNU PUBLIC SOFTWARE LICENSE
 #
-# $Header$
-#
 
 if ($#ARGV != 1) {die "USAGE: getlog.pl <filename> <yyyy/mm/dd>\n       to show log messages after that date\n\n";}
 
@@ -94,17 +92,3 @@ $logentrycount=0;
     }
   }
 }
-
-################# history ##################################################
-#
-#
-#$Log$
-#Revision 1.2  2000/06/03 10:53:05  alexander
-#protected from cvs using $(Log) and alike
-#
-#Revision 1.1  2000/06/02 17:07:12  alexander
-#initial commit
-#
-#
-#
-############################################################################
