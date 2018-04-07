@@ -44,10 +44,10 @@ type
                    end;
 {PBezierTriangleList = ^TBezierTriangleList;   -- quilt
  TBezierTriangleList = array[0..2*BezierMeshCnt*BezierMeshCnt-1] of TBezierTriangle;}
- PBezierControlPoints3 = {^TBezierControlPoints3;} vec3_p;
- TBezierControlPoints3 = {array of} vec3_t;  { variable-sized }
- PBezierControlPoints5 = {^TBezierControlPoints5;} vec5_p;
- TBezierControlPoints5 = {array of} vec5_t;  { variable-sized }
+ PBezierControlPoints3 = {^TBezierControlPoints3} vec3_p;
+ TBezierControlPoints3 = vec3_t; //xyz
+ PBezierControlPoints5 = {^TBezierControlPoints5} vec5_p;
+ TBezierControlPoints5 = vec5_t; //xyzst
  PBezierMeshBuf3 = ^TBezierMeshBuf3;
  TBezierMeshBuf3 = record
                     W, H: Integer;  { number of points stored in buffer }
@@ -209,7 +209,7 @@ end;
 (* { Inverse the orientation (up and down sides) }
 procedure InverseControlPointsOrientation(var cp: TBezierMeshBuf5);
 var
- buf: vec5_t;
+ buf: TBezierControlPoints5;
 begin
   { this is done by transposing the matrix of control points }
  buf:=cp[1,0]; cp[1,0]:=cp[0,1]; cp[0,1]:=buf;
@@ -219,7 +219,7 @@ end; *)
 
 function TriangleSTCoordinates(const cp: TBezierMeshBuf5; I, J: Integer) : vec_st_t;
 var
- P, Q1, Q2: vec5_p;
+ P, Q1, Q2: PBezierControlPoints5;
  I1, J1: Integer;
  f: TDouble;
  r1, r2, r3: vec_st_t;
@@ -281,7 +281,7 @@ const
  dpx0 = 0.0;
  dpx1 = 0.5;
  dpx2 = 1.0;
- DefaultBezierControlPoints: array[0..2, 0..2] of vec5_t =
+ DefaultBezierControlPoints: array[0..2, 0..2] of TBezierControlPoints5 =
   (((dps0, dps0, 0, dpx0, dpx0), (dps1, dps0, 0, dpx1, dpx0), (dps2, dps0, 0, dpx2, dpx0)),
    ((dps0, dps1, 0, dpx0, dpx1), (dps1, dps1, 0, dpx1, dpx1), (dps2, dps1, 0, dpx2, dpx1)),
    ((dps0, dps2, 0, dpx0, dpx2), (dps1, dps2, 0, dpx1, dpx2), (dps2, dps2, 0, dpx2, dpx2)));
@@ -290,14 +290,14 @@ const
 
 (*function AllocBezierBuf3(W, H: Integer) : PBezierMeshBuf3;
 begin
- GetMem(Result, BezierMeshBuf3BaseSize + W*H*SizeOf(vec3_t));
+ GetMem(Result, BezierMeshBuf3BaseSize + W*H*SizeOf(TBezierControlPoints3));
  Result^.W:=W;
  Result^.H:=H;
 end;
 
 function AllocBezierBuf5(W, H: Integer) : PBezierMeshBuf5;
 begin
- GetMem(Result, BezierMeshBuf3BaseSize + W*H*SizeOf(vec5_t));
+ GetMem(Result, BezierMeshBuf3BaseSize + W*H*SizeOf(TBezierControlPoints5));
  Result^.W:=W;
  Result^.H:=H;
 end;*)
@@ -353,7 +353,7 @@ begin
    Result.W:=X*2+1;
    Result.H:=Y*2+1;
   end;
- ExpectedLength:=Length('v=') + Result.W*Result.H*SizeOf(vec5_t);
+ ExpectedLength:=Length('v=') + Result.W*Result.H*SizeOf(TBezierControlPoints5);
  Spec:=FloatSpecNameOf('v');
  S:=GetSpecArg(Spec);  { normal case: read the 'v' specific }
  if Length(S)<>ExpectedLength then
@@ -385,7 +385,7 @@ begin
  SetQuiltSize(Point(Buf.W div 2, Buf.H div 2));  { set quilt size }
  S:=FloatSpecNameOf('v');
  Specifics.Values[S]:='';   { delete old 'v' Specific }
- L:=Buf.W*Buf.H*SizeOf(vec5_t);
+ L:=Buf.W*Buf.H*SizeOf(TBezierControlPoints5);
  SetLength(S, Length('v=') + L);   { make room for 'v=....' in S }
  S[2]:='=';
  Move(Buf.CP^, S[3], L);    { copy the data over the '....' in S }
@@ -403,11 +403,11 @@ var
  I, I0, J, CurJ: Integer;
  u, v: TDouble;
  p0, p1, p2: TVect;
- Dest: vec3_p;
+ Dest: PBezierControlPoints3;
 
   function GetVect(I,J: Integer) : TVect;
   var
-   P: vec5_p;
+   P: PBezierControlPoints5;
   begin
    P:=cp.CP;
    Inc(P, J*cp.W+I);
@@ -429,7 +429,7 @@ begin
  { I guess some comments would be welcome in the code below... }
  FMeshCache.W:=(cp.W div 2)*BezierMeshCnt+1;
  FMeshCache.H:=(cp.H div 2)*BezierMeshCnt+1;
- ReallocMem(FMeshCache.CP, FMeshCache.W*FMeshCache.H*SizeOf(vec3_t));
+ ReallocMem(FMeshCache.CP, FMeshCache.W*FMeshCache.H*SizeOf(TBezierControlPoints3));
  Dest:=@FMeshCache.CP^[0];
  v:=0; CurJ:=0;
  for J:=0 to FMeshCache.H-1 do
@@ -494,7 +494,7 @@ var
  I, J: Integer;
  InfoClic, V, dgdu, dgdv: TVect;
  F: TDouble;
- Source, Dest, P1, P2: vec5_p;
+ Source, Dest, P1, P2: PBezierControlPoints5;
  Transpose: Boolean;
 begin
  cp:=ControlPoints;
@@ -509,7 +509,7 @@ begin
    ncp.W:=cp.W;
    ncp.H:=cp.H;
   end;
- GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t)); try
+ GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(TBezierControlPoints5)); try
  Source:=cp.CP;
  Dest:=ncp.CP;
  InfoClic:=g_DrawInfo.Clic;
@@ -582,7 +582,7 @@ begin
 end;
 
  { Compute orthogonal vectors }
-function TBezier.OrthogonalVector(u,v: scalar_t) : vec3_t;
+function TBezier.OrthogonalVector(u,v: scalar_t) : TBezierControlPoints3;
 const
  LittleExtra = 0.5/BezierMeshCnt;
 var
@@ -592,7 +592,7 @@ var
 
   function GetVect(I,J: Integer) : TVect;
   var
-   P: vec5_p;
+   P: PBezierControlPoints5;
   begin
    P:=cp.CP;
    Inc(P, J*cp.W+I);
@@ -641,7 +641,7 @@ var
   cp: TBezierMeshBuf5;
   I,J: Integer;
   PP, P, Dest: PPointProj;
-  Source: vec5_p;
+  Source: PBezierControlPoints5;
   V: TVect;
 begin
   cp:=ControlPoints;
@@ -699,7 +699,7 @@ var
  I, J: Integer;
  V: TVect;
  NewPen, VisChecked: Boolean;
- Source: vec3_p;
+ Source: PBezierControlPoints3;
  ScrAnd: Byte;
  PointBuffer, PtDest1, PtDest2: PPoint;
  CountBuffer, CountDest: PInteger;
@@ -869,7 +869,7 @@ begin
    Result:=1;
 end;
 
-{ a couple of function used from Ed3DFX.pas }
+{ a couple of functions used from Ed3DFX.pas }
 {function TBezier.CountBezierTriangles(var Cache: TBezierMeshBuf3) : Integer;
 begin
  if not Assigned(FMeshCache.CP) then
@@ -901,7 +901,7 @@ var
  I, J: Integer;
  TriPtr: PBezierTriangle;
  V, W, Normale: TVect;
- S1,S2,S3,S4: vec3_p;  { 4 corners of a small square }
+ S1,S2,S3,S4: PBezierControlPoints3;  { 4 corners of a small square }
 {cp: TBezierMeshBuf5;
  stBuffer, st: vec_st_p;}
 begin
@@ -1184,12 +1184,12 @@ var
  cp, ncp: TBezierMeshBuf5;
  I, J, K: Integer;
 { F: TDouble;}
- Source, Dest{, P1, P2}: vec5_p;
+ Source, Dest{, P1, P2}: PBezierControlPoints5;
 begin
  cp:=ControlPoints;
  ncp.H:=cp.W;
  ncp.W:=cp.H;
- GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t));
+ GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(TBezierControlPoints5));
  try
   Source:=cp.CP;
 {  Dest:=ncp.CP;}
@@ -1202,7 +1202,7 @@ begin
       for K:=0 to 4 do
        Dest^[K]:=Source^[K];
       Inc(Source);
-      Inc(Dest, ncp.W)
+      Inc(Dest, ncp.W);
      end;
    end;
   ControlPoints:=ncp;
@@ -1216,8 +1216,8 @@ procedure TBezier.AutoSetSmooth;
 var
  cp: TBezierMeshBuf5;
  I, J: Integer;
- P: vec5_p;
- v1, v2, v3: vec5_t;
+ P: PBezierControlPoints5;
+ v1, v2, v3: TBezierControlPoints5;
 begin
  cp:=ControlPoints;
  if (cp.W<5) and (cp.H<5) then
@@ -1290,7 +1290,7 @@ var
  cp: TBezierMeshBuf5;
  I: Integer;
 begin
- cp:=ControlPoints;  { approximate the boundinb box by the control points }
+ cp:=ControlPoints;  { approximate the bounding box by the control points }
  for I:=1 to cp.W*cp.H do
   begin
    if Min.X > cp.CP^[0] then Min.X:=cp.CP^[0];
@@ -1394,7 +1394,7 @@ var
  I, J: Integer;
  GotOldCp: Boolean;
  pLine, cpv: PyObject;
- Dest, P: vec5_p;
+ Dest, P: PBezierControlPoints5;
 begin
  Result:=inherited PySetAttr(attr, value);
  if not Result then
@@ -1415,7 +1415,7 @@ begin
             if J=0 then
              begin
               cp.W:=I;
-              GetMem(cp.CP, cp.W*cp.H*SizeOf(vec5_t));
+              GetMem(cp.CP, cp.W*cp.H*SizeOf(TBezierControlPoints5));
               Dest:=cp.CP;
              end
             else
