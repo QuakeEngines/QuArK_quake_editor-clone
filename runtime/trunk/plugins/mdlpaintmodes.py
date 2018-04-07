@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 Model Texture Paint modes and their dialog input boxes.

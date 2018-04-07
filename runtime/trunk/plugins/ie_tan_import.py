@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 QuArK Model Editor importer for Alice, EF2 and FAKK2 .tan model files.

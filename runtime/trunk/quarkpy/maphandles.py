@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 Map editor mouse handles.

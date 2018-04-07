@@ -1,7 +1,3 @@
-# Two lines below to stop encoding errors in the console.
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 Core of the Map editor.

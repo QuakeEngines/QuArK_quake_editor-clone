@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 QuArK Model Editor importer for Doom3\Quake4 .md5mesh and .md5anim model files.

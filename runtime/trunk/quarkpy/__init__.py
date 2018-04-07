@@ -8,8 +8,6 @@ Start-up code launched by QuArK to initialize the package "quarkpy"
 # FOUND IN FILE "COPYING.TXT"
 #
 
-
-
 # Warning, "import" order is important because we need to
 # set up the console as soon as possible, so that syntax
 # errors in other modules can be displayed.

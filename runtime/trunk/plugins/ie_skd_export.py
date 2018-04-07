@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: ascii -*-
-
 """   QuArK  -  Quake Army Knife
 
 QuArK Model Editor exporter for MoHAA (.skc and .skd) animations and mesh model files.
