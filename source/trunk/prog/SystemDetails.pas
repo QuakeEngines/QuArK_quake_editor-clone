@@ -43,6 +43,10 @@ type
      LongWord = DWORD;
   {$ENDIF}
 
+  TCPUID = packed record
+    EAX, EBX, ECX, EDX: LongWord;
+  end;
+
   TCPU = class(TPersistent)
   private
     FVendorID,
@@ -50,16 +54,16 @@ type
     FSubModel: string;
     FModel,
     FCount,
-    FArchitecture,
+    //FArchitecture,
     FLevel,
     FStepping,
     FFamily,
     FTyp,
-    FVendorNo,
-    FFreq :integer;
-    FCPUID :boolean;
+    FFreq :cardinal;
+    FVendorNo :integer;
+    FHasCPUID :boolean;
     function CPUIDExists :boolean;
-    procedure GetCPUID;
+    function GetCPUID :TCPUID;
     function GetCPUIDLevel :integer;
     function GetCPUType :integer;
     function GetCPUVendor :string;
@@ -72,17 +76,17 @@ type
     procedure GetInfo;
     procedure Report(var sl :TStringList);
   published
-    property CPUID :Boolean read FCPUID write FCPUID stored false;
-    property Architecture :integer read FArchitecture write FArchitecture stored false;
-    property Level :integer read FLevel write FLevel stored false;
-    property Count :integer read FCount write FCount stored false;
+    property HasCPUID :Boolean read FHasCPUID write FHasCPUID stored false;
+    //property Architecture :cardinal read FArchitecture write FArchitecture stored false;
+    property Level :cardinal read FLevel write FLevel stored false;
+    property Count :cardinal read FCount write FCount stored false;
     property Vendor :string read FVendor write FVendor stored false;
     property VendorID :string read FVendorID write FVendorID stored false;
-    property Freq :integer read FFreq write FFreq stored false;
-    property Family :integer read FFamily write FFamily stored false;
-    property Stepping :integer read FStepping write FStepping stored false;
-    property Model :integer read FModel write FModel stored false;
-    property Typ :integer read FTyp write FTyp stored false;
+    property Freq :cardinal read FFreq write FFreq stored false;
+    property Family :cardinal read FFamily write FFamily stored false;
+    property Stepping :cardinal read FStepping write FStepping stored false;
+    property Model :cardinal read FModel write FModel stored false;
+    property Typ :cardinal read FTyp write FTyp stored false;
     property SubModel :string read FSubModel write FSubModel stored false;
   end;
 
@@ -304,11 +308,11 @@ type
   TStrBuf = array[0..11] of char;
 
 var
-  VLevel, VFamily, VModel, VStepping, VTyp: Byte;
-  VFeatures: LongInt;
+  VLevel: Byte;
+  VCPUID: TCPUID;
   WindowsPlatformCompatibility: TPlatformType;
   WindowsPlatform: TPlatform;
-  AMDDriverDescBug: boolean;
+  DriverBugs: TStringList;
 
 function FormatBytes(const Number: Cardinal) : String;
 begin
@@ -378,32 +382,35 @@ asm
 @exit:
 end;
 
-procedure TCPU.GetCPUID; assembler;
-asm
-	PUSH    EAX               //Save reg.
+function TCPU.GetCPUID : TCPUID; register;
+begin
+  VCPUID.EAX:=0;
+  VCPUID.EBX:=0;
+  VCPUID.ECX:=0;
+  VCPUID.EDX:=0;
+  asm
+	PUSH    EDI               //Save reg.
+	PUSH    EAX
 	PUSH    EBX
 	PUSH    EDX
 	PUSH    ECX
+	LEA     EDI,VCPUID        //Pointer to output buffer in EDI
 	MOV     EAX,1
 	DW      $A20F             //CPUID Command Execute
-	PUSH    eax
-	MOV     VStepping,al      //Store Stepping
-	AND     VStepping,0fh     //Stepping mask
-	AND     al,0f0h           //Model mask
-	SHR     al,4              //Model shift
-	MOV     VModel,al         //Store Model
-	AND     ax,0f00h          //Family mask
-	SHR     ax,8              //Family shift
-	MOV     VFamily,al        //Store Family
-	AND     al,0f0h;          //Type mask
-	SHR     al,4              //type shift
-	MOV     VTyp,al           //Store Type
-	POP     eax
-	MOV     VFeatures,edx     //Store features
+	STOSD
+	MOV eax,ebx
+	STOSD
+	MOV eax,ecx
+	STOSD
+	MOV eax,edx
+	STOSD
 	POP     ECX
 	POP     EDX
 	POP     EBX
-	POP     EAX               //Restore Reg.
+	POP     EAX
+	POP     EDI               //Restore Reg.
+  end;
+  result:=VCPUID;
 end;
 
 function TCPU.GetCPUIDLevel: integer;
@@ -543,92 +550,132 @@ begin
   case Family of
      4: case FVendorNo Of
           0: case Model of
-               0: result:='i80486DX-25/33';
-               1: result:='i80486DX-50';
-               2: result:='i80486SX';
-               3: result:='i80486DX2';
-               4: result:='i80486SL';
-               5: result:='i80486SX2';
-               7: result:='i80486DX2WB';
-               8: result:='i80486DX4';
-               9: result:='i80486DX4WB';
+               $0: result:='i80486DX-25/33';
+               $1: result:='i80486DX-50';
+               $2: result:='i80486SX';
+               $3: result:='i80486DX2';
+               $4: result:='i80486SL';
+               $5: result:='i80486SX2';
+               $7: result:='i80486DX2WB';
+               $8: result:='i80486DX4';
+               $9: result:='i80486DX4WB';
+               else result:='Unknown';
              end;
           1: case Model of
-               1: result:='U5D(486DX)';
-               2: result:='U5S(486SX)';
+               $1: result:='U5D(486DX)';
+               $2: result:='U5S(486SX)';
+               else result:='Unknown';
              end;
           2: case Model of
-               3: result:='80486DX2WT';
-               7: result:='80486DX2WB';
-               8: result:='80486DX4';
-               9: result:='80486DX4WB';
-              14: result:='5x86';
-              15: result:='5x86WB';
+               $3: result:='80486DX2WT';
+               $7: result:='80486DX2WB';
+               $8: result:='80486DX4';
+               $9: result:='80486DX4WB';
+               $E: result:='5x86';
+               $F: result:='5x86WB';
+               else result:='Unknown';
              end;
           3: case Model of
-               4: result:='Cyrix Media GX';
-               9: result:='Cyrix 5x86';
+               $4: result:='Cyrix Media GX';
+               $9: result:='Cyrix 5x86';
+               else result:='Unknown';
              end;
+          else result:='Unknown';
         end;
      5: case FVendorNo of
           0: case Model of
-               0: result:='P5 A-step';
-               1: result:='P5';
-               2: result:='P54C';
-               3: result:='P24T OverDrive';
-               4: result:='P55C';
-               5: result:='DX4 OverDrive?';
-               6: result:='P5 OverDrive?';
-               7: result:='P54C';
-               8: result:='P55C(0,25µm)MMX';
+               $0: result:='P5 A-step';
+               $1: result:='P5';
+               $2: result:='P54C';
+               $3: result:='P24T OverDrive';
+               $4: result:='P55C';
+               $5: result:='DX4 OverDrive?';
+               $6: result:='P5 OverDrive?';
+               $7: result:='P54C';
+               $8: result:='P55C(0,25µm)MMX';
+               else result:='Unknown';
              end;
           2: case Model of
-               0: result:='SSA5';
-               1: result:='5k86';
-               2: result:='5k86';
-               3: result:='5k86';
-               6: result:='K6';
-               7: result:='K6';
-               8: result:='K6-3D';
-               9: result:='K6PLUS-3D';
+               $0: result:='SSA5';
+               $1: result:='5k86';
+               $2: result:='5k86';
+               $3: result:='5k86';
+               $6: result:='K6';
+               $7: result:='K6';
+               $8: result:='K6-3D';
+               $9: result:='K6PLUS-3D';
+               else result:='Unknown';
              end;
           3: case Model of
-               0: result:='Pentium Cx6X86 GXm';
-               2: result:='Std. Cx6x86';
-               4: result:='Cx6x86 GXm';
+               $0: result:='Pentium Cx6X86 GXm';
+               $2: result:='Std. Cx6x86';
+               $4: result:='Cx6x86 GXm';
+               else result:='Unknown';
              end;
           else
              if FVendorNo=4 then
-               result:='Nx586';
-             if FVendorNo=5 then
-               result:='IDT C6 (WinChip)';
+               result:='Nx586'
+             else if FVendorNo=5 then
+               result:='IDT C6 (WinChip)'
+             else result:='Unknown';
           end;
      6: case FVendorNo of
           0: case Model of
-               0: result:='PentiumPro A-step';
-               1: result:='Pentium Pro';
-               3: result:='Pentium II';
-               4: result:='P55CT (P54 overdrive)';
-               5: result:='Pentium II 0,25µm';
-               6: result:='Celeron, model 06';
-               7: result:='Pentium III, model 07';
-               8: result:='Pentium/Celeron III, model 08';
-               9: result:='Pentium M/Celeron M, model 09';
-               10: result:='Pentium Xeon III, model 0Ah';
-               11: result:='Pentium III, model 0Bh';
-               13: result:='Pentium M/Celeron M, model 0Dh';
-               14: result:='Intel Core';
-               15: result:='Intel Core 2';
+               $0: result:='PentiumPro A-step';
+               $1: result:='Pentium Pro';
+               $3: result:='Pentium II';
+               $4: result:='P55CT (P54 overdrive)';
+               $5: result:='Pentium II 0,25µm';
+               $6: result:='Celeron, model 06';
+               $7: result:='Pentium III, model 07';
+               $8: result:='Pentium/Celeron III, model 08';
+               $9: result:='Pentium M/Celeron M, model 09';
+               $A: result:='Pentium Xeon III, model 0Ah';
+               $B: result:='Pentium III, model 0Bh';
+               $D: result:='Pentium M/Celeron M, model 0Dh';
+               $E: result:='Core';
+               $F: result:='Core 2';
+               $15: result:='Pentium M';
+               $16: result:='Core 2';
+               $17: result:='Core 2, model Penryn';
+               $1A: result:='Nehalem';
+               $1C: result:='Bonnell';
+               $1D: result:='Core 2, model Penryn';
+               $1E: result:='Nehalem';
+               $25: result:='Westmere';
+               $26: result:='Bonnell';
+               $27: result:='Bonnell';
+               $2A: result:='Sandy Bridge';
+               $2C: result:='Westmere';
+               $2D: result:='Sandy Bridge';
+               $2E: result:='Nehalem';
+               $2F: result:='Westmere';
+               $35: result:='Bonnell';
+               $36: result:='Bonnell';
+               $37: result:='Silvermont';
+               $3A: result:='Ivy Bridge';
+               $3C: result:='Haswell';
+               $3D: result:='Broadwell';
+               $3E: result:='Ivy Bridge';
+               $3F: result:='Haswell';
+               $45: result:='Haswell';
+               $4A: result:='Silvermont';
+               $4D: result:='Silvermont';
+               else result:='Unknown';
              end;
           2: case Model of
-               6: result:='K6';
-               7: result:='K6';
-               8: result:='K6-3D';
-               9: result:='K6PLUS-3D';
+               $6: result:='K6';
+               $7: result:='K6';
+               $8: result:='K6-3D';
+               $9: result:='K6PLUS-3D';
+               else result:='Unknown';
              end;
           3: if Model=0 then
-               result:='Cx6x86 MX/MII';
+               result:='Cx6x86 MX/MII'
+             else result:='Unknown';
+          else result:='Unknown';
         end;
+     else result:='Unknown';
   end;
 end;
 
@@ -714,7 +761,7 @@ end;
 
 function TCPU.GetSubModel :string;
 begin
-  case VTyp of
+  case Typ of
     3: result:='Reserved';
     2: result:='Secondary';
     1: result:='OverDrive';
@@ -726,7 +773,10 @@ end;
 
 procedure TCPU.GetInfo;
 var
+  CPUID :TCPUID;
   SI :TSystemInfo;
+  ExtendedModel: Byte;
+  ExtendedFamily: Byte;
 begin
   Log(LOG_VERBOSE, 'Starting gathering CPU information...');
   ZeroMemory(@SI,SizeOf(SI));
@@ -735,17 +785,32 @@ begin
   Family:=SI.dwProcessorType;
 //  Vendor:=
 //  VendorID:=
-  CPUID:=CPUIDExists;
-  if CPUID then
+  HasCPUID:=CPUIDExists;
+  if HasCPUID then
   begin
     Level:=GetCPUIDLevel;
     Freq:=Round(GetCPUFreqEx);
     Typ:=GetCPUType;
-    GetCPUID;
-    Typ:=VTyp;
-    Family:=VFamily;
-    Model:=VModel;
-    Stepping:=VStepping;
+    CPUID:=GetCPUID;
+    Stepping:=(CPUID.EAX and $f);
+    Model:=(CPUID.EAX shr 4 and $f);
+    Family:=(CPUID.EAX shr 8 and $f);
+    Typ:=(CPUID.EAX shr 12 and $7);
+    if Family = 6 then
+    begin
+      //Use Extended Family and Extended Model field
+      ExtendedModel:=(CPUID.EAX shr 16 and $f);
+      //ExtendedFamily:=(CPUID.EAX shr 20 and $ff);
+      Model:=Model + (ExtendedModel shl 4);
+    end
+    else if Family = 15 then
+    begin
+      //Use Extended Family and Extended Model field
+      ExtendedModel:=(CPUID.EAX shr 16 and $f);
+      ExtendedFamily:=(CPUID.EAX shr 20 and $ff);
+      Model:=Model + (ExtendedModel shl 4);
+      Family:=Family + ExtendedFamily;
+    end;
     Vendor:=GetCPUVendor;
     VendorID:=GetCPUVendorID;
     SubModel:=GetSubModel;
@@ -1354,9 +1419,70 @@ begin
   end;
 end;
 
-function GetClassDevices(const AStartKey,AClassName,AValueName :string; var AResult :TStrings) :string; //@CONST!
+function GetStringOrBinary(RegKey: TRegistry; const ValueName, RootKeyName: String) : String;
+var
+  bdata :pchar;
+  keytype :TRegDataType;
+
+const
+  bdatasize = 255;
+
+  function GetStrFromBuf(Buffer :pchar) :string;
+  var
+    i,j :integer;
+  begin
+    result:='';
+    j:=0;
+    i:=0;
+    repeat
+      if buffer[i]<>#0 then
+      begin
+        result:=result+buffer[i];
+        j:=0;
+      end
+      else
+        inc(j);
+      inc(i);
+    until j>1;
+  end;
+begin
+  if not RegKey.ValueExists(ValueName) then
+  begin
+    Result:='Unknown';
+    exit;
+  end;
+
+  keytype:=RegKey.GetDataType(ValueName);
+  if keytype = rdString then
+  begin
+    Result:=RegKey.ReadString(ValueName);
+    exit;
+  end;
+
+  Log(LOG_WARNING, 'The datatype of Registry key %s is incorrect (recoverable)!', [RootKeyName+'\'+RegKey.CurrentPath+'\'+ValueName]); //Note: Can't put in dictionary; no Python loaded yet!
+  DriverBugs.Add(RootKeyName+'\'+RegKey.CurrentPath+'\'+ValueName);
+  if keytype = rdBinary then
+  begin
+    bdata:=stralloc(bdatasize+1); //Note: One larger for null-terminator
+    try
+      FillChar(bdata^,bdatasize+1,0);
+      RegKey.readbinarydata(ValueName,bdata^,bdatasize);
+      Result:=getstrfrombuf(pchar(bdata));
+    finally
+      strdispose(bdata);
+    end;
+  end
+  else
+  begin
+    Log(LOG_WARNING, 'The datatype of Registry key %s is incorrect (unrecoverable)!', [ValueName]); //Note: Can't put in dictionary; no Python loaded yet!
+    Result:='Unknown';
+  end;
+end;
+
+function GetClassDevices(const AStartKey,AClassName,AValueName :string; var AResult :TStrings) :string;
 var
   i,j :integer;
+  reg :TRegistry;
   sl :TStringList;
   s,rclass :string;
 const
@@ -1365,7 +1491,8 @@ const
 begin
   Result:='';
   AResult.Clear;
-  with TRegistry.Create(KEY_READ) do
+  reg:=TRegistry.Create(KEY_READ);
+  with reg do
   begin
     RootKey:=HKEY_LOCAL_MACHINE;
     if OpenKey(AStartKey,false) then
@@ -1400,7 +1527,7 @@ begin
                   if OpenKey(AStartKey+'\'+s+'\'+sl[j],false) then
                   begin
                     if ValueExists(AValueName) then
-                      AResult.Add(ReadString(AValueName));
+                      AResult.Add(GetStringOrBinary(reg, AValueName, 'HKEY_LOCAL_MACHINE'));
                     CloseKey;
                   end;
                 end;
@@ -1418,41 +1545,20 @@ begin
   end;
 end;
 
-function GetStrFromBuf(Buffer :pchar) :string;
-var
-  i,j :integer;
-begin
-  result:='';
-  j:=0;
-  i:=0;
-  repeat
-    if buffer[i]<>#0 then
-    begin
-      result:=result+buffer[i];
-      j:=0;
-    end
-    else
-      inc(j);
-    inc(i);
-  until j>1;
-end;
-
 procedure TDisplay.GetInfo;
 var
   rk :string;
-  bdata :pchar;
   idata :DWORD;
   sl :tstringlist;
   i :integer;
   j :DWORD;
+  reg :TRegistry;
   DevMode :TDevMode;
   MaxDev :DWORD;
   Found: Boolean;
   l_hdc: HDC;
   ClassKey: string;
 const
-  bdatasize = 255;
-
   rkVideoHardware = {HKEY_LOCAL_MACHINE\}'HARDWARE\DEVICEMAP\VIDEO';
   rvVideoKey1 = '\Device\Video';
   rvVideoKey2 = '\\Device\\Video';
@@ -1646,18 +1752,7 @@ begin
     FDriverDate.Clear;
     FDriverVersion.Clear;
     Log(LOG_VERBOSE, 'Gathering of display driver information...');
-    try
-      rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
-    except
-      on ERegistryException do
-      begin
-        AMDDriverDescBug:=True;
-        rk:='';
-      end;
-    else
-      //Not handled here
-      raise;
-    end;
+    rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
     Found:=False;
 
     //Something went wrong!
@@ -1665,8 +1760,8 @@ begin
       Exit;
 
     Log(LOG_VERBOSE, 'Enumerating of display driver information...');
-    bdata:=stralloc(bdatasize+1); //Note: One larger for null-terminator
-    with TRegistry.Create(KEY_READ) do
+    reg:=TRegistry.Create(KEY_READ);
+    with reg do
     begin
       RootKey:=HKEY_LOCAL_MACHINE;
       if OpenKey(rk,false) then
@@ -1678,7 +1773,7 @@ begin
           if OpenKey(rk+'\'+sl[i]+'\'+rkClassInfo,false) then
           begin
             Found:=True;
-   
+
             if ValueExists(rvCIDAC) then
               FDAC.Add(ReadString(rvCIDAC))
             else
@@ -1692,17 +1787,17 @@ begin
             end
             else
               FChipset.Add('Unknown');
-   
+
             if ValueExists(rvCIMem) then
               FMemory.Add(FormatBytes(readinteger(rvCIMem)))
             else
               FMemory.Add('Unknown');
-   
+
             CloseKey;
           end;
         end;
       end;
-   
+
       if not Found then
       begin
         MaxDev:=0;
@@ -1730,53 +1825,15 @@ begin
                 rk:='';
             end;
             CloseKey;
-   
+
             if rk<>'' then
             begin
               rk:=copy(rk,pos('Machine\',rk)+8,255);
               if OpenKey(rk,false) then
               begin
-                if ValueExists(rvHardware+'.'+rvHWVideo) then
-                begin
-                  FillChar(bdata^,bdatasize+1,0);
-                  try
-                    readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,bdatasize);
-                  except
-                    Log(LOG_WARNING, 'Could not retrieve adapter name!');
-                    bdata^:=#0;
-                  end;
-                  FAdapter.Add(getstrfrombuf(pchar(bdata)));
-                end
-                else
-                  FAdapter.Add('Unknown');
-
-                if ValueExists(rvHardware+'.'+rvHWDAC) then
-                begin
-                  FillChar(bdata^,bdatasize+1,0);
-                  try
-                    readbinarydata(rvHardware+'.'+rvHWDAC,bdata^,bdatasize);
-                  except
-                    Log(LOG_WARNING, 'Could not retrieve DAC name!');
-                    bdata^:=#0;
-                  end;
-                  FDAC.Add(getstrfrombuf(pchar(bdata)));
-                end
-                else
-                  FDAC.Add('Unknown');
-
-                if ValueExists(rvHardware+'.'+rvHWChip) then
-                begin
-                  FillChar(bdata^,bdatasize+1,0);
-                  try
-                    readbinarydata(rvHardware+'.'+rvHWChip,bdata^,bdatasize);
-                  except
-                    Log(LOG_WARNING, 'Could not retrieve Chipset name!');
-                    bdata^:=#0;
-                  end;
-                  FChipset.Add(getstrfrombuf(pchar(bdata)));
-                end
-                else
-                  FChipset.Add('Unknown');
+                FAdapter.Add(GetStringOrBinary(reg, rvHardware+'.'+rvHWVideo, 'HKEY_LOCAL_MACHINE'));
+                FDAC.Add(GetStringOrBinary(reg, rvHardware+'.'+rvHWDAC, 'HKEY_LOCAL_MACHINE'));
+                FChipset.Add(GetStringOrBinary(reg, rvHardware+'.'+rvHWChip, 'HKEY_LOCAL_MACHINE'));
 
                 if ValueExists(rvHardware+'.'+rvHWMem) then
                 begin
@@ -1820,23 +1877,11 @@ begin
       end;
       free;
     end;
-    strdispose(bdata);
-   
+
     Log(LOG_VERBOSE, 'Gathering of 3D accelerator information...');
     FAcc.Clear;
-    try
-      GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
-    except
-      on ERegistryException do
-      begin
-        AMDDriverDescBug:=True;
-        FAcc.Clear;
-      end;
-    else
-      //Not handled here
-      raise;
-    end;
-   
+    GetClassDevices(ClassKey,rv3DClass,DescValue,FAcc);
+
     Log(LOG_VERBOSE, 'Gathering of display modes information...');
     FModes.Clear;
     j:=0;
@@ -1858,7 +1903,6 @@ end;
 constructor TDisplay.Create;
 begin
   inherited;
-  AMDDriverDescBug:=False;
   FAdapter:=TStringList.Create;
   FDevices:=TStringList.Create;
   FModes:=TStringList.Create;
@@ -2247,16 +2291,20 @@ end;
 procedure WarnDriverBugs;
 var
   S: String;
+  i: Integer;
 begin
-  if AMDDriverDescBug then
+  if DriverBugs.Count <> 0 then
   begin
     //Note: Can't put in dictionary; no Python loaded yet!
-    S:='Registry corruption detected! The most probable cause is a known bad AMD driver. Please contact your video card manufacturer for a corrected driver.';
-    S:=S+#13#10#13#10'Technical details:'#13#10;
-    S:=S+'This bad AMD Graphics driver gives the "DriverDesc" key the wrong data-type (REG_BINARY instead of REG_SZ).'#13#10;
-    S:=S+'This can be manually corrected, but this is not recommended.';
-    S:=S+'QuArK will continue to run, but some graphical options may be disabled.'#13#10;
-    S:=S+'For more information, see: http://quark.sourceforge.net/forums/index.php?topic=1064';
+    S:='Registry corruption detected! One or more driver entries are corrupt. QuArK will continue to run, but some graphical options may be disabled.';
+    S:=S+#13#10#13#10'The most probable cause is either registry corruption, or a bad driver. Please contact your video card manufacturer for a corrected driver.';
+    S:=S+#13#10#13#10'The following bad keys were found:'#13#10;
+    for i:=0 to DriverBugs.Count-1 do
+      S:=S+DriverBugs[i]+#13#10;
+    S:=S+#13#10'This may be caused by a known bad AMD Graphics driver, that gives the "DriverDesc" key the wrong data-type (REG_BINARY instead of REG_SZ).'#13#10;
+    S:=S+'There are also Intel HD graphics and VMWare drivers that contain the same bug, but with the "HardwareInformation" keys.'#13#10;
+    S:=S+'For more information, see: http://quark.sourceforge.net/forums/index.php?topic=1064'#13#10#13#10;
+    S:=S+'You can disable this check by unchecking Configuration > Startup > Check for bugs.';
     MessageBox(0, PChar(S), 'QuArK', MB_TASKMODAL or MB_ICONWARNING or MB_OK);
   end;
 end;
@@ -2340,6 +2388,7 @@ end;
 
 initialization
 begin
+  DriverBugs:=TStringList.Create;
   //We should never allow an exception here, because then we'll exit with a vague runtime error!
   //try
     LogSystemDetails;
@@ -2347,6 +2396,12 @@ begin
     //on E : Exception do
       //Log(LOG_WARNING, 'Failed to get system information: '+E.Message); //Note: Do *NOT* put this through LoadStr; not loaded yet!
   //end;
+end;
+
+finalization
+begin
+  DriverBugs.Free;
+  //DriverBugs:=nil;
 end;
 
 end.
