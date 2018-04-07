@@ -15,8 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# $Header$
-
 """Version 2 of QuArK tagging support, moved to the quarkpy module as
 it isn't just used by plugins any more.
 
@@ -313,22 +311,3 @@ Uses callback functions set using tagdrawfunc().
   cv.pencolor = oldcolour
   
 qbaseeditor.BaseEditor.finishdrawing = _tagfinishdrawing
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.8  2008/02/22 09:52:23  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.7  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.3  2005/09/19 00:23:45  peter-b
-#Fix more silly tagging errors
-#
-#Revision 1.2  2005/09/18 23:55:33  peter-b
-#Make tagfinishdrawing() set and restore the pen colour
-#
-#Revision 1.1  2005/09/18 23:06:16  peter-b
-#New uber-powerful tagging API
-#
-#

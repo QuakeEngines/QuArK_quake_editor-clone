@@ -7,9 +7,6 @@ The map editor's "Commands" menu (to be extended by plug-ins)
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 
-
-#$Header$
-
 #
 # Operations for creating boxes whose face-names reflect
 #  their orientation in the view they're clicked on, plus
@@ -26,7 +23,7 @@ from maputils import *
 #  Y away from viewer (toward would mean lh coord sys)
 #  Z up on screen
 #
-#  The idea is that these should equal map coordinates in Quark's
+#  The idea is that these should equal map coordinates in QuArK's
 #    default side-on view.  All the sign-flips & axis swapping
 #    is kinda confusing.
 #
@@ -239,11 +236,3 @@ def facedict_vflip(fd):
     fd2['u']=fd['d']
     fd2['d']=fd['u']
     return fd2
-
-#$Log$
-#Revision 1.2  2002/08/09 10:00:11  decker_dk
-#A minor consistency correction for facedict_*flip()
-#
-#Revision 1.1  2001/02/14 10:06:47  tiglari
-#extracted from mb2curves, etc
-#

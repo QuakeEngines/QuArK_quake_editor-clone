@@ -8,8 +8,6 @@ Python code to find things targetting and targetted by an entity
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Target Finder",
    "desc":          "Finds entities targetting and targetted by something",
@@ -260,19 +258,3 @@ def brushmenu(o, editor, oldmenu=quarkpy.mapentities.BrushEntityType.menu.im_fun
     return menu
 
 quarkpy.mapentities.BrushEntityType.menu = brushmenu
-
-
-#$Log$
-#Revision 1.4  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.3  2002/05/21 07:06:10  tiglari
-#fix problems with selection dialog (loadiing first selection when appropriate)
-#
-#Revision 1.2  2002/05/20 11:07:54  tiglari
-#fix bug whereby if all targetted items had the same name, the first one
-#  of that name would be selected.  Also now preloading with first element works
-#
-#Revision 1.1  2002/05/18 05:21:39  tiglari
-#Suggestion by quantum_red
-#

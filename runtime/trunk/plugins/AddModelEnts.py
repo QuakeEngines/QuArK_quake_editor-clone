@@ -7,20 +7,6 @@
             - The game's ".lst files" folder must be extracted.
 """
 
-#
-#$Header$
-#
-
-#
-#$Log$
-#Revision 1.2  2008/04/11 17:08:37  cdunde
-#Changed code to try to adapt to proper version writing.
-#
-#Revision 1.1  2008/04/06 06:18:05  cdunde
-#Added making of game Weapon-ModelEntities.qrk file creation to Conversion Tools.
-#
-#
-
 import os, os.path
 
 def AddMdlEnts(QuArKpath, gamename, gamefileslocation, modelfiletype, mdlentsfolder, mdlentsfiletype):
@@ -33,12 +19,8 @@ def AddMdlEnts(QuArKpath, gamename, gamefileslocation, modelfiletype, mdlentsfol
 
     ### Writes the new .qrk file header.
     o.write("QQRKSRC1\n")
-    o.write("// " + gamename + " Weapon and Model Entities file for Quark\n")
+    o.write("// " + gamename + " Weapon and Model Entities file for QuArK\n")
     o.write("\n")
-    o.write("//$" + "Header: Exp $" + "\n")
-    o.write("// ----------- REVISION HISTORY ------------\n")
-    o.write("//$" + "Log: " + gamename + "Weapon-ModelEntities.qrk,v $" + "\n")
-    o.write("//\n")
 
     ### Writes the setup part for the Toolbox and Entities folders.
     o.write("\n")

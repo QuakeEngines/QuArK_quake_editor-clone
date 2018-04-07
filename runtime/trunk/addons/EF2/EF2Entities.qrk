@@ -1,18 +1,5 @@
 QQRKSRC1
-// EF2 Entities file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/03/12 09:32:17  cdunde
-//Removed all unrelated game stuff when copied from STVEF.
-//
-//Revision 1.1  2008/03/09 20:31:03  cdunde
-//Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
-//Game addons should never dump anything into their Data.qrk files.
-//Also fixed their worldspawn music to work now.
-//
-//
+// EF2 Entities file for QuArK
 
 {
   QuArKProtected = "1"

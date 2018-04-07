@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -11,10 +10,6 @@ Terrain mouse dragging  and other modes
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
-
 
 Info = {
    "plug-in":       "Terrain Modes Toolbar",
@@ -2365,123 +2360,3 @@ class TerrModesBar(ToolBar):
 #--- register the new toolbar ---
 
 quarkpy.maptools.toolbars["tb_terrmodes"] = TerrModesBar
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.30  2015/09/20 12:59:58  danielpharos
-# Added a missing import statement.
-#
-# Revision 1.29  2015/01/09 20:22:27  danielpharos
-# Typo fixes.
-#
-# Revision 1.28  2008/07/24 23:34:11  cdunde
-# To fix non-ASCII character from causing python depreciation errors.
-#
-# Revision 1.27  2008/02/22 09:52:22  danielpharos
-# Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-# Revision 1.26  2007/01/31 15:12:16  danielpharos
-# Removed bogus OpenGL texture mode
-#
-# Revision 1.25  2006/11/30 01:17:48  cdunde
-# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-# Revision 1.24  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.23.2.9  2006/11/26 12:54:04  cdunde
-# To reset toolbars default location for removal of unneeded 3D buttons.
-#
-# Revision 1.23.2.8  2006/11/09 23:17:44  cdunde
-# Changed Paint Brush dialog to work with new version view setup and names.
-#
-# Revision 1.23.2.7  2006/11/03 23:38:10  cdunde
-# Updates to accept Python 2.4.4 by eliminating the
-# Depreciation warning messages in the console.
-#
-# Revision 1.23.2.6  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.23.2.4  2006/10/04 21:33:32  danielpharos
-# BackUp 4 October 2006 (2)
-#
-# Revision 1.23  2006/01/30 08:20:00  cdunde
-# To commit all files involved in project with Philippe C
-# to allow QuArK to work better with Linux using Wine.
-#
-# Revision 1.22  2006/01/12 07:21:01  cdunde
-# To commit all new and related files for
-# new Quick Object makers and toolbar.
-#
-# Revision 1.21  2006/01/10 01:05:16  cdunde
-# To fix TG cursors to change according to textured
-# and non-textured modes and button changes properly
-#
-# Revision 1.20  2006/01/09 19:32:37  cdunde
-# To fix error and add selection function to TG Paint Brush
-# when an unknown texture is found.
-#
-# Revision 1.19  2006/01/07 08:56:14  cdunde
-# To fix a few minor bugs with TG paint brush
-# function and make more universal game mode
-#
-# Revision 1.18  2006/01/07 05:47:48  cdunde
-# Update so new paint brush cursor does not
-# change if no drag option is chosen for a 3D view
-#
-# Revision 1.17  2005/12/10 07:19:18  cdunde
-# To add new paint brush cursor for Terrain Generator
-#
-# Revision 1.16  2005/11/15 17:15:49  cdunde
-# Removed unneeded code that was
-# braking changing modes in 3D views
-#
-# Revision 1.15  2005/11/14 08:07:41  cdunde
-# Again with the cursor fix, hopefully right this time
-#
-# Revision 1.14  2005/11/13 10:53:54  cdunde
-# To correct for key error
-#
-# Revision 1.13  2005/11/13 10:17:55  cdunde
-# Previous fix caused another problem.
-# This fix's that cursor setting problem
-#
-# Revision 1.12  2005/11/10 03:30:50  cdunde
-# To finally fix cursor setting problem
-#
-# Revision 1.11  2005/11/07 00:06:40  cdunde
-# To commit all files for addition of new Terrain Generator items
-# Touch-up Selector and 3D Options Dialog
-#
-# Revision 1.10  2005/10/16 00:24:05  cdunde
-# Fixed Terrain Generator Paint Brush function to allow
-# texture application in all 3D views and update of those views.
-#
-# Revision 1.9  2005/10/15 00:51:56  cdunde
-# To reinstate headers and history
-#
-# Revision 1.6  2005/09/16 18:08:40  cdunde
-# Commit and update files for Terrain Paintbrush addition
-#
-# Revision 1.5  2005/08/31 22:46:21  cdunde
-# To properly fix interference with Model Editor
-#
-# Revision 1.4  2005/08/26 07:11:13  cdunde
-# To temporarily fix interference with Model Editor
-#
-# Revision 1.3  2005/08/16 22:46:32  cdunde
-# To fix 2 first time start bugs:
-# terrain button was selected and
-# dialog box would open with std selector
-#
-# Revision 1.2  2005/08/16 04:03:12  cdunde
-# Fix toolbar arraignment
-#
-# Revision 1.1  2005/08/15 05:49:23  cdunde
-# To commit all files for Terrain Generator
-#
-

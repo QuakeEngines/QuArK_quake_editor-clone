@@ -1,21 +1,5 @@
 QQRKSRC1
-// FAKK2 Entities file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.3  2008/05/14 20:38:54  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.2  2008/03/11 22:24:10  cdunde
-//Update to add Specific include selectors and correct other stuff.
-//
-//Revision 1.1  2008/03/09 20:31:07  cdunde
-//Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
-//Game addons should never dump anything into their Data.qrk files.
-//Also fixed their worldspawn music to work now.
-//
-//
+// FAKK2 Entities file for QuArK
 
 {
   QuArKProtected = "1"

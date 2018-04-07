@@ -8,8 +8,6 @@ Management of Bezier patches
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 #py2.4 indicates upgrade change for python 2.4
 
 import quarkx
@@ -1153,99 +1151,3 @@ def pickfinishdrawing(editor, view, oldmore=mapeditor.MapEditor.finishdrawing):
     oldmore(editor,view)
 
 mapeditor.MapEditor.finishdrawing = pickfinishdrawing
-
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.44  2008/02/22 09:52:24  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.43  2007/12/14 22:30:53  cdunde
-#Minor corrections of new Infobase links.
-#
-#Revision 1.42  2007/12/14 21:48:00  cdunde
-#Added many new beizer shapes and functions developed by our friends in Russia,
-#the Shine team, Nazar and vodkins.
-#
-#Revision 1.41  2006/11/30 01:19:34  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.40  2006/11/29 07:00:29  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.39.2.2  2006/11/23 20:04:06  danielpharos
-#Very small clean-up of the header
-#
-#Revision 1.39.2.1  2006/11/03 23:38:09  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.39  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.36  2001/06/17 21:05:27  tiglari
-#fix button captions
-#
-#Revision 1.35  2001/06/16 03:20:48  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.34  2001/02/07 18:40:47  aiv
-#bezier texture vertice page started.
-#
-#Revision 1.33  2001/01/15 21:56:29  tiglari
-#remove useless `subdiv' menu item (old test code, methinks).
-#`picking' extended to drag (drag one picked CP now drags all)
-#
-#Revision 1.32  2000/12/30 05:28:19  tiglari
-#`pick' functions for acting on selected bezier cp's
-#
-#Revision 1.31  2000/08/23 12:13:53  tiglari
-#added knit edge RMB for patches; also double rows/columns
-#
-#Revision 1.30  2000/07/30 23:03:51  tiglari
-#align row/column to tagged edge added; glue to tagged removed,
-#since the one in plugins.maptagpoint already does the job.
-#
-#Revision 1.29  2000/07/29 01:12:14  alexander
-#fixed: copycp ->copyCp (texture coordinate pyton crash AGAIN :)
-#
-#Revision 1.28  2000/07/26 11:36:01  tiglari
-#menu reorganization (one texture popup)
-#
-#Revision 1.26  2000/07/24 13:00:02  tiglari
-#reorganization of bezier texture menu, added a new positioning item, `texture at corners'.  Also a sort of `rotation' of control points.
-#
-#Revision 1.25  2000/07/23 08:43:17  tiglari
-#project texture to tagged plane removed from bezier cp menu
-#(functionality now in project tex. from tagged for faces)
-#
-#Revision 1.24  2000/07/16 07:58:11  tiglari
-#bezier menu -> menubegin; mesh thinning
-#
-#Revision 1.23  2000/07/04 11:04:23  tiglari
-#fixed patch thicken bug (copycp->copyCp)
-#
-#Revision 1.22  2000/06/26 22:51:55  tiglari
-#renaming: antidistort_rows/columns->undistortRows/Colunmns,
-#tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
-#
-#Revision 1.21  2000/06/25 23:48:02  tiglari
-#Function Renaming & Reorganization, hope no breakage
-#
-#Revision 1.20  2000/06/14 21:19:39  tiglari
-#texture coord entry dialog fixes, drag hint shows texture coords when texture is dragged
-#
-#Revision 1.19  2000/05/29 21:43:08  tiglari
-#Project texture to tagged added
-#
-#Revision 1.18  2000/05/26 23:12:34  tiglari
-#More patch manipulation facilities
-#
-#Revision 1.17  2000/05/19 10:08:09  tiglari
-#Added texture projection, redid some bezier utilties
-#
-#Revision 1.16  2000/05/08 11:12:19  tiglari
-#fixed problems with keys for bezier cp movement
-#
-

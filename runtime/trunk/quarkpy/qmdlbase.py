@@ -10,8 +10,6 @@ and exporters to QuArK's Main Files - Import menu.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-# $Header$
-
 # Text = title displayed on the menu.
 # Ext = text of the file type, ex: ".md2 file"
 # Desc = type of file (displayed at bottom) that can be selected in the file selection window, ex: "*.md2"
@@ -46,19 +44,3 @@ def RegisterMdlExporter(Text, Ext, Desc, Proc, ExporterFile=None):
         qmacro.mdlexportmenuorder[MenuSortName] = qmacro.mdlexportmenuorder[MenuSortName] + [Text]
     else:
         qmacro.mdlexportmenuorder[MenuSortName] = [Text]
-    
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.4  2008/10/26 00:07:09  cdunde
-# Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
-#
-# Revision 1.3  2008/07/10 23:43:44  cdunde
-# Added detail info to the file comments.
-#
-# Revision 1.2  2008/06/29 16:38:31  cdunde
-# Minor correction.
-#
-# Revision 1.1  2008/06/04 03:56:39  cdunde
-# Setup new QuArK Model Editor Python model import export system.
-#
-#

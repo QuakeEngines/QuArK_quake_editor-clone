@@ -4,7 +4,6 @@
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
 
 ## Fredrick_vamstad@hotmail.com
 
@@ -885,46 +884,7 @@ def backmenu(editor, view=None, origin=None, oldbackmenu=quarkpy.mapmenus.Backgr
 
 quarkpy.mapmenus.BackgroundMenu = backmenu
 
-#
-#
-#
 quarkpy.mapduplicator.DupCodes.update({
   "dup botwaypointer":       BotWaypointer,
   "dup botwaypointerpoint":  BotWaypointerPoint,
 })
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.12  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.9  2005/07/03 17:41:58  alexander
-#fixed logging line in footer
-#
-#
-# Revision 1.7  2005/06/29 13:04:56  cdunde
-# Fred -Fixed a bug with the waypoint savings "missing datatypes".
-# Added code for future releases of Bot Release 0.6.0 which
-# is the latest Aq2 community bot out there.
-#
-# Revision 1.6  2005/04/12 00:17:04  cdunde
-# One last fix by Fred
-# 
-# Revision 1.5 2005/11/4 01:30 Fred
-# Fixed possible the last bug.
-#
-# Revision 1.4 2005/10/4 01:30 Fred
-# Fixed a bug wich had been introduced in a later release
-# 
-# Revision 1.8  2005/06/29 13:35:09  cdunde
-# To try and fix version numbering.
-#
-# Revision 1.3  2003/12/18 21:51:46  peter-b
-# Removed reliance on external string library from Python scripts (second try ;-)
-#
-# Revision 1.2  2002/08/02 19:17:08  decker_dk
-# Uhm... Lots of things changed, of which I've forgotten.
-#
-# Revision 1.1  2002/06/11 17:12:57  decker_dk
-# A Bot waypoint-editor. At the moment only works for HPBBot(Half-Life) and LTK/ACEBot(Quake-2)
-#

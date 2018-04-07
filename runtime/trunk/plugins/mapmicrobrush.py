@@ -8,8 +8,6 @@ Find and remove micro-brushes
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Micro-Brush Finder",
    "desc":          "Find and remove micro-brushes.",
@@ -275,39 +273,3 @@ def thinClick(m):
 
 quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|Find Microbrushes:\n\nThis function identifies brushes that are suspiciously small, at least in one dimension.", "intro.mapeditor.menu.html#searchmenu"))
-
-#$Log$
-#Revision 1.13  2009/09/25 22:55:56  danielpharos
-#Added some missing import-statements.
-#
-#Revision 1.12  2005/10/15 00:51:24  cdunde
-#To reinstate headers and history
-#
-#Revision 1.9  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.8  2003/03/21 05:47:45  cdunde
-#Update infobase and add links
-#
-#Revision 1.7  2002/05/21 10:24:12  tiglari
-#make collected item numbering start with 1)
-#
-#Revision 1.6  2002/05/21 09:16:16  tiglari
-#fix problems with selection dialog: the first of two with identical names was
-# always being chosen, and first item on list wouldn't load
-#
-#Revision 1.5  2001/06/17 21:10:57  tiglari
-#fix button captions
-#
-#Revision 1.4  2001/06/16 03:19:05  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.3  2001/05/21 11:56:51  tiglari
-#a bit of cleaning
-#
-#Revision 1.2  2001/02/11 08:04:15  tiglari
-#comments added, some cosmetics
-#
-#Revision 1.1  2001/02/11 06:44:17  tiglari
-#Version 1
-#

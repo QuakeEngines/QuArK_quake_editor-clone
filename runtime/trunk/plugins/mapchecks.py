@@ -8,10 +8,6 @@ Basic map validity checking
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Basic Checks",
    "desc":          "Basic map validity checking.",
@@ -106,26 +102,3 @@ def BasicCheck(menu=None):
 
 Basic1 = quarkpy.qmenu.item("&Basic checks", BasicCheck, "|Basic checks:\n\nThis function performs various checks on your map, to see if it can be compiled correctly, and function properly.", "intro.mapeditor.menu.html#searchmenu")
 quarkpy.mapsearch.checkitems.append(Basic1)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.6  2004/01/05 22:36:40  silverpaladin
-# Changed it so that platforms that support Beziers chan have brush entities with only beziers in them and not just poly's.
-#
-# Revision 1.5  2003/12/17 13:58:59  peter-b
-# - Rewrote defines for setting Python version
-# - Removed back-compatibility with Python 1.5
-# - Removed reliance on external string library from Python scripts
-#
-# Revision 1.4  2003/03/21 05:47:45  cdunde
-# Update infobase and add links
-#
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

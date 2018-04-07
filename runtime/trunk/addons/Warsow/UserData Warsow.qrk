@@ -1,16 +1,5 @@
 QQRKSRC1
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/05/14 20:38:48  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.1  2008/04/23 20:51:45  cdunde
-//Setup for Warsow with .md3 model support.
-//
-//
-
 {
   Description = "Custom configuration file for Warsow."
   MapObjPanel.qrk =

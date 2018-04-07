@@ -1,9 +1,5 @@
 QQRKSRC1
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
+// Alice definition file for QuArK
 
 {
   Description = "Custom configuration file for Alice."

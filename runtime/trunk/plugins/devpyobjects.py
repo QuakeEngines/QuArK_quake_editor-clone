@@ -1,8 +1,3 @@
-
-#$Header$
-
-# -----
-
 #How to use this file:
 #
 # 1) Import it using the console:
@@ -30,10 +25,3 @@ def OutputPyObjects(filename='python_objects'):
     finally:
         f.close()
     print 'OutputPyObjects: DONE!'
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.1  2010/02/21 20:30:08  danielpharos
-# Added a plugin for outputting all current Python objects in memory (see file for usage).
-#

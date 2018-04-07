@@ -8,10 +8,6 @@ Mouse drag Object modes
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Object Drag Modes",
    "desc":          "Creates objects by mouse dragging",
@@ -4881,75 +4877,3 @@ class ObjectModesBar(ToolBar):
 #--- register the new toolbar ---
 
 quarkpy.maptools.toolbars["tb_objmodes"] = ObjectModesBar
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.16  2016/06/17 19:27:27  danielpharos
-# Fixed a typo.
-#
-# Revision 1.15  2015/01/09 20:22:26  danielpharos
-# Typo fixes.
-#
-# Revision 1.14  2008/09/12 19:08:40  cdunde
-# Minor code cleanup.
-#
-# Revision 1.13  2008/02/22 09:52:21  danielpharos
-# Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-# Revision 1.12  2007/10/08 18:47:30  cdunde
-# To stop both editor's Quick Object Makers from braking when zoomed in close.
-#
-# Revision 1.11  2006/11/30 01:17:48  cdunde
-# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-# Revision 1.10  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.9.2.2  2006/11/09 23:00:02  cdunde
-# Updates to accept Python 2.4.4 by eliminating the
-# Depreciation warning messages in the console.
-#
-# Revision 1.9.2.1  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.9  2006/02/25 03:19:04  cdunde
-# To fix Torus Hollow-No bulkheads function
-# missed with addition of new items.
-#
-# Revision 1.8  2006/02/12 19:03:54  cdunde
-# To add all new, updated and Infobase documentation files
-# for new Object makers, Double-cone, Dome and Fan.
-#
-# Revision 1.7  2006/02/11 20:21:41  cdunde
-# Changed Sphere hollow to extrude to substancialy increase speed
-# and cleaned up code to also try and help with redline drawing speed.
-#
-# Revision 1.6  2006/02/10 04:03:26  cdunde
-# To remove unneeded test code.
-#
-# Revision 1.5  2006/01/31 11:04:30  cdunde
-# Fixed  distance displayed amount from drifting away from
-# marker on screen view x-axis when the scale size is changed.
-#
-# Revision 1.4  2006/01/30 08:20:00  cdunde
-# To commit all files involved in project with Philippe C
-# to allow QuArK to work better with Linux using Wine.
-#
-# Revision 1.3  2006/01/17 19:25:45  cdunde
-# To add all file updates for new Object modes
-# dialog boxes hollowing functions.
-#
-# Revision 1.2  2006/01/13 07:12:48  cdunde
-# To commit all new and updated Infobase docs and
-# toolbar links for new Quick Object makers and toolbar.
-#
-# Revision 1.1  2006/01/12 07:21:01  cdunde
-# To commit all new and related files for
-# new Quick Object makers and toolbar.
-#
-#
-

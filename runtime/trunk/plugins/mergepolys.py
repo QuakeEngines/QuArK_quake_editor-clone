@@ -9,8 +9,6 @@
 #
 #######################################
 
-#$Header$
-
 import quarkx
 import quarkpy.mapentities
 from tagging import *
@@ -169,15 +167,3 @@ def groupmergepoly(editor,o):
     item = qmenu.item("Merge Polys",MergePolysClick,"|This command will try to merge all mergeable polys in the group.\n\mIt doesn't necessarily get the best answer, if you think you can do better, you can use Merge Polys on the face menu.")
     item.o=o
     return item
-
-# $Log$
-# Revision 1.3  2005/10/15 00:51:56  cdunde
-# To reinstate headers and history
-#
-# Revision 1.1  2001/04/15 08:53:44  tiglari
-# move merge poly code to mergepolys.py; add merge polys in group functionality
-#
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#

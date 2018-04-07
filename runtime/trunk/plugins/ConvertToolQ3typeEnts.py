@@ -8,10 +8,6 @@
             - This program will go one sub-folder deep and can use any file type that uses the '/*QUAKED' key.
 """
 
-#
-#$Header$
-#
-
 import os, os.path
 
 def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
@@ -226,16 +222,3 @@ def Q3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                                       WriteModelBrowser, UseModelBrowser, UseDefaultModelHint, ModelHint, WriteSoundBrowser,
                                       UseSoundBrowser, UseDefaultSoundHint, SoundHint, WriteMusicBrowser, UseMusicBrowser,
                                       UseDefaultMusicHint, MusicHint, UseColorPicker)
-    
-#
-#$Log$
-#Revision 1.3  2008/04/23 20:22:27  cdunde
-#Minor improvements.
-#
-#Revision 1.2  2008/04/04 23:20:48  cdunde
-#To add another read file format.
-#
-#Revision 1.1  2008/04/04 20:19:29  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#

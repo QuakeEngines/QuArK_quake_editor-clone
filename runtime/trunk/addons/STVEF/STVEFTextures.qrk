@@ -1,14 +1,6 @@
 QQRKSRC1
 // STVEF textures file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/03/28 19:12:45  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
-
 {
   QuArKProtected = "1"
   Description = "STVEF Textures"

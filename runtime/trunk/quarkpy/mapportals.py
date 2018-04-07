@@ -8,8 +8,6 @@ Map editor portal viewer
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 import quarkx
 import qmacro
 import qtoolbar
@@ -138,34 +136,3 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
 
 
 mapeditor.MapEditor.finishdrawing = DrawLines
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.11  2007/12/17 00:50:00  danielpharos
-#Fix the map portals not drawing anymore.
-#
-#Revision 1.10  2007/01/09 23:11:46  danielpharos
-#Fixed an annoying crash with map portals (for instance when you set the light-entity's color too high)
-#
-#Revision 1.9  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.6  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.5  2003/03/21 10:56:08  tiglari
-#support for line-thickness specified by mapoption
-#
-#Revision 1.4  2003/03/19 22:24:10  tiglari
-#fix bug in parsing
-#
-#Revision 1.3  2003/03/19 11:27:47  tiglari
-#remove debug statement
-#
-#Revision 1.2  2003/03/19 11:26:15  tiglari
-#expand info in dialog box
-#
-#Revision 1.1  2003/03/19 11:07:52  tiglari
-#first version, only tested for Q1
-#
-#

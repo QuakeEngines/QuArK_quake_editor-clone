@@ -10,10 +10,6 @@ History:
 1999-01-16  Added axis-rotating lines to rotating entities, so its a little easier to visualize around what the entity will rotate.
 """
 
-
-#$Header$
-
-
 Info = {
    "plug-in":       "Half-Life Arrow Extensions",
    "desc":          "Arrows/Axis for specifics like: 'master', 'multi_manager' and more...",
@@ -293,18 +289,3 @@ class HalfLifeDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "Half-Life": HalfLifeDrawEntityLines()
 })
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.4  2001/02/13 21:02:55  decker_dk
-# Tabbing problem, which is a really serious problem with Python!!
-#
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

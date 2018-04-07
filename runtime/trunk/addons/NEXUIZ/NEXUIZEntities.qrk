@@ -1,49 +1,5 @@
 QQRKSRC1
-// NEXUIZ Entities file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.11  2009/10/10 12:42:18  danielpharos
-//Fixed a typo.
-//
-//Revision 1.10  2009/10/10 12:38:39  danielpharos
-//Some C to CL list fixes.
-//
-//Revision 1.9  2009/10/10 12:30:42  danielpharos
-//Added missing misc_follow and trigger_swamp entities.
-//
-//Revision 1.8  2009/10/10 10:33:21  danielpharos
-//Added missing trigger_counter and trigger_delay entities.
-//
-//Revision 1.7  2009/10/10 10:08:28  danielpharos
-//Added missing func_rain entity.
-//
-//Revision 1.6  2009/10/10 09:57:13  danielpharos
-//Added missing func_rotating:form.
-//
-//Revision 1.5  2008/07/25 19:03:50  danielpharos
-//Re-added QuArK-Protected and description settings.
-//
-//Revision 1.4  2008/07/22 19:02:26  cdunde
-//Updated addon, also new game pak on QuArK site. Don't know who did them.
-//
-//Revision 1.3  2008/05/21 18:15:12  cdunde
-//To add and\or activate Half-Life 2 functions: (all original code by Alexander)
-//1) to create extra Specifics setting handles for func_useableladder function (point0 & point1)
-//      func_breakable_glass and func_breakable_surf functions
-//      (lowerleft, upperleft, lowerright and upperright)
-//2) to draw special light entity lines for functions like light_spot that have the Specifics
-//      (angles, _cone, spotlightwidth and\or _inner_cone)
-//3) face displacement. Commented out at this time. believe bezier type code should be used instead.
-//
-//Revision 1.2  2008/05/14 20:38:52  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.1  2008/04/05 06:17:32  cdunde
-//Added full game support for NEXUIZ including .md3 model displaying.
-//
-//
+// NEXUIZ Entities file for QuArK
 
 {
   QuArKProtected = "1"

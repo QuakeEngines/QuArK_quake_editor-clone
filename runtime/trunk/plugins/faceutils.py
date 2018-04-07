@@ -6,8 +6,6 @@
 #
 ######################################################
 
-#$Header$
-
 from quarkpy.qutils import *
 import quarkpy.qhandles
 
@@ -294,44 +292,3 @@ def common_vertexes(fixedvtx, compface, comppoly, variance):
             return compvtx
     else:
         return None
-
-#$Log$
-#Revision 1.14  2005/11/06 23:42:39  cdunde
-#Added three new functions, close_to, cursor2vertex and common_vertexes.
-#See them for description, last one allows a grid variance setting.
-#
-#Revision 1.13  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.10  2005/07/01 19:51:31  cdunde
-#Added error message to avoid breaking
-#
-#Revision 1.9  2005/06/30 21:16:04  cdunde
-#Minor update
-#
-#Revision 1.8  2005/06/17 05:48:40  cdunde
-#To change the perimeter_edges function method to get clean lists returns without
-#dupe vertexes and add an additional list of non-perimeter vertexes
-#
-#Revision 1.7  2005/06/02 00:42:29  cdunde
-#Changes by Rowdy to help min. dup items in list
-#
-#Revision 1.6  2005/05/30 20:06:25  cdunde
-#Added new functions to return 2 lists, perim and non-perim faces,
-#and 1 list of the perimeter vertex only.
-#
-#Revision 1.5  2005/04/20 19:00:24  cdunde
-#To fix typo error for continue
-#
-#Revision 1.4  2005/04/20 12:31:47  rowdy
-#added a couple of functions nearly_equals, vertex_in_vertices and shared_vertices
-#to check for vertices shared  by adjacent faces to help with the terrain plugin
-#Revision 1.3  2001/08/11 04:14:51  tiglari
-#remove debug
-#
-#Revision 1.2  2001/04/15 06:05:52  tiglari
-#add coplanar function
-#
-#Revision 1.1  2001/04/01 04:43:48  tiglari
-#initial commit
-#

@@ -8,9 +8,6 @@ Implementation of QuArK Map editor features for the "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Basic Search",
    "desc":          "Basic items for the Search menu.",
@@ -233,35 +230,3 @@ class SearchBySpec(SearchDlg):
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &name", SearchByName, "|Object by name:\n\nThis function will search for an object (which are also called Entities) by its 'classname' (the type of game entity it represents, a particular monster, weapon, item...).", "intro.mapeditor.menu.html#searchmenu"))
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &Specific/Aug", SearchBySpec, "|Object by Specific/Aug:\n\nThis function will search for all objects (which are also called Entities) by a particular Specific (key) or Argument (value) setting.", "intro.mapeditor.menu.html#searchmenu"))
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Brok1Click, "|Broken polys and faces:\n\nThis function will search your map for any invalid polyhedrons and faces which do not belong to a polyhedron.", "intro.mapeditor.menu.html#searchmenu"))
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.13  2009/09/25 22:55:56  danielpharos
-# Added some missing import-statements.
-#
-# Revision 1.12  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
-#
-# Revision 1.9  2003/12/17 13:58:59  peter-b
-# - Rewrote defines for setting Python version
-# - Removed back-compatibility with Python 1.5
-# - Removed reliance on external string library from Python scripts
-#
-# Revision 1.8  2003/03/21 05:47:45  cdunde
-# Update infobase and add links
-#
-# Revision 1.7  2002/04/07 12:46:06  decker_dk
-# Pretty separator.
-#
-# Revision 1.6  2001/10/08 22:44:09  tiglari
-# revert to original and redo indent fix and separators
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

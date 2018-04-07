@@ -2,13 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.2
 // It's the text version of file: Q3Amodels.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2001/03/17 15:10:09  decker_dk
-//Map model prefabs by Rolf Hulsbergen <R.P.Hulsbergen@Student.TUDelft.NL>
-//
-
 {
   Description = "Map model prefabs"
   Toolbox Folders.qtx =

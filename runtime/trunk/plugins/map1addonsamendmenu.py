@@ -8,8 +8,6 @@ Amending functions of QuArK Map editor's "Addons" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Map1 Addons Amend Menu",
    "desc":          "This implements the Addons menu and Categories for adding and removing 3rd party programs.",
@@ -888,23 +886,3 @@ def ViewAmendMenu1click(m):
 
 
 AmendMenuCmds = [quarkpy.qmenu.popup("&Add \ Delete menu items", [], ViewAmendMenu1click, "|Add \ Delete menu items:\n\nThese functions allow you to add and delete 3rd party programs to this menu, that save or export their output to a map file which can then be imported to the QuArK editor and used in the file you are editing.\n\nYou can use any .map file that the program outputs to, at any location, or a default map file as your input file.\n\nThe default import file should be created and saved to YourGame\\tmpQuArk\maps folder and named '1SaveImport.map' .\n\nIf this file is damaged or lost it can be recreated by simply making a basic map file in QuArk (with world_spawn ONLY) and saved with the default file name above.", "intro.mapeditor.menu.html#addonsmenu")]
-
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.7  2010/02/21 15:42:49  danielpharos
-#Fixed orangebox compiler not finishing compile.
-#
-#Revision 1.6  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.3  2005/07/21 20:50:09  cdunde
-#To correct code error in previous version for removal of string reliance
-#
-#Revision 1.2  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.1  2003/07/04 20:01:16  cdunde
-#To add new Addons main menu item and sub-menus
-#

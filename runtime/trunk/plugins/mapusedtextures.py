@@ -8,9 +8,6 @@ Plug-in that makes a "used textures" folder in the Texture Browser.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Used textures",
    "desc":          "Creates a used textures folder in the Texture Browser",
@@ -108,18 +105,3 @@ def CloseRoot(self, oldCloseRoot=MapEditor.CloseRoot):
 
     oldCloseRoot(self)
 MapEditor.CloseRoot = CloseRoot
-
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.3  2017/03/05 13:44:42  danielpharos
-#Workaround a crash on quit with the Used Textures functionality.
-#
-#Revision 1.2  2017/03/05 13:19:59  danielpharos
-#Made HL2 textures work too.
-#
-#Revision 1.1  2017/03/05 12:48:04  danielpharos
-#Moved the "Used Textures" functionality in the map editor into a plugin.
-#
-#

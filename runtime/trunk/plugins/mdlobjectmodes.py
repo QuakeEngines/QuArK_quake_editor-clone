@@ -8,10 +8,6 @@ Mouse drag Object modes
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Object Drag Modes",
    "desc":          "Creates objects by mouse dragging",
@@ -5616,85 +5612,3 @@ def ConvertPolyObject(editor, newobjectslist, flags, view, undomsg, option=1, nb
             editor.ok(undo, undomsg+" with "+str(nbroffaces)+" faces \\ "+str(rings)+" ring")
         else:
             editor.ok(undo, undomsg+" with "+str(nbroffaces)+" faces \\ "+str(rings)+" rings")
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.23  2016/06/17 19:27:28  danielpharos
-# Fixed a typo.
-#
-# Revision 1.22  2015/01/09 20:22:26  danielpharos
-# Typo fixes.
-#
-# Revision 1.21  2011/11/17 01:19:02  cdunde
-# Setup BBox drag toolbar button to work correctly with other toolbar buttons.
-#
-# Revision 1.20  2011/03/04 06:50:28  cdunde
-# Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
-#
-# Revision 1.19  2009/10/12 20:49:56  cdunde
-# Added support for .md3 animationCFG (configuration) support and editing.
-#
-# Revision 1.18  2009/04/28 21:30:56  cdunde
-# Model Editor Bone Rebuild merge to HEAD.
-# Complete change of bone system.
-#
-# Revision 1.17  2008/12/20 08:39:34  cdunde
-# Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
-#
-# Revision 1.16  2008/09/12 19:08:40  cdunde
-# Minor code cleanup.
-#
-# Revision 1.15  2008/05/01 14:03:31  danielpharos
-# Use local variable instead of redundant look-up.
-#
-# Revision 1.14  2008/02/23 04:41:11  cdunde
-# Setup new Paint modes toolbar and complete painting functions to allow
-# the painting of skin textures in any Model Editor textured and Skin-view.
-#
-# Revision 1.13  2008/02/22 09:52:22  danielpharos
-# Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-# Revision 1.12  2008/02/04 05:07:41  cdunde
-# Made toolbars interactive with one another to
-# turn off buttons when needed, avoiding errors and crashes.
-#
-# Revision 1.11  2008/02/03 17:51:22  cdunde
-# To remove test print statement.
-#
-# Revision 1.10  2007/12/02 06:47:12  cdunde
-# Setup linear center handle selected vertexes edge extrusion function.
-#
-# Revision 1.9  2007/11/19 01:08:45  cdunde
-# To fix needed face definition and use the fastest way to get it.
-#
-# Revision 1.8  2007/11/18 02:40:31  cdunde
-# Added "Make hollow" option to dialog & end faces for Pyramid and Cylinder Quick Object Makers
-# to allow extrusion and vertex manipulation to create shapes such as arms and leg parts.
-#
-# Revision 1.7  2007/11/16 20:08:45  cdunde
-# To update all needed files for fix by DanielPharos
-# to allow frame relocation after editing.
-#
-# Revision 1.6  2007/10/31 03:47:52  cdunde
-# Infobase button link updates.
-#
-# Revision 1.5  2007/10/09 04:15:40  cdunde
-# Changed some of the "Fan" Quick Object Maker code
-# to provide integers where needed and stop crashing.
-#
-# Revision 1.4  2007/10/08 18:47:31  cdunde
-# To stop both editor's Quick Object Makers from braking when zoomed in close.
-#
-# Revision 1.3  2007/10/08 16:20:20  cdunde
-# To improve Model Editor rulers and Quick Object Makers working with other functions.
-#
-# Revision 1.2  2007/10/06 20:15:00  cdunde
-# Added Ruler Guides to Options menu for Model Editor.
-#
-# Revision 1.1  2007/10/05 20:47:51  cdunde
-# Creation and setup of the Quick Object Makers for the Model Editor.
-#
-#
-

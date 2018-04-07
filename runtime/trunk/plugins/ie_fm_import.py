@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Heretic II .fm model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_fm_importer",
@@ -1042,30 +1038,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_fm_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".fm HereticII Importer", ".fm file", "*.fm", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.7  2011/10/13 19:35:29  cdunde
-# Update for logging to match exporter logging.
-#
-# Revision 1.6  2011/10/06 08:59:52  cdunde
-# Logging correction to stop header data from being over written.
-#
-# Revision 1.5  2011/09/28 06:56:54  cdunde
-# Texture naming update.
-#
-# Revision 1.4  2011/04/05 20:51:42  cdunde
-# Comment update.
-#
-# Revision 1.3  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.2  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.1  2011/02/11 19:52:56  cdunde
-# Added import support for Heretic II and .m8 as supported texture file type.
-#
-#

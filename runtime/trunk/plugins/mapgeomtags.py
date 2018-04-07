@@ -15,8 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# $Header$
-
 """
 plugins.mapgeomtags
 -------------------
@@ -143,36 +141,3 @@ nt.tagdrawfunc(_POINT_dcb, POINT)
 nt.tagdrawfunc(_VTXEDGE_dcb, VTXEDGE)
 nt.tagdrawfunc(_PLANE_dcb, PLANE)
 nt.tagdrawfunc(_B2CP_dcb, B2CP)
-
-# ------------------------------------------------------------------ #
-# log - make no changes below this line
-#
-# $Log$
-# Revision 1.7  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.6.2.1  2006/11/03 23:38:11  cdunde
-# Updates to accept Python 2.4.4 by eliminating the
-# Depreciation warning messages in the console.
-#
-# Revision 1.6  2005/10/16 18:48:04  cdunde
-# To remove letters referring to depository folders that
-#  made filtering them out for distribution harder to do
-#
-# Revision 1.5  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2005/09/22 11:10:40  peter-b
-# Resolve merge conflicts
-#
-# Revision 1.1.2.3  2005/09/22 10:41:27  peter-b
-# Change order of arguments to tagdrawfunc() to match tagchangefunc()
-#
-# Revision 1.1.2.2  2005/09/22 10:32:11  peter-b
-# Check type of tagged points (using tag change callback)
-#
-# Revision 1.1.2.1  2005/09/21 18:30:14  peter-b
-# New mapgeomtags plugin provides infrastructure for tagging map geometry.
-# Deprecated tagging plugin now uses mapgeomtags to do its thing.
-#

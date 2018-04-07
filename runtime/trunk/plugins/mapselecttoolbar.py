@@ -8,8 +8,6 @@ Tag commands toolbar
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Selection Commands Toolbar",
    "desc":          "Toolbar for selection commands",
@@ -292,24 +290,3 @@ class SelectModesBar(ToolBar):
 # quarkpy folder are loaded before the files in the plugins folder.
 
 quarkpy.maptools.toolbars["tb_selectmodes"] = SelectModesBar
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.9  2013/03/17 14:15:09  danielpharos
-# Fixed a typo.
-#
-# Revision 1.8  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
-#
-# Revision 1.5  2005/08/16 04:03:12  cdunde
-# Fix toolbar arraignment
-#
-# Revision 1.4  2003/11/27 08:17:22  cdunde
-# To update 3D Zoom to selection feature for faces
-#
-# Revision 1.3  2003/11/16 08:34:02  cdunde
-# To add log
-#
-#

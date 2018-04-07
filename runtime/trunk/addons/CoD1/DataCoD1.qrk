@@ -1,9 +1,5 @@
 QQRKSRC1
-// Call of Duty 1 definition file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
+// Call of Duty 1 definition file for QuArK
 
 {
   QuArKProtected = "1"

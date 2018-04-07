@@ -1,13 +1,5 @@
 QQRKSRC1
-// Alice Entities file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2010/08/25 03:32:47  cdunde
-//Setup full game support for American McGee's - Alice in the map editor along with version conversion tool.
-//
-//
+// Alice Entities file for QuArK
 
 {
   QuArKProtected = "1"

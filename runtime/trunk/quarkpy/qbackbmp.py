@@ -8,10 +8,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 import quarkx
 import qmacro
 import qtoolbar
@@ -349,40 +345,3 @@ class MdlBackBmpDlg(qmacro.dialogbox):
         quarkx.setupsubset(SS_MODEL, "Options")["BGImage_multiple"] = src["multiple"]
         self.view.invalidate(1)
         self.close()
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.13  2009/07/06 18:17:58  danielpharos
-#Fixed vertical scrollbar showing up.
-#
-#Revision 1.12  2008/02/06 00:12:44  danielpharos
-#The skinview now properly updates to reflect changes made to textures.
-#
-#Revision 1.11  2007/11/22 05:13:47  cdunde
-#Separated editors background image dialogs and setup to save all of their settings.
-#
-#Revision 1.10  2007/11/19 00:08:39  danielpharos
-#Any supported picture can be used for a view background, and added two options: multiple, offset
-#
-#Revision 1.9  2007/04/11 15:52:00  danielpharos
-#Fixed a crash. As a happy side-effect, it now only refreshes the view changed.
-#
-#Revision 1.8  2006/05/19 17:10:03  cdunde
-#To add new transparent poly options for viewing background image.
-#
-#Revision 1.7  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.4  2001/06/17 21:05:27  tiglari
-#fix button captions
-#
-#Revision 1.3  2001/06/16 03:20:48  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

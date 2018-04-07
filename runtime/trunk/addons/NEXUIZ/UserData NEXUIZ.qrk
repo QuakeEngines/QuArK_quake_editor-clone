@@ -1,16 +1,5 @@
 QQRKSRC1
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/05/14 20:38:52  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.1  2008/04/05 06:17:32  cdunde
-//Added full game support for NEXUIZ including .md3 model displaying.
-//
-//
-
 {
   Description = "Custom configuration file for NEXUIZ."
   MapObjPanel.qrk =

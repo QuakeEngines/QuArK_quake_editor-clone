@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Alice, EF2 and FAKK2 .tan model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_tan_importer",
@@ -828,37 +824,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_tan_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".tan Alice\EF2\FAKK2 Importer", ".tan file", "*.tan", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.9  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.8  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.7  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.6  2010/08/03 22:40:06  cdunde
-# Logging and comments update.
-#
-# Revision 1.5  2010/07/31 22:41:35  cdunde
-# Commented out unused file read data.
-#
-# Revision 1.4  2010/07/28 04:27:13  cdunde
-# File ident update.
-#
-# Revision 1.3  2010/07/08 18:05:15  danielpharos
-# Removed unused variable.
-#
-# Revision 1.2  2010/07/08 18:04:04  danielpharos
-# Removed left-over MD2 constants, and added proper function for CString converting.
-#
-# Revision 1.1  2010/07/07 03:35:28  cdunde
-# Setup importers for Alice, EF2 and FAKK2 .skb, .ska and
-# .tan models (static and animated) with bone and skin support.
-#
-#

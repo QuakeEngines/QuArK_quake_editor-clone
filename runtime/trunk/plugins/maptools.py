@@ -8,9 +8,6 @@ Plug-in to show distance of selected polys in 2D views.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Map tools",
    "desc":          "Shows distance of selected polys in 2D views",
@@ -569,55 +566,3 @@ def ViewAmendMenu2click(m):
 
 
 RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMenu2click, "|Ruler guide in 2D views:\n\nThese functions allow you to display a line with the unit distance of total selected items in any one, combination, or all of the 2D views of the Editor.", "intro.mapeditor.menu.html#optionsmenu")]
-    
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.13  2006/11/30 01:17:48  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.12  2006/11/29 06:58:35  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.11.2.2  2006/11/09 23:00:02  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.11.2.1  2006/11/04 21:36:52  cdunde
-#To stop Depreciation message in console when dialog boxes where opened.
-#
-#Revision 1.11  2006/01/31 11:04:30  cdunde
-#Fixed  distance displayed amount from drifting away from
-#marker on screen view x-axis when the scale size is changed.
-#
-#Revision 1.10  2006/01/31 07:35:08  cdunde
-#To stop smearing of 2D view when rulers are turned off.
-#
-#Revision 1.9  2005/12/11 22:03:09  cdunde
-#To fix error in editor and Infobase for X 2D view of
-#Y axis sign and label which was backwards
-#
-#Revision 1.8  2005/11/25 04:17:24  cdunde
-#again 8-(
-#
-#Revision 1.6  2005/11/25 03:35:29  cdunde
-#Still trying to get this file to pickup its version changes
-#
-#Revision 1.5  2005/11/24 18:01:46  cdunde
-#To eliminate entities from being included in measurements.
-#
-#Revision 1.4  2005/11/24 17:53:08  cdunde
-#To straighten out cvs logging problem
-#
-#Revision 1.3  2005/11/22 18:25:10  cdunde
-#To eliminate entities from being included in measurements.
-#
-#Revision 1.2  2005/11/18 02:37:30  cdunde
-#To try and add header and history log
-#
-#Revision 1.1  2005/11/18 02:21:53  cdunde
-#To add new '2D Rulers' function, menu and
-#updated Infobase docs covering it.
-#
-#

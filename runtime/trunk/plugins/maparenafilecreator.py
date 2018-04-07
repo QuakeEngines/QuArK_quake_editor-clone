@@ -7,8 +7,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Quake3 Arena script generator",
    "desc":          "creates .arena files in /scripts",
@@ -98,19 +96,3 @@ class ArenaFileMaker(StandardDuplicator):
 quarkpy.mapduplicator.DupCodes.update({
   "dup arenafilemaker":	     ArenaFileMaker,
 })
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.5  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.2  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.1  2000/07/04 17:27:26  alexander
-#arenafilemaker macro
-#
-#
-#

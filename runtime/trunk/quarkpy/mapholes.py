@@ -8,10 +8,6 @@ Map editor "Line through hole" displayer
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 #
 # This version can only load .lin files from Quake 2.
 #
@@ -170,25 +166,3 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
 
 
 mapeditor.MapEditor.finishdrawing = DrawLines
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.9  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.6  2003/03/21 10:56:08  tiglari
-#support for line-thickness specified by mapoption
-#
-#Revision 1.5  2003/03/19 22:27:10  tiglari
-#remove debug; there was no parsing error in this file (previous commit mistaken)
-#
-#Revision 1.4  2003/03/19 22:23:35  tiglari
-#fix bug in parsing
-#
-#Revision 1.3  2001/06/17 21:05:27  tiglari
-#fix button captions
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#

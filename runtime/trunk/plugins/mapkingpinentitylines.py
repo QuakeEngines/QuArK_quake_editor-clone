@@ -8,9 +8,6 @@
 # Basically a copy of mapquake2entitylines.py
 #
 
-#$Header$
-#
-
 Info = {
    "plug-in":       "KingPin Arrow Extensions",
    "desc":          "Displays axis for rotating entities",
@@ -72,10 +69,4 @@ class KingPinDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "KingPin": KingPinDrawEntityLines()
 })
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#
-#
 

@@ -1,10 +1,5 @@
 QQRKSRC1
-// MOHAA Weapon and Model Entities file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
+// MOHAA Weapon and Model Entities file for QuArK
 
 {
   QuArKProtected = "1"

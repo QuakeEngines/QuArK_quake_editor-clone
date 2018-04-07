@@ -7,8 +7,6 @@ QuArK Model Editor importer for Doom 3 .ase model files.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "ie_ASE_importer",
    "desc":          "This script imports a .ase Doom 3 model file and textures into QuArK for editing. Original code from Blender, ASEimport_31May06.py, author - Goofos, version 0.1",
@@ -17,26 +15,8 @@ Info = {
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 2" }
 
-
+# Based on work by Goofos & Plagman:
 # goofos at epruegel.de
-#
-# ***** BEGIN GPL LICENSE BLOCK *****
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#
-# ***** END GPL LICENCE BLOCK *****
 
 import time, os, struct, operator, sys as osSys
 import quarkx
@@ -2064,76 +2044,3 @@ def dataforminput(o):
             if o.dictspec.has_key('SCENE_BACKGROUND_STATIC') and quarkx.setupsubset(SS_GENERAL, "3D view")["FogColor"] != o.dictspec['SCENE_BACKGROUND_STATIC']:
                 quarkx.setupsubset(SS_GENERAL, "3D view")["FogColor"] = o.dictspec['SCENE_BACKGROUND_STATIC']
                 quarkx.reloadsetup()
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.21  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.20  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.19  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.18  2010/11/06 15:00:47  danielpharos
-# Replaced some non-ASCII characters.
-#
-# Revision 1.17  2010/11/06 13:29:36  danielpharos
-# Removed unneeded variable.
-#
-# Revision 1.16  2010/10/10 03:24:59  cdunde
-# Added support for player models attachment tags.
-# To make baseframe name uniform with other files.
-#
-# Revision 1.15  2010/06/13 15:37:55  cdunde
-# Setup Model Editor to allow importing of model from main explorer File menu.
-#
-# Revision 1.14  2010/05/01 04:25:37  cdunde
-# Updated files to help increase editor speed by including necessary ModelComponentList items
-# and removing redundant checks and calls to the list.
-#
-# Revision 1.13  2010/01/01 05:55:41  cdunde
-# Update to try and import ase files from other games.
-#
-# Revision 1.12  2009/08/28 07:21:34  cdunde
-# Minor comment addition.
-#
-# Revision 1.11  2009/08/01 05:31:13  cdunde
-# Update.
-#
-# Revision 1.10  2009/07/27 08:46:41  cdunde
-# Fix for error if no currentskin exist.
-#
-# Revision 1.9  2009/07/08 18:53:38  cdunde
-# Added ASE model exporter and completely revamped the ASE importer.
-#
-# Revision 1.8  2009/06/03 05:16:22  cdunde
-# Over all updating of Model Editor improvements, bones and model importers.
-#
-# Revision 1.7  2009/05/01 20:39:34  cdunde
-# Moved additional Specific page systems to mdlentities.py as modules.
-#
-# Revision 1.6  2009/04/28 21:30:56  cdunde
-# Model Editor Bone Rebuild merge to HEAD.
-# Complete change of bone system.
-#
-# Revision 1.5  2009/03/26 07:17:17  cdunde
-# Update for editing vertex color support.
-#
-# Revision 1.4  2009/03/25 19:46:00  cdunde
-# Changed dictionary list keyword to be more specific.
-#
-# Revision 1.3  2009/03/25 05:30:19  cdunde
-# Added vertex color support.
-#
-# Revision 1.2  2009/03/19 06:43:48  cdunde
-# Minor improvement to avoid improper path splitting.
-#
-# Revision 1.1  2009/03/18 00:04:21  cdunde
-# Added asi model format importing plugin.
-#
-#

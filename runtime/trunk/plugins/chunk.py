@@ -1,7 +1,3 @@
-
-#$Header$
-
-
 """Simple class to read IFF chunks.
 
 An IFF chunk (used in formats such as AIFF, TIFF, RMFF (RealMedia File
@@ -169,8 +165,3 @@ class Chunk:
             dummy = self.read(n)
             if not dummy:
                 raise EOFError
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#

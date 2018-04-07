@@ -2,12 +2,10 @@
 
 
 """
+#
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-
-#$Header$
 
 Info = {
   "plug-in":       "Make a simple tree",
@@ -372,13 +370,6 @@ for m in quarkpy.mapcommands.items:
   if m <> None:
     if m.text == "Make &X-Tree":
       quarkpy.mapcommands.items.remove(m)      
+
 # Register the plug-in
 quarkpy.mapcommands.items.append(quarkpy.qmenu.item("Make &X-Tree", MakeXTreeClick))
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.2  2005/11/10 17:25:38  cdunde
-# To add header and start history log
-#
-#

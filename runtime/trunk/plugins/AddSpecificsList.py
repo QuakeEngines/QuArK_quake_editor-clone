@@ -9,33 +9,6 @@
             - See "Additional Optional Settings" below. Changed using this tools dialog.
 """
 
-#
-#$Header$
-#
-
-#
-#$Log$
-#Revision 1.7  2008/06/25 14:32:32  danielpharos
-#Change to ASCII file property
-#
-#Revision 1.5  2008/04/06 06:47:41  cdunde
-#Added file back without version control to stop overwriting of internal code.
-#
-#Revision 1.4  2008/04/06 06:46:50  cdunde
-#Trying to remove file from version control to get into cvs
-#system without overwriting internal file code.
-#
-#Revision 1.3  2008/04/04 20:46:45  cdunde
-#Are you kidding me 8-\
-#
-#Revision 1.2  2008/04/04 20:42:51  cdunde
-#To try and fix their system over writing internal code for logging....nice!
-#
-#Revision 1.1  2008/04/04 20:19:27  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#
-
 import os, os.path
 
 def AddSpecifics(QuArKpath, gamename, gamefileslocation, gamepakfiletype,
@@ -206,14 +179,11 @@ def AddSpecifics(QuArKpath, gamename, gamefileslocation, gamepakfiletype,
             spfline = spfline.strip()
             break
 
+    ### Writes the new .qrk file header.
     output.write("QQRKSRC1\n")
-    output.write("// " + Description + " file for Quark\n")
+    output.write("// " + Description + " file for QuArK\n")
     output.write("\n")
-    output.write("//$" + "Header: Exp $" + "\n")
-    output.write("// ----------- REVISION HISTORY ------------\n")
-    output.write("//$" + "Log: " + OutPutList + ",v $" + "\n")
-    output.write("//\n")
-    output.write("\n")
+
     output.write("{\n")
     output.write("  QuArKProtected = \"1\"\n")
     output.write("  Description = \"" + Description + "\"\n")

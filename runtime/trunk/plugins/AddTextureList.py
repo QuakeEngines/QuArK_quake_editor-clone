@@ -8,36 +8,6 @@
             - This code will process files in the main "textures" folder and all sub-folders on down.
 """
 
-#
-#$Header$
-#
-
-#
-#$Log$
-#Revision 1.8  2008/06/25 14:32:32  danielpharos
-#Change to ASCII file property
-#
-#Revision 1.6  2008/04/11 18:33:20  cdunde
-#Changed code to try to adapt to proper version writing.
-#
-#Revision 1.5  2008/04/06 06:47:41  cdunde
-#Added file back without version control to stop overwriting of internal code.
-#
-#Revision 1.4  2008/04/06 06:46:50  cdunde
-#Trying to remove file from version control to get into cvs
-#system without overwriting internal file code.
-#
-#Revision 1.3  2008/04/04 20:46:45  cdunde
-#Are you kidding me 8-\
-#
-#Revision 1.2  2008/04/04 20:42:51  cdunde
-#To try and fix their system over writing internal code for logging....nice!
-#
-#Revision 1.1  2008/04/04 20:19:27  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#
-
 import os, os.path
 
 def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, texturesfiletype):
@@ -83,12 +53,8 @@ def AddTextures(QuArKpath, gamename, gamefileslocation, texturesfolder, textures
 
     ### Writes the new .qrk file header.
     o.write("QQRKSRC1\n")
-    o.write("// " + gamename + " Textures file for Quark\n")
+    o.write("// " + gamename + " Textures file for QuArK\n")
     o.write("\n")
-    o.write("//$" + "Header: Exp $" + "\n")
-    o.write("// ----------- REVISION HISTORY ------------\n")
-    o.write("//$" + "Log: " + gamename + "Textures.qrk,v $" + "\n")
-    o.write("//\n")
 
     ### Writes the setup part for the Texture Browser folders and needed path "include".
     o.write("\n")

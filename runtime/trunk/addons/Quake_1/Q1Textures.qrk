@@ -1,14 +1,6 @@
 QQRKSRC1
 // Quake 1 textures file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/03/28 19:10:35  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
-
 {
   QuArKProtected = "1"
   Description = "Quake 1 Textures"

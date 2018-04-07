@@ -2,16 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK Version 5.10
 // It's the text version of file: ctfq1.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.4  2005/10/15 01:00:27  cdunde
-//To reinstate headers and history
-//
-//Revision 1.1  2001/02/11 11:07:05  decker_dk
-//Moved from addons directory
-//
-
 {
   Description = "Quake-1 Threewave CTF"
   Toolbox Folders.qtx =

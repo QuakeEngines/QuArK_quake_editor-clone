@@ -24,8 +24,6 @@
 ###
 ##########################################################
 
-#$Header$
-
 Info = {
    "plug-in":       "Caulk plugin",
    "desc":          "Caulking tthings",
@@ -120,6 +118,3 @@ def facemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
     return menu
 
 quarkpy.mapentities.FaceType.menu=facemenu
-
-#
-# Log: #

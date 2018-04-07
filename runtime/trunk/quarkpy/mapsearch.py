@@ -8,10 +8,6 @@ Base of the Map editor "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 import quarkx
 from qdictionnary import Strings
 from maputils import *
@@ -102,16 +98,3 @@ def SearchMenu():
         allchecks = []
     it1 = items + [qmenu.sep, sholes1, qmenu.sep] + checkitems + allchecks
     return qmenu.popup("&Search", it1, onclick), shortcuts
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.3  2003/03/21 05:57:05  cdunde
-#Update infobase and add links
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

@@ -8,8 +8,6 @@ Triangular Vertex moving plugin
 # FOUND IN FILE "COPYING.TXT"
 #
 
-# $Header$
-
 Info = {
    "plug-in":       "Triangular Vertex Movement",
    "desc":          "Functions for moving vertexes",
@@ -292,12 +290,3 @@ def moveTriangleFaces(oldface, oldverpos, facemoved, polyofface, TGlockvertex, p
         old.append(face)
         result.append(newface)
     return old, result
-
-# $Log$
-# Revision 1.2  2005/08/16 07:54:49  cdunde
-# fixed need for 1st time setting
-#
-# Revision 1.1  2005/08/15 05:49:23  cdunde
-# To commit all files for Terrain Generator
-#
-#

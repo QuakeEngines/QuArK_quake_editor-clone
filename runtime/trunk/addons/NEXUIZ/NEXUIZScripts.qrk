@@ -1,16 +1,5 @@
 QQRKSRC1
-// NEXUIZ Scripts file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/04/19 00:48:56  cdunde
-//Made changes to sort material lists, cleanup dead ones and improved missing ones.
-//
-//Revision 1.1  2008/04/05 06:17:32  cdunde
-//Added full game support for NEXUIZ including .md3 model displaying.
-//
-//
+// NEXUIZ Scripts file for QuArK
 
 {
   QuArKProtected = "1"

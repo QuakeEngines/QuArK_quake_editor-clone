@@ -8,9 +8,6 @@ The map editor's "Commands" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import quarkx
 import qmenu
 from qutils import *
@@ -186,31 +183,3 @@ def CommandsMenu():
     
     MapHotKeyList("Insert", NewItem1, shortcuts)
     return qmenu.popup("&Commands", items2, onclick), shortcuts
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.10  2008/08/18 20:37:04  danielpharos
-#Moved import to proper place
-#
-#Revision 1.9  2007/12/21 20:39:23  cdunde
-#Added new Templates functions and Templates.
-#
-#Revision 1.8  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.5  2003/03/24 08:58:07  cdunde
-#To update info and link to infobase
-#
-#Revision 1.4  2001/04/28 02:22:08  tiglari
-#add 'insert' shortcut loader
-#
-#Revision 1.3  2001/03/20 07:59:40  tiglari
-#customizable hot key support
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

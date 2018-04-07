@@ -8,39 +8,6 @@ AddShaderList.py - Makes the GameShaders.qrk list of Shaders by folder to use as
             - This code will process files in the main "shaders" folder and all sub-folders on down.
 """
 
-#
-#$Header$
-#
-
-#
-#$Log$
-#Revision 1.9  2008/06/25 14:32:33  danielpharos
-#Change to ASCII file property
-#
-#Revision 1.7  2008/04/16 22:25:22  cdunde
-#Updated processing for Quake 4 type shaders.
-#
-#Revision 1.6  2008/04/11 18:33:20  cdunde
-#Changed code to try to adapt to proper version writing.
-#
-#Revision 1.5  2008/04/06 06:47:42  cdunde
-#Added file back without version control to stop overwriting of internal code.
-#
-#Revision 1.4  2008/04/06 06:46:51  cdunde
-#Trying to remove file from version control to get into cvs
-#system without overwriting internal file code.
-#
-#Revision 1.3  2008/04/04 20:46:46  cdunde
-#Are you kidding me 8-\
-#
-#Revision 1.2  2008/04/04 20:42:52  cdunde
-#To try and fix their system over writing internal code for logging....nice!
-#
-#Revision 1.1  2008/04/04 20:19:29  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#
-
 ###Globals
 skip = []
 text = "" # This is a temporary place in memory to copy an existing file's data to and
@@ -215,12 +182,8 @@ def AddShaders(QuArKpath, gamename, gamefileslocation, shadersfolder, shadersfil
 
     ### Writes the new .qrk file header.
     o.write("QQRKSRC1\n")
-    o.write("// " + gamename + " " + whatkind + " file for Quark\n")
+    o.write("// " + gamename + " " + whatkind + " file for QuArK\n")
     o.write("\n")
-    o.write("//$" + "Header: Exp $" + "\n")
-    o.write("// ----------- REVISION HISTORY ------------\n")
-    o.write("//$" + "Log: " + gamename + whatkind + ".qrk,v $" + "\n")
-    o.write("//\n")
 
     ### Writes the setup part for the Texture Browser folders and needed path "include".
     o.write("\n")

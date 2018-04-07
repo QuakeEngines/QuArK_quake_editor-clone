@@ -1,13 +1,5 @@
 QQRKSRC1
-// JK2 textures file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/03/28 19:08:19  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
+// JK2 textures file for QuArK
 
 {
   QuArKProtected = "1"

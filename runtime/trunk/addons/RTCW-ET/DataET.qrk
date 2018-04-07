@@ -1,36 +1,6 @@
 QQRKSRC1
 // RTCW-ET definition file for Quark
 
-//$Header$
-
-// ----------- REVISION HISTORY ------------
-
-//$Log$
-//Revision 1.7  2008/03/28 19:11:47  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//Revision 1.6  2008/02/27 00:19:05  danielpharos
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.5  2007/12/26 06:01:45  cdunde
-//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
-//
-//Revision 1.4  2007/12/14 21:48:02  cdunde
-//Added many new beizer shapes and functions developed by our friends in Russia,
-//the Shine team, Nazar and vodkins.
-//
-//Revision 1.3  2007/03/29 15:25:50  danielpharos
-//Fixed a very silly typo.
-//
-//Revision 1.2  2006/07/17 07:28:20  cdunde
-//*** keyword substitution change ***
-//
-//Revision 1.1  2006/07/15 07:32:06  cdunde
-//To setup RTCW-ET as its own game
-//with md3 model display support.
-//
-
-
 {
   QuArKProtected = "1"
   Description = "Base RTCW-ET data"

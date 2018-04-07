@@ -7,14 +7,6 @@ QQRKSRC1
 //    * List of Quake 2 textures sorted by level
 //      By: OmnificienT
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2007/09/22 03:02:17  cdunde
-//Regrouped the textures according to levels (textures will now fit together). By OmnificienT
-//
-//
-
 {
   QuArKProtected = "1"       // Additional user warnings to prevents accidental change of this file
   Description = "Base Quake 2 textures sorted by level"

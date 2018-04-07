@@ -12,10 +12,6 @@ Core of the Map editor.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 #
 # This file defines a class, "MapEditor", whose instances are
 # the currently opened map editors in QuArK. Don't assume that
@@ -359,96 +355,3 @@ def autosave(editor):
     time1 = autosavetime()
     if time1 > 0.0:
         return time1
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.29  2017/03/05 12:48:04  danielpharos
-#Moved the "Used Textures" functionality in the map editor into a plugin.
-#
-#Revision 1.28  2016/03/13 16:13:42  danielpharos
-#Small cleanup in path concatenation.
-#
-#Revision 1.27  2015/09/06 12:35:40  danielpharos
-#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
-#
-#Revision 1.26  2012/07/01 12:24:12  danielpharos
-#Improved MapError error message.
-#
-#Revision 1.25  2011/10/06 20:13:37  danielpharos
-#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
-#
-#Revision 1.24  2011/03/13 00:41:47  cdunde
-#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-#Revision 1.23  2010/10/14 20:03:32  danielpharos
-#Fix bone-position with Undo/Redo dialog box and made some fixes to selection-holding code.
-#
-#Revision 1.22  2010/03/08 20:26:35  danielpharos
-#Updated for change to TexturesPath.
-#
-#Revision 1.21  2008/12/21 22:29:53  danielpharos
-#Fixed AutoSave-setting not being applied, and removed print-statement accidentally added in 1.19.
-#
-#Revision 1.20  2008/12/03 10:34:06  cdunde
-#Added functions for console logging and clearing of that log to the options menu.
-#
-#Revision 1.19  2008/11/17 19:10:23  danielpharos
-#Centralized and fixed BSP file detection.
-#
-#Revision 1.18  2008/10/07 21:04:49  danielpharos
-#Added GetBaseDir function and other small fixes.
-#
-#Revision 1.17  2008/05/01 17:22:09  danielpharos
-#Fix flags-overwriting.
-#
-#Revision 1.16  2008/01/23 01:40:19  cdunde
-#Couple of fixes to top the Texture Browser from opening all the time and
-#stop multiple creations of the Used Textures in the Texture Browser.
-#
-#Revision 1.15  2007/12/28 23:22:41  cdunde
-#Setup displaying of 'Used Textures' in current map being edited in the Texture Browser.
-#
-#Revision 1.14  2007/12/21 20:39:23  cdunde
-#Added new Templates functions and Templates.
-#
-#Revision 1.13  2007/12/17 00:50:00  danielpharos
-#Fix the map portals not drawing anymore.
-#
-#Revision 1.12  2007/04/02 22:17:08  danielpharos
-#Fix a float-integer problem
-#
-#Revision 1.11  2007/03/31 14:32:53  danielpharos
-#Fixed a typo
-#
-#Revision 1.10  2006/11/30 01:19:34  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.9  2006/11/29 07:00:26  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.8.2.2  2006/11/24 20:43:49  cdunde
-#To fix Python string function coding missed when Python bundling was done.
-#
-#Revision 1.8.2.1  2006/11/03 23:38:10  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.8  2006/01/30 08:20:00  cdunde
-#To commit all files involved in project with Philippe C
-#to allow QuArK to work better with Linux using Wine.
-#
-#Revision 1.7  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.4  2002/05/18 09:53:14  tiglari
-#support Radiant-style dragging for frozen selections
-#
-#Revision 1.3  2002/05/15 00:10:06  tiglari
-#Write map-reading errors to console
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

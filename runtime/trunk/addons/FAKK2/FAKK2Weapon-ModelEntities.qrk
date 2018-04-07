@@ -1,12 +1,7 @@
 QQRKSRC1
-// FAKK2 Weapon and Model Entities file for Quark
+// FAKK2 Weapon and Model Entities file for QuArK
 // Created from FAKK2 game .lst files
 // using the Weapon-ModelEntities.py generic game setup file.
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
 
 {
   QuArKProtected = "1"

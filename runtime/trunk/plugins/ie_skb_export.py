@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for Alice, EF2 and FAKK2 .ska and .skb model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_skb_exporter",
@@ -1249,81 +1245,3 @@ def savemodel(root, filename, gamename):
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".ska Alice\EF2\FAKK2 Exporter-anim", ".ska file", "*.ska", savemodel)
 quarkpy.qmdlbase.RegisterMdlExporter(".skb Alice\EF2\FAKK2 Exporter-mesh", ".skb file", "*.skb", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.22  2013/02/20 05:19:41  cdunde
-# Fix for sometimes incorrect skinsize being used.
-#
-# Revision 1.21  2012/01/13 07:50:21  cdunde
-# Change to get away from relying on ModelFolder for exporting models.
-#
-# Revision 1.20  2012/01/09 23:09:54  cdunde
-# Not all model formats process their vtx_offset the same.
-#
-# Revision 1.19  2012/01/08 21:55:52  cdunde
-# Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
-#
-# Revision 1.18  2012/01/08 21:49:04  cdunde
-# To enhance working with Quake4 md5 models.
-#
-# Revision 1.17  2012/01/06 05:35:44  cdunde
-# Change for proper way to remove folder name from bones being exported.
-#
-# Revision 1.16  2012/01/04 21:25:30  cdunde
-# Added check for needed baseframe.
-#
-# Revision 1.15  2012/01/03 00:24:16  cdunde
-# To get Alice, FAKK2 & EF2 skb_exporter to work with Half-Life 1 HL1_importer models.
-#
-# Revision 1.14  2012/01/03 00:10:02  cdunde
-# Rearranged export calls for better organization of code.
-#
-# Revision 1.13  2012/01/02 08:56:06  cdunde
-# To stop writing skb file twice and speed up exporting of it.
-#
-# Revision 1.12  2011/12/26 21:55:34  cdunde
-# To ensure proper 'baseframe:mf' selection.
-#
-# Revision 1.11  2011/12/25 02:29:16  cdunde
-# Correction to avoid exporting bone baseframe data that is incorrect.
-#
-# Revision 1.10  2011/12/15 05:59:11  cdunde
-# File cleanup and export vertex offsets for new bones and vertices.
-#
-# Revision 1.9  2011/12/12 23:05:31  cdunde
-# Update to export mesh and animation files without use of original mesh file
-# to setup for model full editing abilities, add & remove bones, faces & vertices
-# and also work with original files if no editing is done.
-#
-# Revision 1.8  2011/11/15 05:07:07  cdunde
-# Code added to enable adding bones & assigning existing vertices to it.
-# Sill can not delete bones, vertices or triangles or
-# add new vertices and triangles. Theses things need to be enabled
-# to allow true editing of the models.
-#
-# Revision 1.7  2011/11/14 07:33:37  cdunde
-# Removed unused code and fixed baseframe exporting error.
-# Still needs more work, exporting mesh does not match original causing model to distort
-# and can not add new bones or assign them vertices without causing export blowup.
-#
-# Revision 1.6  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.5  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.4  2010/08/27 19:36:15  cdunde
-# To clarify menu item listing.
-#
-# Revision 1.3  2010/08/25 18:47:24  cdunde
-# Small fix.
-#
-# Revision 1.2  2010/08/24 21:58:49  cdunde
-# Final bone position fix for both skb and ska files, everything working correctly now.
-#
-# Revision 1.1  2010/08/22 05:11:16  cdunde
-# Setup exporter for Alice, EF2 and FAKK2 .skb mesh and .ska animated models with bone and skin support.
-#
-#

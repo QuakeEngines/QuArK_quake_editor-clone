@@ -7,8 +7,6 @@ Menu Bars and Popup Menus code
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
-
 
 import quarkx
 from qdictionnary import Strings
@@ -186,37 +184,3 @@ def DefaultEditMenu(editor):
     MapHotKeyList("Redo", Redo1, sc)
     MapHotKeyList("Duplicate", Duplicate1, sc)
     return Edit1, sc
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.12  2010/10/20 06:40:37  cdunde
-#Fixed the loss of selections and expanded items in the Model Editor from UNDO and REDO actions.
-#
-#Revision 1.11  2009/05/03 08:06:06  cdunde
-#Edit menu, moved Duplicate and separated Delete from other items.
-#
-#Revision 1.10  2007/09/05 18:43:10  cdunde
-#Minor comment addition and grammar corrections.
-#
-#Revision 1.9  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.6  2003/03/21 05:57:05  cdunde
-#Update infobase and add links
-#
-#Revision 1.5  2003/03/16 02:43:09  tiglari
-#fixed minor errors (unnecessary assignments)
-#
-#Revision 1.4  2003/03/15 20:41:07  cdunde
-#To update hints and add infobase links
-#
-#Revision 1.3  2001/03/20 07:59:40  tiglari
-#customizable hot key support
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

@@ -8,10 +8,6 @@
             - This program can use any file type that uses the 'entityDef' key.
 """
 
-#
-#$Header$
-#
-
 import os, os.path
 from ConvertToolGet_tokens import *
 
@@ -492,14 +488,12 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     eo.close()
     fo.close()
     o = open(QuArKpath + '\\' + gamename + '\\' + gamename + 'Entities.qrk', 'w')
+
     ### Writes start of Entities.qrk file here
     o.write('QQRKSRC1\n')
-    o.write('// ' + gamename + ' Entities file for Quark\n')
+    o.write('// ' + gamename + ' Entities file for QuArK\n')
     o.write('\n')
-    o.write('//$' + 'Header: Exp $' + '\n')
-    o.write('// ----------- REVISION HISTORY ------------\n')
-    o.write('//$' + 'Log: ' + gamename + 'Entities.qrk,v $' + '\n')
-    o.write('//\n')
+
     o.write('\n')
     o.write('{\n')
     o.write('  QuArKProtected = "1"\n')
@@ -860,23 +854,3 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
     WorkDirectory = WorkDirectory.replace("\\", "/")
     os.remove(WorkDirectory + '/' + 'Entities.txt') # Deletes this temp file.
     os.remove(WorkDirectory + '/' + 'Forms.txt') # Deletes this temp file.
-    
-#
-#$Log$
-#Revision 1.5  2010/08/19 08:04:27  cdunde
-#Some small fixes for the Conversion Tool system.
-#
-#Revision 1.4  2009/02/11 15:38:57  danielpharos
-#Use correct kind of combobox.
-#
-#Revision 1.3  2008/04/12 18:16:19  cdunde
-#Removed color picker for all editor_color keyword entities.
-#
-#Revision 1.2  2008/04/12 18:11:48  cdunde
-#Added color picker for all editor_color keyword entities.
-#
-#Revision 1.1  2008/04/11 22:28:48  cdunde
-#To add Doom 3 type game engine support for ConvertTool.
-#
-#
-

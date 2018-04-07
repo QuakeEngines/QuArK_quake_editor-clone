@@ -1,20 +1,6 @@
 QQRKSRC1
 // WildWest definition file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.6  2008/03/28 19:14:22  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//Revision 1.5  2008/02/27 00:21:34  danielpharos
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.4  2007/12/26 06:01:46  cdunde
-//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
-//
-//
-
 {
   QuArKProtected = "1"
   Description = "Base WildWest data"

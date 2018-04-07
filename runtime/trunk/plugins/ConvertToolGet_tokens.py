@@ -4,10 +4,6 @@
             - Rowdy Nov. 28, 2004 - added by cdunde March 30, 2008
 """
 
-#
-#$Header$
-#
-
 NUMBERS = '0123456789-.'
 ALPHAS  = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 
@@ -131,17 +127,3 @@ if __name__ == "__main__":
     print '>>> tokens = getTokens(gamefileslocation + "\\" + filesfoldername + "\\" + name)'
     print ""
     print ">>> See plugins AddsShadersList.py for example of its usage."
-
-#
-#$Log$
-#Revision 1.3  2008/04/11 22:27:09  cdunde
-#Update
-#
-#Revision 1.2  2008/04/04 23:20:08  cdunde
-#Needed correction.
-#
-#Revision 1.1  2008/04/04 20:19:28  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#
-

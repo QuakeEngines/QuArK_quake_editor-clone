@@ -1,35 +1,6 @@
 QQRKSRC1
 // Quake 1 entities file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.8  2009/09/15 18:21:20  cdunde
-//Hint correction.
-//
-//Revision 1.7  2009/07/22 19:13:10  danielpharos
-//Added missing spawnflags for item_cells, found by randper, helped by hardkore and fixed by X7.
-//
-//Revision 1.6  2009/06/24 20:32:22  cdunde
-//Another one for the teleporter by hardkore.
-//
-//Revision 1.5  2009/06/14 23:02:31  cdunde
-//Another one for the teleporter by hardkore.
-//
-//Revision 1.4  2009/06/13 18:37:28  cdunde
-//Another one for light by hardkore, keep'em coming.
-//
-//Revision 1.3  2008/06/04 21:36:24  cdunde
-//Fix by X7.
-//
-//Revision 1.2  2008/05/14 20:38:52  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.1  2008/03/28 19:10:34  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
-
 {
     QuArKProtected = "1"
     Description = "Quake 1 Entities"

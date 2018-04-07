@@ -8,9 +8,6 @@ The map editor's "Selection" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import quarkx
 import qmenu
 import mapmenus
@@ -214,48 +211,3 @@ def SelectionMenu():
     MapHotKeyList("Make Detail", makedetail, shortcuts)
 
     return qmenu.popup("Selectio&n", items, onclick), shortcuts
-
-
-# $Log$
-# Revision 1.14  2004/01/06 01:25:59  cdunde
-# To add Make Detail function and HotKeys by Decker-cdunde
-#
-# Revision 1.13  2003/03/27 08:56:28  cdunde
-# Update by tiglari to fix runtime and other errors.
-#
-# Revision 1.12  2003/03/26 03:21:31  cdunde
-# To fix runtime error and gray out all menu items if no selection is made.
-#
-# Revision 1.11  2003/03/25 10:16:52  tiglari
-# re-fix enablement bugs
-#
-# Revision 1.10  2003/03/25 09:56:49  cdunde
-# To correct conflict and add infobase links and update
-#
-# Revision 1.9  2003/03/25 08:28:27  tiglari
-# fix enabler and select parent logic
-#
-# Revision 1.8  2003/02/09 06:11:01  cdunde
-# Discription update and HotKey name change
-#
-# Revision 1.7  2003/02/08 07:37:25  cdunde
-# To reduce Cancel selection to a one click function
-#
-# Revision 1.5  2002/05/13 10:35:57  tiglari
-# support frozen selections (don't change until another frozen selection is made,
-# or they are cancelled with ESC or unfreeze selection)
-#
-# Revision 1.4  2001/05/04 06:36:53  tiglari
-# Accelerators added to selection menu
-#
-# Revision 1.3  2001/05/03 05:35:17  tiglari
-# fixed selection menu crash bug (failure to test for 'is not None')
-#
-# Revision 1.2  2001/04/30 10:57:42  tiglari
-# added child, key mods for next/prev of same type, treeview control
-#
-# Revision 1.1  2001/04/28 02:23:12  tiglari
-# initial commit
-#
-#
-#

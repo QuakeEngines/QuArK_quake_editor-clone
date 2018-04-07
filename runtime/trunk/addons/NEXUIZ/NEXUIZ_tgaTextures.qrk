@@ -1,16 +1,5 @@
 QQRKSRC1
-// NEXUIZ tga Textures file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/04/15 11:16:28  cdunde
-//To add main and all sub-folders level processing of texture listing.
-//
-//Revision 1.1  2008/04/05 06:17:32  cdunde
-//Added full game support for NEXUIZ including .md3 model displaying.
-//
-//
+// NEXUIZ tga Textures file for QuArK
 
 {
   QuArKProtected = "1"

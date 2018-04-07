@@ -7,9 +7,6 @@ QuArK Model Editor importer for Quake 2 .md2 model files.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "ie_ASE_exporter",
    "desc":          "Export selected components to an ASE file and create its collition .cm file. Based on code from Blender, ASE_exporters, author - Goofos.",
@@ -1706,27 +1703,3 @@ def UIExportDialog(root, filename, editor):
     form1 = quarkx.newform("masterform")
     newfiles_folder = filename.replace(".ase", "")
     ExportSettingsDlg(form1, root, filename, editor, newfiles_folder)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.6  2009/08/09 23:41:40  cdunde
-# Fix to remove work folder name from collision model.
-#
-# Revision 1.5  2009/08/01 05:31:13  cdunde
-# Update.
-#
-# Revision 1.4  2009/07/25 10:24:29  cdunde
-# Improved .cm collision model code for simple to more detail model setting capability.
-#
-# Revision 1.3  2009/07/24 00:50:16  cdunde
-# ASE model exporter can now export .cm collision model files.
-#
-# Revision 1.2  2009/07/13 23:55:03  cdunde
-# Start of collision model file creation support.
-#
-# Revision 1.1  2009/07/08 18:53:39  cdunde
-# Added ASE model exporter and completely revamped the ASE importer.
-#
-#
-#

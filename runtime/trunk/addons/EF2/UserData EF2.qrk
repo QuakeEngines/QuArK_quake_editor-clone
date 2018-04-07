@@ -2,25 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK quarksnapshot_20001015
 // It's the text version of file: UserData EF2.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.7  2008/03/25 06:43:13  cdunde
-//To standardize UserData files as much as possible based on their game engine type.
-//Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
-//Changed all hard coded texturing to either auto or includes, also should NEVER be allowed.
-//
-//Revision 1.6  2008/03/12 20:06:14  cdunde
-//Small menu correction.
-//
-//Revision 1.5  2007/05/29 00:36:08  cdunde
-//Since Dancing Dan now has full .dds saving support.
-//
-//Revision 1.4  2007/05/06 02:00:35  cdunde
-//Needed to comment out the saving of textures until that is implemented.
-//
-
-
 {
   Description = "Custom configuration file for EF2."
   MapObjPanel.qrk =

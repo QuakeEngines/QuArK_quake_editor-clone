@@ -8,9 +8,6 @@ Plug-in to show distance of selected faces in 2D views.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Model tools",
    "desc":          "Shows distance of selected faces in 2D views",
@@ -601,42 +598,3 @@ def ViewAmendMenu2click(m):
 
 
 RulerMenuCmds = [quarkpy.qmenu.popup("Ruler guide in 2D views", [], ViewAmendMenu2click, "|Ruler guide in 2D views:\n\nThese functions allow you to display a line with the unit distance of total selected items in any one, combination, or all of the 2D views of the Editor.", "intro.mapeditor.menu.html#optionsmenu")]
-    
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.18  2008/07/15 23:16:27  cdunde
-#To correct typo error from MldOption to MdlOption in all files.
-#
-#Revision 1.17  2008/02/22 09:52:21  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.16  2007/11/29 16:34:35  danielpharos
-#Prevent some model editor functions from triggering in the map editor. This should fix some errors that that popped-up when switching from the model editor to the map editor.
-#
-#Revision 1.15  2007/11/18 02:40:57  cdunde
-#To fix error in mdltools.py with rulers when a single new triangle is created.
-#
-#Revision 1.14  2007/10/22 02:22:27  cdunde
-#To remove use of the "dictspec" function which at this time causes a memory leak in the source code.
-#
-#Revision 1.13  2007/10/09 22:05:43  cdunde
-#To change rulers selection measurement items for the Model Editor.
-#
-#Revision 1.12  2007/10/08 16:47:39  cdunde
-#Tying to get version control and change to ASCII.
-#
-#Revision 1.11  2007/10/06 20:46:09  cdunde
-#To reset version.
-#
-#Revision 1.10  2007/10/06 20:46:09  cdunde
-#To reset version.
-#
-#Revision 1.9  2007/10/06 20:46:09  cdunde
-#To reset version.
-#
-#Revision 1.7  2007/10/06 20:42:54  cdunde
-#To reset version.
-#
-#

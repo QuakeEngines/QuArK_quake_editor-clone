@@ -8,10 +8,6 @@ Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Classic Layout",
    "desc":          "QuArK's classic 2-views Screen Layout.",
@@ -227,26 +223,3 @@ class ClassicLayout(MapLayout):
 #
 
 LayoutsList.insert(0, ClassicLayout)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.6  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.5.2.5  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.5  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

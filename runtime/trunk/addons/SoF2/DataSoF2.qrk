@@ -1,26 +1,6 @@
 QQRKSRC1
 // SoF2 definition file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.11  2008/02/27 00:22:34  danielpharos
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.10  2007/12/26 06:01:44  cdunde
-//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
-//
-//Revision 1.9  2007/12/14 21:48:02  cdunde
-//Added many new beizer shapes and functions developed by our friends in Russia,
-//the Shine team, Nazar and vodkins.
-//
-//Revision 1.8  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.5  2002/10/11 22:13:27  tiglari
-//updates by Doug Abele (chkshoot)
-//
-
 {
   QuArKProtected = "1"
   Description = "Base SoF2 data"

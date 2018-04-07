@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Half-Life 2 .mdl model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md0_HL2_import",
@@ -5233,75 +5229,3 @@ def UIImportDialog(MDL, file, editor, filename, ComponentList, QuArK_bones, hitb
             LoadAnim += [1]
         MDL, ComponentList, QuArK_bones, message, MDL.tagsgroup, MDL.version, MDL.main_mdl_comps, MDL.new_mdl_comps = MDL.load_Animation(ComponentList, QuArK_bones, message, file, editor, folder_name, mdl_name, main_mdl_name, LoadAnim)
         FinishImport(file, editor, filename, ComponentList, QuArK_bones, hitboxsets, message, tagsgroup, main_mdl_comps, new_mdl_comps)
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.20  2012/11/11 03:54:40  cdunde
-# Minor correction.
-#
-# Revision 1.19  2012/08/31 22:59:40  cdunde
-# Minor logging label correction.
-#
-# Revision 1.18  2012/08/01 01:34:49  cdunde
-# File cleanup and added animation file name possibilities.
-#
-# Revision 1.17  2012/03/10 20:30:32  cdunde
-# Fix for skin flag and its comp proper setting handling.
-#
-# Revision 1.16  2012/03/10 08:10:12  cdunde
-# Added texture skin flag support.
-#
-# Revision 1.15  2012/03/03 07:26:35  cdunde
-# Sync 2. Rearranged files and names to coincide better.
-#
-# Revision 1.14  2012/02/25 18:55:59  cdunde
-# Rearranged files and names to coincide better.
-#
-# Revision 1.13  2011/12/28 08:28:22  cdunde
-# Setup importer bone['type'] not done yet.
-#
-# Revision 1.12  2011/12/23 03:15:17  cdunde
-# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
-# Those should be kept with the individual bones if we decide it is needed.
-#
-# Revision 1.11  2011/11/19 06:28:18  cdunde
-# Added frame flags importing and Specifics page setting support.
-#
-# Revision 1.10  2011/05/25 20:55:03  cdunde
-# Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
-#
-# Revision 1.9  2011/04/07 19:07:37  cdunde
-# Update to change all print statements over to logging system.
-#
-# Revision 1.8  2011/04/03 08:40:15  cdunde
-# Added code for misuse of upper and lower case item name changing.
-#
-# Revision 1.7  2011/04/02 04:18:23  cdunde
-# To stop dupe BaseFrames when importing animations.
-#
-# Revision 1.6  2011/04/02 03:17:58  cdunde
-# Minor update to cancel animation importing..
-#
-# Revision 1.5  2011/04/02 01:08:10  cdunde
-# Added Half-Life 2 importer animation support with bone, attachment and bbox movement.
-#
-# Revision 1.4  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.3  2011/03/10 20:57:53  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-# Added HL2 animation support.
-#
-# Revision 1.2  2011/01/14 02:54:30  cdunde
-# Increased material and texture locating abilities,
-# added multi material editing and dialog support
-# and removed unneeded code from this importer.
-#
-# Revision 1.1  2011/01/12 01:59:08  cdunde
-# Setup importer for Half-Life 2 mesh (animation to follow) with bone, attachment, bbox and skin support.
-#
-#
-#

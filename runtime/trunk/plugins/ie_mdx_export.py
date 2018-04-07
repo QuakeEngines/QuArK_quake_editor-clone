@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for Kingpin .mdx model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_mdx_exporter",
@@ -1080,14 +1076,3 @@ def savemodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".mdx Kingpin Exporter", ".mdx file", "*.mdx", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.2  2011/10/21 06:23:26  cdunde
-# Final update to handle multiple component models.
-#
-# Revision 1.1  2011/10/16 20:57:11  cdunde
-# Added export support for Kingpin static and animation models .mdx file type.
-#
-#

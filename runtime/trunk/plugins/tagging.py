@@ -15,8 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#$Header$
-
 import quarkx
 import quarkpy.qbaseeditor
 from quarkpy.maputils import *
@@ -219,19 +217,3 @@ def drawredface(view, cv, face):
         sum = sum + p2
         cv.line(p1,p2)
       drawsquare(cv, sum/len(vtx), 8)
-
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.11  2006/11/29 06:58:35  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.10.2.1  2006/11/03 23:38:11  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.10  2005/11/10 18:09:03  cdunde
-#Activate history log
-#
-#

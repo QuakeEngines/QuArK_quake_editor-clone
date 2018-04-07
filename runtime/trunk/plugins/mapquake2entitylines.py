@@ -6,8 +6,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Quake-2 Arrow Extensions",
    "desc":          "Displays axis for rotating entities, func_rotating, func_door_rotating, and  Lazarus, func_rotating_dh, func_door_rot_dh, func_door_swinging, func_trackchange",
@@ -77,14 +75,3 @@ class Quake2DrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "Quake 2": Quake2DrawEntityLines()
 })
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.4  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
-#
-# Revision 1.1  2001/01/06 18:34:22  decker_dk
-# Was in quark 5.10
-#
-#

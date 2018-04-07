@@ -8,9 +8,6 @@ Keyboard constants and utilities
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 # Virtual Keys, Standard Set
 # P.S. don't ask me (Armin) what some of these keys are !
 # I don't know... The list below is just taken from the Win32 doc.
@@ -121,13 +118,3 @@ def keynames():
             if type(value)==type('') and len(value)==1:
                 _keynames[value] = item
         return _keynames
-        
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

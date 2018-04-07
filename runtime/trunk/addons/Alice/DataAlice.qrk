@@ -1,10 +1,5 @@
 QQRKSRC1
-// Alice definition file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
+// Alice definition file for QuArK
 
 {
   QuArKProtected = "1"

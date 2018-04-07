@@ -16,10 +16,6 @@
 #
 #-------------------------------------------------------------------------------
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Search and replace textures",
    "desc":          "Search/replace textures dialog box, available from the Search menu.",
@@ -231,30 +227,3 @@ def SearchReplaceTexClick(m):
 #
 
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Search/replace textures...", SearchReplaceTexClick, "|Search/replace textures:\n\nThis function can either just search for a particular texture, or\nit can replace it with another texture of your choice.", "intro.mapeditor.menu.html#searchmenu"))
-
-
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.9  2003/03/21 05:47:45  cdunde
-# Update infobase and add links
-#
-# Revision 1.8  2002/06/10 09:27:39  decker_dk
-# Updated to allow only search-for-texture, without replacing any.
-# TODO: Switch to specify search (and replace) for brushes that have the texture either on _all_ its faces _or_ only partly.
-#
-# Revision 1.7  2002/05/16 03:05:41  tiglari
-# If just a face is selected, the texture on the face is loaded into the dialog
-#  (bug report from fpbrowser)
-#
-# Revision 1.6  2002/04/07 12:46:06  decker_dk
-# Pretty separator.
-#
-# Revision 1.5  2001/06/17 21:21:18  tiglari
-# re-fix button captions, there are tabs in this file, need to be cleared out
-#
-# Revision 1.3  2001/01/27 18:25:29  decker_dk
-# Renamed 'TextureDef' -> 'DefaultTexture'
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#

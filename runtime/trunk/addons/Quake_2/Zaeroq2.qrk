@@ -6,17 +6,9 @@ QQRKSRC1
 // http://tastyspleen.net/quake/downloads/mods/zaero/
 //     zaero-src-1.1-2.zip (q_spawn.c file for entity listing)
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2012/04/13 20:48:42  cdunde
-//Added mission pak support for Zaero.
-//
-//
-
 {
     QuArKProtected = "1"
-    Description = "Zaero - Quake 2"
+    Description = "Quake 2 - Zaero"
 
     Game Context.qctx =
     {

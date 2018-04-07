@@ -1,32 +1,14 @@
 QQRKSRC1
-
 // This file has been written by QuArK Version 5.0.b5
 // It's the text version of file: Q2xatrix.qrk
 // The Reckoning Mission pack Addon. By: Akuma
 // Akuma@Telefragged.com | Akuma@BTinternet.com
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.7  2008/06/30 17:31:54  cdunde
-//Updates, additions and a new mod addon by X7.
-//
-//Revision 1.6  2008/06/03 23:52:00  cdunde
-//A couple of corrections noted by our uses, Thank you.
-//
-//Revision 1.5  2007/03/29 15:27:53  danielpharos
-//Cleaned up the tabs.
-//
-//Revision 1.4  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.1  2001/02/11 11:08:40  decker_dk
-//Moved from addons directory
-//
+//fixed By X7 06-03-08
 
 {
   QuArKProtected = "1"
-  Description = "Quake 2 MP1 : Xatrix - fixed By X7 06-03-08"
+  Description = "Quake 2 MP1 : Xatrix"
   Xatrix directory infos.qctx =
   {
     Game = "Quake 2"

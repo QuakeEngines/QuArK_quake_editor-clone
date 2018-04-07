@@ -8,8 +8,6 @@ Map editor brush-from-number finder
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 import quarkx
 from maputils import *
 
@@ -141,19 +139,3 @@ def LoadBrushNums(editor, filename):
         BrushNumDlg(quarkx.clickform, editor, brushDict)
     except CorruptError, msg:
         quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%msg)
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.6  2015/09/20 13:00:28  danielpharos
-#Added a missing import statement.
-#
-#Revision 1.5  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.2  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.1  2003/03/24 10:34:24  tiglari
-#support for brush-number finder
-#
-

@@ -1,12 +1,10 @@
 """   QuArK  -  Quake Army Knife Bezier shape makers
 
-
 """
+#
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
 
 Info = {
    "plug-in":       "Stairmaker plugin",
@@ -195,29 +193,3 @@ def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
 #
 #
 quarkpy.mapentities.PolyhedronType.menu = newpolymenu
-
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.6  2003/04/22 11:48:03  tiglari
-#fix bug that was causing stairs not to  work right when maps reloaded;
-#fix indentation
-#
-#Revision 1.5  2003/04/09 00:59:02  cdunde
-#To comment out debugs
-#
-#Revision 1.4  2003/04/08 06:07:33  cdunde
-#tris/overdraw-efficient fan-style stair, as suggested by foo, quakin' and Plan B
-#on the quake3world editing forum.  For old non-equal-height stair, use
-#'oldstyle' checkbox specific - by tiglari
-#finish needed changes to activate  'oldstyle' specific - by cdunde
-#
-#Revision 1.3  2001/03/03 19:26:59  decker_dk
-#Minor problem fixed.
-#
-#Revision 1.2  2001/02/14 10:08:58  tiglari
-#extract perspective stuff to quarkpy.perspective.py
-#
-#Revision 1.1  2001/02/04 11:52:01  decker_dk
-#Stair making plugin
-#

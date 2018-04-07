@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Kingpin .mdx model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_mdx_importer",
@@ -887,33 +883,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_mdx_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".mdx Kingpin Importer", ".mdx file", "*.mdx", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.8  2011/10/16 20:57:27  cdunde
-# Updated importer for better skin texture file locating and loading.
-#
-# Revision 1.7  2011/09/29 22:35:39  cdunde
-# Removed folder restriction call because not all model folders are in the models folder.
-#
-# Revision 1.6  2011/05/25 20:55:03  cdunde
-# Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
-#
-# Revision 1.5  2011/05/19 07:38:11  cdunde
-# Fix, sometimes imported file read in skin size is incorrect.
-#
-# Revision 1.4  2011/05/19 06:47:54  cdunde
-# To stop duplicate skin textures importing under another name.
-#
-# Revision 1.3  2011/05/19 01:35:16  cdunde
-# Update to import model by folder and file name
-# and add instructional message for missing textures.
-#
-# Revision 1.2  2011/05/16 00:10:06  cdunde
-# Update by Daniel Pharos to import separate model sections as multi components.
-#
-# Revision 1.1  2011/05/15 18:15:48  danielpharos
-# Started support for Kingpin MDX model format with animation and skin support. Credit for this goes to cdunde.
-#
-#

@@ -1,19 +1,6 @@
 QQRKSRC1
 // This file has been written by QuArK quarksnapshot_20000702
 // It's the text version of file: Q3Archlib.qrk
-//
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.5  2005/10/15 01:00:03  cdunde
-//To reinstate headers and history
-//
-//Revision 1.2  2001/03/17 15:09:40  decker_dk
-//Description text changed.
-//
-//Revision 1.1  2000/07/06 01:55:50  alexander
-//newly added (library of archs)
-//
 
 {
   Description = "Arch Library for Quake-3 engines"

@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Quake3 .md3 model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md3_importer",
@@ -844,10 +840,10 @@ def Import(editor, basepath, filename):
                     continue
 
                 # Note: Quake3 uses left-hand geometry
-              #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Blinder's way.
-              #  left = [tag.axis[3], tag.axis[4], tag.axis[5]] # Blinder's way.
-              #  right = [tag.axis[3], tag.axis[4], tag.axis[5]] # Quark's way.
-              #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Quark's way.
+              #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # Blender's way.
+              #  left = [tag.axis[3], tag.axis[4], tag.axis[5]] # Blender's way.
+              #  right = [tag.axis[3], tag.axis[4], tag.axis[5]] # QuArK's way.
+              #  forward = [tag.axis[0], tag.axis[1], tag.axis[2]] # QuArK's way.
               #  up = [tag.axis[6], tag.axis[7], tag.axis[8]]
                 p = tag.origin
                 tagframe = quarkx.newobj('Tag Frame ' + str(j+1) + ':tagframe')
@@ -1404,105 +1400,3 @@ def dataforminput(o):
             quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = o.dictspec['shader_lines']
         if not o.dictspec.has_key('mesh_shader'):
             o['mesh_shader'] = "None"
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.30  2017/05/10 16:06:26  danielpharos
-# Fixed a typo in a comment, and added a simple warning if the numbers of tags don't match.
-#
-# Revision 1.29  2015/09/20 12:59:58  danielpharos
-# Added a missing import statement.
-#
-# Revision 1.28  2013/10/13 06:22:39  cdunde
-# Fixed possible dupe component names from sneaking through.
-#
-# Revision 1.27  2012/10/01 20:28:57  cdunde
-# Small update.
-#
-# Revision 1.26  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.25  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.24  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.23  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.22  2010/06/13 15:37:55  cdunde
-# Setup Model Editor to allow importing of model from main explorer File menu.
-#
-# Revision 1.21  2010/05/01 04:25:37  cdunde
-# Updated files to help increase editor speed by including necessary ModelComponentList items
-# and removing redundant checks and calls to the list.
-#
-# Revision 1.20  2010/03/16 07:17:13  cdunde
-# Added support for .md3 model format exporting with tags, textures and shader files.
-#
-# Revision 1.19  2009/12/21 15:13:43  cdunde
-# Update to try and handle different folder names for mods.
-#
-# Revision 1.18  2009/10/16 00:59:47  cdunde
-# Saving old matrix data for CFG rotation in the editor.
-# Add animation rotation of weapon, for .md3 imports, when attached to model.
-#
-# Revision 1.17  2009/10/12 20:49:56  cdunde
-# Added support for .md3 animationCFG (configuration) support and editing.
-#
-# Revision 1.16  2009/09/30 19:37:26  cdunde
-# Threw out tags dialog, setup tag dragging, commands, and fixed saving of face selection.
-#
-# Revision 1.15  2009/09/29 20:07:44  danielpharos
-# Update menuitem-text when IEMaxTagFrames option changes.
-#
-# Revision 1.14  2009/09/26 03:59:01  cdunde
-# Added option for Model Editor to import-export max or min tag frames.
-#
-# Revision 1.13  2009/09/25 21:58:57  cdunde
-# To bring in extra frames, for a player model, of the torso when the upper model is loaded.
-#
-# Revision 1.12  2009/09/24 21:41:03  cdunde
-# Small update to remove duplicate tags.
-#
-# Revision 1.11  2009/09/24 06:46:02  cdunde
-# md3 rotation update, baseframe creation and proper connection of weapon tags.
-#
-# Revision 1.10  2009/09/18 03:29:09  cdunde
-# Added support to import and animate multiple components for player tag groups.
-#
-# Revision 1.9  2009/09/14 20:12:23  cdunde
-# Switch back to cdunde's coding with some of DanielPharos methods included.
-# Sorry Dan, you're so advanced I couldn't follow it. 8-)
-#
-# Revision 1.8  2009/09/14 20:02:55  cdunde
-# DanielPharos's method to improve upon this importer. Thank you Dan.
-#
-# Revision 1.7  2009/09/09 03:47:33  cdunde
-# Fix and message for script folder if not extracted when needed.
-# Fix to stop multiple duplicate components caused by imports of the same model file.
-#
-# Revision 1.6  2009/09/08 06:45:12  cdunde
-# Setup function to attach tags for imported .md3 models, such as weapons.
-#
-# Revision 1.5  2009/09/07 08:12:39  cdunde
-# Changed from left handed to right handed matrix values as they are read in.
-#
-# Revision 1.4  2009/09/07 01:38:45  cdunde
-# Setup of tag menus and icons.
-#
-# Revision 1.3  2009/09/06 11:54:44  cdunde
-# To setup, make and draw the TagFrameHandles. Also improve animation rotation.
-#
-# Revision 1.2  2009/09/05 06:22:29  cdunde
-# To fix setup error.
-#
-# Revision 1.1  2009/09/04 07:11:28  cdunde
-# Added Python .md3 import support with tags, animation, shader and skin files.
-#
-#
-#

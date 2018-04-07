@@ -8,10 +8,6 @@ Map editor pop-up menus.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 import quarkx
 from qdictionnary import Strings
 import qmenu
@@ -431,51 +427,3 @@ def BaseMenu(sellist, editor):
     Delete1.cmd = "del"
 
     return [Force1, qmenu.sep, Cancel1, qmenu.sep, Cut1, Copy1, Delete1]
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.18  2006/05/19 17:07:53  cdunde
-#To add links to docs on RMB menus and background image function.
-#
-#Revision 1.17  2006/01/30 10:07:13  cdunde
-#Changes by Nazar to the scale, zoom and map sizes that QuArK can handle
-#to allow the creation of much larger maps for the more recent games.
-#
-#Revision 1.16  2005/11/18 02:21:53  cdunde
-#To add new '2D Rulers' function, menu and
-#updated Infobase docs covering it.
-#
-#Revision 1.15  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.12  2003/12/13 22:13:39  cdunde
-#To add new Grid in 2D views feature plugin menu to Options menu
-#
-#Revision 1.11  2003/07/04 19:59:57  cdunde
-#To add new Addons main menu item and sub-menus
-#
-#Revision 1.10  2003/03/21 05:57:05  cdunde
-#Update infobase and add links
-#
-#Revision 1.9  2003/02/01 07:37:50  cdunde
-#To add Cancel Selections to RMB menu
-#
-#Revision 1.8  2001/07/27 11:32:57  tiglari
-#bsp study: special commands menu when bsp is loaded
-#
-#Revision 1.7  2001/04/28 02:21:04  tiglari
-#move 'remove' to mapselection.py, add selection menu therefrom
-#
-#Revision 1.6  2001/03/20 07:59:40  tiglari
-#customizable hot key support
-#
-#Revision 1.5  2001/01/26 19:07:04  decker_dk
-#Clamped the scalefactors for keyboard zoom-modification to in:100 and out:0.01.
-#
-#Revision 1.4  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

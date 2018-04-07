@@ -3,20 +3,7 @@ QQRKSRC1
 // It's the text version of file: Q3Fq3.qrk
 
 // Configuration file for Quake3Fortress
-//
-//   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
-//
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.4  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.1  2001/02/11 11:09:59  decker_dk
-//Moved from addons directory
-//
-//
-// 2000-04-xx   Begun creating Q3Fq3.QRK. Use a TAB-size of 4.
+
 {
   Description = "Q3Fortress Data Add-on"
 

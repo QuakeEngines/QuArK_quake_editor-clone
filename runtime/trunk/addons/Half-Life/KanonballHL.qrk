@@ -1,12 +1,5 @@
 QQRKSRC1
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2001/03/20 21:52:50  decker_dk
-//Added log-header
-//
-
 {
     Description = "Kanonball v1.2 Data Add-on"
 

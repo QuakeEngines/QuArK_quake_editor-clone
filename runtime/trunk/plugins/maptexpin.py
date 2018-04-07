@@ -16,9 +16,6 @@
 #
 ##########################################################
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Texture Pinning Plugin",
    "desc":          "Texture positioning by `pinning'",
@@ -327,13 +324,3 @@ def pinfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdra
       oldmore(editor, view)
 
 quarkpy.mapeditor.MapEditor.finishdrawing = pinfinishdrawing
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.8  2008/02/22 09:52:21  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.7  2005/11/10 18:03:04  cdunde
-#Activate history log
-#
-#

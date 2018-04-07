@@ -9,10 +9,6 @@
             - This program will go one sub-folder deep and looks for the 'classname' key in the .bsp file.
 """
 
-#
-#$Header$
-#
-
 import os, os.path
 
 def BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
@@ -264,12 +260,8 @@ def BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
 
         ### Writes the new .qrk file header.
         q.write("QQRKSRC1\n")
-        q.write("// " + gamename + " Entities file for Quark\n")
+        q.write("// " + gamename + " Entities file for QuArK\n")
         q.write("\n")
-        q.write("//$" + "Header: Exp $" + "\n")
-        q.write("// ----------- REVISION HISTORY ------------\n")
-        q.write("//$" + "Log: " + gamename + "Entities.qrk,v $" + "\n")
-        q.write("//\n")
 
         ### Writes the setup part for the Toolbox and Entities folders.
         q.write("\n")
@@ -580,10 +572,3 @@ def BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
     ### This section closes all open files.
     o.close()
     q.close() ### Closes the new .qrk file here.
-    
-#
-#$Log$
-#Revision 1.1  2010/09/01 08:11:22  cdunde
-#Added entity extraction from game map .bsp files for .qrk file creation of Conversion Tool system.
-#
-#

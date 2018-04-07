@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Quake .mdl model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md0_Q_import",
@@ -671,50 +667,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_md0_Q_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".mdl Quake1 Importer", ".mdl file", "*.mdl", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.11  2012/10/09 06:22:38  cdunde
-# To split up Quake1 and HexenII importers and exporters due to different skin texture image game palettes
-# and to handle possible other differences in the future.
-#
-# Revision 1.10  2011/10/03 08:12:13  cdunde
-# Removed unused dictspecs and fixed related exporter model distortion problem.
-#
-# Revision 1.9  2011/09/29 02:24:26  cdunde
-# To match up importer and exporter code better for comparison, make needed corrections and file cleanup.
-#
-# Revision 1.8  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.7  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.6  2011/02/11 18:49:57  cdunde
-# Small name update.
-#
-# Revision 1.5  2010/12/18 07:22:19  cdunde
-# File version check update.
-#
-# Revision 1.4  2010/06/13 15:37:55  cdunde
-# Setup Model Editor to allow importing of model from main explorer File menu.
-#
-# Revision 1.3  2010/05/01 22:54:57  cdunde
-# Set default skinsize to match all other importers.
-#
-# Revision 1.2  2010/05/01 04:25:37  cdunde
-# Updated files to help increase editor speed by including necessary ModelComponentList items
-# and removing redundant checks and calls to the list.
-#
-# Revision 1.1  2010/03/30 17:19:37  cdunde
-# Needed to change file name for proper listing on menu.
-#
-# Revision 1.2  2010/03/26 07:28:05  cdunde
-# Update for Skins sub-groups and file cleanup.
-#
-# Revision 1.1  2010/03/24 02:05:19  cdunde
-# Added support for Quake1 .mdl importing including textures and animations.
-#
-#

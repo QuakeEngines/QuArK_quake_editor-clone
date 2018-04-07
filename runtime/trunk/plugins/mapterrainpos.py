@@ -17,9 +17,6 @@
 #
 ##########################################################
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Terrain Generator Dialogs",
    "desc":          "Terrain Generator Dialogs",
@@ -939,46 +936,3 @@ def Options3DviewsClick(m):
 
 
     Options3DviewsDlg(quarkx.clickform, 'options3Dviewsdlg', editor, setup, action, onclosing)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.12  2008/02/22 09:52:22  danielpharos
-# Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-# Revision 1.11  2007/01/31 15:12:16  danielpharos
-# Removed bogus OpenGL texture mode
-#
-# Revision 1.10  2006/11/30 01:17:48  cdunde
-# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-# Revision 1.9  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.8.2.7  2006/11/09 23:17:44  cdunde
-# Changed Paint Brush dialog to work with new version view setup and names.
-#
-# Revision 1.8.2.6  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.8  2006/02/21 20:39:17  cdunde
-# To fix one error bug and try to help 3D view
-# from smearing\locking up when using paint dialog.
-#
-# Revision 1.7  2006/01/30 08:20:00  cdunde
-# To commit all files involved in project with Philippe C
-# to allow QuArK to work better with Linux using Wine.
-#
-# Revision 1.6  2005/11/07 00:06:40  cdunde
-# To commit all files for addition of new Terrain Generator items
-# Touch-up Selector and 3D Options Dialog
-#
-# Revision 1.5  2005/10/15 00:51:56  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2005/09/16 18:08:40  cdunde
-# Commit and update files for Terr

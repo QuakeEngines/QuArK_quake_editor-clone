@@ -1,13 +1,5 @@
 QQRKSRC1
-// EF2 Shaders file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/03/02 21:17:33  cdunde
-//Added EF2 shader support.
-//
-//
+// EF2 Shaders file for QuArK
 
 {
   QuArKProtected = "1"

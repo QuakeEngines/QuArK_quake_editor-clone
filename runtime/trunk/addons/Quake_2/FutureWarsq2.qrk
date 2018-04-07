@@ -9,16 +9,6 @@ QQRKSRC1
 // Steve Karstensen (Doom Trooper)
 // of Bridge n' Tunnel Software.
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.4  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.1  2001/02/11 11:08:40  decker_dk
-//Moved from addons directory
-//
-
 {
   QuArKProtected = "1"       // Additional user warnings to prevents accidental change of this file
   Description = "Future Wars - Quake 2"

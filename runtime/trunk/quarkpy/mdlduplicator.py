@@ -8,8 +8,6 @@ Model Duplicator abstract classes.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 #
 # Duplicators are really implemented in the plug-in "mapdups.py".
 # See that file for other duplicator examples.
@@ -435,13 +433,3 @@ def DupManager(dup):
 
 
 DupCodes = {}
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.2  2017/08/30 06:45:33  danielpharos
-#Explained some magic numbers, and other small cleanups.
-#
-#Revision 1.1  2011/03/15 08:25:46  cdunde
-#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
-#
-#

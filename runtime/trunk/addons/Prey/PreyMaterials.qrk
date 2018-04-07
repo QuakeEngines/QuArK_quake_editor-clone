@@ -1,14 +1,6 @@
 QQRKSRC1
 // Prey Materials file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/03/19 02:26:37  cdunde
-//Added full game support for PREY.
-//
-//
-
 {
   QuArKProtected = "1"
   Description = "Prey Materials"

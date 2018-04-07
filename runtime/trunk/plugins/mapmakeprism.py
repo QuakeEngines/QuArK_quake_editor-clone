@@ -10,7 +10,6 @@
 #
 #
 #-------------------------------------------------------------------------------
-# $Header$
 
 Info = {
    "plug-in":       "Make n sided prism",
@@ -463,36 +462,3 @@ def MakePrismClick(m):
 # Register the replace texture menu item
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep) # separator
 quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClick, "|Make Prism:\n\nThis opens a dialog window for your input to create a prism of various types as well as texture selection.|intro.mapeditor.menu.html#makeprism"))
-
-#----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.11  2003/03/24 08:57:15  cdunde
-# To update info and link to infobase
-#
-# Revision 1.10  2003/02/01 01:04:41  cdunde
-# Reactivate ramp selection and add script
-# to remove newly created broken polys and faces.
-#
-# Revision 1.8  2001/06/17 21:10:57  tiglari
-# fix button captions
-#
-# Revision 1.7  2001/03/07 20:16:16  tiglari
-# removed ramp checkbox (for now, till it works)
-#
-# Revision 1.6  2001/02/28 09:45:18  tiglari
-# fixed `stairs' option bug (ramp still has problems)
-#
-# Revision 1.5  2001/01/27 18:25:29  decker_dk
-# Renamed 'TextureDef' -> 'DefaultTexture'
-#
-# Revision 1.4  2000/12/19 21:07:42  decker_dk
-# Ax2Grind's MapMakePrism.py changes
-#
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-# 2000-04-29 Decker; Added functionality to create cylinder-walls, with indent.
-#            Loads/Saves used settings in SETUP.QRK
-# 1999-04-15 Decker; Added functionality to create pie-slices, and face-sharing
-#            of top and bottom face, if pie-slices are choosen.

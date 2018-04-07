@@ -1,50 +1,5 @@
 QQRKSRC1
-// FAKK2 definition file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.13  2008/05/14 20:38:54  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.12  2008/03/28 19:05:05  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//Revision 1.11  2008/03/25 16:22:56  cdunde
-//Minor file cleanup.
-//
-//Revision 1.10  2008/03/25 09:11:08  cdunde
-//Minor file cleanup.
-//
-//Revision 1.9  2008/03/23 21:53:54  cdunde
-//To make this file the way all of them should be, using its include statements.
-//
-//Revision 1.8  2008/03/09 20:31:06  cdunde
-//Pulled entities out of the EF2 and FAKK2 game Data.qrk files.
-//Game addons should never dump anything into their Data.qrk files.
-//Also fixed their worldspawn music to work now.
-//
-//Revision 1.7  2008/03/02 19:48:28  cdunde
-//Update
-//
-//Revision 1.6  2008/03/01 05:41:22  cdunde
-//Added more game support items.
-//
-//Revision 1.5  2008/02/29 09:14:47  cdunde
-//Completely updated by hand.
-//
-//Revision 1.4  2008/02/27 00:17:48  danielpharos
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.3  2008/02/25 22:00:39  cdunde
-//Update
-//
-//Revision 1.2  2008/02/25 21:38:14  cdunde
-//Added version support.
-//
-//Revision 1.1  2008/02/25 20:38:14  cdunde
-//Started game support.
-//
+// FAKK2 definition file for QuArK
 
 {
   QuArKProtected = "1"

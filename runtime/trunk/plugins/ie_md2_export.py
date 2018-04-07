@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for Quake 2 .md2 model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md2_exporter",
@@ -943,28 +939,3 @@ def savemodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".md2 Quake 2 Exporter", ".md2 file", "*.md2", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.6  2011/10/21 19:29:11  cdunde
-# Update for proper GLcommands code processing.
-#
-# Revision 1.5  2011/09/25 05:59:56  cdunde
-# Minor description correction.
-#
-# Revision 1.4  2009/03/06 05:21:06  cdunde
-# To embed skin names into model file.
-#
-# Revision 1.3  2009/02/08 13:57:10  cdunde
-# Some minor possible error fixing.
-#
-# Revision 1.2  2008/07/21 18:06:13  cdunde
-# Moved all the start and end logging code to ie_utils.py in two functions,
-# "default_start_logging" and "default_end_logging" for easer use and consistency.
-# Also added logging and progress bars where needed and cleaned up files.
-#
-# Revision 1.1  2008/07/17 00:45:19  cdunde
-# Added new .md2 exporter with progress bar and logging capabilities.
-#
-#

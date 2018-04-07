@@ -8,8 +8,6 @@ Renderer settings toolbar
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Renderer Settings Toolbar",
    "desc":          "Toolbar for changing settings of the renderers.",
@@ -126,7 +124,3 @@ class RendererBar(quarkpy.qeditor.ToolBar):
 # quarkpy folder are loaded before the files in the plugins folder.
 
 quarkpy.maptools.toolbars["tb_renderer"] = RendererBar
-
-
-# ----------- REVISION HISTORY ------------
-# $Log$

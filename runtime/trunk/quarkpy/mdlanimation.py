@@ -7,8 +7,6 @@ The Animation Toolbar.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
-
 
 import qmenu
 from mdlutils import *
@@ -1095,99 +1093,3 @@ class AnimationBar(ToolBar):
                 animatepaused, qtoolbar.sep, interpolonoff, smoothlooponoff, qtoolbar.sep,
                 ipfbtn, increaseipf, decreaseipf, qtoolbar.sep,
                 editor3dviewanimated, x2dviewanimated, y2dviewanimated, z2dviewanimated, float3dviewanimated]
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.27  2011/11/17 01:19:02  cdunde
-#Setup BBox drag toolbar button to work correctly with other toolbar buttons.
-#
-#Revision 1.26  2011/03/04 06:50:28  cdunde
-#Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
-#
-#Revision 1.25  2011/02/12 08:36:37  cdunde
-#Fixed auto turn off of Objects Maker not working with other toolbars.
-#
-#Revision 1.24  2010/05/25 21:43:32  cdunde
-#To speed up start and stop of animations.
-#
-#Revision 1.23  2010/05/01 04:39:48  cdunde
-#Fix to draw bones, if any, correctly after stopping animation with pause still on.
-#
-#Revision 1.22  2010/04/28 06:49:10  cdunde
-#Fix to reselect first frame if animation is stopped with pause still active for proper bone positioning.
-#
-#Revision 1.21  2009/10/21 21:12:42  cdunde
-#Removed unused code.
-#
-#Revision 1.20  2009/10/17 09:17:31  cdunde
-#Added selection and playing of .md3 weapons with player models CFG Animation.
-#
-#Revision 1.19  2009/10/16 06:40:40  cdunde
-#To catch sudden animation stop so original 1st frame does not get messed up, which was happening.
-#
-#Revision 1.18  2009/10/16 00:59:17  cdunde
-#Add animation rotation of weapon, for .md3 imports, when attached to model.
-#
-#Revision 1.17  2009/10/14 08:12:31  cdunde
-#Added complete section in the InfoBase Docs for the Model Editor about tags with F1 links.
-#
-#Revision 1.16  2009/10/14 00:20:47  cdunde
-#Various fixes for CFG Animation and interpolation.
-#
-#Revision 1.15  2009/10/12 20:49:56  cdunde
-#Added support for .md3 animationCFG (configuration) support and editing.
-#
-#Revision 1.14  2009/10/05 01:14:58  cdunde
-#Removed constant component looping for max interpolation drawing speed
-#and setup for possibly to only animate selected components and frames.
-#
-#Revision 1.13  2009/10/04 22:17:18  cdunde
-#Setup correct switching from standard to interpolation animation methods.
-#
-#Revision 1.12  2009/10/03 06:16:07  cdunde
-#Added support for animation interpolation in the Model Editor.
-#(computation of added movement to emulate game action)
-#
-#Revision 1.11  2008/07/15 23:16:27  cdunde
-#To correct typo error from MldOption to MdlOption in all files.
-#
-#Revision 1.10  2008/05/01 19:15:24  danielpharos
-#Fix treeviewselchanged not updating.
-#
-#Revision 1.9  2008/05/01 13:52:32  danielpharos
-#Removed a whole bunch of redundant imports and other small fixes.
-#
-#Revision 1.8  2008/02/23 04:41:11  cdunde
-#Setup new Paint modes toolbar and complete painting functions to allow
-#the painting of skin textures in any Model Editor textured and Skin-view.
-#
-#Revision 1.7  2008/02/04 05:07:41  cdunde
-#Made toolbars interactive with one another to
-#turn off buttons when needed, avoiding errors and crashes.
-#
-#Revision 1.6  2007/10/31 09:24:24  cdunde
-#To stop errors and crash if editor or QuArK is closed while animation is running.
-#
-#Revision 1.5  2007/10/31 03:47:52  cdunde
-#Infobase button link updates.
-#
-#Revision 1.4  2007/10/22 15:43:40  cdunde
-#To remove unused code and clean up file.
-#
-#Revision 1.3  2007/10/22 02:21:46  cdunde
-#Needed to change the Animation timer to be non-dependent on any view
-#to allow proper redrawing of all views when the Animation is stopped
-#and set fillcolor and repaint all views to properly clear handles drawn.
-#
-#Revision 1.2  2007/10/18 16:11:31  cdunde
-#To implement selective view buttons for Model Editor Animation.
-#
-#Revision 1.1  2007/10/18 02:31:55  cdunde
-#Setup the Model Editor Animation system, functions and toolbar.
-#
-#
-#
-#

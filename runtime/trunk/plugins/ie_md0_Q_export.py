@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for Quake .mdl model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md0_Q_export",
@@ -523,30 +519,3 @@ def savemodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the importers menu.
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".mdl Quake 1 Exporter", ".mdl file", "*.mdl", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.5  2012/10/09 06:22:38  cdunde
-# To split up Quake1 and HexenII importers and exporters due to different skin texture image game palettes
-# and to handle possible other differences in the future.
-#
-# Revision 1.4  2011/10/03 08:12:13  cdunde
-# Removed unused dictspecs and fixed related exporter model distortion problem.
-#
-# Revision 1.3  2011/09/29 02:24:26  cdunde
-# To match up importer and exporter code better for comparison, make needed corrections and file cleanup.
-#
-# Revision 1.2  2011/02/11 18:49:57  cdunde
-# Small name update.
-#
-# Revision 1.1  2010/03/30 17:19:37  cdunde
-# Needed to change file name for proper listing on menu.
-#
-# Revision 1.2  2010/03/27 04:29:10  cdunde
-# Fixed the U,V exporting.
-#
-# Revision 1.1  2010/03/26 07:27:41  cdunde
-# New exporter for Quake .mdl models.
-#
-#

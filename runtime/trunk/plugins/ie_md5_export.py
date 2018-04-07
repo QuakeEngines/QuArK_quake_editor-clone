@@ -7,8 +7,6 @@ QuArK Model Editor exporter for Doom 3 and Quake 4 .md5mesh and .md5anim model f
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "ie_md5_exporter",
    "desc":          "Export selected components to an .md5mesh (with bones) or .md5anim file.",
@@ -1162,72 +1160,3 @@ def UIExportDialog(root, filename, editor):
     else:
         newfiles_folder = filename.replace(".md5anim", "")
     ExportSettingsDlg(form1, root, filename, editor, newfiles_folder)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.20  2012/01/30 03:37:25  cdunde
-# To allow MOHAA model format to be exported as MD5 files.
-#
-# Revision 1.19  2012/01/15 04:39:32  cdunde
-# Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
-#
-# Revision 1.18  2012/01/14 22:49:08  cdunde
-# Change by DanielPharos to skip over baseframes which are not used
-# and allow other model formats to be exported as MD5 files.
-#
-# Revision 1.17  2012/01/13 08:04:27  cdunde
-# To get MD5 exporter to work with Alice, FAKK2 & EF2 skb_importer models.
-#
-# Revision 1.16  2011/12/25 03:57:30  cdunde
-# Update to ensure proper mesh baseframe bone position and matrix exporting.
-#
-# Revision 1.15  2011/12/16 01:06:21  cdunde
-# To co-ordinate better with other model format imports and exports.
-# Also file cleanup.
-#
-# Revision 1.14  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.13  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.12  2010/05/01 05:01:17  cdunde
-# Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList.
-#
-# Revision 1.11  2010/04/23 23:36:17  cdunde
-# Proper export changes by DanielPharos.
-#
-# Revision 1.10  2010/04/09 23:03:00  cdunde
-# Comment typo correction.
-#
-# Revision 1.9  2010/03/20 05:25:31  cdunde
-# Update by DanielPharos to bring imported models and animations more inline with original file.
-#
-# Revision 1.8  2010/03/10 04:24:06  cdunde
-# Update to support added ModelComponentList for 'bonelist' updating.
-#
-# Revision 1.7  2010/03/08 02:21:18  cdunde
-# Variable name correction.
-#
-# Revision 1.6  2010/03/07 09:43:48  cdunde
-# Updates and improvements to both the md5 importer and exporter including animation support.
-#
-# Revision 1.5  2009/08/27 04:55:06  cdunde
-# To add support for exporting other model types as .md5mesh files.
-#
-# Revision 1.4  2009/08/27 04:32:20  cdunde
-# Update for multiple bone sets for import and export to restrict export of bones for selected components only.
-#
-# Revision 1.3  2009/08/27 04:00:41  cdunde
-# To setup a bone's "flags" dictspec item for model importing and exporting support that use them.
-# Start of .md5anim exporting support.
-#
-# Revision 1.2  2009/08/10 01:31:15  cdunde
-# To improve on properly exporting mesh "shader" name.
-#
-# Revision 1.1  2009/08/09 17:17:24  cdunde
-# Added .md5mesh and .md5anim model exporter including bones, skins and shaders.
-#
-#
-#

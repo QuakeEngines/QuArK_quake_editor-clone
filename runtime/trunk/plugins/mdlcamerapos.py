@@ -1,10 +1,9 @@
 # QuArK  -  Quake Army Knife
 #
-# Copyright (C) 2001 The Quark Community
+# Copyright (C) 2001 The QuArK Community
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
  
 Info = {
    "plug-in":       "Camera Position Duplicator",
@@ -455,20 +454,3 @@ def findClick(m):
         self.chosen = src["cameras"]
 
     FindCameraPosDlg(quarkx.clickform, 'mdlfindcamerapos', editor, setup, action)
-
-
-# $Log$
-# Revision 1.4  2011/03/27 03:10:12  cdunde
-# Removed unnecessary code.
-#
-# Revision 1.3  2011/03/26 23:35:16  cdunde
-# Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
-# kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
-#
-# Revision 1.2  2011/03/16 05:43:31  cdunde
-# Added F5 Hotkey function for making Model Editor 3D camera positions.
-#
-# Revision 1.1  2011/03/15 08:25:46  cdunde
-# Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
-#
-#

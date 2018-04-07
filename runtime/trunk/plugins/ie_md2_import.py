@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Quake 2 .md2 model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md2_importer",
@@ -611,73 +607,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_md2_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".md2 Quake2 Importer", ".md2 file", "*.md2", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.14  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.13  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.12  2010/06/13 15:37:55  cdunde
-# Setup Model Editor to allow importing of model from main explorer File menu.
-#
-# Revision 1.11  2010/05/01 22:54:49  cdunde
-# Fix for importing models without any skins.
-# Set default skinsize to match all other importers.
-#
-# Revision 1.10  2010/05/01 04:25:37  cdunde
-# Updated files to help increase editor speed by including necessary ModelComponentList items
-# and removing redundant checks and calls to the list.
-#
-# Revision 1.9  2009/04/28 21:30:56  cdunde
-# Model Editor Bone Rebuild merge to HEAD.
-# Complete change of bone system.
-#
-# Revision 1.8  2009/01/29 02:13:51  cdunde
-# To reverse frame indexing and fix it a better way by DanielPharos.
-#
-# Revision 1.7  2009/01/26 18:29:12  cdunde
-# Update for correct frame index setting.
-#
-# Revision 1.6  2008/12/10 20:21:25  cdunde
-# To display proper skin once model is imported.
-#
-# Revision 1.5  2008/11/19 06:16:22  cdunde
-# Bones system moved to outside of components for Model Editor completed.
-#
-# Revision 1.4  2008/10/29 04:25:34  cdunde
-# Minor correction.
-#
-# Revision 1.3  2008/10/26 00:42:21  cdunde
-# Opps! Forgot md2 files don't have any Specifics, to remove test code.
-#
-# Revision 1.2  2008/10/26 00:07:09  cdunde
-# Moved all of the Specifics/Args page code for the Python importers\exports to the importer files.
-#
-# Revision 1.1  2008/07/21 18:06:08  cdunde
-# Moved all the start and end logging code to ie_utils.py in two functions,
-# "default_start_logging" and "default_end_logging" for easer use and consistency.
-# Also added logging and progress bars where needed and cleaned up files.
-#
-# Revision 1.5  2008/06/17 20:39:13  cdunde
-# To add lwo model importer, uv's still not correct though.
-# Also added model import\export logging options for file types.
-#
-# Revision 1.4  2008/06/16 00:11:46  cdunde
-# Made importer\exporter logging corrections to work with others
-# and started logging function for md2 model importer.
-#
-# Revision 1.3  2008/06/14 08:17:29  cdunde
-# Added valid model path check.
-#
-# Revision 1.2  2008/06/07 05:46:50  cdunde
-# Removed a lot of unused dead code.
-#
-# Revision 1.1  2008/06/04 03:56:40  cdunde
-# Setup new QuArK Model Editor Python model import export system.
-#
-#

@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for original Half-Life .mdl model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md0_HL1_import",
@@ -2584,113 +2580,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_md0_HL1_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".mdl Half-Life1 Importer", ".mdl file", "*.mdl", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.16  2012/03/03 07:26:35  cdunde
-# Sync 2. Rearranged files and names to coincide better.
-#
-# Revision 1.15  2012/02/25 23:52:08  cdunde
-# Fixes by DanielPharos for correct skin texture matching to components.
-#
-# Revision 1.14  2012/02/25 18:55:59  cdunde
-# Rearranged files and names to coincide better.
-#
-# Revision 1.13  2012/02/18 23:27:13  cdunde
-# Code by DanielPharos, final fix for correct imported animations.
-#
-# Revision 1.12  2012/02/11 21:46:24  cdunde
-# To remove unused list and
-# reposition data load call for posibale future max frames dialog feature.
-#
-# Revision 1.11  2012/01/11 19:25:45  cdunde
-# To remove underscore lines from folder and model names then combine them with one
-# underscore line at the end for proper editor functions separation capabilities later.
-#
-# Revision 1.10  2011/12/28 08:28:22  cdunde
-# Setup importer bone['type'] not done yet.
-#
-# Revision 1.9  2011/12/23 03:15:18  cdunde
-# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
-# Those should be kept with the individual bones if we decide it is needed.
-#
-# Revision 1.8  2011/11/19 06:28:18  cdunde
-# Added frame flags importing and Specifics page setting support.
-#
-# Revision 1.7  2011/11/08 01:41:20  cdunde
-# Removed some unused code.
-#
-# Revision 1.6  2011/10/25 19:47:05  cdunde
-# Some file cleanup.
-#
-# Revision 1.5  2011/05/25 20:55:03  cdunde
-# Revamped Bounding Box system for more flexibility with model formats that do not have bones, only single or multi components.
-#
-# Revision 1.4  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.3  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.2  2011/01/17 06:33:51  cdunde
-# Removed unneeded and unused code.
-#
-# Revision 1.1  2010/12/18 07:21:45  cdunde
-# Update and file name change, previously ie_md0_HL_import.py, for proper listing of future Half-Life2 importer.
-#
-# Revision 1.17  2010/12/07 06:06:52  cdunde
-# Updates for Model Editor bounding box system.
-#
-# Revision 1.16  2010/12/06 18:29:47  cdunde
-# Found a better way for the last bounding box change.
-#
-# Revision 1.15  2010/12/06 09:44:00  cdunde
-# Needed to add model name to stuff on importing to keep isolated
-# and fixed incorrect usage of ModelComponentList bonelist.
-#
-# Revision 1.14  2010/12/06 05:43:06  cdunde
-# Updates for Model Editor bounding box system.
-#
-# Revision 1.13  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.12  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.11  2010/10/20 20:17:54  cdunde
-# Added bounding boxes (hit boxes) and bone controls support used by Half-Life, maybe others.
-#
-# Revision 1.10  2010/10/08 06:02:44  cdunde
-# To kill dump console printing.
-#
-# Revision 1.9  2010/10/08 05:33:35  cdunde
-# Added support for player models attachment tags.
-#
-# Revision 1.8  2010/09/26 23:14:31  cdunde
-# Added progress bar and did some file cleanup.
-#
-# Revision 1.7  2010/07/31 22:44:31  cdunde
-# Removed dupe and unused code.
-#
-# Revision 1.6  2010/07/30 20:30:56  cdunde
-# Major animation improvement, new base work copy for further development.
-#
-# Revision 1.5  2010/06/13 16:22:13  cdunde
-# Correction update.
-#
-# Revision 1.4  2010/06/13 15:37:55  cdunde
-# Setup Model Editor to allow importing of model from main explorer File menu.
-#
-# Revision 1.3  2010/05/01 07:16:40  cdunde
-# Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
-#
-# Revision 1.2  2010/05/01 04:25:37  cdunde
-# Updated files to help increase editor speed by including necessary ModelComponentList items
-# and removing redundant checks and calls to the list.
-#
-# Revision 1.1  2010/05/01 03:54:32  cdunde
-# Started support for HalfLife 1 .mdl model importing.
-#
-#

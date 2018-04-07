@@ -8,8 +8,6 @@ Python code to find faces with bad texture scales
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Bad Texture Scale Finder",
    "desc":          "Finds brush faces with bad texture scales",
@@ -248,37 +246,3 @@ def badClick(m):
 
 quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|Find Bad Tex Scale:\n\nThis finds faces whose texture axes are almost parallel.|intro.mapeditor.menu.html#searchmenu"))
-
-#$Log$
-#Revision 1.12  2005/11/27 05:56:33  cdunde
-#Fixed function error due to python reliant
-#conversion to python.dll, for string module.
-#
-#Revision 1.11  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.8  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.7  2003/03/21 05:47:45  cdunde
-#Update infobase and add links
-#
-#Revision 1.6  2002/05/21 10:24:12  tiglari
-#make collected item numbering start with 1)
-#
-#Revision 1.5  2002/05/21 09:16:16  tiglari
-#fix problems with selection dialog: the first of two with identical names was
-# always being chosen, and first item on list wouldn't load
-#
-#Revision 1.4  2002/05/12 08:00:15  tiglari
-#minor corrections
-#
-#Revision 1.3  2002/04/30 22:55:33  tiglari
-#add import quarkpy.mapsearch  statement
-#
-#Revision 1.2  2002/04/27 23:00:13  tiglari
-#add import statement
-#
-#Revision 1.1  2002/04/01 08:31:48  tiglari
-#modelled on mapmicrobrush.py, but some stuff abstracted into quarkpy.guiutils
-#

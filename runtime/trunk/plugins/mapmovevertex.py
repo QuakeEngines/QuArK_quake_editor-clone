@@ -8,8 +8,6 @@ Vertex moveing plugin
 # FOUND IN FILE "COPYING.TXT"
 #
 
-# $Header$
-
 Info = {
    "plug-in":       "Vertex Movement Dialog",
    "desc":          "dialg for moving vertexes",
@@ -888,30 +886,3 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
         olddragto(self, x, y, flags)
 
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
-
-# $Log$
-# Revision 1.10  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
-#
-# Revision 1.7  2002/05/18 22:38:31  tiglari
-# remove debug statement
-#
-# Revision 1.6  2002/04/01 08:30:05  tiglari
-# shift out the parentpopup menu stuff (to quarkpy.guiutils)
-#
-# Revision 1.5  2002/03/30 09:31:14  tiglari
-# Add 'move containing' item to the vertex RMB that moves a containing
-#   object so that the vertex becomes on-grid.
-#
-# Revision 1.4  2001/06/17 21:10:57  tiglari
-# fix button captions
-#
-# Revision 1.3  2001/06/16 03:19:05  tiglari
-# add Txt="" to separators that need it
-#
-# Revision 1.2  2001/05/24 22:28:05  tiglari
-# fix tuple bug, improved anti-drift
-#
-# Revision 1.1  2001/04/01 22:45:31  tiglari
-# initial commit
-#

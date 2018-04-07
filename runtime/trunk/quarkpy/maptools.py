@@ -8,9 +8,6 @@ The map editor's "Toolbars" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import qmenu
 import qtoolbar
 from maputils import *
@@ -58,45 +55,3 @@ class DisplayBar(qeditor.ToolBar):
 
 import qmovepal
 toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.13  2015/09/06 12:35:40  danielpharos
-#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
-#
-#Revision 1.12  2008/11/17 19:10:00  danielpharos
-#Fixed a typo.
-#
-#Revision 1.11  2008/08/21 12:11:53  danielpharos
-#Fixed an import failure.
-#
-#Revision 1.10  2006/11/30 01:19:33  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.9  2006/11/29 07:00:26  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.8.2.6  2006/11/01 22:22:42  danielpharos
-#BackUp 1 November 2006
-#Mainly reduce OpenGL memory leak
-#
-#Revision 1.8  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.5  2003/03/15 20:42:09  cdunde
-#To update hints and add infobase links
-#
-#Revision 1.4  2003/02/14 03:12:55  cdunde
-#To add F1 help popup info
-#
-#Revision 1.3  2001/10/22 10:24:32  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

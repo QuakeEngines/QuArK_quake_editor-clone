@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for Alice, EF2 and FAKK2 .tan model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_tan_exporter",
@@ -656,23 +652,3 @@ def savemodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".tan Alice\EF2\FAKK2 Exporter", ".tan file", "*.tan", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.5  2013/02/20 05:19:41  cdunde
-# Fix for sometimes incorrect skinsize being used.
-#
-# Revision 1.4  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.3  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.2  2010/08/09 00:50:28  cdunde
-# Removed unused code items and updated comments.
-#
-# Revision 1.1  2010/08/03 22:44:42  cdunde
-# Setup exporter for Alice, EF2 and FAKK2 .tan models (static and animated), tags not supported at this time.
-#
-#

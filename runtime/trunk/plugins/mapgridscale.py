@@ -10,9 +10,6 @@ Map editor views, grid scale numbering feature.
 
 #py2.4 indicates upgrade change for python 2.4
 
-
-#$Header$
-
 Info = {
    "plug-in":       "Display grid scale",
    "desc":          "Displays the grid scale in the 2D viewing windows. Activate from the 'Options' menu",
@@ -670,62 +667,3 @@ def ViewAmendMenu1click(m):
 
 
 GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1click, "|Grid scale in 2D views:\n\nThese functions allow you to display a scale of the current grid setting in any one, combination, or all of the 2D views of the Editor.", "intro.mapeditor.menu.html#optionsmenu")]
-    
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.15  2007/09/16 00:38:46  cdunde
-#Fixed both editors from not drawing gridscale and ruler when grid is inactive.
-#
-#Revision 1.14  2006/11/30 01:17:48  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.13  2006/11/29 06:58:35  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.12.2.3  2006/11/09 23:00:02  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.12.2.2  2006/11/07 17:24:53  cdunde
-#Changed displayed numbers to RED for better viewing in Textured 2D mode.
-#
-#Revision 1.12.2.1  2006/11/01 22:22:43  danielpharos
-#BackUp 1 November 2006
-#Mainly reduce OpenGL memory leak
-#
-#Revision 1.12  2005/12/11 22:03:09  cdunde
-#To fix error in editor and Infobase for X 2D view of
-#Y axis sign and label which was backwards
-#
-#Revision 1.11  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.8  2005/03/26 05:32:14  cdunde
-#To set pin color and size to guard against future plugin changes
-#
-#Revision 1.7  2004/11/26 05:21:51  cdunde
-#Needed to make correction for individual settings
-#
-#Revision 1.6  2004/11/18 20:56:40  cdunde
-#To add all 2D view grid scale settings function.
-#
-#Revision 1.5  2004/11/17 06:33:44  cdunde
-#To add more flexible grid scale placement features and marker lines for accuracy.
-#
-#Revision 1.4  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.3  2003/12/18 12:19:42  cdunde
-#To add All 2d views feature and auto trun offs
-#
-#Revision 1.2  2003/12/15 12:47:37  cdunde
-#To add menu check marks and zoom feature
-#
-#Revision 1.1  2003/12/13 22:12:42  cdunde
-#To add new Grid in 2D views feature
-#
-#

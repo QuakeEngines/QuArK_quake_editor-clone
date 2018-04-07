@@ -1,16 +1,5 @@
 QQRKSRC1
-// Half-Life Textures file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/05/14 20:38:10  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.1  2008/03/28 19:05:50  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
+// Half-Life Textures file for QuArK
 
 {
   QuArKProtected = "1"

@@ -17,9 +17,6 @@
 #
 ##########################################################
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Alternate Texture Positioning",
    "desc":          "Alternate Texture Positioning",
@@ -184,35 +181,3 @@ def texmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
   return menu
   
 quarkpy.mapentities.FaceType.menu = texmenu
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.11  2007/11/29 23:39:00  cdunde
-# Changed to keep Texture Position dialog open and update dynamically.
-#
-# Revision 1.10  2005/10/15 00:51:56  cdunde
-# To reinstate headers and history
-#
-# Revision 1.7  2005/09/16 18:09:13  cdunde
-# Set dialog box to remain open
-#
-# Revision 1.6  2003/12/18 21:51:46  peter-b
-# Removed reliance on external string library from Python scripts (second try ;-)
-#
-# Revision 1.5  2001/06/17 21:10:56  tiglari
-# fix button captions
-#
-# Revision 1.4  2001/06/16 03:19:47  tiglari
-# add Txt="" to separators that need it
-#
-# Revision 1.3  2000/07/24 09:18:11  tiglari
-# Put texture-position dialog into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

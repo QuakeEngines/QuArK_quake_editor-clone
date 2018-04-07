@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -11,10 +10,6 @@ Map editor Layout managers.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
-
 
 #
 # This file defines the base class for Map Layout Managers.
@@ -893,107 +888,3 @@ LayoutsList = []
 # This list can be filled by plug-ins. (see mappage3d.py)
 #
 mppages = []
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.30  2016/02/13 12:36:20  danielpharos
-#Raise a proper exception.
-#
-#Revision 1.29  2015/09/06 12:35:40  danielpharos
-#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
-#
-#Revision 1.28  2014/03/08 14:12:15  danielpharos
-#Fix console error for texture-flags RMB menu if game paths are not configured.
-#
-#Revision 1.27  2008/12/19 23:36:01  danielpharos
-#Oops
-#
-#Revision 1.26  2008/12/19 23:15:53  danielpharos
-#Minor adjustment for recent fix of item over lapping.
-#
-#Revision 1.25  2008/07/06 18:19:16  cdunde
-#Fixed function link properly.
-#
-#Revision 1.24  2008/05/01 12:08:36  danielpharos
-#Fix several objects not being unloaded correctly.
-#
-#Revision 1.23  2008/02/27 00:04:17  cdunde
-#DanielPharos fix to stop bezier-view from causing errors.
-#
-#Revision 1.22  2007/01/18 02:04:35  cdunde
-#Stop the line, resizing bar, from drawing across the editors
-#when certain view pages were pulled out as floating windows.
-#
-#Revision 1.21  2006/11/30 01:19:34  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.20  2006/11/29 07:00:27  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.18.2.7  2006/11/14 22:47:27  cdunde
-#To fix 0 division error of large terrain polys and texture scaling and angle changes.
-#
-#Revision 1.18.2.6  2006/11/04 21:40:08  cdunde
-#To add comment about newmapview.
-#
-#Revision 1.18.2.5  2006/11/03 23:38:10  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.18.2.4  2006/11/01 22:22:42  danielpharos
-#BackUp 1 November 2006
-#Mainly reduce OpenGL memory leak
-#
-#Revision 1.19  2006/10/27 06:26:33  cdunde
-#Fixed error and to display texture of bezier texture selection list change.
-#
-#Revision 1.18  2006/08/21 21:16:04  cdunde
-#One item left out of last correction.
-#
-#Revision 1.17  2006/08/21 03:14:06  cdunde
-#Daniel (d.a.a.) and cdunde finally found fix for Access Violation errors
-#with various selections of entities to display their form data.
-#
-#Revision 1.16  2006/06/18 03:30:38  cdunde
-#To fix read error if from returns None.
-#
-#Revision 1.15  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.12  2003/12/17 13:58:59  peter-b
-#- Rewrote defines for setting Python version
-#- Removed back-compatibility with Python 1.5
-#- Removed reliance on external string library from Python scripts
-#
-#Revision 1.11  2003/07/07 07:18:31  cdunde
-#To correct caption exclusion error and hint display
-#
-#Revision 1.10  2003/03/17 01:51:13  cdunde
-#Update hints and add infobase links where needed
-#
-#Revision 1.9  2002/05/05 10:19:59  tiglari
-#Support for texture flag defaults in layout.loadtfflist (a long run for a shortish slide)
-#
-#Revision 1.8  2002/04/07 12:46:31  decker_dk
-#Made the texture/face-flags window bigger.
-#
-#Revision 1.7  2001/10/22 10:24:32  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.6  2001/03/01 19:14:40  decker_dk
-#changed bs_additionalpages() so it checks 'BezierPatchSupport' for the bezier-page.
-#
-#Revision 1.5  2001/02/25 11:22:51  tiglari
-#bezier page support, transplanted with permission from CryEd (CryTek)
-#
-#Revision 1.3  2001/01/02 19:29:51  decker_dk
-#Small changes in hint-descriptions
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

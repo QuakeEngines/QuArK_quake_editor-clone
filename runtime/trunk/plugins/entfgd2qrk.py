@@ -6,8 +6,6 @@ Python macros available for direct call by QuArK
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "entfgd2qrk plugin",
    "desc":          "Python macros available for direct call by QuArK",
@@ -896,81 +894,3 @@ def makeqrk(root, filename, gamename, nomessage=0):
 
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fgd file", "*.fgd", makeqrk)
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.16  2008/05/04 07:30:41  cdunde
-#Changes by Adam Quest (aka Who Gives A Dam)
-#Replaced GenerateFolder in Class Entity with
-#  one from entdef2qrk.py v1.11 in order to
-#  output toolbox alphabetically
-#Minor modifications to makeqrk function to
-#  make it more resemble entdef2qrk.py v1.11's
-#
-#Revision 1.15  2008/05/01 16:01:22  cdunde
-#Changes by 'Who Gives A Dam'
-#Look for comments dated 4/30/2008 in code.
-#Fixed 'readonly' and 'halfgridsnap' parsing
-#  didn't enable ER entry field functionality
-#  nor 'halfgridsnap' functionality
-#Now capable of removing @include and @mapsize
-#All entries in fgd now have an :incl statement
-#  and entities all have a :form that just links
-#  to the :incl so all future mods can base
-#  entities off other already defined entities
-#
-#Revision 1.14  2005/11/10 18:03:04  cdunde
-#Activate history log
-#
-#Revision 1.13  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.11  2004/12/23 10:11:10  alexander
-#removed bloody duplicated rcs headers again
-#
-#Revision 1.10  2004/12/19 09:59:48  alexander
-#no default angle specifics
-#generate model form button for studio specifics
-#generate texture form button for texture and decal specifics
-#support for input and output type specifics (input#specificname)
-#
-#Revision 1.9  2004/12/08 21:10:55  alexander
-#can parse hl2 and hl2 mp hammer files now
-#
-#Revision 1.8  2004/12/07 17:59:52  alexander
-#parse almost all of hammers fgd file except
-#- readonly
-#- halfgridsnap
-#- include directives
-#
-#Revision 1.7  2004/12/01 21:48:29  alexander
-#preliminary hammer files parsed
-#
-#Revision 1.6  2003/12/17 13:58:59  peter-b
-#- Rewrote defines for setting Python version
-#- Removed back-compatibility with Python 1.5
-#- Removed reliance on external string library from Python scripts
-#
-#Revision 1.5  2002/02/05 18:32:58  decker_dk
-#Corrected a problem with debug() calls
-#
-#Revision 1.4  2001/12/02 09:57:45  decker_dk
-#Removing 'os' from the import list, and some other minor fixes.
-#
-#Revision 1.3  2001/10/21 08:34:42  decker_dk
-#Print out debug-information, in case of parse-error.
-#
-#Revision 1.2  2001/08/13 17:45:30  decker_dk
-#Problem with "<keyword>=!" placements in ":form" definitions. Hard to solve correctly, as its deep within QuArK's Delphi-code!
-#
-#Revision 1.1  2001/06/13 23:02:50  aiv
-#Moved 'Convert From' stuff to python code (plugin type)
-#
-#Revision 1.4  2001/06/11 17:42:38  decker_dk
-#Fixed the BBOX problem, where it would think the value were a string (double-quotes), and not 6 numbers (single-quotes).
-#Also added a messagebox which states what should be manually done afterwards.
-#
-#Revision 1.3  2001/04/14 19:30:58  decker_dk
-#Handle 'color1' FGD-types too.
-#
-#

@@ -8,8 +8,6 @@
 #
 ######################################
 
-#$Header$
-
 #py2.4 indicates upgrade change for python 2.4
 
 import qmacro
@@ -193,57 +191,3 @@ class locatable_dialog_box(qmacro.dialogbox):
     cy = (y1+y2)/2
     size = self.size
     return (ox+cx-size[0]/2, oy+cy-size[1]/2, ox+cx+size[0]/2, oy+cy+size[1]/2)
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.16  2015/09/20 13:00:28  danielpharos
-#Added a missing import statement.
-#
-#Revision 1.15  2008/08/21 12:03:32  danielpharos
-#Cleaned up redundant code
-#
-#Revision 1.14  2007/10/06 20:13:54  cdunde
-#Changed placepersistent_dialogbox class windowrect and onclose functions
-#to allow Model Editor to store its own settings separate from the Map Editor.
-#
-#Revision 1.13  2006/11/30 01:19:34  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.12  2006/11/29 07:00:28  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.11.2.1  2006/11/03 23:38:10  cdunde
-#Updates to accept Python 2.4.4 by eliminating the
-#Depreciation warning messages in the console.
-#
-#Revision 1.11  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.8  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.7  2002/05/21 10:23:28  tiglari
-#Make LiveBrowserDlg handle correctly multiple entries with the same name;
-#  Load first one.
-#
-#Revision 1.6  2001/08/05 08:01:37  tiglari
-#spiff up new descendents of LiveEditDlg
-#
-#Revision 1.5  2001/08/02 02:55:49  tiglari
-#List-browser dialog (ListerDlg)
-#
-#Revision 1.4  2000/10/10 07:57:53  tiglari
-#added onclosing support to LiveEditDlg (used in vertex movement dialog,
-# seems like a good idea).
-#
-#Revision 1.3  2000/06/03 18:01:28  alexander
-#added cvs header
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

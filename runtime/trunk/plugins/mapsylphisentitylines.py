@@ -4,8 +4,6 @@
 # Copyright (C) 2003 Harry Kalogirou
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Sylphis entities line support",
    "desc":          "Displays varius lines assosiated with Sylphis.",
@@ -101,21 +99,3 @@ class SylphisDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "Sylphis": SylphisDrawEntityLines()
 })
-
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.5  2011/10/06 20:13:37  danielpharos
-#Removed a bunch of 'fixes for linux': Wine's fault (and a bit ours); let them fix it.
-#
-#Revision 1.4  2006/01/30 08:20:00  cdunde
-#To commit all files involved in project with Philippe C
-#to allow QuArK to work better with Linux using Wine.
-#
-#Revision 1.3  2005/10/15 00:51:24  cdunde
-#To reinstate headers and history
-#
-#Revision 1.1  2004/05/21 01:04:14  cdunde
-#To add support for Sylphis game engine. Code by Harry Kalogirou.
-#
-#

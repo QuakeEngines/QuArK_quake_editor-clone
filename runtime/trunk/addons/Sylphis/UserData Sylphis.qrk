@@ -2,19 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: UserData Sylphis.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.3  2008/03/28 19:14:05  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//Revision 1.2  2008/03/25 05:26:43 cdunde
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.1  2004/05/21 01:05:49 cdunde
-//To add support for Sylphis game engine. Code by Harry Kalogirou.
-//
-
 {
   Description = "Custom configuration file for Sylphis."
   MapObjPanel.qrk =

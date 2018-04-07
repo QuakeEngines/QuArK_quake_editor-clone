@@ -8,9 +8,6 @@ Python code to implement the various Duplicator styles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 #
 # Feel free to add your own styles here, or better
 # in a new plug-in that looks like this one.
@@ -400,47 +397,3 @@ def resetTextureCycleClick(m):
     quarkpy.mapduplicator.Dup_Tex_Dicts={}
 
 quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCycleClick,"|Reset Texture Cycle:\n\nReload files specifying texture cycles for duplicators.|intro.mapeditor.menu.html#disdupimages"))
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.15  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.12  2003/03/24 08:57:15  cdunde
-# To update info and link to infobase
-#
-# Revision 1.11  2001/10/22 10:15:48  tiglari
-# live pointer hunt, revise icon loading
-#
-# Revision 1.10  2001/09/23 07:00:34  tiglari
-# mitered edges for wall maker duplicator
-#
-# Revision 1.9  2001/08/15 17:49:55  decker_dk
-# Added a 'dup symxyz' with toggleable axes.
-#
-# Revision 1.8  2001/08/07 23:33:43  tiglari
-# reset texture cycle command
-#
-# Revision 1.7  2001/05/19 03:55:42  tiglari
-# dissociate one, dissociate all, for 'out' duplicators
-#
-# Revision 1.6  2001/05/12 10:15:56  tiglari
-# remove matrix2 (buildLinearMatrix) support from linear duplicator
-#
-# Revision 1.5  2001/04/08 02:44:15  tiglari
-# fix conflict
-#
-# Revision 1.4  2001/04/06 06:00:35  tiglari
-# fixed a messed up change to Linear Duplicator readavalues
-#
-# Revision 1.3  2001/03/29 09:28:55  tiglari
-# scale and rotate specifics for duplicators
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for Alice, EF2 and FAKK2 .ska and .skb model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_skb_importer",
@@ -1374,75 +1370,3 @@ import quarkpy.qmdlbase
 import ie_skb_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".ska Alice\EF2\FAKK2 Importer-anim", ".ska file", "*.ska", loadmodel)
 quarkpy.qmdlbase.RegisterMdlImporter(".skb Alice\EF2\FAKK2 Importer-mesh", ".skb file", "*.skb", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.21  2012/01/04 06:59:04  cdunde
-# New method to stop need of loading mesh file every time an animation file is loaded.
-# Speeds up animation loading and avoids overwriting editing that has already taken place.
-#
-# Revision 1.20  2012/01/03 08:42:22  cdunde
-# Setup progressbars.
-#
-# Revision 1.19  2012/01/03 07:18:37  cdunde
-# Minor file comments and variable name change for consistency.
-#
-# Revision 1.18  2012/01/01 06:10:38  cdunde
-# Changed to non-rotating matrix for new bones.
-#
-# Revision 1.17  2011/12/26 08:03:42  cdunde
-# Combined SetUpBones function with load function to avoid dupe looping, import speedup.
-#
-# Revision 1.16  2011/12/24 04:18:16  cdunde
-# Changed misleading variable names.
-#
-# Revision 1.15  2011/12/23 22:36:31  cdunde
-# To get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
-#
-# Revision 1.14  2011/12/23 03:15:18  cdunde
-# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
-# Those should be kept with the individual bones if we decide it is needed.
-#
-# Revision 1.13  2011/12/16 08:52:26  cdunde
-# To start getting the skb_import and skd_export working together, still needs work.
-#
-# Revision 1.12  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.11  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.10  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.9  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.8  2010/08/27 19:36:15  cdunde
-# To clarify menu item listing.
-#
-# Revision 1.7  2010/08/25 18:47:25  cdunde
-# Small fix.
-#
-# Revision 1.6  2010/08/11 18:31:08  cdunde
-# Changed variable name to be more consistent and identifiable.
-#
-# Revision 1.5  2010/08/10 07:33:27  cdunde
-# To handle bone positioning properly for .skb exporting.
-#
-# Revision 1.4  2010/08/09 08:24:59  cdunde
-# Added logging and expansion for processing skb BaseFrame bones.
-#
-# Revision 1.3  2010/07/28 04:27:13  cdunde
-# File ident update.
-#
-# Revision 1.2  2010/07/09 05:28:36  cdunde
-# File cleanup, texture and bone handling updates.
-#
-# Revision 1.1  2010/07/07 03:35:28  cdunde
-# Setup importers for Alice, EF2 and FAKK2 .skb, .ska and
-# .tan models (static and animated) with bone and skin support.
-#
-#

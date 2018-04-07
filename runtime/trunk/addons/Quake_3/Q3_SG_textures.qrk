@@ -5,13 +5,8 @@ QQRKSRC1
 // Quake 3 SmokinGuns textures file for Quark.
 // This stand alone game site is http://forum.smokin-guns.org/
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
-
 {
-  Description = "Addon for smokinguns"
+  Description = "Quake 3 - SmokinGuns textures"
   Game Context.qctx =
   {
     Game = "Quake 3"

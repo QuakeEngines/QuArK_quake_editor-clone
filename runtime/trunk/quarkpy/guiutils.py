@@ -9,9 +9,6 @@ Various utilities for making gui devices.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import quarkx
 from quarkpy.maputils import *
 #
@@ -76,17 +73,3 @@ def buildParentPopupList(o, parentpopupitems, editor):
         current = current.treeparent;
   #  list.reverse()
     return list    
-
-
-
-# $Log$
-# Revision 1.5  2005/10/15 00:47:57  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2003/01/01 10:08:16  tiglari
-# fix for console errors on RMB on vertex in restricted selection
-#
-# Revision 1.1  2002/04/01 08:29:10  tiglari
-# start off with some stuff from mapmadsel.py, and abstracted from mapmicrobrush.py
-#
-#

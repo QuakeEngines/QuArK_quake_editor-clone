@@ -8,9 +8,6 @@ Map editor "3D" page on the Multi-Pages-Panel.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "3D Page",
    "desc":          "Displays the 3D page (bottom left).",
@@ -51,44 +48,5 @@ class Page3D(MPPage):
         return pagebtn
 
 
-
 # Register this new page
 mppages.append(Page3D)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.11  2006/11/30 01:17:48  cdunde
-# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-# Revision 1.10  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.9.2.5  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.9  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
-#
-# Revision 1.6  2003/07/07 07:17:46  cdunde
-# To correct caption exclusion error and hint display
-#
-# Revision 1.5  2003/03/17 01:48:49  cdunde
-# Update hints and add infobase links where needed
-#
-# Revision 1.4  2001/10/22 10:14:25  tiglari
-# live pointer hunt, revise icon loading
-#
-# Revision 1.3  2001/01/26 19:08:02  decker_dk
-# Fix hint-problem introduced by change in [QBaseMgr.PY] bs_multipagespanel
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

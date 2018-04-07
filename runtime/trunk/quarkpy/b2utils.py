@@ -6,12 +6,9 @@ Various quadratic bezier utilities.
 #
 # by tiglari@hexenworld.com, May 2000
 #
-#THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 import math
 import quarkx
@@ -572,70 +569,3 @@ def writecps(cp):
            debug(" %d,%d: s: %6.2f, t: %6.2f"%(row, col, point.s, point.t))
         except:
           debug(" notexcoords")
-
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.21  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.18  2002/12/29 04:18:33  tiglari
-#transfer fixes from 6.3
-#
-#Revision 1.17.10.1  2002/12/29 02:57:59  tiglari
-#texcpfromface now uses threepoints(6) to avoid recentering tex coords
-#
-#Revision 1.17  2001/03/20 11:01:51  tiglari
-#credit added
-#
-#Revision 1.16  2000/12/30 05:27:11  tiglari
-#cpPos function for mapping index position to i, j coordinates
-#
-#Revision 1.15  2000/09/04 21:24:23  tiglari
-#added procedures for better circular arc segments
-#
-#Revision 1.14  2000/09/02 11:22:35  tiglari
-#generalized subdivideRows/Columns to arbitrary quilts
-#
-#Revision 1.13  2000/08/23 12:12:34  tiglari
-#Added support for edge knitting; fixed join bug
-#
-#Revision 1.12  2000/07/24 12:47:40  tiglari
-#listCP function added
-#
-#Revision 1.11  2000/07/23 08:40:44  tiglari
-#faceTexFromCph removed; texPlaneFromCph added
-#
-#Revision 1.10  2000/06/26 22:51:55  tiglari
-#renaming: antidistort_rows/columns->undistortRows/Colunmns,
-#tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
-#
-#Revision 1.9  2000/06/25 23:48:01  tiglari
-#Function Renaming & Reorganization, hope no breakage
-#
-#Revision 1.8  2000/06/25 11:00:50  tiglari
-#fixed antidistortion crash when sum=0.  still wrong but doesn't crash
-#
-#Revision 1.7  2000/06/22 22:38:37  tiglari
-#added interpolateGrid (replacing an unused fn with a goofy name)
-#
-#Revision 1.6  2000/06/12 11:20:45  tiglari
-#Redid antidistort_columns, added antidistort_rows
-#
-#Revision 1.5  2000/06/04 03:21:25  tiglari
-#distortion reduction (elimination) for `rolled up' columns
-#
-#Revision 1.4  2000/06/03 18:01:28  alexander
-#added cvs header
-#
-#Revision 1.3  2000/06/03 12:59:33  tiglari
-#fixed arch duplicator maploading problem, hopefully
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

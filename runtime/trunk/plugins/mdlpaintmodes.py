@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -11,10 +10,6 @@ Model Texture Paint modes and their dialog input boxes.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
-
 
 Info = {
    "plug-in":       "Paint Modes Toolbar",
@@ -5622,56 +5617,3 @@ class PaintModesBar(ToolBar):
 #--- register the new toolbar ---
 
 quarkpy.mdltoolbars.toolbars["tb_paintmodes"] = PaintModesBar
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.14  2015/01/09 20:22:27  danielpharos
-# Typo fixes.
-#
-# Revision 1.13  2012/03/11 05:26:38  cdunde
-# Updated Model Editor texture paint functions to do gray-scale and blue-scale
-# for texture mapping and greatly improved airbrush function quality for fade in effect.
-#
-# Revision 1.12  2012/01/29 00:53:47  cdunde
-# Missed passing one variable in previous update to this one.
-#
-# Revision 1.11  2012/01/28 08:12:56  cdunde
-# Broke down functions to avoid crash of Python for too many if statements in one function.
-# Also did some function drawing fixes and added more functions to other areas.
-#
-# Revision 1.10  2012/01/26 22:44:42  cdunde
-# Fixed airbrush function for all textured views and skin view.
-# Added eraser function for all textured views and skin view.
-# Added RGB2GRAYSCALE function for skin view only.
-#
-# Revision 1.9  2012/01/22 07:57:44  cdunde
-# File cleanup and minor corrections.
-#
-# Revision 1.8  2011/11/17 01:19:02  cdunde
-# Setup BBox drag toolbar button to work correctly with other toolbar buttons.
-#
-# Revision 1.7  2011/03/04 06:50:28  cdunde
-# Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
-#
-# Revision 1.6  2011/02/12 08:36:37  cdunde
-# Fixed auto turn off of Objects Maker not working with other toolbars.
-#
-# Revision 1.5  2009/10/12 20:49:56  cdunde
-# Added support for .md3 animationCFG (configuration) support and editing.
-#
-# Revision 1.4  2008/12/20 08:39:34  cdunde
-# Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
-#
-# Revision 1.3  2008/03/20 05:57:43  cdunde
-# To update Infobase links.
-#
-# Revision 1.2  2008/02/23 20:07:45  cdunde
-# To fix code error.
-#
-# Revision 1.1  2008/02/23 04:41:11  cdunde
-# Setup new Paint modes toolbar and complete painting functions to allow
-# the painting of skin textures in any Model Editor textured and Skin-view.
-#
-#

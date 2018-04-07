@@ -5,66 +5,6 @@ for new or added game support,
 using the actual game files and other .qrk files as templates.
 """
 
-#
-#$Header$
-#
-
-#
-#$Log$
-#Revision 1.17  2013/03/17 14:15:09  danielpharos
-#Fixed a typo.
-#
-#Revision 1.16  2010/09/01 08:11:22  cdunde
-#Added entity extraction from game map .bsp files for .qrk file creation of Conversion Tool system.
-#
-#Revision 1.15  2010/08/21 03:17:41  cdunde
-#Additional small fix for the Conversion Tool system.
-#
-#Revision 1.14  2010/08/19 08:04:26  cdunde
-#Some small fixes for the Conversion Tool system.
-#
-#Revision 1.13  2008/08/26 15:18:54  danielpharos
-#Fixed a typo and re-added missing log entries.
-#
-#Revision 1.12  2008/06/25 14:32:33  danielpharos
-#Change to ASCII file property
-#
-#Revision 1.11  2008/05/27 19:33:32  danielpharos
-#Fix redundant import
-#
-#Revision 1.10  2008/04/23 20:22:27  cdunde
-#Minor improvements.
-#
-#Revision 1.9  2008/04/15 11:16:24  cdunde
-#To add main and all sub-folders level processing of texture listing.
-#
-#Revision 1.8  2008/04/11 22:28:48  cdunde
-#To add Doom 3 type game engine support for ConvertTool.
-#
-#Revision 1.7  2008/04/11 18:33:20  cdunde
-#Changed code to try to adapt to proper version writing.
-#
-#Revision 1.6  2008/04/06 06:37:07  cdunde
-#Added file back without version control to stop overwriting of internal code.
-#
-#Revision 1.5  2008/04/06 06:34:00  cdunde
-#Trying to remove file from version control to get into cvs
-#system without overwriting internal file code.
-#
-#Revision 1.4  2008/04/06 06:20:29  cdunde
-#Added making of game Weapon-ModelEntities.qrk file creation to Conversion Tools.
-#
-#Revision 1.3  2008/04/04 20:46:46  cdunde
-#Are you kidding me 8-\
-#
-#Revision 1.2  2008/04/04 20:42:52  cdunde
-#To try and fix their system over writing internal code for logging....nice!
-#
-#Revision 1.1  2008/04/04 20:19:28  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#
-
 import os, sys
 import quarkx
 import quarkpy.qmacro
@@ -659,11 +599,6 @@ def MakeUserDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocatio
         if line.startswith('QQRKSRC1'):
             output.write(line)
             output.write('\n')
-            output.write('//$' + 'Header: Exp $' + '\n')
-            output.write('// ----------- REVISION HISTORY ------------\n')
-            output.write('//$' + 'Log: ' + ('UserData\\040' + gamename + '.qrk') + ',v $' + '\n')
-            output.write('//\n')
-            output.write('\n')
     while 1:
         line = input.readline()
         if line == '':
@@ -947,12 +882,7 @@ def MakeDataFile(root, QuArKpath, gamename, gameenginetype, gamefileslocation,
             break
         if line.startswith('QQRKSRC1'):
             output.write(line)
-            output.write('// ' + gamename + ' definition file for Quark\n')
-            output.write('\n')
-            output.write('//$' + 'Header: Exp $' + '\n')
-            output.write('// ----------- REVISION HISTORY ------------\n')
-            output.write('//$' + 'Log: ' + ('Data' + gamename + '.qrk') + ',v $' + '\n')
-            output.write('//\n')
+            output.write('// ' + gamename + ' definition file for QuArK\n')
             output.write('\n')
     while 1:
         line = input.readline()
@@ -1733,4 +1663,3 @@ def Intro(root):
 text = "Conversion Tool - use this first"
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter(text, None, None, Intro)
-

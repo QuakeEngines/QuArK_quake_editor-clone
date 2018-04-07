@@ -1,18 +1,5 @@
 QQRKSRC1
-// FAKK2 textures file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.3  2008/02/25 22:00:39  cdunde
-//Update
-//
-//Revision 1.2  2008/02/25 21:42:28  cdunde
-//Added version support.
-//
-//Revision 1.1  2008/02/25 20:38:14  cdunde
-//Started game support.
-//
+// FAKK2 textures file for QuArK
 
 {
   QuArKProtected = "1"

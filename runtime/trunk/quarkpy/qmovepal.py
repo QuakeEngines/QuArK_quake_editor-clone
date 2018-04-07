@@ -7,14 +7,11 @@ The Movement Toolbar Palette.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
-
 
 import qtoolbar
 import qmacro
 from qeditor import *
 from qdictionnary import Strings
-
 
 
 def readmpvalues(spec, mode):
@@ -415,83 +412,3 @@ class ToolMoveBar(ToolBar):
 
             return [mdlbtn1, mdlbtn2, mdlbtn3, mdlbtn13, qtoolbar.sep, mdlbtn4, mdlbtn5, mdlbtn6,
               mdlbtn7, mdlbtn8, mdlbtn9, mdlbtn10, mdlbtn11, mdlbtn12, qtoolbar.sep, mdlbtncfg]
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.25  2017/08/30 18:23:35  danielpharos
-#Small cleanup of editor retrieval code.
-#
-#Revision 1.24  2009/06/03 05:16:22  cdunde
-#Over all updating of Model Editor improvements, bones and model importers.
-#
-#Revision 1.23  2009/04/28 21:30:56  cdunde
-#Model Editor Bone Rebuild merge to HEAD.
-#Complete change of bone system.
-#
-#Revision 1.22  2008/12/20 08:39:34  cdunde
-#Minor adjustment to various Model Editor dialogs for recent fix of item over lapping by Dan.
-#
-#Revision 1.21  2008/09/22 23:11:12  cdunde
-#Updates for Model Editor Linear and Bone handles.
-#
-#Revision 1.20  2008/05/01 19:15:24  danielpharos
-#Fix treeviewselchanged not updating.
-#
-#Revision 1.19  2008/05/01 13:52:32  danielpharos
-#Removed a whole bunch of redundant imports and other small fixes.
-#
-#Revision 1.18  2007/10/31 03:47:52  cdunde
-#Infobase button link updates.
-#
-#Revision 1.17  2007/10/24 14:58:12  cdunde
-#To activate all Movement toolbar button functions for the Model Editor.
-#
-#Revision 1.16  2007/10/11 09:57:33  cdunde
-#To separate Map and Model editor's movepal toolbars and config dialogs.
-#
-#Revision 1.15  2007/09/07 23:55:29  cdunde
-#1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
-#     model component from selected Model Mesh faces and remove them from their current component.
-#2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
-#     before the Skin-view is opened at least once in that session.
-#3) Fixed redrawing of handles in areas that hints show once they are gone.
-#
-#Revision 1.14  2007/08/20 19:58:23  cdunde
-#Added Linear Handle to the Model Editor's Skin-view page
-#and setup color selection and drag options for it and other fixes.
-#
-#Revision 1.13  2007/08/01 06:09:24  cdunde
-#Setup variable setting for Model Editor 'Linear Handle (size) Setting' and
-#'Rotation Speed' using the 'cfg' button on the movement toolbar.
-#
-#Revision 1.12  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.9  2004/01/24 16:27:03  cdunde
-#To reset defaults for toolbars
-#
-#Revision 1.8  2003/03/15 20:41:07  cdunde
-#To update hints and add infobase links
-#
-#Revision 1.7  2003/02/14 04:23:11  cdunde
-#To add and update F1 popup info.
-#
-#Revision 1.6  2002/12/27 07:38:02  cdunde
-#Rearranged icons with added help info
-#
-#Revision 1.5  2001/10/22 10:28:20  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.4  2001/06/17 21:05:27  tiglari
-#fix button captions
-#
-#Revision 1.3  2001/06/16 03:20:48  tiglari
-#add Txt="" to separators that need it
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

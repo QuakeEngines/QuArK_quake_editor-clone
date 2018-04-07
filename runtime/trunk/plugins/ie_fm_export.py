@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for Heretic II .fm model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_fm_exporter",
@@ -1094,30 +1090,3 @@ def savemodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".fm Heretic II Exporter", ".fm file", "*.fm", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.7  2011/10/21 19:29:11  cdunde
-# Update for proper GLcommands code processing.
-#
-# Revision 1.6  2011/10/14 05:27:10  cdunde
-# Final, fixed the GLcommands properly.
-#
-# Revision 1.5  2011/10/11 07:19:36  cdunde
-# Update to display full model in game without blowing it up.
-# build_GL_commands section and related functions still not correct, needs work.
-#
-# Revision 1.4  2011/10/02 06:18:31  cdunde
-# To match class names with importer and fix cause of blowing up the game.
-# Model does NOT show up in game but its bounding box works. Need someone to fix this.
-#
-# Revision 1.3  2011/09/28 06:56:54  cdunde
-# Texture naming update.
-#
-# Revision 1.2  2011/09/28 05:29:23  cdunde
-# Comment update.
-#
-# Revision 1.1  2011/09/28 105:15:46  cdunde
-# Added export support for Heretic II static and animation models .fm file type.
-#

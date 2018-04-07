@@ -8,9 +8,6 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Model 4-Views Layout",
    "desc":          "Model 4-views Screen Layouts.",
@@ -318,77 +315,3 @@ class FourViewsLayout2(FourViewsLayout):
 #
 
 LayoutsList.insert(0, FourViewsLayout2)
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.18  2010/12/30 07:19:49  cdunde
-# Additional needed fixes to last changes.
-#
-# Revision 1.17  2010/12/29 21:20:49  cdunde
-# Fix by DanielPharos for 3D view depth causing not being able
-# to select bounding boxes in those type of views sometimes.
-#
-# Revision 1.16  2008/08/21 17:55:14  cdunde
-# To put the imports back at the top.
-#
-# Revision 1.15  2008/08/21 12:04:03  danielpharos
-# Moved import to proper location.
-#
-# Revision 1.14  2008/07/21 02:31:08  cdunde
-# Added 3D view modes to Options menu to allow viewing through objects for scenes.
-#
-# Revision 1.13  2007/12/19 12:41:11  danielpharos
-# Small code clean-up
-#
-# Revision 1.12  2007/12/06 04:57:14  cdunde
-# To stop the progressbars in all of the Model Editors views.
-#
-# Revision 1.11  2007/12/06 00:59:21  danielpharos
-# Fix the OpenGL not always redrawing entirely, and re-enable the progressbars, except for the 3D views in the model editor.
-#
-# Revision 1.10  2007/06/05 22:42:26  cdunde
-# To set the qbaseeditor's global currentview for proper creation and
-# drawing of handles when switching from one layout to another.
-#
-# Revision 1.9  2007/06/05 01:01:16  cdunde
-# To try and stop model editor "loosing" itself when the Skin-view is the currentview and other stuff.
-#
-# Revision 1.8  2007/01/21 19:41:17  cdunde
-# Gave a viewname for all views of the Model Editor
-# to add new Model Editor Views Options button and functions.
-#
-# Revision 1.7  2006/11/30 01:17:48  cdunde
-# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-# Revision 1.6  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.5.2.7  2006/11/04 22:07:58  cdunde
-# *** empty log message ***
-#
-#
-# Revision 1.5.2.6  2006/11/04 14:41:15  cdunde
-# New "viewname" info added and "type" for 3D view but never commented on.
-
-# Revision 1.5.2.6  2006/11/04 00:41:15  cdunde
-# To add a comment to the code about what effects
-# the model editors 3D view pivot method.
-# Previous comment is incorrect.
-# This file has nothing to do with memory leak.
-#
-# Revision 1.5.2.5  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.5  2005/10/15 00:51:56  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

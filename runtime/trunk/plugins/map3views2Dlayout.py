@@ -8,8 +8,6 @@ Modified Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 ### Nurail - Mar 22, 2003 - Modification of map3viewslayout for 2D only views.
 
 
@@ -266,31 +264,3 @@ class ThreeViews2DLayout(MapLayout):
 #
 
 LayoutsList.append(ThreeViews2DLayout)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.6  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.5.2.6  2006/11/01 22:22:43  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.5  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2003/03/24 05:09:51  cdunde
-# To upload the "new and improved" version of the layout. The layout
-# itself seems to work fine, but somewhere in the python code, the
-# auto-centering code might need some work. The views should center on
-# the center of the view being moved, but that's not the case.
-#
-# Revision 1.1  2003/03/24 05:02:48  cdunde
-# To add new 3 view - 2D layout
-#
-# 
-# 

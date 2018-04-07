@@ -8,10 +8,6 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#
-# $Header$
-
-
 Info = {
    "plug-in":       "4-Views Layout (UnrealEd Style)",
    "desc":          "4-views Screen Layouts. (UnrealEd Style)",
@@ -81,10 +77,3 @@ class FourViewsLayoutUEd(FourViewsLayout):
         self.ViewXY.flags = self.ViewXY.flags &~ MV_HSCROLLBAR
         
 LayoutsList.append(FourViewsLayoutUEd)
-
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.1  2001/02/05 20:09:11  aiv
-# Initial Release
-#
-#

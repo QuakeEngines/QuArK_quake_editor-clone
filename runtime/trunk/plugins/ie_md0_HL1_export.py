@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for original Half-Life .mdl model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_md0_HL1_export",
@@ -2782,40 +2778,3 @@ def UIExportDialog(root, filename, editor, comp_group):
     if filename.endswith(".mdl"):
         newfiles_folder = filename.replace(".mdl", "")
     ExportSettingsDlg(form1, root, filename, editor, newfiles_folder, comp_group)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.10  2012/07/21 04:19:54  cdunde
-# File cleanup.
-#
-# Revision 1.9  2012/03/10 10:00:39  cdunde
-# Added texture skin flag support.
-#
-# Revision 1.8  2012/03/04 00:02:32  cdunde
-# DanielPharos code for normals and dialog settings.
-#
-# Revision 1.7  2012/03/03 07:26:35  cdunde
-# Sync 2. Rearranged files and names to coincide better.
-#
-# Revision 1.6  2012/02/25 23:52:08  cdunde
-# Fixes by DanielPharos for correct skin texture matching to components.
-#
-# Revision 1.5  2012/02/18 23:11:19  cdunde
-# Code by DanielPharos, final fix for correct exported animations.
-#
-# Revision 1.4  2012/02/12 03:40:56  cdunde
-# Code by DanielPharos to export animations.
-#
-# Revision 1.3  2012/01/30 03:15:06  cdunde
-# Fix by DanielPharos to correctly position vertexes of the meshes with their 'baseframe' bones.
-#
-# Revision 1.2  2012/01/11 19:25:45  cdunde
-# To remove underscore lines from folder and model names then combine them with one
-# underscore line at the end for proper editor functions separation capabilities later.
-#
-# Revision 1.1  2011/12/23 22:33:43  cdunde
-# Added export support for Half-Life 1 static and animation models with bones .mdl file types.
-# Still needs work, see TODO NOTES at top of file.
-#
-#

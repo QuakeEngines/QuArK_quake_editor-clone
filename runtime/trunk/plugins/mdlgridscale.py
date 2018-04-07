@@ -10,9 +10,6 @@ Map editor views, grid scale numbering feature.
 
 #py2.4 indicates upgrade change for python 2.4
 
-
-#$Header$
-
 Info = {
    "plug-in":       "Display grid scale",
    "desc":          "Displays the grid scale in the 2D viewing windows. Activate from the 'Options' menu",
@@ -665,59 +662,3 @@ def ViewAmendMenu1click(m):
 
 
 GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1click, "|Grid scale in 2D views:\n\nThese functions allow you to display a scale of the current grid setting in any one, combination, or all of the 2D views of the Editor.", "intro.modeleditor.menu.html#optionsmenu")]
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.18  2008/10/07 21:17:17  danielpharos
-#Fixed a typo.
-#
-#Revision 1.17  2008/07/15 23:16:27  cdunde
-#To correct typo error from MldOption to MdlOption in all files.
-#
-#Revision 1.16  2008/07/14 18:52:51  cdunde
-#To stop errors when grid is turned off.
-#
-#Revision 1.15  2008/02/22 09:52:22  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.14  2007/11/29 16:34:35  danielpharos
-#Prevent some model editor functions from triggering in the map editor. This should fix some errors that that popped-up when switching from the model editor to the map editor.
-#
-#Revision 1.13  2007/10/31 03:47:52  cdunde
-#Infobase button link updates.
-#
-#Revision 1.12  2007/10/25 21:18:17  cdunde
-#To stop lagging of redraws during 2D view panning drags.
-#
-#Revision 1.11  2007/10/08 16:20:20  cdunde
-#To improve Model Editor rulers and Quick Object Makers working with other functions.
-#
-#Revision 1.10  2007/10/06 20:14:31  cdunde
-#Added function option to just update the editors 2D views.
-#
-#Revision 1.9  2007/09/16 00:38:46  cdunde
-#Fixed both editors from not drawing gridscale and ruler when grid is inactive.
-#
-#Revision 1.8  2007/09/01 19:36:40  cdunde
-#Added editor views rectangle selection for model mesh faces when in that Linear handle mode.
-#Changed selected face outline drawing method to greatly increase drawing speed.
-#
-#Revision 1.7  2007/06/03 23:43:30  cdunde
-#To draw model mesh selected faces for all actions in 2D views and some for 3D views.
-#
-#Revision 1.6  2007/05/17 23:56:54  cdunde
-#Fixed model mesh drag guide lines not always displaying during a drag.
-#Fixed gridscale to display in all 2D view(s) during pan (scroll) or drag.
-#General code proper rearrangement and cleanup.
-#
-#Revision 1.5  2007/05/16 20:59:02  cdunde
-#To remove unused argument for the mdleditor paintframefill function.
-#
-#Revision 1.4  2007/05/16 19:56:30  cdunde
-#Added the 2D views gridscale function to the Model Editors Options menu.
-#
-#
-#

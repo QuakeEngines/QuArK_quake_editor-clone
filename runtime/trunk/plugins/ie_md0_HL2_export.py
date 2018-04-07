@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,8 +9,6 @@ QuArK Model Editor exporter for original Half-Life 2 .mdl model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
 
 """
 I started the HL2 Exporter by simply coping the HL1 Exporter so there is a lot of HL1 stuff
@@ -3410,13 +3407,3 @@ def DialogClick(MDL_DLG, editor, filename, ComponentList, folder_name):
 def UIAnimDialog(MDL_DLG, editor, filename, ComponentList, folder_name):
     # Sets up the new window form for the animation dialog for user selection of frames to export and calls its class.
     DialogClick(MDL_DLG, editor, filename, ComponentList, folder_name)
-
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.1  2013/05/30 07:58:11  cdunde
-# To start HL2 model exporter.
-#
-#

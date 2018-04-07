@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for MoHAA .skc and .skd model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_skd_importer",
@@ -1761,91 +1757,3 @@ import quarkpy.qmdlbase
 import ie_skd_import # This imports itself to be passed along so it can be used in mdlmgr.py later.
 quarkpy.qmdlbase.RegisterMdlImporter(".skc MOHAA Importer-anim", ".skc file", "*.skc", loadmodel)
 quarkpy.qmdlbase.RegisterMdlImporter(".skd MOHAA Importer-mesh", ".skd file", "*.skd", loadmodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.26  2012/01/04 04:59:19  cdunde
-# New method to stop need of loading mesh file every time an animation file is loaded.
-# Speeds up animation loading and avoids overwriting editing that has already taken place.
-#
-# Revision 1.25  2012/01/03 08:42:22  cdunde
-# Setup progressbars.
-#
-# Revision 1.24  2012/01/03 07:18:37  cdunde
-# Minor file comments and variable name change for consistency.
-#
-# Revision 1.23  2012/01/02 03:59:26  cdunde
-# To set new bones with non-rotating matrix.
-#
-# Revision 1.22  2012/01/01 06:29:55  cdunde
-# Fixed improper setting.
-#
-# Revision 1.21  2012/01/01 06:11:28  cdunde
-# To ensure proper 'baseframe:mf' selection.
-#
-# Revision 1.20  2011/12/28 08:28:22  cdunde
-# Setup importer bone['type'] not done yet.
-#
-# Revision 1.19  2011/12/25 09:19:04  cdunde
-# Variable name change.
-#
-# Revision 1.18  2011/12/23 07:17:09  cdunde
-# Texture handling update.
-#
-# Revision 1.17  2011/12/23 03:15:18  cdunde
-# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
-# Those should be kept with the individual bones if we decide it is needed.
-#
-# Revision 1.16  2011/12/11 03:58:44  cdunde
-# Removed unused code.
-#
-# Revision 1.15  2011/12/02 06:36:20  cdunde
-# Stopped sorting of skd component importing.
-# Throws them out of sequence with skc animation component importing.
-#
-# Revision 1.14  2011/12/01 07:00:11  cdunde
-# Update and remove unused code.
-#
-# Revision 1.13  2011/11/24 02:38:15  cdunde
-# File cleanup and corrections.
-#
-# Revision 1.12  2011/05/11 04:15:09  cdunde
-# To fix typo error.
-#
-# Revision 1.11  2011/05/11 04:04:48  cdunde
-# Primarily to correct joint_type comments at top of file and some cleanup.
-#
-# Revision 1.10  2011/05/10 20:12:22  cdunde
-# Final code corrections for animation.
-#
-# Revision 1.9  2011/05/08 06:08:38  cdunde
-# Update for MoHAA animation importing.
-#
-# Revision 1.8  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.7  2011/03/12 19:19:46  danielpharos
-# Fixed small mistake introduced when commenting out print-statements.
-#
-# Revision 1.6  2011/03/10 20:58:25  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-# Updated MOHAA mesh and animation support.
-#
-# Revision 1.5  2010/12/10 02:23:26  cdunde
-# Final animation fixes and file cleanup.
-#
-# Revision 1.4  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.3  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.2  2010/08/28 05:46:53  cdunde
-# Development update, added channels list and data.
-#
-# Revision 1.1  2010/08/27 19:35:05  cdunde
-# Setup importer for MoHAA .skd and .skc models (static and animated) with bone and skin support.
-#
-#

@@ -3,10 +3,6 @@
 Python macros available for direct call by QuArK
 """
 
-#
-#$Header$
-#
-
 import time, sys
 from quarkpy.qutils import *
 
@@ -696,47 +692,3 @@ def makeqrk(root, filename, gamename, nomessage=0):
 
 import quarkpy.qentbase
 quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def file", "*.def", makeqrk)
-
-#
-#$Log$
-#Revision 1.13  2009/10/15 16:58:48  danielpharos
-#Try to parse entity.def comments to find keys.
-#
-#Revision 1.12  2009/02/11 15:39:07  danielpharos
-#Updated link to forum.
-#
-#Revision 1.11  2008/04/04 20:19:30  cdunde
-#Added a new Conversion Tools for making game support QuArK .qrk files.
-#
-#Revision 1.10  2008/03/19 06:05:16  cdunde
-#Added character to CHARS_ALFABETIC items
-#to stop spawnflags name from being spit up incorrectly.
-#
-#Revision 1.9  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.6  2003/12/17 13:58:59  peter-b
-#- Rewrote defines for setting Python version
-#- Removed back-compatibility with Python 1.5
-#- Removed reliance on external string library from Python scripts
-#
-#Revision 1.5  2003/06/21 14:46:22  nerdiii
-#I modified the .def importer to work around three bugs:
-#1. {...} entries are ignored now, caused parse errors before
-#2. tokens starting with a digit such as '1st_left' are no longer treated as
-#a number
-#3. some entities have unused flags, that are named '?' in QERadiant. The
-#importer used to interpret them as special characters.
-#
-#Revision 1.4  2002/04/17 12:32:20  decker_dk
-#Minor problem, which caused it to not convert the MOHAA .DEF file correctly.
-#
-#Revision 1.3  2002/02/05 18:32:58  decker_dk
-#Corrected a problem with debug() calls
-#
-#Revision 1.2  2001/12/02 09:57:45  decker_dk
-#Removing 'os' from the import list, and some other minor fixes.
-#
-#Revision 1.1  2001/10/05 17:56:42  decker_dk
-#Created QERadiant .DEF file to .QRK file converter.
-#

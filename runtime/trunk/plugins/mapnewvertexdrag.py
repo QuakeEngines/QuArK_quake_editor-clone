@@ -8,8 +8,6 @@ Start of plugin for advance vertex-dragging
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Advanced vertex dragging",
    "desc":          "Advanced vertex dragging",
@@ -111,8 +109,3 @@ def newvertexdrag(self, v1, v2, flags, view, oldvertexdrag=oldvertexdrag):
 # now set the function as a replacement for the original method
 #
 quarkpy.maphandles.VertexHandle.drag = newvertexdrag
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#
-

@@ -7,8 +7,6 @@ Routines to execute Quake, Hexen II, or Quake 2
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-#$Header$
-
 
 import quarkx
 from qdictionnary import Strings
@@ -189,80 +187,3 @@ class GameConsole(BatchConsole):
             del self.filelistdata
         except:
             pass
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.26  2017/08/17 15:49:01  danielpharos
-#Fixed the bad PAK file output, which was broken in 6.6.0 Beta 2.
-#
-#Revision 1.25  2008/10/08 21:42:12  danielpharos
-#Made map extension changable.
-#
-#Revision 1.24  2008/09/29 23:16:38  danielpharos
-#Resolve-code: Another fix. This should get Steam-games compiling and running again.
-#
-#Revision 1.23  2008/09/29 22:41:06  danielpharos
-#Fixed for file resolving code. Fixes Steam-games.
-#
-#Revision 1.22  2008/09/29 22:01:56  danielpharos
-#Update to filename resolving code. Needs more testing, but should work.
-#
-#Revision 1.21  2008/09/29 21:08:55  danielpharos
-#Update filename resolving code. Still untested.
-#
-#Revision 1.20  2008/09/27 12:08:58  danielpharos
-#Added Steam %-replace texts. Still experimentally.
-#
-#Revision 1.19  2008/09/26 20:08:46  danielpharos
-#Small changes to path-code, to make it more consistent.
-#
-#Revision 1.18  2008/09/26 19:39:14  danielpharos
-#Removed redundant call.
-#
-#Revision 1.17  2008/09/26 19:38:22  danielpharos
-#Removed empty parameter option for outputfile().
-#
-#Revision 1.16  2008/05/27 19:32:58  danielpharos
-#Removed redundant code
-#
-#Revision 1.15  2007/08/21 10:26:35  danielpharos
-#Small changes to let HL2 build again.
-#
-#Revision 1.14  2007/03/22 22:27:31  danielpharos
-#Fixed a typo.
-#
-#Revision 1.13  2006/11/30 01:19:33  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.12  2006/11/29 07:00:26  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.11.2.2  2006/11/01 22:22:42  danielpharos
-#BackUp 1 November 2006
-#Mainly reduce OpenGL memory leak
-#
-#Revision 1.11  2006/05/07 07:02:07  rowdy
-#Added a rough hack to allow %file% type substitution in the '<game> command-line' option.  Also added %filename% parameter that is replaced with the map filename (without path, without extension).
-#
-#Revision 1.10  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.7  2003/12/17 13:58:59  peter-b
-#- Rewrote defines for setting Python version
-#- Removed back-compatibility with Python 1.5
-#- Removed reliance on external string library from Python scripts
-#
-#Revision 1.6  2001/07/08 20:56:30  tiglari
-#fix crash when ExtraCMDLine=""
-#
-#Revision 1.5  2001/06/21 17:34:12  decker_dk
-#quarkx.openconfigdlg()
-#
-#Revision 1.4  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

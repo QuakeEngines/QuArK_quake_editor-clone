@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for StL model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_stl_importer",
@@ -286,20 +282,3 @@ def loadmodel(root, filename, gamename, nomessage=0):
 import quarkpy.qmdlbase
 import ie_stl_import # This imports itself to be passed along so it can be used in mdlmgr.py later for the Specifics page.
 quarkpy.qmdlbase.RegisterMdlImporter(".StL Importer", ".StL file", "*.stl", loadmodel, ie_stl_import)
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.4  2016/01/16 19:18:59  danielpharos
-# Fixed an error on import directly from the Model Editor.
-#
-# Revision 1.3  2015/09/20 12:59:58  danielpharos
-# Added a missing import statement.
-#
-# Revision 1.2  2015/04/11 16:05:28  danielpharos
-# Added binary StL importing.
-#
-# Revision 1.1  2015/01/11 14:26:07  danielpharos
-# Added experimental StL model importing (ASCII format only).
-#

@@ -1,17 +1,6 @@
 QQRKSRC1
 // SOFTextures.qrk textures file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/05/14 20:38:56  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.1  2008/03/28 19:12:46  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
-
 {
   QuArKProtected = "1"
   Description = "SOFTextures.qrk"

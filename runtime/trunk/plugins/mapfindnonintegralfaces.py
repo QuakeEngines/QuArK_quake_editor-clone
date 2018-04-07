@@ -23,10 +23,6 @@ Puts Integralize Faces command on commands menu; this forces very close threepoi
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Find & fix non-integral faces",
    "desc":          "finds faces that don't have three integral threepoints or vertices, tries to fix them",
@@ -178,29 +174,3 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Non-integral Faces', findNonInt
 
 quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integralizeFaces,
  "|Integralize Selected Faces:\n\nIf faces without integral threepoints have enough integral vertices to be used as threepoints, changes the face to use them (also forces nearly integral ones).\n\nSelects the ones it changes, for checking.\n\nUse Find Non-integral Faces on the search menu to find suitable victims.\n\nResearch and fix the remaining ones by hand.|intro.mapeditor.menu.html#orientation"))
-
-
-
-
-
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.9  2009/07/22 09:46:46  danielpharos
-# Added missing import statement.
-#
-# Revision 1.8  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.5  2003/03/24 08:57:15  cdunde
-# To update info and link to infobase
-#
-# Revision 1.4  2003/03/21 06:28:52  cdunde
-# To correct typo error
-#
-# Revision 1.2  2003/01/02 22:36:26  tiglari
-# transferred from rel-c63a branch
-#
-# Revision 1.1.2.1  2003/01/01 06:54:10  tiglari
-# added to 6.3 in spite of feature-freeze, due to importance
-#
-#

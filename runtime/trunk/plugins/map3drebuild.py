@@ -8,8 +8,6 @@ Plug-in which rebuild all views.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Rebuild 3D views",
    "desc":          "Rebuilds 3D view to try and clear lockups",
@@ -38,24 +36,3 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishd
   #  if not MapOption("Rebuild3D"):return
 
 quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
-
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.7  2015/01/09 20:08:45  danielpharos
-#Changed default hotkey of Rebuild3D to a more conventional one.
-#
-#Revision 1.6  2008/02/22 09:52:22  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.5  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.2  2005/03/19 00:36:33  cdunde
-#Took out return item to make more responsive
-#
-#Revision 1.1  2004/02/12 18:17:39  cdunde
-#To add 'Tab' HotKey function to rebuild all views and clear lockups
-#
-#

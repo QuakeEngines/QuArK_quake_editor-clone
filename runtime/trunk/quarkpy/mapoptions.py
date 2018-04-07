@@ -8,15 +8,10 @@ Implementation of QuArK Map editor's "Options" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 import quarkx
 from qdictionnary import Strings
 from maputils import *
 import qmenu
-
 
 
 def ToggleOption(item):
@@ -262,59 +257,3 @@ def OptionsMenu():
     Config1 = qmenu.item("Confi&guration...", Config1Click,  hint = "|Configuration...:\n\nThis leads to the Configuration-Window where all elements of QuArK are setup. From the way the Editor looks and operates to Specific Game Configuration and Mapping or Modeling variables.\n\nBy pressing the F1 key one more time, or clicking the 'InfoBase' button below, you will be taken directly to the Infobase section that covers all of these areas, which can greatly assist you in setting up QuArK for a particular game you wish to map or model for.|intro.configuration.html")
     Options1 = qmenu.popup("&Options", items+[qmenu.sep, PlugIns, Config1, qmenu.sep, consolelog, clearconsolelog], Options1Click)
     return Options1, shortcuts
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.18  2008/12/03 08:37:13  cdunde
-#Added functions for console logging and clearing of that log to the options menu.
-#
-#Revision 1.17  2007/12/21 22:47:37  cdunde
-#To avoid unneeded reloadsetup for Duplicators for faster and better redraws.
-#
-#Revision 1.16  2007/12/21 20:39:23  cdunde
-#Added new Templates functions and Templates.
-#
-#Revision 1.15  2007/12/14 21:48:00  cdunde
-#Added many new beizer shapes and functions developed by our friends in Russia,
-#the Shine team, Nazar and vodkins.
-#
-#Revision 1.14  2006/05/01 05:34:32  cdunde
-#To link Configuration menu item directly to its Infobase section.
-#
-#Revision 1.13  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.10  2003/12/17 13:58:59  peter-b
-#- Rewrote defines for setting Python version
-#- Removed back-compatibility with Python 1.5
-#- Removed reliance on external string library from Python scripts
-#
-#Revision 1.9  2003/03/28 02:55:24  cdunde
-#To update info and add infobase links.
-#
-#Revision 1.8  2003/03/24 10:36:57  tiglari
-#remove debug statement
-#
-#Revision 1.7  2003/03/23 07:30:13  tiglari
-#add getThinLineThickness function (1 unit less that ordinary line)
-#
-#Revision 1.6  2003/03/23 06:30:19  tiglari
-#change close to cancel button in linethickness dlg to fix error
-# noted by cdunde
-#
-#Revision 1.5  2003/03/21 10:56:08  tiglari
-#support for line-thickness specified by mapoption
-#
-#Revision 1.4  2001/08/28 22:43:54  tiglari
-#'Adjust angles automatically' renamed to `Quantize angles'
-#
-#Revision 1.3  2001/04/01 06:50:33  tiglari
-#don't recenter threepoints option added
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

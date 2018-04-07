@@ -8,9 +8,6 @@ Various Model importer\exporter utility functions.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import os, os.path, time, operator
 import quarkx
 import quarkpy.qutils
@@ -307,50 +304,3 @@ def NicePrintableFloat(amt):
     amt = amt.rstrip("0")
     amt = amt.rstrip(".")
     return amt
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.12  2010/11/09 05:48:10  cdunde
-#To reverse previous changes, some to be reinstated after next release.
-#
-#Revision 1.11  2010/11/06 13:31:04  danielpharos
-#Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-#Revision 1.10  2010/03/07 09:46:31  cdunde
-#Added new function for converting floats into nice printable strings.
-#
-#Revision 1.9  2009/08/01 05:31:13  cdunde
-#Update.
-#
-#Revision 1.8  2008/07/29 02:21:08  cdunde
-#Fixed comment typo error.
-#
-#Revision 1.7  2008/07/27 19:28:49  cdunde
-#Comment update.
-#
-#Revision 1.6  2008/07/21 18:06:14  cdunde
-#Moved all the start and end logging code to ie_utils.py in two functions,
-#"default_start_logging" and "default_end_logging" for easer use and consistency.
-#Also added logging and progress bars where needed and cleaned up files.
-#
-#Revision 1.5  2008/07/17 00:49:49  cdunde
-#Fixed proper switching of logging options during the same session of QuArK.
-#
-#Revision 1.4  2008/06/17 20:39:13  cdunde
-#To add lwo model importer, uv's still not correct though.
-#Also added model import\export logging options for file types.
-#
-#Revision 1.3  2008/06/16 00:11:46  cdunde
-#Made importer\exporter logging corrections to work with others
-#and started logging function for md2 model importer.
-#
-#Revision 1.2  2008/06/15 02:41:21  cdunde
-#Moved importer\exporter logging to utils file for global use.
-#
-#Revision 1.1  2008/06/14 07:52:15  cdunde
-#Started model importer exporter utilities file.
-#
-#

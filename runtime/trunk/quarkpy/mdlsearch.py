@@ -8,9 +8,6 @@ Base of the Model editor "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import quarkx
 import qutils
 from qeditor import *
@@ -886,38 +883,3 @@ MapHotKeyList("EditorNextShot", EditorNextShot, shortcuts)
 MapHotKeyList("EditorPrevShot", EditorPrevShot, shortcuts)
 MapHotKeyList("Full3DNextShot", WindowNextShot, shortcuts)
 MapHotKeyList("Full3DPrevShot", WindowPrevShot, shortcuts)
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.9  2017/06/23 19:13:06  danielpharos
-#Removed unneeded variable declaration.
-#
-#Revision 1.8  2015/09/20 13:00:51  danielpharos
-#Added a missing import statement.
-#
-#Revision 1.7  2011/03/27 22:26:25  cdunde
-#InfoBase and links update.
-#
-#Revision 1.6  2011/03/26 23:35:16  cdunde
-#Updated Model Editor Camera Position system with Hotkeys to take quick shots of both Editor and Floating 3D views,
-#kept in separate folders for both Standard modes and True3D modes with Hotkeys to scroll through those shots.
-#
-#Revision 1.5  2011/03/16 05:43:31  cdunde
-#Added F5 Hotkey function for making Model Editor 3D camera positions.
-#
-#Revision 1.4  2011/03/15 08:25:46  cdunde
-#Added cameraview saving duplicators and search systems, like in the Map Editor, to the Model Editor.
-#
-#Revision 1.3  2009/07/14 00:27:33  cdunde
-#Completely revamped Model Editor vertex Linear draglines system,
-#increasing its reaction and drawing time to twenty times faster.
-#
-#Revision 1.2  2009/06/22 22:14:06  cdunde
-#Search functions update.
-#
-#Revision 1.1  2009/06/03 05:33:45  cdunde
-#Over all updating of Model Editor improvements, bones and model importers.
-#
-#
-#

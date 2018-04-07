@@ -2,41 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.5 alpha
 // It's the text version of file: DataQ4.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.14  2008/03/28 19:10:43  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//Revision 1.13  2008/02/27 00:27:05  danielpharos
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.12  2007/12/26 06:02:03  cdunde
-//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
-//
-//Revision 1.11  2007/12/14 21:48:03  cdunde
-//Added many new beizer shapes and functions developed by our friends in Russia,
-//the Shine team, Nazar and vodkins.
-//
-//Revision 1.10  2007/04/04 16:05:40  danielpharos
-//Added a missing form, renamed targetname to name and added model for brushables.
-//
-//Revision 1.9  2007/03/29 15:27:29  danielpharos
-//All triggers and funcs can now hold brushes.
-//
-//Revision 1.8  2006/10/23 00:52:58  cdunde
-//Final update to add all Help and Hint data as well as
-//entity Specifics missed during its creation.
-//
-//Revision 1.7  2006/10/12 07:14:04  cdunde
-//To arrange entities in alphabetical order.
-//
-//Revision 1.6  2006/10/12 07:06:39  cdunde
-//To add .md3 model display support and start file version log.
-//
-//
-
-
 {
   QuArKProtected = "1"
   Description = "Base Quake 4 data"

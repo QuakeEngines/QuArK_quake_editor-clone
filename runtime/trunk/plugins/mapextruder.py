@@ -8,8 +8,6 @@
 #  This plugin adapted from mapextruder.py, with permission
 #    of CryTek Studios.
 #
-#$Header$
-
 
 Info = {
    "plug-in":       "Extruder",
@@ -2919,72 +2917,3 @@ def RadialExtrudeClick(btn):
 def ExtrudeClick(btn):
   apply(btn.dlg, (btn.window, 'extrude', btn.editor, btn.olist))
   btn.editor.layout.new2dwin.close()
-
-
-#$Log$
-#Revision 1.30  2008/08/18 20:36:11  danielpharos
-#Fix typo
-#
-#Revision 1.29  2008/02/22 09:52:22  danielpharos
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.28  2006/10/27 06:14:00  cdunde
-#Fixed extruder 2D view to Unrestricted other items when view is closed.
-#
-#Revision 1.27  2006/06/02 18:48:02  cdunde
-#To fix a couple of erroneous console errors.
-#
-#Revision 1.26  2006/05/28 08:45:02  cdunde
-#Fixed editor not defined error in mapmadsel.py file and
-#needed to comment out def restore(self) in mapextruder.py
-#to stop error message. No errors occurred when editor was
-#closed with the extruder 2D window open.
-#
-#Revision 1.25  2005/11/21 06:26:40  cdunde
-#Changed invalid file extension also causing errors
-#
-#Revision 1.24  2005/11/21 06:07:14  cdunde
-#Never could find any module or function that have
-#now been commented out. Used best guess as to
-#closest related function.
-#
-#Revision 1.23  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.16  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.15  2003/09/18 02:55:16  cdunde
-#to fix dialog sep
-#
-#Revision 1.14  2002/05/18 22:38:31  tiglari
-#remove debug statement
-#
-#Revision 1.13  2001/07/09 09:49:41  tiglari
-#eliminate sidehandle in favor of using qedtor.orthogonalvect()
-#
-#Revision 1.12  2001/07/08 00:27:35  tiglari
-#'short' specific; fix angle-to-next and path-point dialog bugs
-#
-#Revision 1.11  2001/06/17 21:10:57  tiglari
-#fix button captions
-#
-#Revision 1.10  2001/06/17 02:25:39  tiglari
-#revert to dup change
-#
-#Revision 1.9  2001/05/22 22:14:38  tiglari
-#texture info built on reversion to dup from dissociated group.  Alignment still wonky
-#
-#Revision 1.8  2001/05/13 02:59:48  tiglari
-#caulk hidden joins
-#
-#Revision 1.7  2001/05/06 10:16:32  tiglari
-#changes to get revert to dup working, hole punching on dup RMB
-# as well as former-dup-group RMB
-#
-#Revision 1.6  2001/05/05 10:02:11  tiglari
-#patch mode supported for extruder
-#
-#Revision 1.5  2001/05/04 23:07:31  tiglari
-#fix log
-#

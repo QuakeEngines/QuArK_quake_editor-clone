@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor exporter for MoHAA (.skc and .skd) animations and mesh model 
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_skd_exporter",
@@ -1497,60 +1493,3 @@ def savemodel(root, filename, gamename):
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".skc MOHAA Exporter-anim", ".skc file", "*.skc", savemodel)
 quarkpy.qmdlbase.RegisterMdlExporter(".skd MOHAA Exporter-mesh", ".skd file", "*.skd", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.16  2017/06/23 19:25:41  danielpharos
-# Replaced a whole bunch of magic constants with their proper variable.
-#
-# Revision 1.15  2015/01/09 20:22:27  danielpharos
-# Typo fixes.
-#
-# Revision 1.14  2013/02/20 05:19:41  cdunde
-# Fix for sometimes incorrect skinsize being used.
-#
-# Revision 1.13  2012/01/13 07:50:21  cdunde
-# Change to get away from relying on ModelFolder for exporting models.
-#
-# Revision 1.12  2012/01/09 07:29:37  cdunde
-# To get MoHAA skd_exporter to work with Half-Life 1 HL1_importer models.
-#
-# Revision 1.11  2012/01/08 23:54:10  cdunde
-# Fix by DanielPharos for handling identical vertex_indexes with different U,V coords.
-#
-# Revision 1.10  2012/01/07 02:09:42  cdunde
-# To enhance working with Quake4 md5 models.
-#
-# Revision 1.9  2012/01/04 21:25:30  cdunde
-# Added check for needed baseframe.
-#
-# Revision 1.8  2012/01/04 04:53:39  cdunde
-# To get MoHAA skd_exporter to work with Doom3 & Quake4 md5_importer models.
-#
-# Revision 1.7  2012/01/03 00:14:09  cdunde
-# Update to export mesh and animation files without use of original mesh file
-# to setup for model full editing abilities, add & remove bones, faces & vertices
-# and also work with original files if no editing is done.
-#
-# Revision 1.6  2012/01/02 04:00:36  cdunde
-# Update to get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
-#
-# Revision 1.5  2011/12/23 22:36:31  cdunde
-# To get MoHAA skd_exporter to work with Alice, FAKK2 & EF2 skb_importer models.
-#
-# Revision 1.4  2011/12/16 08:52:26  cdunde
-# To start getting the skb_import and skd_export working together, still needs work.
-#
-# Revision 1.3  2011/12/11 04:01:57  cdunde
-# Completed support for skdJointType 5 & 6 anim.
-# Fixed components exported without any skins.
-#
-# Revision 1.2  2011/12/10 02:43:22  cdunde
-# Update & corrections for skdJointType 0-4, mesh & anim work perfect.
-# Added support for skdJointType 5 & 6, mesh fine but anim needs work.
-#
-# Revision 1.1  2011/12/01 06:08:54  cdunde
-# Added export support for MoHAA static and animation models .skd and .skc file types.
-#
-#

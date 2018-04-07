@@ -1,34 +1,5 @@
 QQRKSRC1
-// Doom 3 definition file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.14  2008/04/07 20:40:30  cdunde
-//Added missing setting.
-//
-//Revision 1.13  2008/03/28 19:05:06  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//Revision 1.12  2008/03/25 16:22:56  cdunde
-//Minor file cleanup.
-//
-//Revision 1.11  2008/03/25 09:14:45  cdunde
-//To break down Doom3 file to separate files.
-//
-//Revision 1.10  2008/03/16 23:59:18  cdunde
-//An entity update to get it to work.
-//
-//Revision 1.9  2008/02/27 00:25:12  danielpharos
-//Fix the contextual help files not being found anymore
-//
-//Revision 1.8  2007/12/26 06:01:46  cdunde
-//Setup of a full beizer library with over 30 prefab beizer to work with for games that can use beziers.
-//
-//Revision 1.7  2007/12/15 19:05:48  danielpharos
-//To reinstate headers and history
-//
-//
+// Doom 3 definition file for QuArK
 
 {
   QuArKProtected = "1"

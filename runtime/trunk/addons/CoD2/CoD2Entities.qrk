@@ -1,9 +1,5 @@
 QQRKSRC1
-// CoD2 Entities file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
+// CoD2 Entities file for QuArK
 
 {
   QuArKProtected = "1"

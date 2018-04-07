@@ -1,12 +1,7 @@
 QQRKSRC1
-// EF2 Weapon and Model Entities file for Quark
+// EF2 Weapon and Model Entities file for QuArK
 // Created from EF2 game .lst files
 // using the Weapon-ModelEntities.py generic game setup file.
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
 
 {
   QuArKProtected = "1"

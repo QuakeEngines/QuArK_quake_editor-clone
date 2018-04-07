@@ -8,10 +8,6 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "4-Views Layout",
    "desc":          "4-views Screen Layouts.",
@@ -352,30 +348,3 @@ class FourViewsLayout2(FourViewsLayout):
 
 LayoutsList.append(FourViewsLayout1)
 LayoutsList.append(FourViewsLayout2)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.7  2006/11/29 06:58:35  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.6.2.5  2006/11/01 22:22:42  danielpharos
-# BackUp 1 November 2006
-# Mainly reduce OpenGL memory leak
-#
-# Revision 1.6  2005/10/17 21:27:35  cdunde
-# To add new key word "viewname" to all 3D views for easier
-# detection and control of those views and Infobase documentation.
-#
-# Revision 1.5  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-#
-#
-#

@@ -7,9 +7,6 @@
 #
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Heretic_II Arrow Extensions",
    "desc":          "Displays axis for rotating entities",
@@ -72,9 +69,3 @@ class Heretic_IIDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "Heretic II": Heretic_IIDrawEntityLines()
 })
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#

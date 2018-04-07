@@ -1,14 +1,6 @@
 QQRKSRC1
 // Warsow textures file for Quark
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/04/23 20:51:46  cdunde
-//Setup for Warsow with .md3 model support.
-//
-//
-
 {
   QuArKProtected = "1"
   Description = "Warsow Textures"

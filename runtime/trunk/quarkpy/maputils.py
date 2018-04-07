@@ -8,14 +8,10 @@ Various Map editor utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import quarkx
 import qtoolbar
 from qeditor import *
 from qdictionnary import Strings
-
 
 
 #
@@ -362,97 +358,3 @@ def warpedCircleFrom4Points(n, points):
         mat = matrix_u_v(corner[1], corner[2])
         circle.append(corner[0]+mat*point)
     return circle    
-    
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.32  2017/06/23 20:30:33  danielpharos
-#Removed old commented out deprecated function.
-#
-#Revision 1.31  2017/06/23 20:29:14  danielpharos
-#Moved cycle utility functions into the only plugin that is using them.
-#
-#Revision 1.30  2015/09/20 13:00:28  danielpharos
-#Added a missing import statement.
-#
-#Revision 1.29  2011/03/13 00:41:47  cdunde
-#Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-#Revision 1.28  2008/11/17 19:10:23  danielpharos
-#Centralized and fixed BSP file detection.
-#
-#Revision 1.27  2008/05/27 19:35:02  danielpharos
-#Fix typo
-#
-#Revision 1.26  2008/02/07 13:19:07  danielpharos
-#Fix typo in comment
-#
-#Revision 1.25  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.22  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.21  2001/10/22 10:24:32  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.19  2001/06/09 22:35:12  tiglari
-#add warpec circle routine
-#
-#Revision 1.18  2001/05/13 01:07:58  tiglari
-#disable buildLinearMapping, add CaulkTexture()
-#
-#Revision 1.17  2001/05/12 18:59:56  tiglari
-#remove buildLinearMatrix
-#
-#Revision 1.16  2001/05/06 10:15:32  tiglari
-#readNvec function, for arbitrary lenth string to tuple
-#
-#Revision 1.15  2001/05/06 06:02:19  tiglari
-#Support angles Typ E in buildLinearMatrix (so that angles handle will work)
-#
-#Revision 1.14  2001/04/17 23:29:07  tiglari
-#texture-rescaling bug fix (fixedscale="1" added to objects when they're
-#dragged to the panel, removed when inserted to the map, blocks
-#rescaling of textures on insert-by-pressing-panel-button
-#
-#Revision 1.13  2001/04/05 22:31:12  tiglari
-#buildLinearMatrix now checks matrix not linear
-#
-#Revision 1.12  2001/03/29 09:27:58  tiglari
-#scale & rotate specifics for duplicators
-#
-#Revision 1.11  2001/03/20 07:58:40  tiglari
-#customizable hot key support
-#
-#Revision 1.10  2001/03/18 23:59:44  tiglari
-#experimental merge
-#
-#
-#Revision 1.9  2001/03/12 23:08:57  tiglari
-#read2vec for path dup enhancements
-#
-#Revision 1.8  2001/03/04 06:41:15  tiglari
-#arbitrary axis rot matrix-producer added
-#
-#Revision 1.7  2001/02/14 11:04:36  tiglari
-#shifted some texture positioning utils in from maptexpin
-#
-#Revision 1.6  2000/09/04 21:27:56  tiglari
-#added 2d line intersection finder, vectors->matrix utility
-#
-#Revision 1.5  2000/08/21 11:25:16  tiglari
-#added projectpointtoplane (from plugins.maptagside)
-#
-#Revision 1.4  2000/07/29 02:04:54  tiglari
-#added cyclenext, cycleprev
-#
-#Revision 1.3  2000/07/24 09:06:56  tiglari
-#findlabelled added for finding items on menus (for face/texture revamp)
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

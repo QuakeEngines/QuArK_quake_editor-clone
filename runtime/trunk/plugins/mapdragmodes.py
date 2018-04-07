@@ -8,10 +8,6 @@ Additional mouse dragging modes (entity selecter, brush cutter, cube maker)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Mouse Drag Modes",
    "desc":          "Entity selecter, brush cutter, cube maker.",
@@ -422,72 +418,3 @@ class DragModesBar(quarkpy.qeditor.ToolBar):
 #--- register the new toolbar ---
 
 quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.21  2015/09/20 12:59:58  danielpharos
-# Added a missing import statement.
-#
-# Revision 1.20  2008/07/24 23:34:11  cdunde
-# To fix non-ASCII character from causing python depreciation errors.
-#
-# Revision 1.19  2006/11/30 01:17:48  cdunde
-# To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-# Revision 1.18  2006/11/29 06:58:36  cdunde
-# To merge all runtime files that had changes from DanielPharos branch
-# to HEAD for QuArK 6.5.0 Beta 1.
-#
-# Revision 1.17.2.2  2006/11/26 12:54:04  cdunde
-# To reset toolbars default location for removal of unneeded 3D buttons.
-#
-# Revision 1.17.2.1  2006/11/03 23:38:10  cdunde
-# Updates to accept Python 2.4.4 by eliminating the
-# Depreciation warning messages in the console.
-#
-# Revision 1.17  2006/01/12 07:21:01  cdunde
-# To commit all new and related files for
-# new Quick Object makers and toolbar.
-#
-# Revision 1.16  2005/11/13 10:17:29  cdunde
-# Previous fix caused another problem.
-# This fix's that cursor setting problem
-#
-# Revision 1.15  2005/11/13 08:25:07  cdunde
-# To finally fix cursor setting problem
-#
-# Revision 1.14  2005/11/06 23:53:43  cdunde
-# Reset toolbar buttons to clear selections to avoid confusion switching
-# from button to button and toolbar selectors to toolbar selectors.
-#
-# Revision 1.13  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.10  2005/08/15 05:48:45  cdunde
-# To commit all files for Terrain Generator
-#
-# Revision 1.9  2005/03/16 10:17:15  cdunde
-# To fix non-selection of Shape Builder items for Select Everyting function.
-#
-# Revision 1.8  2004/01/24 16:28:34  cdunde
-# To reset defaults for toolbars
-#
-# Revision 1.7  2003/03/15 20:40:19  cdunde
-# To update hints and add infobase links
-#
-# Revision 1.6  2001/10/22 10:15:48  tiglari
-# live pointer hunt, revise icon loading
-#
-# Revision 1.5  2001/04/15 22:48:17  tiglari
-# groups & brush entity selection in select everything mode (will be selected
-#  if all of their subitems are)
-#
-# Revision 1.4  2001/02/19 19:15:40  decker_dk
-# Added 'Select-everything'; entities, brushes, duplicators and beziers.
-#
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#
-

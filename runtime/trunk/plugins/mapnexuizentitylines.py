@@ -6,9 +6,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "NEXUIZ Arrow Extensions",
    "desc":          "Displays axis for rotating entities and jump-archs for push-entities. Note: RED-colored jump-archs indicates that the jump isn't correctly calculated, due to either non-default gravity or too low an arch.",
@@ -222,9 +219,3 @@ class NEXUIZDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "NEXUIZ": NEXUIZDrawEntityLines()
 })
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#

@@ -8,10 +8,6 @@ Implementation of the Brush Subtraction commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "CSG Brush Subtraction",
    "desc":          "Various polyhedron subtraction commands.",
@@ -370,30 +366,3 @@ def newmenubegin(o, editor, oldmenubegin = quarkpy.mapentities.PolyhedronType.me
     return oldmenubegin(o, editor) + [CSG1, Hollow1, quarkpy.qmenu.sep]
 
 quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.10  2006/01/17 19:25:45  cdunde
-# To add all file updates for new Object modes
-# dialog boxes hollowing functions.
-#
-# Revision 1.9  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.6  2003/03/24 08:57:15  cdunde
-# To update info and link to infobase
-#
-# Revision 1.5  2001/03/29 20:57:45  tiglari
-# added 2nd subtraction routime, some tests
-#
-# Revision 1.4  2001/03/20 08:02:16  tiglari
-# customizable hot key support
-#
-# Revision 1.3.4.1  2001/03/11 22:08:15  tiglari
-# customizable hot keys
-#
-# Revision 1.3  2000/06/03 10:25:30  alexander
-# added cvs headers
-#

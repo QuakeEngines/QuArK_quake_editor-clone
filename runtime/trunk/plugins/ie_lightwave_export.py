@@ -7,8 +7,6 @@ QuArK Model Editor importer for Quake 2 .md2 model files.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "ie_md2_exporter",
    "desc":          "Export selected meshes to LightWave File Format (.lwo). Original code from Blender, lightwave_import.py, author - Anthony D'Agostino (Scorpius)",
@@ -17,6 +15,7 @@ Info = {
    "author e-mail": "cdunde@sbcglobal.net",
    "quark":         "Version 6.6.0 Beta 2" }
 
+#Based on:
 # +---------------------------------------------------------+
 # | Copyright (c) 2002 Anthony D'Agostino                   |
 # | http://www.redrival.com/scorpius                        |
@@ -24,24 +23,6 @@ Info = {
 # | April 21, 2002                                          |
 # | Read and write LightWave Object File Format (*.lwo)     |
 # +---------------------------------------------------------+
-
-# ***** BEGIN GPL LICENSE BLOCK *****
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#
-# ***** END GPL LICENCE BLOCK *****
 
 import struct, chunk, os, cStringIO, time, operator
 import quarkx
@@ -955,59 +936,3 @@ def savemodel(root, filename, gamename, nomessage=0):
 ### To register this Python plugin and put it on the exporters menu.
 import quarkpy.qmdlbase
 quarkpy.qmdlbase.RegisterMdlExporter(".lwo LightWave Exporter", ".lwo file", "*.lwo", savemodel)
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.15  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.14  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.13  2010/10/10 03:24:59  cdunde
-# Added support for player models attachment tags.
-# To make baseframe name uniform with other files.
-#
-# Revision 1.12  2009/03/10 08:00:39  cdunde
-# Updates by DanielPharos to fix multiple component models
-# to work correctly in game and uv positioning.
-#
-# Revision 1.11  2009/03/08 04:48:52  cdunde
-# To reinstate functions previously removed to get models to show in games.
-#
-# Revision 1.10  2009/03/07 08:22:13  cdunde
-# Update for models to show up in games.
-# UVs are not correct and Doom3 requires a .cm collision model file to work.
-# Also, only shows one component in games but all components in QuArK.
-#
-# Revision 1.9  2009/01/29 02:13:51  cdunde
-# To reverse frame indexing and fix it a better way by DanielPharos.
-#
-# Revision 1.8  2008/07/21 18:06:13  cdunde
-# Moved all the start and end logging code to ie_utils.py in two functions,
-# "default_start_logging" and "default_end_logging" for easer use and consistency.
-# Also added logging and progress bars where needed and cleaned up files.
-#
-# Revision 1.7  2008/07/17 00:28:15  cdunde
-# Added option for error checking of selected components before exporting.
-#
-# Revision 1.6  2008/07/11 04:40:20  cdunde
-# Minor correction.
-#
-# Revision 1.5  2008/07/11 04:38:47  cdunde
-# Clean out blank spaces.
-#
-# Revision 1.4  2008/07/11 04:34:32  cdunde
-# Setup of Specifics\Arg page for model types data and settings.
-#
-# Revision 1.3  2008/06/29 05:29:08  cdunde
-# Minor correction.
-#
-# Revision 1.2  2008/06/28 15:12:06  cdunde
-# Minor correction.
-#
-# Revision 1.1  2008/06/28 14:52:35  cdunde
-# Added .lwo lightwave model export support and improved the importer.
-#
-#

@@ -24,19 +24,6 @@ QQRKSRC1
 
 // Please see infobase/help for more information about this file format.
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.6  2007/03/18 22:47:32  danielpharos
-//Changed the file header comments a bit.
-//
-//Revision 1.5  2005/10/15 01:00:03  cdunde
-//To reinstate headers and history
-//
-//Revision 1.2  2001/03/20 21:50:24  decker_dk
-//Added log-header
-//
-
 {
   Description = "Custom configuration file."
 

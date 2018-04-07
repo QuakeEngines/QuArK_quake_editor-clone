@@ -1,5 +1,5 @@
-
-#$Header$
+"""   QuArK  -  Quake Army Knife
+"""
 
 import quarkx
 import quarkpy.mapmenus
@@ -134,26 +134,3 @@ menheapstatus = qmenu.item("HeapStatus",HeapStatusClick,hint)
 
 if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
   quarkpy.mapcommands.items.append(menheapstatus)
-
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-# Revision 1.7  2010/02/21 20:19:00  danielpharos
-# Fixed a typo.
-#
-# Revision 1.6  2005/11/19 22:45:11  cdunde
-# To add F1 help links and update Infobase docs.
-#
-# Revision 1.5  2005/10/15 00:49:51  cdunde
-# To reinstate headers and history
-#
-# Revision 1.2  2002/02/26 06:33:59  tiglari
-# now tracks changes in memory used
-#
-# Revision 1.1  2002/01/08 10:11:41  tiglari
-# uses heapstatus function to display heap info (currently just TotalAllocated,
-# all of the fields mentioned in the comments can be accessed as specifics
-# of the QObject returned by heapstatus)
-#

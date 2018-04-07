@@ -1,4 +1,3 @@
-# Two lines below to stop encoding errors in the console.
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
@@ -10,9 +9,6 @@ QuArK Model Editor importer for .gr2 model files.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 Info = {
    "plug-in":       "ie_gr2_importer",
@@ -2408,94 +2404,3 @@ def dataforminput(o):
                 quarkx.setupsubset(SS_MODEL, "Options")["NbrOfShaderLines"] = comp.dictspec['shader_lines']
             if not comp.dictspec.has_key('mesh_shader'):
                 comp['mesh_shader'] = "None"
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-# Revision 1.41  2011/12/23 03:15:17  cdunde
-# To remove all importers bone ['type'] from ModelComponentList['bonelist'].
-# Those should be kept with the individual bones if we decide it is needed.
-#
-# Revision 1.40  2011/03/13 00:41:47  cdunde
-# Updating fixed for the Model Editor of the Texture Browser's Used Textures folder.
-#
-# Revision 1.39  2011/03/10 20:56:39  cdunde
-# Updating of Used Textures in the Model Editor Texture Browser for all imported skin textures
-# and allow bones and Skeleton folder to be placed in Userdata panel for reuse with other models.
-#
-# Revision 1.38  2010/11/09 05:48:10  cdunde
-# To reverse previous changes, some to be reinstated after next release.
-#
-# Revision 1.37  2010/11/06 13:31:04  danielpharos
-# Moved a lot of math-code to ie_utils, and replaced magic constant 3 with variable SS_MODEL.
-#
-# Revision 1.36  2010/10/10 03:24:59  cdunde
-# Added support for player models attachment tags.
-# To make baseframe name uniform with other files.
-#
-# Revision 1.35  2010/06/13 15:37:55  cdunde
-# Setup Model Editor to allow importing of model from main explorer File menu.
-#
-# Revision 1.34  2010/05/26 18:48:34  danielpharos
-# Big speedup for converting granny textures.
-#
-# Revision 1.33  2010/05/25 05:00:44  cdunde
-# Update to import multiple model file parts with multiple bones and components with the same name.
-#
-# Revision 1.32  2010/05/24 21:49:59  cdunde
-# Update to handle models with multiple bones and components with the same name.
-#
-# Revision 1.31  2010/05/21 20:31:12  danielpharos
-# Another bunch of fixes: This should straighten out even more models.
-#
-# Revision 1.30  2010/05/21 08:36:12  cdunde
-# Massive improvement in material texture handling and animations.
-#
-# Revision 1.29  2010/05/21 03:33:33  cdunde
-# Correct way to fix previous correction and handling of materials.
-#
-# Revision 1.28  2010/05/20 08:06:05  cdunde
-# To fix typo error that got back into this file causing it to brake.
-#
-# Revision 1.27  2010/05/18 10:58:32  cdunde
-# DanielPharos fix for models that have invalid components, causing the importer to brake, to skip over them.
-#
-# Revision 1.26  2010/05/15 17:38:13  cdunde
-# To avoid loading error and give the user a message.
-#
-# Revision 1.25  2010/05/15 03:29:50  cdunde
-# Small change to handle models without imbedded textures.
-#
-# Revision 1.24  2010/05/14 20:18:57  danielpharos
-# Added skin importing for .gr2 models.
-#
-# Revision 1.23  2010/05/10 19:47:31  cdunde
-# Texture UV fix by DanielPharos.
-#
-# Revision 1.22  2010/05/10 18:41:49  danielpharos
-# Also output actual error.
-#
-# Revision 1.21  2010/05/07 19:11:12  cdunde
-# To allow model attachments to animate with model,
-# selected components to animate with other components
-# and some file cleanup.
-#
-# Revision 1.20  2010/05/07 06:22:34  cdunde
-# Changed mesh variable name reused in animation section to avoid confusion.
-#
-# Revision 1.19  2010/05/06 22:26:24  cdunde
-# Great animation improvement fixes by DanielPharos.
-#
-# Revision 1.18  2010/05/04 19:39:03  cdunde
-# Update to work much better with models that do and do not include animation in the same file.
-#
-# Revision 1.17  2010/05/03 21:59:22  cdunde
-# File update fixes by DanielPharos. Still a work in progress.
-#
-# Revision 1.16  2010/05/01 07:16:40  cdunde
-# Update by DanielPharos to allow removal of weight_index storage in the ModelComponentList related files.
-#
-# Revision 1.15  2010/05/01 04:25:37  cdunde
-# Updated files to help increase editor speed by including necessary ModelComponentList items
-# and removing redundant checks and calls to the list.
-#

@@ -1,25 +1,5 @@
 QQRKSRC1
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.8  2008/07/02 17:17:22  cdunde
-//Changes needed, noted by X7.
-//
-//Revision 1.7  2008/06/30 17:31:56  cdunde
-//Updates, additions and a new mod addon by X7.
-//
-//Revision 1.6  2007/03/29 15:27:57  danielpharos
-//Cleaned up the tabs.
-//
-//Revision 1.5  2006/02/25 05:37:33  cdunde
-//Fixed viewing of player models and other updates for Quake2 CTF addon.
-//
-//Revision 1.4  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.1  2001/02/11 11:08:40  decker_dk
-//Moved from addons directory
-//
+
 {
     QuArKProtected = "1"
     Description = "Requires q2ctf150.zip at http://www.fileaholic.com/idgames.d/idstuff/quake2/ctf/"

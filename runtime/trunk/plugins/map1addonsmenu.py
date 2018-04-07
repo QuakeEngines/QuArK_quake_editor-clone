@@ -8,8 +8,6 @@ Implementation of QuArK Map editor's "Addons" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Addons Main Menu",
    "desc":          "This adds the Addons Main menu item and its Categories to run and import 3rd party programs.",
@@ -31,11 +29,11 @@ import quarkpy.mapcommands   # Need this for sub-menu appending
 
 # Global variables, the sub-menuitems/popup-menus
 
-ShapesMenu = qmenu.popup("&Shape programs", [], None, "|Shape programs:\n\nThese are programs that can make different shapes to use in your maps.\n\nOne that I recommend is 'MGS-object builder' and can be downloaded from the Yahoo Quark group site at\n\nhttp://groups.yahoo.com/group/quark/files/\n\nIf you find any programs that may help others, please let us know by making a posting to the Quark groups site at\n\nhttp://groups.yahoo.com/group/quark/", "intro.mapeditor.menu.html#addonsmenu")
+ShapesMenu = qmenu.popup("&Shape programs", [], None, "|Shape programs:\n\nThese are programs that can make different shapes to use in your maps.\n\nOne that I recommend is 'MGS-object builder' and can be downloaded from the Yahoo QuArK group site at\n\nhttp://groups.yahoo.com/group/quark/files/\n\nIf you find any programs that may help others, please let us know by making a posting to the QuArK groups site at\n\nhttp://groups.yahoo.com/group/quark/", "intro.mapeditor.menu.html#addonsmenu")
 
-TerrainMenu = qmenu.popup("&Terrain programs", [], None, "|Terrain programs:\n\nThis category is for your terrain programs for making landscape layouts in your maps.\n\nOne that I recommend is 'Terrain Generator' and can be downloaded from its own site at\n\nhttp://countermap.counter-strike.net/Nemesis/index.php?p=1\n\nIf you find any programs that may help others, please let us know by making a posting to the Quark groups site at\n\nhttp://groups.yahoo.com/group/quark/", "intro.mapeditor.menu.html#addonsmenu")
+TerrainMenu = qmenu.popup("&Terrain programs", [], None, "|Terrain programs:\n\nThis category is for your terrain programs for making landscape layouts in your maps.\n\nOne that I recommend is 'Terrain Generator' and can be downloaded from its own site at\n\nhttp://countermap.counter-strike.net/Nemesis/index.php?p=1\n\nIf you find any programs that may help others, please let us know by making a posting to the QuArK groups site at\n\nhttp://groups.yahoo.com/group/quark/", "intro.mapeditor.menu.html#addonsmenu")
 
-OtherMenu = qmenu.popup("&Other programs", [], None, "|Other programs:\n\nThis category is for all other types of programs that can export to a map file for your use in QuArk.\n\nIf you find any programs that may help others, please let us know by making a posting to the Quark groups site at\n\nhttp://groups.yahoo.com/group/quark/", "intro.mapeditor.menu.html#addonsmenu")
+OtherMenu = qmenu.popup("&Other programs", [], None, "|Other programs:\n\nThis category is for all other types of programs that can export to a map file for your use in QuArK.\n\nIf you find any programs that may help others, please let us know by making a posting to the QuArK groups site at\n\nhttp://groups.yahoo.com/group/quark/", "intro.mapeditor.menu.html#addonsmenu")
 
 # The main Addons-menu (and shortcuts if any)
 AddonsMenu = [ShapesMenu, TerrainMenu, OtherMenu] # The Addons menu items
@@ -60,11 +58,3 @@ def Func1Click(self):
 
 OtherMenu.items.append(qmenu.sep)
 OtherMenu.items.append(quarkpy.qmenu.item("Import any map file", Func1Click, "|Import any map file:\n\nThis item function allows you to load any map file into the existing editor to be added to the map you are working on.\n\nBecause it also may import entities, you may half to delete some of them like its info_player_start.\n\nThis function is created by the plugins/map1loadanymap.py file.|intro.mapeditor.menu.html#addonsmenu"))
-
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.1  2003/07/04 20:01:16  cdunde
-#To add new Addons main menu item and sub-menus
-#

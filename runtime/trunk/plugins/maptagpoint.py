@@ -1,13 +1,10 @@
 """   QuArK  -  Quake Army Knife Bezier shape makers
 
-
 """
+#
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
-#$Header$
-
 
 ########################################################
 #
@@ -29,7 +26,7 @@ Info = {
    "date":          "Jul 16, 2000",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.net",
-   "quark":         "Quark 6.x" }
+   "quark":         "QuArK 6.x" }
 
 
 import quarkx
@@ -141,9 +138,3 @@ def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandl
   return menu
 
 quarkpy.qhandles.GenericHandle.OriginItems = originmenu
-
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#

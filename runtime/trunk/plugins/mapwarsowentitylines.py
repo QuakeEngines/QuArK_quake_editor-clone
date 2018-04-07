@@ -8,9 +8,6 @@
 # Basically a copy of mapquake3entitylines.py
 #
 
-#$Header$
-#
-
 Info = {
    "plug-in":       "Warsow Arrow Extensions",
    "desc":          "Displays axis for rotating entities and jump-archs for push-entities. Note: RED-colored jump-archs indicates that the jump isn't correctly calculated, due to either non-default gravity or too low an arch.",
@@ -228,10 +225,3 @@ class WarsowDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "Warsow": WarsowDrawEntityLines()
 })
-
-# ----------- REVISION HISTORY ------------
-#
-# $Log$
-#
-#
-

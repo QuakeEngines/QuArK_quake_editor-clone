@@ -2,37 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK quarksnapshot_20001015
 // It's the text version of file: UserData SOF.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.6  2008/05/14 20:38:55  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.5  2005/10/15 01:00:27  cdunde
-//To reinstate headers and history
-//
-//Revision 1.2  2001/03/20 21:55:32  decker_dk
-//Added log-header / misc.
-//
-//Revision 1.1  2001/02/11 11:31:42  decker_dk
-//Moved from addons directory
-//
-//Revision 1.5  2001/01/27 18:26:14  decker_dk
-//Removed old keys, and updated with (hopefully) correct new ones.
-//
-//Revision 1.4  2000/10/15 16:53:54  alexander
-//use new build controller setup
-//
-//Revision 1.3  2000/07/04 22:38:53  alexander
-//removed build textures stuff
-//
-//Revision 1.2  2000/06/05 00:16:31  alexander
-//removed qcsg entries from SoF
-//
-//Revision 1.1  2000/05/04 23:59:57  alexander
-//added: preliminary game files for Soldier of Fortune
-//
-
 {
   Description = "Custom configuration file for SOF"
   MapObjPanel.qrk =

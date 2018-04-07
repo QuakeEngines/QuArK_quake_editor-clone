@@ -8,8 +8,6 @@ Map Duplicator abstract classes.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 #
 # Duplicators are really implemented in the plug-in "mapdups.py".
 #
@@ -714,95 +712,3 @@ def DupManager(dup):
 DupCodes = {"dup origin" : OriginDuplicator,
             "Template" : DupTemplate
              }    # see mapdups.py
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.31  2017/08/30 06:45:33  danielpharos
-#Explained some magic numbers, and other small cleanups.
-#
-#Revision 1.30  2016/02/13 12:35:01  danielpharos
-#Return a boolean instead of an integer.
-#
-#Revision 1.29  2007/12/21 20:39:23  cdunde
-#Added new Templates functions and Templates.
-#
-#Revision 1.28  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.25  2005/08/12 21:02:31  cdunde
-#To reverse last entry allowing entities to be included
-#
-#Revision 1.24  2004/01/26 20:57:46  decker_dk
-#A fix for "poolitems()", which returned duplicates of ":e" objects.
-#
-#Revision 1.23  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.22  2001/10/22 10:24:32  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.21  2001/08/06 00:16:43  tiglari
-#texture-cycling for duplicators
-#
-#Revision 1.20  2001/06/09 01:23:49  tiglari
-#bugfix (subnoodle), extend to duplicators
-#
-#Revision 1.19  2001/06/05 21:11:35  tiglari
-#final values now work on things embedded in groups
-#
-#Revision 1.18  2001/06/05 12:38:02  tiglari
-#final value elaborations
-#
-#Revision 1.17  2001/06/05 09:41:15  tiglari
-#more development of incrementing in duplicators, custom
-# increment idea & some code by subnoodle (Sam)
-#
-#Revision 1.16  2001/05/27 11:14:31  tiglari
-#fixed another final target bug
-#
-#Revision 1.15  2001/05/27 10:59:07  tiglari
-#fixed final target bug
-#
-#Revision 1.14  2001/05/27 01:08:47  tiglari
-#change 'serialize' to 'increment' for the duplicators as suggested by Decker
-#
-#Revision 1.13  2001/05/27 00:13:26  tiglari
-#support for 'incrementable' (suffix incrementing) duplicators
-#
-#Revision 1.12  2001/05/12 23:04:07  tiglari
-#make new linear fixpoint behavior contingent on 'item center' flag
-#
-#Revision 1.11  2001/05/12 18:58:54  tiglari
-#drop matrix2/buildLinearMatrix support
-#
-#Revision 1.10  2001/05/12 10:14:24  tiglari
-#disable old--style dup=fixpoint behavior, install usercenter as fixpoint
-#  behavior
-#
-#Revision 1.9  2001/05/08 21:14:15  tiglari
-#hollowmaker/wallmaker fixed
-#
-#Revision 1.8  2001/05/06 08:07:26  tiglari
-#remove debug
-#
-#Revision 1.7  2001/05/06 03:03:21  tiglari
-#add 'offset dup' support, if ="1", then dup origin-sourcelist center is added to offset
-#  this is for (new) Copy One duplicator, use of angle handle with this
-#  breaks it for some unknown reason.
-#
-#Revision 1.6  2001/04/06 06:23:42  tiglari
-#hopefully got linear mapping around UserCenter working for standard duplicators
-#
-#Revision 1.5  2001/04/05 22:31:55  tiglari
-#cumulative matrix around UserCenter
-#
-#Revision 1.4  2001/03/21 21:19:09  tiglari
-#custom origin (center for groups) duplicator support
-#
-#Revision 1.3  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#Revision 1.2  2000/05/26 23:11:36  tiglari
-#tried to fix `no drag' bug (select/release dup without dragging it sometimes causes problems)
-#
-#

@@ -2,19 +2,6 @@ QQRKSRC1
 // This file has been written by cdunde March 12, 2008
 // It's the text version of file: UserData Prey.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/03/25 06:43:12  cdunde
-//To standardize UserData files as much as possible based on their game engine type.
-//Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
-//Changed all hard coded texturing to either auto or includes, also should NEVER be allowed.
-//
-//Revision 1.1  2008/03/19 02:26:37  cdunde
-//Added full game support for PREY.
-//
-//
-
 {
   Description = "Custom configuration file for Prey."
   MapObjPanel.qrk =

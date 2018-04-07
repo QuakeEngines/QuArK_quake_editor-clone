@@ -1,10 +1,5 @@
 QQRKSRC1
-// Alice Scripts file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
+// Alice Scripts file for QuArK
 
 {
   QuArKProtected = "1"

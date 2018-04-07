@@ -1,13 +1,5 @@
 QQRKSRC1
-// CoD1 Textures file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.2  2008/10/12 07:27:30  cdunde
-//Setup changes for CoD1 support.
-//
-//
+// CoD1 Textures file for QuArK
 
 {
   QuArKProtected = "1"

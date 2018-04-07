@@ -1,10 +1,9 @@
 """ QuArK  -  Quake Army Knife
 """
+#
 # Copyright (C) 1996-99 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
-#
-#$Header$
 #
 
 import quarkx
@@ -599,19 +598,3 @@ def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
         cv.line(p1, p2)
 
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = bspfinishdrawing
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.16  2017/06/23 21:00:11  danielpharos
-#Improved some whitespace.
-#
-#Revision 1.15  2015/06/20 15:27:28  danielpharos
-#Removed unused variable.
-#
-#Revision 1.14  2014/01/18 14:50:47  danielpharos
-#Removed some silly whitespace.
-#
-#Revision 1.13  2005/11/27 05:55:12  cdunde
-#To start header and history log
-#
-#

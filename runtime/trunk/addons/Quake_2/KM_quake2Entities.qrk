@@ -2,11 +2,6 @@ QQRKSRC1
 // KM_quake2 Entities file for Quark
 // For more info see http://www.markshan.com/knightmare/
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
-
 {
   QuArKProtected = "1"
   Description = "KM_quake2 Entities"

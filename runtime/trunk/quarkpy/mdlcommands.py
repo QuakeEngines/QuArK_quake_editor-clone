@@ -8,9 +8,6 @@ The model editor's "Commands" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import quarkx
 import qmenu
 from mdlutils import *
@@ -177,88 +174,3 @@ def commandsclick(menu, oldcommand=onclick):
 
 
 onclick = commandsclick
-
-
-# ----------- REVISION HISTORY ------------
-# $Log$
-# Revision 1.25  2012/07/09 18:11:33  cdunde
-# Updated Tree-view RMB menu for correct single frame Duplication function in the Model Editor.
-#
-# Revision 1.24  2009/06/03 05:16:22  cdunde
-# Over all updating of Model Editor improvements, bones and model importers.
-#
-# Revision 1.23  2009/04/28 21:30:56  cdunde
-# Model Editor Bone Rebuild merge to HEAD.
-# Complete change of bone system.
-#
-# Revision 1.22  2009/01/29 02:13:51  cdunde
-# To reverse frame indexing and fix it a better way by DanielPharos.
-#
-# Revision 1.21  2008/07/26 03:37:38  cdunde
-# Minor correction for frames matching count.
-#
-# Revision 1.20  2008/07/25 22:57:23  cdunde
-# Updated component error checking and added frame matching and\or
-# duplicating with independent names to avoid errors with other functions.
-#
-# Revision 1.19  2008/07/17 00:36:44  cdunde
-# Added new function "Match Frame Count" to the Commands & RMB menus
-# which duplicates the number of frames in selected components.
-#
-# Revision 1.18  2008/07/15 23:16:26  cdunde
-# To correct typo error from MldOption to MdlOption in all files.
-#
-# Revision 1.17  2007/09/12 05:25:51  cdunde
-# To move Make New Component menu function from Commands menu to RMB Face Commands menu and
-# setup new function to move selected faces from one component to another.
-#
-# Revision 1.16  2007/09/07 23:55:29  cdunde
-# 1) Created a new function on the Commands menu and RMB editor & tree-view menus to create a new
-#      model component from selected Model Mesh faces and remove them from their current component.
-# 2) Fixed error of "Pass face selection to Skin-view" if a face selection is made in the editor
-#      before the Skin-view is opened at least once in that session.
-# 3) Fixed redrawing of handles in areas that hints show once they are gone.
-#
-# Revision 1.15  2007/07/09 18:36:47  cdunde
-# Setup editors Rectangle selection to properly create a new triangle if only 3 vertexes
-# are selected and a new function to reverse the direction of a triangles creation.
-#
-# Revision 1.14  2007/07/02 22:49:42  cdunde
-# To change the old mdleditor "picked" list name to "ModelVertexSelList"
-# and "skinviewpicked" to "SkinVertexSelList" to make them more specific.
-# Also start of function to pass vertex selection from the Skin-view to the Editor.
-#
-# Revision 1.13  2007/06/11 19:52:31  cdunde
-# To add message box for proper vertex order of selection to add a triangle to the models mesh.
-# and changed code for deleting a triangle to stop access violation errors and 3D views graying out.
-#
-# Revision 1.12  2007/04/22 21:06:04  cdunde
-# Model Editor, revamp of entire new vertex and triangle creation, picking and removal system
-# as well as its code relocation to proper file and elimination of unnecessary code.
-#
-# Revision 1.11  2007/04/19 03:30:27  cdunde
-# First attempt to get newly created triangles to draw correctly on the Skin-view. Still needs work.
-#
-# Revision 1.10  2007/04/17 13:27:48  cdunde
-# Added safeguard on menu item until it can be used correctly.
-#
-# Revision 1.9  2007/04/17 12:55:34  cdunde
-# Fixed Duplicate current frame function to stop Model Editor views from crashing
-# and updated its popup help and Infobase link description data.
-#
-# Revision 1.8  2007/04/16 16:55:07  cdunde
-# Stopped Add Triangle and Delete Triangle from causing errors and added menu links to the Infobase.
-#
-# Revision 1.7  2005/10/15 00:47:57  cdunde
-# To reinstate headers and history
-#
-# Revision 1.4  2001/03/15 21:07:49  aiv
-# fixed bugs found by fpbrowser
-#
-# Revision 1.3  2001/02/01 22:03:15  aiv
-# RemoveVertex Code now in Python
-#
-# Revision 1.2  2000/10/11 19:09:00  aiv
-# added cvs header and triangle adding dialog (not finished)
-#
-#

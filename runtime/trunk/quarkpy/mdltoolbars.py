@@ -8,9 +8,6 @@ The model editor's "Toolbars" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 import qmenu
 import qtoolbar
 from mdlutils import *
@@ -1020,98 +1017,3 @@ class EditToolsBar(qeditor.ToolBar):
 import qmovepal
 import mdlanimation
 toolbars = {"tb_display": DisplayBar, "tb_edittools": EditToolsBar, "tb_movepal": qmovepal.ToolMoveBar, "tb_animation": mdlanimation.AnimationBar}
-
-# ----------- REVISION HISTORY ------------
-#
-#
-#$Log$
-#Revision 1.21  2015/09/20 13:03:06  danielpharos
-#Brought back the fullscreen view window! Also, added a toolbar that allows you to select the renderer to use for new windows. (Work in progress.) Added an experimental fancy fullscreen mode, with a tight-ish message pump.
-#
-#Revision 1.20  2015/09/06 12:35:40  danielpharos
-#Removed unused NoDraw variable, show progressbar in Model Editor, and re-added fullscreen 3D button to toolbar.
-#
-#Revision 1.19  2013/10/15 17:54:46  cdunde
-#Updated Toolbar Button for Model Editor.
-#
-#Revision 1.18  2011/11/17 01:19:02  cdunde
-#Setup BBox drag toolbar button to work correctly with other toolbar buttons.
-#
-#Revision 1.17  2011/03/04 06:50:28  cdunde
-#Added new face cutting tool, for selected faces, like in the map editor with option to allow vertex separation.
-#
-#Revision 1.16  2011/02/12 08:36:37  cdunde
-#Fixed auto turn off of Objects Maker not working with other toolbars.
-#
-#Revision 1.15  2009/07/14 00:27:33  cdunde
-#Completely revamped Model Editor vertex Linear draglines system,
-#increasing its reaction and drawing time to twenty times faster.
-#
-#Revision 1.14  2008/08/21 12:11:53  danielpharos
-#Fixed an import failure.
-#
-#Revision 1.13  2008/07/15 23:16:27  cdunde
-#To correct typo error from MldOption to MdlOption in all files.
-#
-#Revision 1.12  2008/02/23 04:41:11  cdunde
-#Setup new Paint modes toolbar and complete painting functions to allow
-#the painting of skin textures in any Model Editor textured and Skin-view.
-#
-#Revision 1.11  2007/12/06 02:06:29  cdunde
-#Minor corrections.
-#
-#Revision 1.10  2007/12/05 04:45:57  cdunde
-#Added two new function methods to Subdivide selected faces into 3 and 4 new triangles each.
-#
-#Revision 1.9  2007/12/02 06:47:11  cdunde
-#Setup linear center handle selected vertexes edge extrusion function.
-#
-#Revision 1.8  2007/11/14 05:46:18  cdunde
-#To link new "Editing tools" toolbar button to Infobase sections.
-#
-#Revision 1.7  2007/11/11 11:41:52  cdunde
-#Started a new toolbar for the Model Editor to support "Editing Tools".
-#
-#Revision 1.6  2007/10/18 02:31:54  cdunde
-#Setup the Model Editor Animation system, functions and toolbar.
-#
-#Revision 1.5  2007/08/24 09:27:28  cdunde
-#To update the toolbar links to new sections of the InfoBase for the Model Editor.
-#
-#Revision 1.4  2007/07/28 23:12:52  cdunde
-#Added ModelEditorLinHandlesManager class and its related classes to the mdlhandles.py file
-#to use for editing movement of model faces, vertexes and bones (in the future).
-#
-#Revision 1.3  2007/04/22 22:44:47  cdunde
-#Renamed the file mdltools.py to mdltoolbars.py to clarify the files use and avoid
-#confliction with future mdltools.py file to be created for actual tools for the Editor.
-#
-#Revision 1.9  2006/11/30 01:19:34  cdunde
-#To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-#
-#Revision 1.8  2006/11/29 07:00:28  cdunde
-#To merge all runtime files that had changes from DanielPharos branch
-#to HEAD for QuArK 6.5.0 Beta 1.
-#
-#Revision 1.7.2.2  2006/11/04 21:41:44  cdunde
-#To add help and Infobase links to buttons.
-#
-#Revision 1.7.2.1  2006/11/01 22:22:42  danielpharos
-#BackUp 1 November 2006
-#Mainly reduce OpenGL memory leak
-#
-#Revision 1.7  2005/10/15 00:47:57  cdunde
-#To reinstate headers and history
-#
-#Revision 1.4  2003/02/15 02:03:45  cdunde
-#To update and add F1 popup help info.
-#Also add Lockviews button to model editor.
-#
-#Revision 1.3  2001/10/22 10:26:17  tiglari
-#live pointer hunt, revise icon loading
-#
-#Revision 1.2  2000/06/02 16:00:22  alexander
-#added cvs headers
-#
-#
-#

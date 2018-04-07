@@ -1,17 +1,9 @@
 QQRKSRC1
-// Heretic_II textures file for Quark
-
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.1  2008/03/28 19:08:12  cdunde
-//Cleaned up, fixed if needed and brought into sync with all QuArK addons.
-//
-//
+// Heretic II textures file for QuArK
 
 {
   QuArKProtected = "1"
-  Description = "Heretic_II Textures"
+  Description = "Heretic II Textures"
 
   Textures.qtx =
   {

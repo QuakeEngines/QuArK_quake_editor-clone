@@ -1,24 +1,9 @@
 QQRKSRC1
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.6  2008/06/30 17:31:55  cdunde
-//Updates, additions and a new mod addon by X7.
-//
-//Revision 1.5  2007/03/29 15:27:55  danielpharos
-//Cleaned up the tabs.
-//
-//Revision 1.4  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.1  2001/02/11 11:08:40  decker_dk
-//Moved from addons directory
-//
-
+//fixed By X7 06-03-08
 
 {
   QuArKProtected = "1"
-  Description = "Quake 2 MP2 : Rogue - fixed By X7 06-03-08"
+  Description = "Quake 2 MP2 : Rogue"
   Rogue directory infos.qctx =
   {
     Game = "Quake 2"

@@ -1,32 +1,5 @@
 QQRKSRC1
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.9  2008/05/14 20:38:14  cdunde
-//Fixed basic lighting in all games and a few other small typo errors.
-//
-//Revision 1.8  2008/03/25 06:43:13  cdunde
-//To standardize UserData files as much as possible based on their game engine type.
-//Moved entities out of them which were duplicated in their game Data files, should NEVER be allowed!
-//Changed all hard coded texturing to either auto or includes, also should NEVER be allowed.
-//
-//Revision 1.7  2006/06/26 06:22:38  cdunde
-//To set QuickGo to run the game.
-//
-//Revision 1.6  2006/05/19 18:46:56  cdunde
-//For the configuration revamping of RTCW.
-//
-//Revision 1.5  2005/10/15 01:00:23  cdunde
-//To reinstate headers and history
-//
-//Revision 1.2  2002/04/28 11:40:18  tiglari
-//Modifications to get RTCW support working better
-//
-//Revision 1.1  2001/12/05 20:38:04  decker_dk
-//Added RTCW (Return To Castle Wolfenstein)
-//
-
 {
   Description = "Custom configuration file for RTCW"
   MapObjPanel.qrk =

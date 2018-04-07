@@ -23,14 +23,9 @@ QQRKSRC1
 
 // Quake 3 SmokinGuns Entities and Default setup file for Quark.
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//
-
 {
   QuArKProtected = "1"
-  Description = "Addon for SmokinGuns"
+  Description = "Quake 3 - SmokinGuns"
   Game Context.qctx =
   {
     Game = "Quake 3"

@@ -8,9 +8,6 @@ Plug-in which displays the axis icons in the viewing windows.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
-
 Info = {
    "plug-in":       "Display axis icons",
    "desc":          "Displays the axis icons in the viewing windows",
@@ -168,19 +165,4 @@ quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 #   to learn how to stop this.  The images persist only in the view that's actually being
 #   dragged on, but flicker in the others, which looks unprofessional, whereas the
 #   red line is rock solid.
-#
-
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.10  2008/02/23 22:16:04  cdunde
-#Move all finishdrawing code to the correct editor, and some small cleanups.
-#
-#Revision 1.9  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.6  2004/02/12 18:04:51  cdunde
-#To add log
-#
 #

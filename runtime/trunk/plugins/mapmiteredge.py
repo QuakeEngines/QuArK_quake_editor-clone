@@ -3,12 +3,9 @@
 
 """
 
-
+#
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
-#
-#
-# $Header$
 #
 
 Info = {
@@ -772,63 +769,6 @@ def groupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
 
 quarkpy.mapentities.GroupType.menu = groupmenu
 
-
-
 #
 #quarkpy.mapduplicator.DupCodes.update({
 #  "new wall maker":       NewWallMaker,})
-
-
-
-
-#
-# $Log$
-# Revision 1.16  2007/12/13 11:54:53  danielpharos
-# Updated the miter edge function with some error messages, fixed a division by 0 in it, and made the option disable correctly. Also, added some InfoBase documentation about it.
-#
-# Revision 1.15  2007/07/11 19:15:35  cdunde
-# File cleanup.
-#
-# Revision 1.14  2005/10/15 00:51:24  cdunde
-# To reinstate headers and history
-#
-# Revision 1.11  2003/01/31 20:19:43  tiglari
-# improvements, tsx from rel63a branch (post 630 release)
-#
-# Revision 1.6.6.5  2003/01/14 20:41:35  tiglari
-# remove extra copy of plug
-#
-# Revision 1.6.6.4  2003/01/11 21:27:54  tiglari
-# add 'plugs' to extruded walls
-#
-# Revision 1.6.6.3  2003/01/04 04:35:50  tiglari
-# remove swapsides_leavetex() optimization - it makes bad texture scales
-#  that create problems for some build tools
-#
-# Revision 1.6.6.2  2003/01/01 05:09:14  tiglari
-# reinstate swapsides_leavetex as an optimization
-#
-# Revision 1.6.6.1  2002/05/18 22:45:55  tiglari
-# remove debug statements
-#
-# Revision 1.6  2001/10/08 10:42:47  tiglari
-# solid mode added, group structure preserved when dissociated
-#
-# Revision 1.5  2001/10/07 22:34:53  tiglari
-# negative polys dig hole in walls, extrude mode, colinear to maputils
-#
-# Revision 1.4  2001/10/07 00:43:59  tiglari
-# caulk-exposing bug supposedly fixed (by a considerable reorganizing
-# of the mitering process, using a dictionary instead of successive list
-# replacements)
-#
-# Revision 1.3  2001/10/01 06:20:31  tiglari
-# improve overlapping & colinear edge detection
-#
-# Revision 1.2  2001/09/23 08:56:57  tiglari
-# oops, replace 'bevel' with 'miter' in wallmaker stuff
-#
-# Revision 1.1  2001/09/23 07:00:34  tiglari
-# mitered edges for wall maker duplicator
-#
-#

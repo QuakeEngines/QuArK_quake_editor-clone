@@ -17,10 +17,6 @@
 ###
 ##########################################################
 
-#$Header$
-
-
-
 Info = {
    "plug-in":       "Snap objects",
    "desc":          "Snapping objects to faces",
@@ -324,8 +320,3 @@ def parentSnapPopup(o, editor):
 #    return menu  
 
 #quarkpy.mapentities.FaceType.menu = snapfacemenu
-
-
-# ----------- REVISION HISTORY ------------
-#$Log$
-#

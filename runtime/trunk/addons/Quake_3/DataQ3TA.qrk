@@ -1,30 +1,11 @@
 QQRKSRC1
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.11  2008/09/14 12:55:03  danielpharos
-//Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
-//
-//Revision 1.10  2005/10/16 18:48:04  cdunde
-//To remove letters referring to depository folders that
-// made filtering them out for distribution harder to do
-//
-//Revision 1.9  2005/10/15 01:00:02  cdunde
-//To reinstate headers and history
-//
-//Revision 1.6  2001/03/21 08:00:45  maleficus
-//fixed broken model paths
-//
-//Revision 1.5  2001/03/17 15:08:49  decker_dk
-//Added headers.
-//
 // This is the first release of the Team Arena Data file. v1.0
 // By Maleficus.
 // 26*1*00, 9.46
 
 {
-  Description = "Team Arena data - By: Maleficus"
+  Description = "Quake 3: Team Arena data"
   Game Context.qctx =
   {
     Game = "Quake 3"

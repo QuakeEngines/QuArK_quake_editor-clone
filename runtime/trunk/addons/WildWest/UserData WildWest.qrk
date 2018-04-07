@@ -2,13 +2,6 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: UserData WildWest.qrk
 
-//$Header$
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 1.4  2008/04/11 09:23:04  danielpharos
-//To reinstate headers and history
-//
-
 {
   Description = "Custom configuration file for WildWest"
   MapObjPanel.qrk =

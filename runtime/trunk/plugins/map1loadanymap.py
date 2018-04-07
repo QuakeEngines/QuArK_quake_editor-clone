@@ -8,8 +8,6 @@ Implementation of "Addons" menu Load Any Map function
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#$Header$
-
 Info = {
    "plug-in":       "Map1 Load Any Map",
    "desc":          "This Item function allows you to load any map file and is located on the Addons menu>Other Programs category.",
@@ -123,18 +121,3 @@ def LoadMapClick(m):
     editor = mapeditor()
     if editor is None: return
     LoadMapDlg(quarkx.clickform,editor,action)
-
-
-
-# ----------- REVISION HISTORY ------------
-#
-#$Log$
-#Revision 1.5  2005/10/15 00:49:51  cdunde
-#To reinstate headers and history
-#
-#Revision 1.2  2003/12/18 21:51:46  peter-b
-#Removed reliance on external string library from Python scripts (second try ;-)
-#
-#Revision 1.1  2003/07/04 20:01:16  cdunde
-#To add new Addons main menu item and sub-menus
-#
