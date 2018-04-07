@@ -307,19 +307,12 @@ end;
  { Returns the quilt size }
 function TBezier.GetQuiltSize;
 var
- OldCnt: boolean;
  S: String;
  V: array[1..2] of TDouble;
 begin
  Result.X:=1;  { default value }
  Result.Y:=1;
- OldCnt:=False;
- S:=Specifics.Values['cnt2'];
- if S='' then
- begin
-  OldCnt:=True;
-  S:=Specifics.Values['cnt'];
- end;
+ S:=Specifics.Values['cnt'];
  if S='' then Exit;
  try
   ReadDoubleArray(S, V);
@@ -328,11 +321,6 @@ begin
  end;
  Result.X:=Round(V[1]);
  Result.Y:=Round(V[2]);
- if OldCnt then
- begin
-  Result.X:=Result.X*2+1;
-  Result.Y:=Result.Y*2+1;
- end;
 end;
 
  { Changes the quilt size }
@@ -345,8 +333,7 @@ begin
   S:=''  { default size : delete 'cnt' }
  else
   S:=IntToStr(nSize.X)+' '+IntToStr(nSize.Y);
- Specifics.Values['cnt']:='';
- Specifics.Values['cnt2']:=S;
+ Specifics.Values['cnt']:=S;
 end;
 
  { Returns the control points of a Bezier object }
@@ -357,8 +344,8 @@ var
 begin
  with GetQuiltSize do
   begin
-   Result.W:=X;
-   Result.H:=Y;
+   Result.W:=X*2+1;
+   Result.H:=Y*2+1;
   end;
  ExpectedLength:=Length('v=') + Result.W*Result.H*SizeOf(TBezierControlPoints5);
  Spec:=FloatSpecNameOf('v');
@@ -387,9 +374,11 @@ var
 begin
  if (Buf.W<1) or (Buf.H<1) then
   raise InternalE('SetControlPoints: invalid quilt size');
+ if not Odd(Buf.W) or not Odd(Buf.H) then
+  raise InternalE('SetControlPoints: odd size expected');
  Acces;
  ReallocMem(FMeshCache.CP, 0);   { first invalidates the cache }
- SetQuiltSize(Point(Buf.W, Buf.H));  { set quilt size }
+ SetQuiltSize(Point(Buf.W div 2, Buf.H div 2));  { set quilt size }
  S:=FloatSpecNameOf('v');
  Specifics.Values[S]:='';   { delete old 'v' Specific }
  L:=Buf.W*Buf.H*SizeOf(TBezierControlPoints5);
