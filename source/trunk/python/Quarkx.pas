@@ -3245,12 +3245,6 @@ begin
  PyDict_SetItemString(QuarkxDict, 'redlinesicons', m);
  Py_DECREF(m);}
 
- m:=PyInt_FromLong(BezierMeshCnt);
- if m=Nil then
-  Exit;
- PyDict_SetItemString(QuarkxDict, 'beziermeshcnt', m);
- Py_DECREF(m);
-
  Result:=True;
 end;
 
