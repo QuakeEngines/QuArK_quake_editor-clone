@@ -18,28 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.5  2017/05/05 17:25:14  danielpharos
-Removed left-overs from the steamaccess-protocol code.
-
-Revision 1.4  2016/01/02 20:01:10  danielpharos
-Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
-
-Revision 1.3  2010/10/16 22:36:08  danielpharos
-Fixed bug in HLLib error message displaying.
-
-Revision 1.2  2010/10/16 22:31:03  danielpharos
-Added NCF file loading support (for example: Alien Swarm). Also, corrected VPK dictionnary mistake.
-
-Revision 1.1  2010/10/16 22:14:56  danielpharos
-Added VPK file loading support (for example: Left 4 Dead).
-
-}
-
 unit QkVPK;
 
 interface

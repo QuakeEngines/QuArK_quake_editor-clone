@@ -18,16 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.1  2010/11/30 20:31:14  danielpharos
-Added BBoxGroup object.
-
-}
-
 unit QkBBoxGroup;
 
 interface

@@ -18,36 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.8  2017/10/01 14:19:56  danielpharos
-Corrected the loading order of pak file: now official pak files are loaded first, just like the games do.
-
-Revision 1.7  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.6  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.5  2008/11/06 19:29:51  danielpharos
-Renamed function to concatenate paths, and start using it.
-
-Revision 1.4  2008/09/06 15:57:26  danielpharos
-Moved exception code into separate file.
-
-Revision 1.3  2008/02/23 19:25:21  danielpharos
-Moved a lot of path/file code around: should make it easier to use
-
-Revision 1.2  2007/08/21 23:43:44  danielpharos
-Another fix to the HL2 building process.
-
-Revision 1.1  2007/08/14 16:32:59  danielpharos
-HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
-}
-
 unit PakFiles;
 
 interface

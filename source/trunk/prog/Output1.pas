@@ -18,68 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.17  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.16  2008/11/06 19:29:51  danielpharos
-Renamed function to concatenate paths, and start using it.
-
-Revision 1.15  2008/02/23 19:25:19  danielpharos
-Moved a lot of path/file code around: should make it easier to use
-
-Revision 1.14  2007/08/14 16:32:59  danielpharos
-HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
-
-Revision 1.13  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.11  2001/06/05 18:38:46  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.10  2001/03/20 21:47:10  decker_dk
-Updated copyright-header
-
-Revision 1.9  2000/11/16 19:42:17  decker_dk
-- Modified Convex's texture-fileextension alias code, so it won't conflict
-with the rest of the existing code.
-- Introduced a 'TextureFileExtensions' specific, which will contain the
-texture-fileextension aliases, for COnvex's code.
-- Implemented solution for extracting texture-links from .PK3 files
-('.pakfolder' vs '.zipfolder' problem)
-- Replaced the function-names:
-  = Q2TexPath    -> GameTexturesPath
-  = Q3ShaderPath -> GameShadersPath
-- Cleaned up some code here and there.
-- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
-PGameBuffer totally. Hmm? May have introduced problem with color-palette
-in other windows than the texture-browser-detail.
-- Found the place in QkWAD.PAS where the common size of the textures, in the
-texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
-
-Revision 1.8  2000/07/18 19:37:58  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.7  2000/07/16 16:34:50  decker_dk
-Englishification
-
-Revision 1.6  2000/07/09 13:20:42  decker_dk
-Englishification and a little layout
-
-Revision 1.5  2000/05/20 14:10:25  decker_dk
-Some more englishification
-
-Revision 1.4  2000/05/07 09:33:02  decker_dk
-Fixed a problem with TGetPakNames
-
-Revision 1.3  2000/05/04 19:29:27  decker_dk
-Refined TGetPakNames and functions that used GetPakZero/GetNextPakName
-}
-
 unit Output1;
 
 interface

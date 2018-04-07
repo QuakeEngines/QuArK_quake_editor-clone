@@ -18,33 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.10  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.9  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.7  2003/08/13 04:18:56  silverpaladin
-Cleaned up all Hints and warnings declared by Delphi 5.
-
-Revision 1.6  2002/12/31 04:10:53  rowdy
-added support for Delphi 7
-
-Revision 1.5  2002/04/01 10:03:34  tiglari
-changes to make QuArK compile under Delphi 6 Personal (by Rowdy)
-
-Revision 1.4  2001/03/20 21:48:43  decker_dk
-Updated copyright-header
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit CCode;
 
 interface

@@ -18,40 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.13  2009/02/19 18:12:50  danielpharos
-Fix a missing Result on exception value.
-
-Revision 1.12  2008/09/06 15:57:34  danielpharos
-Moved exception code into separate file.
-
-Revision 1.11  2007/11/20 21:29:39  danielpharos
-Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
-
-Revision 1.10  2007/08/14 16:33:00  danielpharos
-HUGE update to HL2: Loading files from Steam should work again, now using the new QuArKSAS utility!
-
-Revision 1.9  2005/09/28 10:49:02  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.7  2002/03/07 19:13:57  decker_dk
-Removed QImages, as it was just another name for QImage
-
-Revision 1.6  2002/02/25 19:16:44  decker_dk
-A possible memory leak solved? I'll wait for tiglari to hear what he finds out.
-See also QuArK-Python forum date 2002.02.19 and 2002.02.25 subject "Leak hunt report".
-
-Revision 1.5  2001/06/05 18:42:56  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.4  2001/03/20 21:35:21  decker_dk
-Updated copyright-header
-}
-
 unit PyCanvas;
 
 interface

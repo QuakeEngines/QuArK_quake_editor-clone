@@ -18,42 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.12  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.11  2009/02/17 17:11:11  danielpharos
-Improved some bad error raising.
-
-Revision 1.10  2008/09/06 15:56:58  danielpharos
-Moved exception code into separate file.
-
-Revision 1.9  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.7  2001/06/05 18:39:33  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.6  2001/03/20 21:45:49  decker_dk
-Updated copyright-header
-
-Revision 1.5  2000/07/18 19:37:59  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.4  2000/07/16 16:34:50  decker_dk
-Englishification
-
-Revision 1.3  2000/07/09 13:20:43  decker_dk
-Englishification and a little layout
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkMacro;
 
 interface

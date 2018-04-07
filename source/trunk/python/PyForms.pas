@@ -18,45 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.19  2010/04/16 21:18:45  danielpharos
-Move some version-stuff about. quarkpy now also checks the minor version number.
-
-Revision 1.18  2009/07/30 09:38:57  danielpharos
-Updated website link.
-
-Revision 1.17  2008/09/14 12:52:23  danielpharos
-Changes to Help system: All forms now have a customizable help-link. Also, added an fallback option to the online infobase docs.
-
-Revision 1.16  2008/05/27 15:09:54  danielpharos
-Fixed remaining of Python errors getting lost
-
-Revision 1.15  2008/05/27 10:39:32  danielpharos
-Fix errors when clicking menu items not being shown/reported
-
-Revision 1.14  2007/08/04 14:41:02  danielpharos
-Removed unused 'uses'
-
-Revision 1.13  2005/09/28 10:49:03  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.11  2003/03/15 06:58:39  tiglari
-wmHelp parses an additional |-field as a url (relative to exepath+help/)
-
-Revision 1.10  2002/04/12 10:03:47  tiglari
-leakhunt: destroy menubarhandle on form close
-
-Revision 1.9  2001/06/05 18:43:13  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.8  2001/03/20 21:35:06  decker_dk
-Updated copyright-header
-}
-
 unit PyForms;
 
 interface

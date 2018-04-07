@@ -18,46 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.11  2009/11/22 21:44:33  danielpharos
-Added an ExpandAll feature to the treeview, callable from Python.
-
-Revision 1.10  2009/07/30 09:38:57  danielpharos
-Updated website link.
-
-Revision 1.9  2008/09/06 15:57:33  danielpharos
-Moved exception code into separate file.
-
-Revision 1.8  2008/05/27 15:09:54  danielpharos
-Fixed remaining of Python errors getting lost
-
-Revision 1.7  2005/09/28 10:49:03  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2001/03/20 21:35:21  decker_dk
-Updated copyright-header
-
-Revision 1.4  2000/11/25 20:50:41  decker_dk
-- Misc. small code cleanups
-- Replaced the names:
- = ofTvInvisible       -> ofTreeViewInvisible
- = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
- = ofTvExpanded        -> ofTreeViewExpanded
- = ofSurDisque         -> ofNotLoadedToMemory
- = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
- = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
-
-Revision 1.3  2000/07/09 13:19:27  decker_dk
-Englishification and a little layout
-
-Revision 1.2  2000/05/14 20:27:53  alexander
-ToutChargerAuto -> LoadAllAuto
-}
-
 unit PyExplorer;
 
 interface

@@ -18,18 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.2  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.1  2008/10/12 11:31:32  danielpharos
-Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
-}
-
 unit Qk6DX;
 
 interface

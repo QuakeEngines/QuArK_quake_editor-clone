@@ -18,30 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.8  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.7  2009/02/21 17:10:12  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.6  2007/09/12 15:39:51  danielpharos
-Small file cleanup.
-
-Revision 1.5  2007/02/06 13:08:47  danielpharos
-Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
-
-Revision 1.4  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.2  2003/01/01 13:49:56  decker_dk
-added cvs headers
-}
-
 unit QkKingPin;
 
 interface

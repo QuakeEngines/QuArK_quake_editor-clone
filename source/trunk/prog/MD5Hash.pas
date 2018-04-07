@@ -18,45 +18,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.10  2010/05/23 15:56:46  danielpharos
-Added some logging during loading and unloading of some external libraries.
-
-Revision 1.9  2010/04/02 16:51:58  danielpharos
-Created a new LogWindowsError procedure.
-
-Revision 1.8  2010/03/09 21:47:32  danielpharos
-Added additional logging and small cleanup.
-
-Revision 1.7  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.6  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.5  2008/09/08 18:08:51  danielpharos
-Added some more general exception functions.
-
-Revision 1.4  2008/05/16 20:57:49  danielpharos
-Use centralized call to get correct directory
-
-Revision 1.3  2007/12/19 12:41:26  danielpharos
-Constantified some variables
-
-Revision 1.2  2007/11/21 18:46:14  danielpharos
-Fixed a typo and removed a wrong comment.
-
-Revision 1.1  2007/09/12 16:21:41  danielpharos
-Added MD5 hash capabilities! This is now used to check if QuArKSAS is up-to-date.
-}
-
 unit MD5Hash;
 
 interface
+
 uses Windows, SysUtils, QkObjects;
 
 function Md5GetFileHash(const Filename: string): string;

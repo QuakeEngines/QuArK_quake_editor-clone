@@ -18,31 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.8  2009/07/15 10:38:06  danielpharos
-Updated website link.
-
-Revision 1.7  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.6  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.4  2002/06/06 22:45:40  tiglari
-use set g_CxScreen, g_CyScreen insrad of sm_C... for dual monitor problems
- (info from quantum_red and Decker)
-
-Revision 1.3  2001/03/20 21:38:02  decker_dk
-Updated copyright-header
-
-Revision 1.2  2000/09/10 14:04:24  alexander
-added cvs headers
-}
-
 unit PyFullScreen;
 
 interface

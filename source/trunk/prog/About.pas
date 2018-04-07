@@ -18,54 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.41  2010/05/28 18:58:52  danielpharos
-Fixed grammar mistake.
-
-Revision 1.40  2010/04/16 22:06:01  danielpharos
-Corrected Debug wording.
-
-Revision 1.39  2010/04/16 21:50:37  danielpharos
-Oops; fixed double text.
-
-Revision 1.38  2010/04/16 21:48:00  danielpharos
-Added auto-Delphi-compiler version string selection, and moved compiler-string down a bit.
-
-Revision 1.37  2010/04/16 21:18:45  danielpharos
-Move some version-stuff about. quarkpy now also checks the minor version number.
-
-Revision 1.36  2010/04/16 20:07:23  danielpharos
-Move some version-stuff about. quarkpy now also checks the minor version number.
-
-Revision 1.35  2009/07/31 11:40:45  danielpharos
-Small change to cleanup About.pas a bit.
-
-Revision 1.34  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.33  2009/07/14 11:44:18  danielpharos
-Fixed bad wording.
-
-Revision 1.32  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.31  2008/10/08 19:44:16  danielpharos
-Fix some possible synchronization issues.
-
-Revision 1.30  2008/09/06 15:31:51  danielpharos
-Moved old-compatibility code to ExtraFunctionality.
-
-Revision 1.29  2007/09/18 19:32:23  danielpharos
-Fix the disclaimer disappearing in the About screen
-
-Revision 1.28  2007/09/18 18:18:43  danielpharos
-Kill another disclaimer redraw, and add history to About.pas
-}
-
 unit About;
 
 interface

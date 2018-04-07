@@ -18,48 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.16  2014/09/05 18:39:10  danielpharos
-Fixed a race condition in an error path where CloseHandle could be called twice on a process handle.
-
-Revision 1.15  2014/08/26 10:21:25  danielpharos
-Changed two wrong DeleteObject calls into correct CloseHandle calls.
-
-Revision 1.14  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.13  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.12  2008/09/06 15:57:11  danielpharos
-Moved exception code into separate file.
-
-Revision 1.11  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.9  2003/08/12 16:01:27  silverpaladin
-Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
-
-Revision 1.8  2003/07/21 04:43:50  nerdiii
-Linux compatibility ( '/' '\' )
-
-Revision 1.7  2001/03/20 21:42:24  decker_dk
-Updated copyright-header
-
-Revision 1.6  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.5  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.4  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit Running;
 
 interface

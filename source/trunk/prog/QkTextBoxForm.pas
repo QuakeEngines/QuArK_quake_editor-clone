@@ -18,21 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.3  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.2  2008/12/12 13:15:11  danielpharos
-Enlarge margins around icon a bit.
-
-Revision 1.1  2008/12/12 12:47:52  danielpharos
-Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
-}
-
 unit QkTextBoxForm;
 
 interface

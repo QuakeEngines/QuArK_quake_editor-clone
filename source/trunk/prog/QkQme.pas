@@ -18,66 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.20  2016/01/02 20:01:10  danielpharos
-Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
-
-Revision 1.19  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.18  2009/02/21 17:10:12  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.17  2008/11/06 20:18:22  danielpharos
-Removed old stuff in preparation for new specifics code.
-
-Revision 1.16  2008/10/12 11:31:32  danielpharos
-Moved 6DX map format to separate file, and re-factored QkMap and QkQuakeMap.
-
-Revision 1.15  2008/09/06 15:57:15  danielpharos
-Moved exception code into separate file.
-
-Revision 1.14  2007/10/30 20:43:35  danielpharos
-Fixed two weird-looking spaces
-
-Revision 1.13  2007/07/05 10:19:45  danielpharos
-Moved the Quake .map format code to a separate file.
-
-Revision 1.12  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.10  2001/03/20 21:44:19  decker_dk
-Updated copyright-header
-
-Revision 1.9  2001/01/21 15:49:48  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.8  2001/01/15 19:21:27  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.7  2000/11/26 19:08:32  decker_dk
-- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
-- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
-function to use.
-- Replaced constant 'Origine' with 'OriginVectorZero'.
-
-Revision 1.6  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.5  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.4  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkQme;
 
 interface

@@ -18,38 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.9  2009/07/30 09:38:57  danielpharos
-Updated website link.
-
-Revision 1.8  2007/07/24 13:54:47  danielpharos
-Revert maphandles 1.60: Fixed the underlying problem in PyMath3D.
-
-Revision 1.7  2006/11/30 00:44:55  cdunde
-To merge all source files that had changes from DanielPharos branch
-to HEAD for QuArK 6.5.0 Beta 1.
-
-Revision 1.6.2.5  2006/11/23 20:11:50  danielpharos
-Fix for camera angles not working the right way
-
-Revision 1.6.2.4  2006/11/01 22:22:27  danielpharos
-BackUp 1 November 2006
-Mainly reduce OpenGL memory leak
-
-Revision 1.6  2005/09/28 10:49:03  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.4  2001/06/05 18:43:29  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.3  2001/03/20 21:34:49  decker_dk
-Updated copyright-header
-}
-
 unit PyMath3D;
 
 interface

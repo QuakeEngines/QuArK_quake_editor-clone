@@ -18,59 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.17  2010/11/06 17:10:15  danielpharos
-Consted a bunch of strings.
-
-Revision 1.16  2009/07/15 10:38:00  danielpharos
-Updated website link.
-
-Revision 1.15  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.14  2008/11/06 21:11:50  danielpharos
-Made type Specifics soft-coded: Will lated be changed into a new, yet-to-be-defined type.
-
-Revision 1.13  2008/10/07 21:05:14  danielpharos
-Fixed a typo in a comment.
-
-Revision 1.12  2008/09/06 15:57:01  danielpharos
-Moved exception code into separate file.
-
-Revision 1.11  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.9  2001/11/11 01:28:49  tiglari
-icon leak fixes
-
-Revision 1.8  2001/06/05 18:42:24  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.7  2001/03/20 21:41:11  decker_dk
-Updated copyright-header
-
-Revision 1.6  2001/02/23 19:26:21  decker_dk
-Small changes (which hopefully does not break anything)
-SuivantDansGroupe => NextInGroup
-TrimStringList => StringListConcatWithSeparator
-
-Revision 1.5  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.4  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.3  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit Undo;
 
 interface

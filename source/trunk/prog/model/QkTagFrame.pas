@@ -18,25 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.3  2009/04/28 20:54:03  cdunde
-Model Editor Bone Rebuild merge to HEAD.
-Complete change of bone system.
-
-Revision 1.2.2.1  2009/02/24 23:57:35  danielpharos
-Initial changes.
-
-Revision 1.2  2009/02/21 17:09:53  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.1  2008/07/17 14:47:58  danielpharos
-Big (experimental) change to model bones, tags and boundframes
-}
-
 unit QkTagFrame;
 
 interface

@@ -18,33 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.10  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.9  2007/02/09 10:44:17  danielpharos
-Fixes for memory leaks
-
-Revision 1.8  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.6  2003/03/12 12:50:18  decker_dk
-Fixed a minor problem in TTexHintWindow.ActivateHint(), in case GlobalFindTexture() returned NIL.
-
-Revision 1.5  2001/03/20 21:41:41  decker_dk
-Updated copyright-header
-
-Revision 1.4  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit TexHints;
 
 interface

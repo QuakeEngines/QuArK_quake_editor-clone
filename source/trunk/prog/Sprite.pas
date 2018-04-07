@@ -18,27 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.7  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.6  2008/12/19 23:30:41  danielpharos
-Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
-
-Revision 1.5  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.3  2001/06/05 18:41:51  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.2  2001/03/20 21:41:57  decker_dk
-Updated copyright-header
-}
-
 unit Sprite;
 
 interface

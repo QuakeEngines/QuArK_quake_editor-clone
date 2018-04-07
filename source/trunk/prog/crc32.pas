@@ -19,26 +19,6 @@
 // "Unsafe type 'Memory Pointer': in using Stream.Memory in CalcFileCRC32.
 // September 2002.  (These warnngs are for .NET anyway)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.8  2007/03/28 22:13:01  danielpharos
-Updated the crc32-unit.
-
-Revision 1.7  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2001/03/20 21:48:25  decker_dk
-Updated copyright-header
-
-Revision 1.4  2001/01/28 17:23:50  decker_dk
-Removed 'Constant expression violates subrange bounds' compiler warnings, by forcing them to 'LongInt($xxxxxxxx)'
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 {$DEFINE STREAMIO}       // Don't use BlockRead anymore
 // Ignore "Unsafe type 'Memory: Pointer'" for  now (Sept 2002)
 

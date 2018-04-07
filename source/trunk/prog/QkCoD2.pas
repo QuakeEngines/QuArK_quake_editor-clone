@@ -18,33 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.7  2017/10/08 16:46:37  danielpharos
-Added experimental support for loading CoD2 material files.
-
-Revision 1.6  2010/12/11 22:29:32  danielpharos
-Added CoD2 bsp file type.
-
-Revision 1.5  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.4  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.3  2008/10/09 12:58:48  danielpharos
-Added decent Sylphis map file support, and removed some redundant 'uses'.
-
-Revision 1.2  2008/10/09 11:28:38  danielpharos
-Fix mistake.
-
-Revision 1.1  2008/09/16 12:12:48  danielpharos
-Added support for CoD2 iwd files.
-}
-
 unit QkCoD2;
 
 interface

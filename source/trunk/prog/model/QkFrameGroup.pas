@@ -18,30 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.8  2009/02/21 17:09:53  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.7  2007/09/10 10:24:16  danielpharos
-Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
-
-Revision 1.6  2005/09/28 10:49:02  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.4  2001/03/20 21:37:33  decker_dk
-Updated copyright-header
-
-Revision 1.3  2001/01/21 15:51:01  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.2  2000/10/11 19:01:08  aiv
-Small updates
-}
-
 unit QkFrameGroup;
 
 interface

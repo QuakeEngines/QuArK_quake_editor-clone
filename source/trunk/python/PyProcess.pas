@@ -18,39 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.12  2017/10/17 18:08:29  danielpharos
-Reworked inner working to remove a Sleep-call.
-
-Revision 1.11  2009/07/15 10:38:10  danielpharos
-Updated website link.
-
-Revision 1.10  2009/02/21 17:09:44  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.9  2008/09/23 08:22:19  danielpharos
-Fixed a memory leak.
-
-Revision 1.8  2008/09/06 15:57:35  danielpharos
-Moved exception code into separate file.
-
-Revision 1.7  2008/09/06 15:31:52  danielpharos
-Moved old-compatibility code to ExtraFunctionality.
-
-Revision 1.6  2005/09/28 10:49:03  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.4  2001/06/05 18:43:47  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.3  2001/03/20 21:34:29  decker_dk
-Updated copyright-header
-}
-
 unit PyProcess;
 
 interface

@@ -18,30 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.8  2009/02/21 17:12:12  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.7  2008/10/08 20:14:13  danielpharos
-Fix log layout.
-
-Revision 1.6  2008/10/07 21:11:24  danielpharos
-Fixed some BeginPaint/EndPaint mismatching.
-
-Revision 1.5  2008/10/05 13:51:19  danielpharos
-Correct Integer to HDC.
-
-Revision 1.4  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.2  2000/09/10 14:05:21  alexander
-added cvs headers
-}
-
 unit CursorScrollBox;
 
 interface

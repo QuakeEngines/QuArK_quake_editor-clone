@@ -19,15 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.6  2009/02/21 17:10:12  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-}
-
    (* THIS IS SUPPOSED TO BE COMPILED THROUGH CCODE.PAS *)
 
    (* .file	"resizer.c" *)

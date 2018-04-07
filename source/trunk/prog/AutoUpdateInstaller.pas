@@ -18,51 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.13  2009/07/15 10:38:00  danielpharos
-Updated website link.
-
-Revision 1.12  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.11  2008/10/08 19:44:16  danielpharos
-Fix some possible synchronization issues.
-
-Revision 1.10  2008/10/04 13:33:25  danielpharos
-Added Check for Updates option to ? menu and added some dialog icons.
-
-Revision 1.9  2008/09/06 15:33:12  danielpharos
-Removed name-collision function.
-
-Revision 1.8  2008/08/11 23:15:11  danielpharos
-Updated updater: it is now downloading and parsing the notifications file
-
-Revision 1.7  2008/07/07 19:51:50  danielpharos
-Small update: AutoUpdateInstaller now going through individual files of packages
-
-Revision 1.6  2008/06/25 14:44:50  danielpharos
-Added missing log entries.
-
-Revision 1.5  2008/06/25 14:30:12  danielpharos
-Change to ASCII file property
-
-Revision 1.4  2008/06/25 14:23:41  danielpharos
-Major improvements in online update system.
-
-Revision 1.3  2008/02/21 21:21:27  danielpharos
-Small auto-update update: just some minor things.
-
-Revision 1.2  2008/02/07 14:09:44  danielpharos
-Add missing result.
-
-Revision 1.1  2008/02/03 13:12:45  danielpharos
-Update for the AutoUpdater. Beginning of the install-window.
-}
-
 unit AutoUpdateInstaller;
 
 interface

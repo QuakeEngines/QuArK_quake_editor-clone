@@ -18,66 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.18  2011/05/11 20:08:21  danielpharos
-Disabled offline update check.
-
-Revision 1.17  2010/04/16 21:18:45  danielpharos
-Move some version-stuff about. quarkpy now also checks the minor version number.
-
-Revision 1.16  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.15  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.14  2008/12/12 12:47:52  danielpharos
-Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
-
-Revision 1.13  2008/10/04 13:33:25  danielpharos
-Added Check for Updates option to ? menu and added some dialog icons.
-
-Revision 1.12  2008/09/27 10:18:14  danielpharos
-Disable update package check for now.
-
-Revision 1.11  2008/08/25 18:57:54  danielpharos
-Update to move towards a releasable state.
-
-Revision 1.10  2008/08/11 23:15:10  danielpharos
-Updated updater: it is now downloading and parsing the notifications file
-
-Revision 1.9  2008/07/07 19:51:50  danielpharos
-Small update: AutoUpdateInstaller now going through individual files of packages
-
-Revision 1.8  2008/06/26 20:35:06  danielpharos
-Added sanity check for package build number, and completed package file parser.
-
-Revision 1.7  2008/06/25 14:23:41  danielpharos
-Major improvements in online update system.
-
-Revision 1.6  2008/02/21 21:21:27  danielpharos
-Small auto-update update: just some minor things.
-
-Revision 1.5  2008/02/07 14:10:05  danielpharos
-Display progressbar when searching for updates
-
-Revision 1.4  2008/02/03 13:12:45  danielpharos
-Update for the AutoUpdater. Beginning of the install-window.
-
-Revision 1.3  2008/01/01 20:37:44  danielpharos
-Partially build in and enabled the online update system. Still needs a lot of work, but it's downloading an index file and parsing it.
-
-Revision 1.2  2007/11/21 18:19:50  danielpharos
-Fix a problem downloading files in the AutoUpdater, and disabled it and hidden it per default (since it's not yet functional).
-
-Revision 1.1  2007/09/12 15:35:40  danielpharos
-Moved update settings to seperate config section and added beginnings of online update check.
-}
-
 unit AutoUpdater;
 
 interface

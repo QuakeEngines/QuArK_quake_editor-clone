@@ -18,49 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.13  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.12  2009/02/21 17:10:20  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.11  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.9  2001/06/05 18:39:10  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.8  2001/03/20 21:46:29  decker_dk
-Updated copyright-header
-
-Revision 1.7  2000/11/25 20:51:33  decker_dk
-- Misc. small code cleanups
-- Replaced the names:
- = ofTvInvisible       -> ofTreeViewInvisible
- = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
- = ofTvExpanded        -> ofTreeViewExpanded
- = ofSurDisque         -> ofNotLoadedToMemory
- = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
- = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
-
-Revision 1.6  2000/07/18 19:37:59  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.5  2000/07/16 16:34:50  decker_dk
-Englishification
-
-Revision 1.4  2000/07/09 13:20:43  decker_dk
-Englishification and a little layout
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkFileExplorer;
 
 interface

@@ -18,36 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.11  2009/07/15 10:38:06  danielpharos
-Updated website link.
-
-Revision 1.10  2009/05/20 20:17:43  danielpharos
-Stop annoying gamemode warning for models.
-
-Revision 1.9  2009/02/21 17:09:53  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.8  2008/11/06 20:16:06  danielpharos
-Renamed function to concatenate paths, and start using it.
-
-Revision 1.7  2008/09/29 21:45:32  danielpharos
-Soft-coded 'maps' directory (not in Python yet).
-
-Revision 1.6  2005/09/28 10:49:02  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.4  2001/03/20 21:37:04  decker_dk
-Updated copyright-header
-
-Revision 1.3  2000/10/11 19:01:08  aiv
-Small updates
-}
-
 unit QkModel;
 
 interface

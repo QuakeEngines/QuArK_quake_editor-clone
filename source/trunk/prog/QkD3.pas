@@ -19,38 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.15  2012/09/05 18:06:10  danielpharos
-Move implementation of FloatSpec internally to QkObjects.
-
-Revision 1.14  2009/07/17 10:49:26  danielpharos
-Removed redundant uses.
-
-Revision 1.13  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.12  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.11  2008/10/10 19:43:35  danielpharos
-Fix .mtr files showing up as .shader.
-
-Revision 1.10  2008/09/06 15:57:13  danielpharos
-Moved exception code into separate file.
-
-Revision 1.9  2008/08/26 16:21:52  danielpharos
-Added filename of broken shader/material file to error-message.
-
-Revision 1.8  2008/04/26 15:31:12  danielpharos
-Added a missing Log-line.
-
-Revision 1.7  2008/04/25 20:42:14  danielpharos
-Added history, fixed two small material-file parsing bug, and added experimental 'e' shader keyword.
-}
-
 (*
  * stuff for Doom 3 - a lot (ok, most) of this was copied from QkQ3.pas as Quake 3
  * and Doom 3 have a lot in common, but it is the little differences that make for

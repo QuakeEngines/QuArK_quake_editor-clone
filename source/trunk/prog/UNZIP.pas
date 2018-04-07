@@ -20,35 +20,6 @@ http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.10  2017/08/17 17:50:58  danielpharos
-Updated to Chief's UNZIP V2.60; this adds CRC checking to ZIP-file loading.
-
-Revision 1.9  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.8  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.7  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2003/07/21 04:41:33  nerdiii
-Linux compatibility ( '/' '\' )
-
-Revision 1.4  2001/03/20 21:41:11  decker_dk
-Updated copyright-header
-
-Revision 1.3  2000/10/16 22:14:39  aiv
-zip files now handled entirely in pascal (no dlls!)
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
-{
 This unit basically decompresses a zip file (only stored, shrunk, imploded and deflated files
 allowed - that should be enough for PK3 support) from one stream to another.
 

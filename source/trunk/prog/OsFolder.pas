@@ -18,34 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.14  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.13  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.11  2001/03/20 21:47:27  decker_dk
-Updated copyright-header
-
-Revision 1.10  2001/02/05 11:38:57  tiglari
-framework for filters in texture-list building (don't work yet,
-  just the preliminaries I hope)
-
-Revision 1.9  2001/02/04 18:30:56  tiglari
-filter shaders by shaderlist.txt
-
-Revision 1.8  2001/02/04 01:41:00  tiglari
-changed visibility of QOsFolder.ReadFolder
-
-Revision 1.7  2001/02/01 20:46:26  decker_dk
-added revision history
-}
-
 unit OsFolder;
 
 interface

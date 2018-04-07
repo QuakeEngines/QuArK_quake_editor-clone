@@ -18,63 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.23  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.22  2009/03/16 08:47:21  danielpharos
-Updated to DevIL 1.7.8, added IWI loading, and added many new image loading/saving options.
-
-Revision 1.21  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.20  2008/10/04 13:50:55  danielpharos
-Start using LogAndRaiseError instead of local Fatal's.
-
-Revision 1.19  2008/08/28 19:01:16  danielpharos
-Added a bunch of DevIL setting, and re-enabled DevIL DDS file saving.
-
-Revision 1.18  2007/12/06 23:01:31  danielpharos
-Whole truckload of image-file-handling changes: Revert PCX file saving and fix paletted images not loading/saving correctly.
-
-Revision 1.17  2007/11/21 16:07:32  danielpharos
-Another bunch of hugh image fixes: everything should work again!
-
-Revision 1.16  2007/11/21 00:06:22  danielpharos
-BMP and PCX files are now also using DevIL and FreeImage to load and save. Also, fixed some memory-problems causing images to disappear.
-
-Revision 1.15  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.13  2002/03/07 19:15:38  decker_dk
-Removed QImages, as it was just another name for QImage
-
-Revision 1.12  2001/06/05 18:38:47  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.11  2001/03/20 21:46:48  decker_dk
-Updated copyright-header
-
-Revision 1.10  2001/01/21 15:48:01  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.9  2001/01/15 19:19:21  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.8  2000/07/16 16:34:50  decker_dk
-Englishification
-
-Revision 1.7  2000/07/09 13:20:42  decker_dk
-Englishification and a little layout
-
-Revision 1.6  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkBmp;
 
 interface

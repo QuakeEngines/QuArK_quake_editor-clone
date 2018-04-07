@@ -19,24 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.5  2009/09/22 18:11:51  danielpharos
-Updated website link.
-
-Revision 1.4  2008/02/23 19:25:20  danielpharos
-Moved a lot of path/file code around: should make it easier to use
-
-Revision 1.3  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.1  2003/08/13 04:23:36  silverpaladin
-Additional Delphi compiler version defines.
-
-}
-
 // Versions of this unit are floating freely in several Delphi User Group
 // forums out there I don't know the origin.
 // It was added because it is a misnomer that a compiler constant is defined for

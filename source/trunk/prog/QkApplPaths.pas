@@ -18,73 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.20  2010/02/16 21:24:34  danielpharos
-Added version number split function.
-
-Revision 1.19  2010/02/16 19:56:23  danielpharos
-Added option to disable QuArKSAS extractor (and other small, related items).
-
-Revision 1.18  2009/07/15 10:38:00  danielpharos
-Updated website link.
-
-Revision 1.17  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.16  2009/02/14 17:35:35  danielpharos
-You can now "uninstall" gamemodes: just delete the addons-directory of that game. Also, small code changes to accommodate this.
-
-Revision 1.15  2008/12/02 16:17:34  danielpharos
-Removed unneeded SetApplicationPath function.
-
-Revision 1.14  2008/11/06 19:29:51  danielpharos
-Renamed function to concatenate paths, and start using it.
-
-Revision 1.13  2008/09/20 20:45:27  danielpharos
-Added GetQPath functions to Defaults.qrk and Setup.qrk loading.
-
-Revision 1.12  2008/09/20 19:34:43  danielpharos
-Const-ed some parameters, and re-factored some code for better performance.
-
-Revision 1.11  2008/05/16 20:57:16  danielpharos
-Renamed a Type to avoid possible name-collision
-
-Revision 1.10  2008/02/23 19:25:21  danielpharos
-Moved a lot of path/file code around: should make it easier to use
-
-Revision 1.9  2007/03/10 21:56:10  danielpharos
-Fixed a backslash-linux problem.
-
-Revision 1.8  2006/11/30 01:21:02  cdunde
-To fix for filtering purposes, we do NOT want to use capital letters for cvs.
-
-Revision 1.7  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2003/08/12 15:42:49  silverpaladin
-Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
-
-Revision 1.4  2003/07/21 04:50:02  nerdiii
-Linux compatibility ( '/' '\' )
-
-Revision 1.3  2001/03/20 21:47:10  decker_dk
-Updated copyright-header
-
-Revision 1.2  2001/02/02 00:09:32  aiv
-Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionality.pas
-for us non-D5 users.
-
-Revision 1.1  2001/01/30 19:10:30  decker_dk
-Created to control the application-paths and sub-directories in a feasible manner. I'm here thinking about directory-names with spaces in them, and the possible conflict that has on cvs-repository.
-}
-
 unit QkApplPaths;
-
- { ------------------- }
 
 interface
 

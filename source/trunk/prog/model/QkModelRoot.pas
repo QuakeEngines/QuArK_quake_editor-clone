@@ -18,54 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.17  2009/02/21 17:09:53  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.16  2008/11/21 23:00:16  danielpharos
-Added a try-finally around a progress indicator.
-
-Revision 1.15  2008/11/19 06:14:00  cdunde
-Bones system moved to outside of components for Model Editor completed.
-
-Revision 1.14  2008/11/06 20:15:54  danielpharos
-Removed redundant function.
-
-Revision 1.13  2007/08/05 20:04:33  danielpharos
-Fix a typo in a comment.
-
-Revision 1.12  2005/09/28 10:49:02  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.10  2003/08/13 04:18:02  silverpaladin
-Cleaned up all Hints and warnings declared by Delphi 5.
-
-Revision 1.9  2001/03/20 21:37:04  decker_dk
-Updated copyright-header
-
-Revision 1.8  2001/02/28 19:03:25  aiv
-Fixed ref count prob.
-
-Revision 1.7  2001/02/23 02:14:27  aiv
-more on md3 linking
-
-Revision 1.6  2001/02/18 20:03:46  aiv
-attaching models to tags almost finished
-
-Revision 1.5  2001/02/01 22:00:56  aiv
-Remove Vertex code now in python.
-
-Revision 1.4  2001/01/21 15:51:31  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.3  2000/10/11 19:01:08  aiv
-Small updates
-}
-
 unit QkModelRoot;
 
 interface

@@ -18,28 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.17  2015/09/12 13:19:19  danielpharos
-Changed TimesLoaded into Cardinal.
-
-Revision 1.16  2014/10/05 15:25:14  danielpharos
-Lots of work to Direct3D renderer: vertices now rendering, camera movement working and aligned.
-
-Revision 1.15  2010/10/17 15:39:14  danielpharos
-Added high precision float option to DirectX renderer.
-
-Revision 1.14  2009/07/15 10:38:06  danielpharos
-Updated website link.
-
-Revision 1.13  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-}
-
 unit DX9;
 
 interface

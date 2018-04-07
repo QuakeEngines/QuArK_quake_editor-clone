@@ -18,25 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.5  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.4  2007/02/02 00:47:49  danielpharos
-Fixed a few copyright headers
-
-Revision 1.3  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.1  2005/07/30 23:04:44  alexander
-introduced dispface class for faces with displacement mapping
-vmf loader sets some displacement info
-}
-
 unit DispFace;
 
 interface

@@ -18,49 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.13  2009/07/15 10:38:00  danielpharos
-Updated website link.
-
-Revision 1.12  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.11  2008/09/06 15:56:59  danielpharos
-Moved exception code into separate file.
-
-Revision 1.10  2007/03/11 12:03:10  danielpharos
-Big changes to Logging. Simplified the entire thing.
-
-Revision 1.9  2007/02/07 18:48:34  danielpharos
-Fixes for memory leaks
-
-Revision 1.8  2007/02/07 14:09:22  danielpharos
-Fix a few Range Check errors
-
-Revision 1.7  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2005/07/05 19:12:48  alexander
-logging to file using loglevels
-
-Revision 1.4  2002/12/30 18:07:36  decker_dk
-Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
-
-Revision 1.3  2001/10/10 11:54:57  tiglari
-Move QObjectStringlist into interface section so that it can be freed in
- Qk1:TForm1.FormDestroy
-
-Revision 1.2  2001/03/20 21:45:22  decker_dk
-Updated copyright-header
-
-Revision 1.1  2001/01/21 15:49:30  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-}
-
 unit QkObjectClassList;
 
 interface

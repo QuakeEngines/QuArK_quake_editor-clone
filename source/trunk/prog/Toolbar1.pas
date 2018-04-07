@@ -18,60 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.18  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.17  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.16  2008/12/12 12:47:52  danielpharos
-Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
-
-Revision 1.15  2007/11/20 18:28:06  danielpharos
-Moved most of the DIB-calls to PixelSet, and added padding there. This should fix the few remaining image drawing issues.
-
-Revision 1.14  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.12  2001/06/17 00:01:59  aiv
-'Code' specific in toolbarbuttons and python buttons will be executed when clicked.
-
-Revision 1.11  2001/06/05 18:42:10  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.10  2001/03/29 01:00:29  aiv
-modifable :form objects!
-
-Revision 1.9  2001/03/20 21:41:41  decker_dk
-Updated copyright-header
-
-Revision 1.8  2001/01/30 19:11:11  decker_dk
-Changed to GetApplicationPath().
-
-Revision 1.7  2001/01/21 15:50:45  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.6  2001/01/15 19:22:36  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.5  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.4  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.3  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit Toolbar1;
 
 interface

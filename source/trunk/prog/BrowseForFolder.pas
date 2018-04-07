@@ -18,46 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.4  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.3  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.2  2008/05/01 12:58:59  danielpharos
-Added copyright header and other small fixes.
-
-Revision 1.1  2008/05/01 12:57:41  danielpharos
-Moved BrowseForFolder to a better place.
-
-Revision 1.9  2008/04/17 15:19:05  cdunde
-Fixed 'Folder Browser' to stop displaying the 'Hint' and only show the 'Txt'.
-
-Revision 1.8  2008/04/13 12:38:02  cdunde
-Provided a way to display a 'title' for the 'Browse for Folder' window
-and stop the entire 'Hint" from also being displayed.
-
-Revision 1.7  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2003/09/06 00:54:19  silverpaladin
-Fixed an improper pointer cast
-
-Revision 1.4  2003/08/13 04:21:28  silverpaladin
-Cleaned up all Hints and warnings declared by Delphi 5.
-
-Revision 1.3  2001/05/09 18:54:01  aiv
-fix for retail cs.
-
-Revision 1.2  2000/09/10 14:05:21  alexander
-added cvs headers
-}
-
 unit BrowseForFolder;
 
 interface

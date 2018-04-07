@@ -18,40 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.10  2009/04/28 20:54:03  cdunde
-Model Editor Bone Rebuild merge to HEAD.
-Complete change of bone system.
-
-Revision 1.9.2.1  2009/04/16 16:57:34  danielpharos
-Fixed QSysData not being invisible in the Model Editor.
-
-Revision 1.9  2009/02/21 17:09:53  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.8  2008/12/19 23:30:41  danielpharos
-Reduced dependancy on CurrentMapView to something more logical; made it a call-parameter.
-
-Revision 1.7  2007/10/14 21:48:56  danielpharos
-Fix the frame-dragging in the Model Editor.
-
-Revision 1.6  2005/09/28 10:49:02  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.4  2001/03/20 21:37:18  decker_dk
-Updated copyright-header
-
-Revision 1.3  2001/02/28 19:03:25  aiv
-Fixed ref count prob.
-
-Revision 1.2  2000/10/11 19:01:08  aiv
-Small updates
-}
-
 unit QkMdlObject;
 
 interface

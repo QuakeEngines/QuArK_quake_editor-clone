@@ -18,51 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.16  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.15  2007/11/29 16:36:03  danielpharos
-Fix an access violation when trying to drag an item to an empty place in the treeview.
-
-Revision 1.14  2007/10/14 21:48:56  danielpharos
-Fix the frame-dragging in the Model Editor.
-
-Revision 1.13  2007/09/10 10:24:18  danielpharos
-Build-in an Allowed Parent check. Items shouldn't be able to be dropped somewhere where they don't belong.
-
-Revision 1.12  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.10  2001/06/05 18:39:33  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.9  2001/03/20 21:46:07  decker_dk
-Updated copyright-header
-
-Revision 1.8  2001/01/21 15:48:25  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.7  2001/01/15 19:19:58  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.6  2000/07/18 19:37:59  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.5  2000/07/16 16:34:50  decker_dk
-Englishification
-
-Revision 1.4  2000/07/09 13:20:43  decker_dk
-Englishification and a little layout
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkGroup;
 
 interface

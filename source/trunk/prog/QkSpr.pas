@@ -18,66 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.24  2016/01/02 20:01:10  danielpharos
-Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
-
-Revision 1.23  2015/12/06 11:17:48  danielpharos
-Fixed an unsafe typecast warning.
-
-Revision 1.22  2015/05/23 16:00:11  danielpharos
-Moved two strings to dictionary, and fixed a typo in one of them.
-
-Revision 1.21  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.20  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.19  2008/11/06 20:18:22  danielpharos
-Removed old stuff in preparation for new specifics code.
-
-Revision 1.18  2008/09/06 15:57:11  danielpharos
-Moved exception code into separate file.
-
-Revision 1.17  2007/03/17 15:43:12  danielpharos
-Made another few dictionnary changes. Also fixed a double entry. And a small change in unloading the dll-files of VTFLib.
-
-Revision 1.16  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.14  2002/03/07 19:16:25  decker_dk
-Removed QImages, as it was just another name for QImage
-
-Revision 1.13  2001/03/20 21:44:00  decker_dk
-Updated copyright-header
-
-Revision 1.12  2001/01/22 00:12:50  aiv
-Beginning of support for sprites in 3d view
-
-Revision 1.11  2001/01/21 15:50:08  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.10  2001/01/15 19:21:42  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.9  2000/08/20 10:45:48  aiv
-Updated and layed out code
-
-Revision 1.8  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.7  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.6  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkSpr;
 
 interface

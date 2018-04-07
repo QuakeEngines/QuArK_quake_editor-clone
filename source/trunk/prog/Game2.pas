@@ -18,57 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.17  2009/02/21 17:11:37  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.16  2008/11/06 19:29:51  danielpharos
-Renamed function to concatenate paths, and start using it.
-
-Revision 1.15  2008/08/09 19:40:21  danielpharos
-Translated a function call
-
-Revision 1.14  2008/02/23 19:25:20  danielpharos
-Moved a lot of path/file code around: should make it easier to use
-
-Revision 1.13  2005/09/28 10:48:31  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.11  2004/10/09 21:26:29  alexander
-fixed missing use
-
-Revision 1.10  2004/01/05 22:01:43  silverpaladin
-TrySavingNow was changed to display a warning if it fails rather than raising an error message.  Then if something like an MD3 is referenced in a qrk file, the rest of the qrk file can still be saved without erroring out.
-
-Revision 1.9  2003/07/21 04:52:21  nerdiii
-Linux compatibility ( '/' '\' )
-
-Revision 1.8  2001/03/20 21:48:05  decker_dk
-Updated copyright-header
-
-Revision 1.7  2001/02/02 00:09:32  aiv
-Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionality.pas
-for us non-D5 users.
-
-Revision 1.6  2001/01/30 19:10:12  decker_dk
-Added a function FindAndAddFilesOfMask(), which hopefully should make the future ./Addons with sub-directories per supported game, easier to make/search through.
-Modified FormActivate() so it will search for *.QRK files in four places.
-Changed to GetApplicationPath().
-
-Revision 1.5  2001/01/07 13:21:05  decker_dk
-Resized the dialog.
-
-Revision 1.4  2000/07/18 19:37:58  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit Game2;
 
 interface

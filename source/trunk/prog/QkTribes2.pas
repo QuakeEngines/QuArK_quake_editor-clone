@@ -18,21 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.4  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.3  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.1  2002/02/24 13:46:03  decker_dk
-Added from Andy's original QkTribes2.PAS code.
-}
-
 unit QkTribes2;
 
 interface

@@ -729,7 +729,7 @@ const
   {$EXTERNALSYM XACTENGINE_E_NORENDERER}
   XACTENGINE_E_INVALIDENTRYCOUNT         = DWord(((1 shl 31) or (FACILITY_XACTENGINE shl 16)) or $018);   // Invalid entry count for channel maps
   {$EXTERNALSYM XACTENGINE_E_INVALIDENTRYCOUNT}
-  XACTENGINE_E_SEEKTIMEBEYONDCUEEND      = DWord(((1 shl 31) or (FACILITY_XACTENGINE shl 16)) or $019);   // Time offset for seeking is beyond the cue 
+  XACTENGINE_E_SEEKTIMEBEYONDCUEEND      = DWord(((1 shl 31) or (FACILITY_XACTENGINE shl 16)) or $019);   // Time offset for seeking is beyond the cue end.
   {$EXTERNALSYM XACTENGINE_E_SEEKTIMEBEYONDCUEEND}
 
   XACTENGINE_E_AUDITION_WRITEFILE        = DWord(((1 shl 31) or (FACILITY_XACTENGINE shl 16)) or $101);  // Error writing a file during auditioning

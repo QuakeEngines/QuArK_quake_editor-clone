@@ -19,32 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.7  2010/08/28 18:07:31  danielpharos
-Added missing ForceUnload to if-statement.
-
-Revision 1.6  2010/04/16 19:07:23  danielpharos
-Corrected variable type, added some logging, and added ForceUnload argument.
-
-Revision 1.5  2009/07/17 10:52:09  danielpharos
-Moved PPointer to ExtraFunctionality.
-
-Revision 1.4  2009/07/15 10:38:06  danielpharos
-Updated website link.
-
-Revision 1.3  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.2  2007/12/22 20:43:27  danielpharos
-Desktop Composition constants were the wrong way around. Oops!
-
-Revision 1.1  2007/09/23 21:04:31  danielpharos
-Add Desktop Window Manager calls to disable Desktop Composition on Vista. This should fix/workaround corrupted OpenGL and DirectX viewports.
-}
-
 unit DWM;
 
 interface

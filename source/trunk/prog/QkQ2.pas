@@ -18,48 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.13  2017/10/06 14:13:39  danielpharos
-Big reworking to push game-specific BSP loading into the game files.
-
-Revision 1.12  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.11  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.10  2008/09/06 15:57:13  danielpharos
-Moved exception code into separate file.
-
-Revision 1.9  2007/03/25 13:52:25  danielpharos
-Moved a few dictionnary words around.
-
-Revision 1.8  2007/02/06 13:08:47  danielpharos
-Fixes for transparency. It should now work (more or less) correctly in all renderers that support it.
-
-Revision 1.7  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.5  2001/03/20 21:44:37  decker_dk
-Updated copyright-header
-
-Revision 1.4  2001/01/28 17:22:14  decker_dk
-Renamed 'Charger1' to 'LoadTextureData'
-
-Revision 1.3  2001/01/21 15:49:48  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.2  2001/01/15 19:21:04  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.1  2000/09/14 18:00:22  decker_dk
-Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
-}
-
 unit QkQ2;
 
 interface

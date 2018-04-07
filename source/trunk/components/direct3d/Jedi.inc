@@ -1178,7 +1178,7 @@
 
 // History:
 
-// $Log$
+// $Log: Jedi.inc,v $
 // Revision 1.3  2005/12/30 21:29:55  clootie
 // Synchronization with JEDI JCL unit (Delphi2006 additions, etc.)
 //

@@ -18,51 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
------------ REVISION HISTORY ------------
-$Log$
-Revision 1.15  2010/06/15 18:04:49  danielpharos
-Attempt to fix .qkl files being saved with the wrong extension.
-
-Revision 1.14  2009/07/15 10:38:06  danielpharos
-Updated website link.
-
-Revision 1.13  2009/02/21 17:09:53  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.12  2008/09/06 15:57:38  danielpharos
-Moved exception code into separate file.
-
-Revision 1.11  2007/12/19 12:41:39  danielpharos
-Small code clean-up
-
-Revision 1.10  2007/12/06 22:57:40  danielpharos
-Fix typo and indentation mistake.
-
-Revision 1.9  2006/02/19 00:13:10  cdunde
-To add support for md2 model file saving functions.
-
-Revision 1.8  2005/09/28 10:49:02  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.6  2001/03/20 21:37:33  decker_dk
-Updated copyright-header
-
-Revision 1.5  2001/02/28 19:03:25  aiv
-Fixed ref count prob.
-
-Revision 1.4  2001/01/21 15:51:01  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.3  2001/01/15 19:23:05  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.2  2000/10/11 19:01:08  aiv
-Small updates
-}
-
 unit QkMd2;
 
 interface

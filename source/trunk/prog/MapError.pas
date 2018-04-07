@@ -18,30 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.6  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.5  2007/08/02 16:06:54  danielpharos
-Cleaned up the file.
-
-Revision 1.4  2007/03/01 22:15:25  danielpharos
-Added cvs headers.
-
-Revision 1.3  2007/02/07 18:48:34  danielpharos
-Fixes for memory leaks
-
-Revision 1.2  2002/05/15 22:04:50  tiglari
-fixes to map reading error recording (so that new maps can be created ..)
-
-Revision 1.1  2002/05/15 00:08:38  tiglari
-Record Map Errors for possible write to console or elsewhere
-}
-
 unit MapError;
 
 interface

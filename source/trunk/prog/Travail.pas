@@ -18,48 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.14  2009/07/14 11:40:42  danielpharos
-Fix confusing naming of variable.
-
-Revision 1.13  2009/03/27 19:59:57  danielpharos
-Fix a major slowdown in the progressbar drawing routine.
-
-Revision 1.12  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.11  2008/07/07 19:53:46  danielpharos
-Reworked the code. Should make it easier to understand, and should never allow a larger than 100 percent value!
-
-Revision 1.10  2008/05/16 20:56:43  danielpharos
-Remove TOPMOST from progress-window
-
-Revision 1.9  2007/11/09 11:17:34  danielpharos
-Made the progress-indicator topmost, and changed some weird conversions.
-
-Revision 1.8  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.6  2001/10/05 18:00:24  decker_dk
-Source-code layout (newlines and 2-steps indent)
-
-Revision 1.5  2001/06/05 18:42:24  decker_dk
-Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
-
-Revision 1.4  2001/03/20 21:41:11  decker_dk
-Updated copyright-header
-
-Revision 1.3  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.2  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit Travail;
 
 interface

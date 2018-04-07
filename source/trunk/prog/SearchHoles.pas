@@ -18,40 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.11  2009/02/21 17:06:18  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.10  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.8  2003/01/29 10:01:23  tiglari
-Englishification:
-  TFace.prvNbs -> prvVertexCount
-  TFace.PrvDescS -> prvVertexTable
-  TFace.ConstruireSommets -> ConstructVertices
-
-Revision 1.7  2001/07/18 03:50:31  tiglari
-Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
- PSommet, TTableauFSommets, PTableauFSommets
-
-Revision 1.6  2001/03/20 21:42:24  decker_dk
-Updated copyright-header
-
-Revision 1.5  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.4  2000/07/16 16:34:51  decker_dk
-Englishification
-
-Revision 1.3  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit SearchHoles;
 
 interface

@@ -23,16 +23,6 @@
 # Makefile to compile quark (use gmake and some unix utilities)
 
 
-#$Header$
-# ----------- REVISION HISTORY ------------
-#$Log$
-#Revision 1.3  2005/09/28 10:48:31  peter-b
-#Revert removal of Log and Header keywords
-#
-#Revision 1.1  2004/11/08 22:56:46  alexander
-#added makefile to build quark with the help of gmake
-#
-
 TARGETS=../runtime/dxtdecode.dll ../runtime/Quark.exe
 
 all: $(TARGETS)

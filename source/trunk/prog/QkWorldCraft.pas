@@ -18,31 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.6  2016/06/12 12:59:58  danielpharos
-Moved a string to the dictionary.
-
-Revision 1.5  2016/01/02 20:01:10  danielpharos
-Generate proper error if something went wrong trying to save files, instead of always displaying a message about "save" not being supported.
-
-Revision 1.4  2012/03/22 12:56:04  danielpharos
-Clear MapError.
-
-Revision 1.3  2011/08/13 22:13:02  danielpharos
-Added texture name importing (no texture coordinates (yet?))
-
-Revision 1.2  2010/10/16 22:50:16  danielpharos
-Added experimental RMF file loading support; poly's only, no UV's or textures.
-
-Revision 1.1.2.1  2009/11/10 19:58:24  danielpharos
-Added limited WorldCraft file reading support.
-
-}
-
 unit QkWorldCraft;
 
 interface

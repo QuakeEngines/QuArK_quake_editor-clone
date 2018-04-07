@@ -18,52 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.16  2015/02/16 19:19:07  danielpharos
-Made some class members private.
-
-Revision 1.15  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.14  2009/02/21 17:10:12  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.13  2008/09/06 15:57:07  danielpharos
-Moved exception code into separate file.
-
-Revision 1.12  2005/09/28 10:48:32  peter-b
-Revert removal of Log and Header keywords
-
-Revision 1.10  2001/03/20 21:44:00  decker_dk
-Updated copyright-header
-
-Revision 1.9  2000/12/06 18:43:35  decker_dk
-- Implemented Rowdy's fix to play WAV-files correctly
-
-Revision 1.8  2000/11/25 20:51:32  decker_dk
-- Misc. small code cleanups
-- Replaced the names:
- = ofTvInvisible       -> ofTreeViewInvisible
- = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
- = ofTvExpanded        -> ofTreeViewExpanded
- = ofSurDisque         -> ofNotLoadedToMemory
- = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
- = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
-
-Revision 1.7  2000/07/18 19:38:01  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.6  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.5  2000/06/03 10:46:49  alexander
-added cvs headers
-}
-
 unit QkRawFile;
 
 interface

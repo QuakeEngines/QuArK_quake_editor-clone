@@ -19,12 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-}
-
 (*DanielPharos: This workaround is needed on non-English systems, and under Wine.
 Delphi is trying to be smart, and we've made a terrible design choice. Storing the
 float-ness of a Specific in the high-bit of the first character of its name is

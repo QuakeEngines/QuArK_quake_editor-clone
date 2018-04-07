@@ -18,48 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 http://quark.sourceforge.net/ - Contact information in AUTHORS.TXT
 **************************************************************************)
-
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.12  2015/02/01 16:05:58  danielpharos
-Improved verbose output for error messages.
-
-Revision 1.11  2010/04/02 16:51:58  danielpharos
-Created a new LogWindowsError procedure.
-
-Revision 1.10  2009/10/27 19:43:53  cdunde
-Commented out annoying message.
-
-Revision 1.9  2009/07/30 09:41:51  danielpharos
-Added additional logging.
-
-Revision 1.8  2009/07/15 10:38:01  danielpharos
-Updated website link.
-
-Revision 1.7  2009/02/21 17:10:20  danielpharos
-Changed all source files to use CRLF text format, updated copyright and GPL text.
-
-Revision 1.6  2008/12/12 12:47:52  danielpharos
-Moved GlobalWarning to QkExceptions, and added QkTextBoxForm.
-
-Revision 1.5  2008/10/04 13:32:48  danielpharos
-Fixed warning dialog icon.
-
-Revision 1.4  2008/09/23 08:27:29  danielpharos
-Moved InternalE to QkExceptions.
-
-Revision 1.3  2008/09/23 08:26:19  danielpharos
-Added LogAndWarn and const-ed a parameter.
-
-Revision 1.2  2008/09/08 18:08:51  danielpharos
-Added some more general exception functions.
-
-Revision 1.1  2008/09/06 15:57:23  danielpharos
-Moved exception code into separate file.
-}
-
 unit QkExceptions;
 
 interface
