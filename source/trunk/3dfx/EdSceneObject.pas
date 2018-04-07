@@ -1317,11 +1317,11 @@ begin
                end;
 
                PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-               bb:=L*(1/BezierMeshCnt);
+               bb:=L*(1/BezierMeshDetail);
 
                for K:=0 to BezierBuf.W-1 do
                begin
-                 aa:=K*(1/BezierMeshCnt);
+                 aa:=K*(1/BezierMeshDetail);
                  WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
 
                  Inc(PV, VertexSize);
@@ -1332,7 +1332,7 @@ begin
                  WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
 
                  Inc(PV, VertexSize);
-                 vec3_p(PV)^:=OrthogonalVector(aa, bb+1/BezierMeshCnt);
+                 vec3_p(PV)^:=OrthogonalVector(aa, bb+1/BezierMeshDetail);
                  Inc(vec3_p(PV));
                  Dec(BezierBuf.CP, BezierBuf.W-1);
                  Dec(st, BezierBuf.W-1);

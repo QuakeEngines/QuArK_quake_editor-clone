@@ -25,14 +25,10 @@ interface
 uses Windows, SysUtils, Classes, Python, qmath, qmatrices, PyMath, QkObjects,
      QkMapObjects, QkMapPoly, Qk3D;
 
- {------------------------}
-
 const
- BezierMeshCnt = 6;   { number of subdivisions on screen }
+ BezierMeshDetail = 6;   { number of subdivisions on screen } //FIXME: Make configurable!
 
 type
-{beziercontrolpoints_t = array[0..2, 0..2] of vec5_t;  -- removed for generalized "quilt" support (variable number of control points)
- TBezierMeshCache = array[0..BezierMeshCnt, 0..BezierMeshCnt] of vec3_t;}
  PBezierTriangle = ^TBezierTriangle;
  TBezierTriangle = record
                     PP: array[0..2] of TVect;
@@ -42,8 +38,6 @@ type
                           FrontFacing: Boolean{);
                      2: (TextureCoords: array[0..2] of vec_st_t)};
                    end;
-{PBezierTriangleList = ^TBezierTriangleList;   -- quilt
- TBezierTriangleList = array[0..2*BezierMeshCnt*BezierMeshCnt-1] of TBezierTriangle;}
  PBezierControlPoints3 = {^TBezierControlPoints3} vec3_p;
  TBezierControlPoints3 = vec3_t; //xyz
  PBezierControlPoints5 = {^TBezierControlPoints5} vec5_p;
@@ -102,8 +96,6 @@ type
              function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
              procedure DrawTexVertices;
            end;
-
- {------------------------}
 
 function TriangleSTCoordinates(const cp: TBezierMeshBuf5; I, J: Integer) : vec_st_t;
 
@@ -224,10 +216,10 @@ var
  f: TDouble;
  r1, r2, r3: vec_st_t;
 begin
- I1:=I div BezierMeshCnt;
- J1:=J div BezierMeshCnt;
- Dec(I, I1*BezierMeshCnt);
- Dec(J, J1*BezierMeshCnt);
+ I1:=I div BezierMeshDetail;
+ J1:=J div BezierMeshDetail;
+ Dec(I, I1*BezierMeshDetail);
+ Dec(J, J1*BezierMeshDetail);
  P:=cp.CP;
  Inc(P, 2*(J1*cp.W+I1));
  if I=0 then
@@ -240,7 +232,7 @@ begin
   begin
    Q1:=P;  Inc(Q1);
    Q2:=Q1; Inc(Q2);
-   f:=I * (1/BezierMeshCnt);
+   f:=I * (1/BezierMeshDetail);
    r1:=BezierLine52(f, P^, Q1^, Q2^);
   end;
  if J=0 then
@@ -266,7 +258,7 @@ begin
      Q2:=Q1; Inc(Q2);
      r3:=BezierLine52(f, P^, Q1^, Q2^);
     end;
-   f:=J * (1/BezierMeshCnt);
+   f:=J * (1/BezierMeshDetail);
    Result:=BezierLine22(f, r1, r2, r3);
   end;
 end;
@@ -281,7 +273,9 @@ const
  dpx0 = 0.0;
  dpx1 = 0.5;
  dpx2 = 1.0;
- DefaultBezierControlPoints: array[0..2, 0..2] of TBezierControlPoints5 =
+ DefaultBezierW = 3;
+ DefaultBezierH = 3;
+ DefaultBezierControlPoints: array[0..DefaultBezierW-1, 0..DefaultBezierH-1] of TBezierControlPoints5 =
   (((dps0, dps0, 0, dpx0, dpx0), (dps1, dps0, 0, dpx1, dpx0), (dps2, dps0, 0, dpx2, dpx0)),
    ((dps0, dps1, 0, dpx0, dpx1), (dps1, dps1, 0, dpx1, dpx1), (dps2, dps1, 0, dpx2, dpx1)),
    ((dps0, dps2, 0, dpx0, dpx2), (dps1, dps2, 0, dpx1, dpx2), (dps2, dps2, 0, dpx2, dpx2)));
@@ -313,12 +307,19 @@ end;
  { Returns the quilt size }
 function TBezier.GetQuiltSize;
 var
+ OldCnt: boolean;
  S: String;
  V: array[1..2] of TDouble;
 begin
  Result.X:=1;  { default value }
  Result.Y:=1;
- S:=Specifics.Values['cnt'];
+ OldCnt:=False;
+ S:=Specifics.Values['cnt2'];
+ if S='' then
+ begin
+  OldCnt:=True;
+  S:=Specifics.Values['cnt'];
+ end;
  if S='' then Exit;
  try
   ReadDoubleArray(S, V);
@@ -327,6 +328,11 @@ begin
  end;
  Result.X:=Round(V[1]);
  Result.Y:=Round(V[2]);
+ if OldCnt then
+ begin
+  Result.X:=Result.X*2+1;
+  Result.Y:=Result.Y*2+1;
+ end;
 end;
 
  { Changes the quilt size }
@@ -339,7 +345,8 @@ begin
   S:=''  { default size : delete 'cnt' }
  else
   S:=IntToStr(nSize.X)+' '+IntToStr(nSize.Y);
- Specifics.Values['cnt']:=S;
+ Specifics.Values['cnt']:='';
+ Specifics.Values['cnt2']:=S;
 end;
 
  { Returns the control points of a Bezier object }
@@ -350,8 +357,8 @@ var
 begin
  with GetQuiltSize do
   begin
-   Result.W:=X*2+1;
-   Result.H:=Y*2+1;
+   Result.W:=X;
+   Result.H:=Y;
   end;
  ExpectedLength:=Length('v=') + Result.W*Result.H*SizeOf(TBezierControlPoints5);
  Spec:=FloatSpecNameOf('v');
@@ -363,8 +370,8 @@ begin
    if Length(S)<>ExpectedLength then
     begin
      { specific not found or invalid: returns a default result }
-     Result.W:=3;
-     Result.H:=3;
+     Result.W:=DefaultBezierW;
+     Result.H:=DefaultBezierH;
      Result.CP:=@DefaultBezierControlPoints;
      Exit;
     end;
@@ -378,11 +385,11 @@ var
  S: String;
  L: Integer;
 begin
- if not Odd(Buf.W) or not Odd(Buf.H) then
-  raise InternalE('SetControlPoints: odd size expected');
+ if (Buf.W<1) or (Buf.H<1) then
+  raise InternalE('SetControlPoints: invalid quilt size');
  Acces;
  ReallocMem(FMeshCache.CP, 0);   { first invalidates the cache }
- SetQuiltSize(Point(Buf.W div 2, Buf.H div 2));  { set quilt size }
+ SetQuiltSize(Point(Buf.W, Buf.H));  { set quilt size }
  S:=FloatSpecNameOf('v');
  Specifics.Values[S]:='';   { delete old 'v' Specific }
  L:=Buf.W*Buf.H*SizeOf(TBezierControlPoints5);
@@ -396,7 +403,7 @@ end;
     that approximates the patch shape }
 procedure TBezier.BuildMeshCache;
 const
- Delta = 1.0/BezierMeshCnt;
+ Delta = 1.0/BezierMeshDetail;
  AlmostOne = 1.0 - Delta/2;
 var
  cp: TBezierMeshBuf5;
@@ -427,8 +434,8 @@ var
 begin
  cp:=ControlPoints;
  { I guess some comments would be welcome in the code below... }
- FMeshCache.W:=(cp.W div 2)*BezierMeshCnt+1;
- FMeshCache.H:=(cp.H div 2)*BezierMeshCnt+1;
+ FMeshCache.W:=(cp.W div 2)*BezierMeshDetail+1;
+ FMeshCache.H:=(cp.H div 2)*BezierMeshDetail+1;
  ReallocMem(FMeshCache.CP, FMeshCache.W*FMeshCache.H*SizeOf(TBezierControlPoints3));
  Dest:=@FMeshCache.CP^[0];
  v:=0; CurJ:=0;
@@ -443,7 +450,7 @@ begin
      p2:=GetVPoint(I0);
      Inc(I0, 2);
      u:=0;
-     for I:=0 to BezierMeshCnt-1 do
+     for I:=0 to BezierMeshDetail-1 do
       with BezierLine3(u, p0, p1, p2) do
        begin
         Dest^[0]:=X;
@@ -584,7 +591,7 @@ end;
  { Compute orthogonal vectors }
 function TBezier.OrthogonalVector(u,v: scalar_t) : TBezierControlPoints3;
 const
- LittleExtra = 0.5/BezierMeshCnt;
+ LittleExtra = 0.5/BezierMeshDetail;
 var
  cp: TBezierMeshBuf5;
  I, J: Integer;
@@ -937,7 +944,7 @@ begin
      cp:=ControlPoints;
      GetMem(stBuffer, FMeshCache.W*FMeshCache.H*SizeOf(vec_st_t));
      st:=stBuffer;
-     for J:=0 to FMeshCacne.H-1 do
+     for J:=0 to FMeshCache.H-1 do
       for I:=0 to FMeshCache.W-1 do
        begin
         TriangleSTCoordinates(cp, I, J, st^.s, st^.t);
@@ -1303,7 +1310,6 @@ begin
   end;
 end;
 
-{tiglari}
  {------------------------}
 
  { Python methods }
@@ -1328,8 +1334,6 @@ end;
 const
  FaceMethodTable: array[0..0] of TyMethodDef =
   ((ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS));
-
- {/tiglari}
 
  {------------------------}
 
