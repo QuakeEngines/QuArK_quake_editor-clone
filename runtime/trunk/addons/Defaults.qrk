@@ -177,7 +177,7 @@ QQRKSRC1
         CheckForPackages = ""   //Hidden
         AutomaticInstall = ""   //Currently hidden
         SingleInstance = "1"
-        BugCheck = "1"
+        BugCheck = ""
         Form = "GeneralStartup"
         Notification_Main = "6" //Hidden: Start-index for this version
       }
