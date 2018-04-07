@@ -1222,7 +1222,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- ReadValues(Edit.Text, Values);
+ ReadDoubleArray(Edit.Text, Values);
  {Direction := (Sender as TSmallArrowButtons).Direction; }
  case Direction of
   sabDirectionUp: Values[2] := Values[2]+1;
@@ -1242,7 +1242,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- ReadValues(Edit.Text, Values);
+ ReadDoubleArray(Edit.Text, Values);
  Values[2] := Values[2]+1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1255,7 +1255,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- ReadValues(Edit.Text, Values);
+ ReadDoubleArray(Edit.Text, Values);
  Values[2] := Values[2]-1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1268,7 +1268,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- ReadValues(Edit.Text, Values);
+ ReadDoubleArray(Edit.Text, Values);
  Values[1] := Values[1]-1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1281,7 +1281,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- ReadValues(Edit.Text, Values);
+ ReadDoubleArray(Edit.Text, Values);
  Values[1] := Values[1]+1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -2115,7 +2115,7 @@ begin
                           if (Length(S)>=3) and (S[3]='4') then
                            begin
                             if J=0 then
-                             ReadValues(Spec, Lu4)
+                             ReadDoubleArray(Spec, Lu4)
                             else
                              begin
                               Lu4[1]:=Valeurs[0];

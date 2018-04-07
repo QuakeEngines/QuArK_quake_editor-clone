@@ -321,7 +321,7 @@ begin
  S:=Specifics.Values['cnt'];
  if S='' then Exit;
  try
-  ReadValues(S, V);
+  ReadDoubleArray(S, V);
  except
   Exit;
  end;

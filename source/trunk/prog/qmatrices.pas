@@ -273,7 +273,7 @@ function stomx(const S: String) : TMatrixTransformation;
 var
  V: array[1..{12}9] of TDouble;
 begin
- ReadValues(S, V);
+ ReadDoubleArray(S, V);
  Result:=TMatrixTransformation(V);
 end;
 

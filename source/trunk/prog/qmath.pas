@@ -69,7 +69,7 @@ function Dot(const V1, V2: TVect) : TDouble;
 procedure Normalise(var V: TVect); overload;
 procedure Normalise(var V: TVect; var S: Double); overload;
 function AngleXY(const X, Y: TDouble) : TDouble;
-procedure ReadValues(const S1: String; var Vals: array of TDouble);
+procedure ReadDoubleArray(const S1: String; var Vals: array of TDouble);
 function ReadVector(const S: String) : TVect;
 function ReadVec3(const S: String) : vec3_t;
 function ReadNumValueEx(const S: String) : TDouble;
@@ -321,22 +321,24 @@ begin
   end;
 end;
 
-procedure ReadValues(const S1: String; var Vals: array of TDouble);
+procedure ReadDoubleArray(const S1: String; var Vals: array of TDouble);
 var
  P, I: Integer;
  S: String;
 begin
  S:=S1;
 {DecimalSeparator:='.';}
- for I:=1 to High(Vals) do
+ for I:=Low(Vals) to High(Vals)-1 do
   begin
    S:=Trim(S);
    P:=Pos(' ', S);
    if P=0 then
-    Raise EErrorFmt(192, [High(Vals)+1, S1]);
-   Vals[I-1]:=StrToFloat(Copy(S, 1, P-1));
+    Raise EErrorFmt(192, [High(Vals)-Low(Vals)+1, S1]);
+   Vals[I]:=StrToFloat(Copy(S, 1, P-1));
    System.Delete(S, 1, P);
   end;
+ if Pos(' ', S)<>0 then
+   Raise EErrorFmt(192, [High(Vals)-Low(Vals)+1, S1]);
  Vals[High(Vals)]:=StrToFloat(Trim(S));
 end;
 
@@ -344,7 +346,7 @@ function ReadVector(const S: String) : TVect;
 var
  Lu: array[1..3] of TDouble;
 begin
- ReadValues(S, Lu);
+ ReadDoubleArray(S, Lu);
  Result.X:=Lu[1];
  Result.Y:=Lu[2];
  Result.Z:=Lu[3];
@@ -354,7 +356,7 @@ function ReadVec3(const S: String) : vec3_t;
 var
  Lu: array[1..3] of TDouble;
 begin
- ReadValues(S, Lu);
+ ReadDoubleArray(S, Lu);
  Result[0]:=Lu[1];
  Result[1]:=Lu[2];
  Result[2]:=Lu[3];
@@ -453,7 +455,7 @@ var
  V: array[0..3] of TDouble;
  XMax, YMax: Integer;
 begin
- ReadValues(S, V);
+ ReadDoubleArray(S, V);
  XMax:=TailleMaximaleEcranX;
  Result.Left:=Round(V[0]*XMax);
  Result.Right:=Round(V[2]*XMax);

@@ -236,8 +236,8 @@ var
       Header.restitution :=GetFloatSpec('restitution', 0.0);
       Header.trans_mag :=GetFloatSpec('trans_mag', 0.0);
     { tiglari: revising rep to string
-	  GetFloatsSpec('color', Header.color); }
-      ReadValues(Specifics.Values['color'], Cl);
+      GetFloatsSpec('color', Header.color); }
+      ReadDoubleArray(Specifics.Values['color'], Cl);
     { tiglari: this looks real dumb, is there a cast construction or something
        that could be used instead? }
       for I:=0 to 2 do

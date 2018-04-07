@@ -520,7 +520,7 @@ begin
    S2:=F^.prvVertexTable[I]^.P;
    D1:=VecDiff(V, S1);    D2:=VecDiff(S2, S1);
    Normalise(D1);         Normalise(D2);
-   D1:=VecScale(128, D1); D2:=VecScale(128,D2);
+   D1:=VecScale(EchelleTexture, D1); D2:=VecScale(EchelleTexture,D2);
    P1:=VecSum(S1, D1);    P2:=VecSum(S1, D2);
    Surf:=TFace.Create('', Nil);
    ListeFaces.Add(Surf);
@@ -4009,8 +4009,8 @@ var
   procedure ProjTex3D(PX, PY: LongInt; var X, Y: LongInt);
   begin
     { we must inverse the following relations to find X and Y :
-        PX = TexPt[1].X + X*TexPt[2].X/128 + Y*TexPt[3].X/128
-        PY = TexPt[1].Y + X*TexPt[2].Y/128 + Y*TexPt[3].Y/128 }
+        PX = TexPt[1].X + X*TexPt[2].X/EchelleTexture + Y*TexPt[3].X/EchelleTexture
+        PY = TexPt[1].Y + X*TexPt[2].Y/EchelleTexture + Y*TexPt[3].Y/EchelleTexture }
    PX:=(PX shl DemiFacteur1) - TexPt[1].X;
    PY:=(PY shl DemiFacteur1) - TexPt[1].Y;
    X:=Round(DetInv*(PX*TexPt[3].Y-PY*TexPt[3].X));
@@ -4228,7 +4228,7 @@ begin
          if Result.Mode=1 then
          begin
            S:=Parent^.Specifics.Values['rendercolor'];
-           ReadValues(S, C);
+           ReadDoubleArray(S, C);
            for val:=0 to 2 do result.Color[val]:=trunc(C[val]) mod 256;
          end;
          S:=Parent^.Specifics.Values['renderamt'];

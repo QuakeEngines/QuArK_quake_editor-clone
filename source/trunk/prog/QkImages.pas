@@ -1806,7 +1806,7 @@ var
  NewPSD: TPixelSetDescription;
  Size: array[1..2] of TDouble;
 begin
- ReadValues(EditSize.Text, Size);
+ ReadDoubleArray(EditSize.Text, Size);
  NewPSD.Init;
  NewPSD.Size.X:=Round(Size[1]);
  NewPSD.Size.Y:=Round(Size[2]);

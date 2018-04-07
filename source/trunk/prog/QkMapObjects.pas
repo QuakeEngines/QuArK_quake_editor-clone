@@ -1894,7 +1894,7 @@ begin
         if S='' then
           Exit;
         try
-          ReadValues(S, L4);
+          ReadDoubleArray(S, L4);
         except
           Exit;
         end;
@@ -1913,7 +1913,7 @@ begin
         if S<>'' then
         begin
           try
-            ReadValues(S, L3);
+            ReadDoubleArray(S, L3);
             FoundAColor:=true;
           except
             {rien}

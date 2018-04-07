@@ -379,7 +379,7 @@ expected one.
     for i:=length(s) downto 1 do
       if s[i] in ['"','[',']'] then
         delete(s,i,1);
-    ReadValues(s,result);
+    ReadDoubleArray(s,result);
   end;
 
 
@@ -514,13 +514,13 @@ expected one.
           if lowercase(s1)='normals' then
           begin
             setlength(aryn,3*nrows);
-            ReadValues(S,aryn);
+            ReadDoubleArray(S,aryn);
             surface.addnormals(aryn);
           end;
           if lowercase(s1)='distances' then
           begin
             setlength(aryd,nrows);
-            ReadValues(S,aryd);
+            ReadDoubleArray(S,aryd);
             surface.adddists(row,aryd);
             inc(row);
           end;

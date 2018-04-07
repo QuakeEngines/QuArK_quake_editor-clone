@@ -2211,7 +2211,7 @@ begin
 
         if InputQuery(LoadStr1(5674), LoadStr1(5675), S) then
         begin
-          ReadValues(S, Size);
+          ReadDoubleArray(S, Size);
           QTextureFile(FileObject).ResizeTexture(Point(Round(Size[1]), Round(Size[2])));
         end;
       end;
