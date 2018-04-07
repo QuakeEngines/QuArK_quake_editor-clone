@@ -382,7 +382,7 @@ var
  B: TBezier;
  EntiteBezier: TTreeMapSpec;
  MeshBuf1: TBezierMeshBuf5;
- pCP1: vec5_p;
+ pCP1: PBezierControlPoints5;
  {/Rowdy}
  WC33map: Boolean; {Decker}
  SpecIndex: integer; {Decker}
@@ -1255,7 +1255,7 @@ expected one.
    MeshBuf1.W := Round(V5.X);
    MeshBuf1.H := Round(V5.Y);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect5
      for I:=0 to MeshBuf1.W-1 do
@@ -1342,7 +1342,7 @@ expected one.
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect7
      for I:=0 to MeshBuf1.W-1 do
@@ -1429,7 +1429,7 @@ expected one.
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect7
      for I:=0 to MeshBuf1.W-1 do
@@ -1517,7 +1517,7 @@ expected one.
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect7
      for I:=0 to MeshBuf1.W-1 do
