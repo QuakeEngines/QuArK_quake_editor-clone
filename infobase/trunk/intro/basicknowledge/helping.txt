@@ -29,7 +29,7 @@ give some help! If you need help about these ways of helping, see the
   "DataQ2.qrk" for Quake 2, etc. The format of these files is the same as for the add-ons for the support of a mod,
   with a single difference: For performance, these large files are not directly editable with a text editor; instead,
   they are stored in a binary format. You can get the original full-text files from <ref> src/sf </ref>
-  in the directory <a target="_blank" href="http://quark.cvs.sourceforge.net/viewvc/quark/runtime/addons/">runtime/addons</a>.
+  in the directory <a target="_blank" href="https://sourceforge.net/p/quark/code/HEAD/tree/runtime/trunk/addons/">runtime/addons</a>.
 
 <li><strong>A Python plug-in</strong>:<br>
   A large part of the map editor is written in a scripting language called <g>Python</g>.
