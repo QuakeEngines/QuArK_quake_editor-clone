@@ -2,9 +2,6 @@ title: Specifics
 author: tiglari
 
 
-<TABLE>
-<TR>
-<TD>
 The RMB menu currently offers three basic
 shapes (arch/cap, bevel, column) in two orientations each, but
 the 'duplicators' that implement these shapes have a
@@ -26,10 +23,7 @@ texture on the back face will be stretched to cover the
 curve, without any of the alignment manipulations.  This
 is useful if you have a specially prepared texture that
 you specifically want to put on a curve, but not elsewhere.
-<BR><BR>
-Some of the remaining ones will be discussed in the section
-<ref> maped/builders/archcap/techniques</ref>
- below.
 
-</TD></TR>
-</TABLE>
+Some of the remaining ones will be discussed in the section
+<ref>maped/builders/archcap/techniques</ref>
+ below.

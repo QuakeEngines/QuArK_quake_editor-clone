@@ -6,7 +6,7 @@ The arch/cap duplicator code is fairly complicated, and
 various things can go wrong.  The typical symptom is
 that the arch disappears, because something goes wrong with the
 code that generates its `images'; (the patches that it's
-supposed to produce, in this case).<BR><BR>
+supposed to produce, in this case).
 
 When this happens, inspect the duplicator
 in the tree view and check that the following
@@ -23,22 +23,21 @@ other (if you're staring at front, `right' is to the right,
 etc.).
 </UL>
 This is all important because the face-names are used
-by the code that generates the brushes.<BR><BR>
+by the code that generates the brushes.
 
 If all this seems OK and it still doesn't work, something
 deeper is wrong, post on the quark or quark-python forum.
-<BR><BR>
 
 Two other things that might go wrong are:
 <UL>
 <LI> texture distortion on the curve, for some (small,
 non-rectangular) textures.
-<LI> `cracks&180; between the seams of complex architecture, when
+<LI> `cracks' between the seams of complex architecture, when
 Q3A is run with hi r_subdivisions values.
 </UL>
 The first is a bug with no real cure, the remedies are to either
 use another corner, or check `stretchtex'; and do texture alignments
-by hand.<BR><BR>
+by hand.
 
 For the second, the problem is that Q3A is tesselating the two
 patches to different extends.  Currently, the fix is to dissociate
@@ -49,7 +48,7 @@ everything is lined up right.  I soon hope to add some more
 specifics to the duplicators that will have them generate thicker
 meshes, so that dissociation won't be necessary.  Also more options,
 so that invisible patches can be excluded from complex
-architecture without dissociation.<BR><BR>
+architecture without dissociation.
 
 At present, finding a bad arch could be difficult; there
 should eventually be diagnostic functions for these duplicators

@@ -17,7 +17,7 @@ but with a 'thickness'; projecting inward, with a different
 texture and a curved 'seam' on the front and back.  Note that
 the bottom of the arch has been pulled off the floor.
 </TD><TD>
-<pic> arch7.jpg </pic>
+<pic>arch7.jpg</pic>
 </TD></TR>
 <TR><TD>
 A way to do this is as follows.  First select the arch's
