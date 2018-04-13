@@ -21,12 +21,12 @@ the bottom of the arch has been pulled off the floor.
 </TD></TR>
 <TR><TD>
 A way to do this is as follows.  First select the arch's
-guide-brush, and then Edit | Duplicate from the top menu.
+guide-brush, and then <act>Edit|Duplicate</act> from the top menu.
 If you look inside the arch duplicator you'll see that there
 are two brushes.  Drag one of them out out from inside the duplicator
 so that it is sister the duplicator rather than inside it,
 select it, and finally
-RMB | Curves | Arch in a map view, looking at it from
+<act>RMB|Curves|Arch</act> in a map view, looking at it from
 the front.  You'll now have two identical arches occupying
 the same space.
 Now select one of the arches and look at its specifics,

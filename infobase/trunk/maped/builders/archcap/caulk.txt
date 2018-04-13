@@ -10,11 +10,11 @@ is to attach a the 'special/caulk' shader to the hidden faces.
 For the top slab that sits over the arch, we can easily just
 do this, but for the sides it's a bit more of a chore, because
 part of the inside faces of the walls are exposed, and others
-aren't (this is also a 't-junct', which is Evil.
+aren't (this is also a 't-junct', which is Evil).
 
 So there's a little trick to speed up caulking.  Tag say the
 left face of the guide-brush of the arch, then select the
-right-face of the left wall-block.  Now RMB|More Tagging|Caulk
+right-face of the left wall-block.  Now <act>RMB|More Tagging|Caulk</act>
 from tagged.  The wall will be split into two, and the caulk
 pasted onto the part of the wall that's hidden.
 

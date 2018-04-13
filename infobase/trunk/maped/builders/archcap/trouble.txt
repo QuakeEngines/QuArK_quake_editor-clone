@@ -41,9 +41,9 @@ by hand.
 
 For the second, the problem is that Q3A is tesselating the two
 patches to different extends.  Currently, the fix is to dissociate
-the images of the duplicators, then use the mesh|double rows/column
+the images of the duplicators, then use the <act>mesh|double rows/column</act>
 RMB commands to increase the number of control points along the
-edge, and also Tag Point|Knit edge to tagged to check that
+edge, and also <act>Tag Point|Knit edge</act> to tagged to check that
 everything is lined up right.  I soon hope to add some more
 specifics to the duplicators that will have them generate thicker
 meshes, so that dissociation won't be necessary.  Also more options,
