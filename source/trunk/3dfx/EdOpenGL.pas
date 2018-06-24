@@ -836,13 +836,9 @@ begin
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_NORMALIZE);
     glEdgeFlag(0);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //No padding when copying pixel to OpenGL
+    glPixelStorei(GL_PACK_ALIGNMENT, 1); //No padding when copying pixel data back to memory
     CheckOpenGLError('Init');
-
-    //No padding when reading textures from memory
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    CheckOpenGLError('Init: glPixelStorei');
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            CheckOpenGLError('Init: glPixelStorei');
 
     glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
     CheckOpenGLError('Init: GL_MAX_LIGHTS');
