@@ -642,6 +642,7 @@ var
   glFogi: procedure (pname: GLenum; param: GLint); stdcall;
   glFogf: procedure (pname: GLenum; param: GLfloat); stdcall;
   glFogfv: procedure (pname: GLenum; params: PGLfloat); stdcall;
+  glPixelStorei: procedure (pname: GLenum; param: GLint); stdcall;
   glGetError: function : GLenum; stdcall;
   glViewport: procedure (x, y : GLint; width, height : GLsizei); stdcall;
   glMatrixMode: procedure (mode: GLenum); stdcall;
@@ -660,7 +661,7 @@ var
   glTexCoord2fv: procedure (v: PGLfloat); stdcall;
   glVertex3fv: procedure (v: PGLfloat); stdcall;
   glFinish: procedure; stdcall;
-  glTexImage2D: procedure (target: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels: PGLvoid); stdcall;
+  glTexImage2D: procedure (target: GLenum; level, internalformat : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels: PGLvoid); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures: PGLuint); stdcall;
   glAreTexturesResident: function (n: GLsizei; const textures: PGLuint; residences: PGLboolean) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
@@ -697,7 +698,7 @@ var
   *)
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
   //Looks like a bug in the OpenGL specs: the last parameter is void, not GLvoid
-  gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data: PByte): GLint; stdcall;
+  gluBuild2DMipmaps: function (target: GLenum; internalformat: GLint; width, height: GLsizei; format: GLenum; typ: GLenum; const data: PByte): GLint; stdcall;
 
   (*
   ** Extensions
@@ -739,7 +740,7 @@ uses Classes, StrUtils, Quarkx, QkExceptions, Logging, Setup, QkObjects,
      SystemDetails, ExtraFunctionality;
 
 const
-  OpenGL32DLL_FuncList : array[0..56] of
+  OpenGL32DLL_FuncList : array[0..57] of
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -762,6 +763,7 @@ const
    ,(FuncPtr: @@glFogi;                FuncName: 'glFogi'                )
    ,(FuncPtr: @@glFogf;                FuncName: 'glFogf'                )
    ,(FuncPtr: @@glFogfv;               FuncName: 'glFogfv'               )
+   ,(FuncPtr: @@glPixelStorei;         FuncName: 'glPixelStorei'         )
    ,(FuncPtr: @@glGetError;            FuncName: 'glGetError'            )
    ,(FuncPtr: @@glViewport;            FuncName: 'glViewport'            )
    ,(FuncPtr: @@glMatrixMode;          FuncName: 'glMatrixMode'          )

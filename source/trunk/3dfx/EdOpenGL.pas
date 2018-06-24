@@ -838,6 +838,12 @@ begin
     glEdgeFlag(0);
     CheckOpenGLError('Init');
 
+    //No padding when reading textures from memory
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    CheckOpenGLError('Init: glPixelStorei');
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+            CheckOpenGLError('Init: glPixelStorei');
+
     glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
     CheckOpenGLError('Init: GL_MAX_LIGHTS');
     if MaxLights < 8 then //8 is the minimum demanded by the OpenGL spec.
