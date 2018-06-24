@@ -616,8 +616,8 @@ const
   GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT  = $84FF;
 
 type
-  TMatrix4f = array[0..3, 0..3] of GLdouble;
-  GLfloat4 = array[0..3] of GLfloat;
+  TMatrix4f = packed array[0..3, 0..3] of GLdouble;
+  GLfloat4 = packed array[0..3] of GLfloat;
 
 var
   (*
@@ -902,13 +902,17 @@ begin
   Setup:=SetupSubSet(ssGeneral, 'OpenGL');
   Result.nSize:=SizeOf(Result);
   Result.nVersion:=1;
-  Result.dwFlags:=PFD_SUPPORT_OPENGL or PFD_DRAW_TO_WINDOW;
-  Result.iPixelType:=PFD_TYPE_RGBA;
+  Result.dwFlags:=PFD_SUPPORT_OPENGL;
+(*  if Setup.Specifics.Values['WorkaroundGDI']<>'' then
+    Result.dwFlags:=Result.dwFlags or PFD_DRAW_TO_BITMAP
+  else*)
+    Result.dwFlags:=Result.dwFlags or PFD_DRAW_TO_WINDOW;
   if Setup.Specifics.Values['DoubleBuffer']<>'' then
     Result.dwFlags:=Result.dwFlags or PFD_DOUBLEBUFFER
   else //FIXME: Currently, not allowed to set both!!!
     if Setup.Specifics.Values['AllowsGDI']<>'' then
       Result.dwFlags:=Result.dwFlags or PFD_SUPPORT_GDI;
+  Result.iPixelType:=PFD_TYPE_RGBA;
   Result.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
   if Result.cColorBits<=0 then
     Result.cColorBits:=GetDeviceCaps(DC, BITSPIXEL);

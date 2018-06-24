@@ -123,7 +123,7 @@ const
 type
  PVertex3D = ^TVertex3D;
  TVertex3D = record
-              st: array[0..1] of Single;
+              st: packed array[0..1] of Single;
               xyz: vec3_t;
              end;
 
@@ -249,7 +249,7 @@ var
  LPP: ^PLightList;
  DistToSource, Dist1: TDouble;
  light: GLfloat4;
- NormalVector: array[0..2] of GLfloat;
+ NormalVector: packed array[0..2] of GLfloat;
 begin
   if LP=nil then
   begin
@@ -286,7 +286,7 @@ begin
         glVertex3fv(@PV4^.xyz);
       end;
     finally
-      glEnd;
+      glEnd();
     end;
   end
   else
@@ -454,7 +454,7 @@ begin
           Inc(I, StepI);
         end;
       finally
-        glEnd;
+        glEnd();
       end;
       Inc(J, StepJ);
     end;
@@ -498,7 +498,7 @@ begin
       glVertex3fv(@Point.v.xyz);
     end;
   finally
-    glEnd;
+    glEnd();
   end;
   CheckOpenGLError('RenderQuadStrip');
 end;
@@ -1528,7 +1528,7 @@ begin
   finally
     if RebuildDisplayList then
     begin
-      glEndList;
+      glEndList();
       CheckOpenGLError('Render3DView: glEndList');
     end;
   end;
@@ -1605,7 +1605,7 @@ begin
     CheckOpenGLError('Render3DView: glDepthMask (true)');
   end;
 
-  glFinish;
+  glFinish();
   CheckOpenGLError('Render3DView: glFinish');
   finally
     wglMakeCurrent(0, 0);
