@@ -296,16 +296,26 @@ end;
 
 function qMakeAddonFromQctx(self, args: PyObject) : PyObject; cdecl;
 begin
+ try
    with QkObjFromPyObj(self) as QQuakeCtx do
      MakeAddonFromQctx;
    Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
 end;
 
 function qMakeTexturesFromQctx(self, args: PyObject) : PyObject; cdecl;
 begin
+ try
    with QkObjFromPyObj(self) as QQuakeCtx do
      MakeTexturesFromQctx;
    Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
 end;
 
 const

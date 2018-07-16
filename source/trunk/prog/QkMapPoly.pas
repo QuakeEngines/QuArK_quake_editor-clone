@@ -4304,12 +4304,17 @@ end;
 
 function fRevertToEnhTex(self, args: PyObject) : PyObject; cdecl;
 begin
+ try
   with QkObjFromPyObj(self) as TFace do
    begin
     Acces;
     RevertToEnhTex;
    end;
   Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
 end;
 
 function fDistortion(self, args: PyObject) : PyObject; cdecl;
@@ -4503,7 +4508,7 @@ begin
      end;
     S:=S^.NextF;
    end;
-  Raise EError(4446);
+  Raise EError(4446); //FIXME: We are never reaching the next line? What is the point of it then?
   Result:=PyNoResult;
  except
   EBackToPython;

@@ -985,16 +985,20 @@ begin
  H:=GetHandle(M.X, M.Y, False, Nil);
  if H<>Py_None then
   begin
-   obj:=PyObject_GetAttrString(H, 'cursor'); try
-   obj1:=GetPythonValue(obj, Py_BuildValueX('(O)', [MapViewObject]), False);
-   finally Py_XDECREF(obj); end;
-   if obj1<>Nil then
-    begin
-     nCursor:=PyInt_AsLong(obj1);
-     Py_DECREF(obj1);
-    end;
-   if nCursor = crDefault then
-    nCursor:=HandleCursor;
+   try
+    obj:=PyObject_GetAttrString(H, 'cursor'); try
+    obj1:=GetPythonValue(obj, Py_BuildValueX('(O)', [MapViewObject]), False);
+    finally Py_XDECREF(obj); end;
+    if obj1<>Nil then
+     begin
+      nCursor:=PyInt_AsLong(obj1);
+      Py_DECREF(obj1);
+     end;
+    if nCursor = crDefault then
+     nCursor:=HandleCursor;
+   finally
+    PythonCodeEnd;
+   end;
   end;
  CallMouseEvent(MapViewObject, FOnMouse, M.X, M.Y, mbMouseMove, [], H);
 end;
@@ -1148,6 +1152,7 @@ begin
      end;
    finally
     Py_DECREF(callresult);
+    PythonCodeEnd;
    end;
   end
  else
@@ -2234,7 +2239,7 @@ begin
         Exit;
        MapViewProj:=GetMatrixCoordinates(mx^.M);
       end;
-     UpdateCoords(True);           
+     UpdateCoords(True);
      if (MapViewProj<>Nil) and ((rng=Nil) or PyObject_IsTrue(rng)) then
       begin
        if MapViewProj.FlatDisplay then

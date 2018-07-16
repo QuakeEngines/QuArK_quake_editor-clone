@@ -94,24 +94,28 @@ var
  I, Count: Integer;
  Q: QObject;
 begin
- Py_XDECREF(FCache);
- FCache:=Nil;
- if (nCache<>Nil) and (nCache<>Py_None) then
-  begin
-   Count:=PyObject_Length(nCache);
-   if Count<0 then Raise EError(4449);
-   for I:=0 to Count-1 do
-    begin
-     Q:=QkObjFromPyObj(PyList_GetItem(nCache, I));
-     if not (Q is TTreeMap) then Raise EError(4449);
-     if TTreeMap(Q).FParent = Nil then
-      TTreeMap(Q).FParent:=Self;
-    end;
-   Py_INCREF(nCache);
-  end
- else
-  nCache:=PyList_New(0);
- FCache:=nCache;
+ try
+  Py_XDECREF(FCache);
+  FCache:=Nil;
+  if (nCache<>Nil) and (nCache<>Py_None) then
+   begin
+    Count:=PyObject_Length(nCache);
+    if Count<0 then Raise EError(4449);
+    for I:=0 to Count-1 do
+     begin
+      Q:=QkObjFromPyObj(PyList_GetItem(nCache, I));
+      if not (Q is TTreeMap) then Raise EError(4449);
+      if TTreeMap(Q).FParent = Nil then
+       TTreeMap(Q).FParent:=Self;
+     end;
+    Py_INCREF(nCache);
+   end
+  else
+   nCache:=PyList_New(0);
+  FCache:=nCache;
+ finally
+  PythonCodeEnd;
+ end;
 end;
 
 (*function TDuplicator.CallDuplicatorMethod(const MethodName: String; args: PyObject) : PyObject;
@@ -269,24 +273,48 @@ procedure TDuplicator.ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer;
 var
  I: Integer;
 begin
- for I:=0 to PyObject_Length(BuildImages)-1 do
-  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListePolyedres(Polyedres, Negatif, Flags or soDirectDup, Brushes);
+ try
+  for I:=0 to PyObject_Length(BuildImages)-1 do
+   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListePolyedres(Polyedres, Negatif, Flags or soDirectDup, Brushes);
+ finally;
+  PythonCodeEnd;
+ end;
 end;
 
 procedure TDuplicator.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 var
  I: Integer;
 begin
- for I:=0 to PyObject_Length(BuildImages)-1 do
-  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites, Cat);
+ try
+  for I:=0 to PyObject_Length(BuildImages)-1 do
+   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites, Cat);
+ finally;
+  PythonCodeEnd;
+ end;
 end;
+
+(*procedure TDuplicator.ListeMeshes(Entites: TQList; Flags: Integer);
+var
+ I: Integer;
+begin
+ try
+  for I:=0 to PyObject_Length(BuildImages)-1 do
+   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeMeshes(Entites, Flags);
+ finally;
+  PythonCodeEnd;
+ end;
+end;*)
 
 procedure TDuplicator.ListeBeziers(Entites: TQList; Flags: Integer);
 var
  I: Integer;
 begin
- for I:=0 to PyObject_Length(BuildImages)-1 do
-  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeBeziers(Entites, Flags);
+ try
+  for I:=0 to PyObject_Length(BuildImages)-1 do
+   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeBeziers(Entites, Flags);
+ finally;
+  PythonCodeEnd;
+ end;
 end;
 
 procedure TDuplicator.AddTo3DScene(Scene: TObject);
@@ -299,16 +327,23 @@ begin
 {MD:=g_DrawInfo.ModeDessin;
  Exclude(g_DrawInfo.ModeDessin, mdComputingPolys);}
  Color1:=CurrentMapView.Scene.BlendColor;
- TSceneObject(Scene).SetColor(MiddleColor(Color1, MapColors(lcDuplicator), 0.5));
- InvPoly:=0;
- InvFaces:=0;
- for I:=0 to PyObject_Length(BuildImages)-1 do
-  begin
-   T:=QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap;
-   BuildPolyhedronsNow(T, InvPoly, InvFaces);
-   T.AddTo3DScene(Scene);
+ try
+  TSceneObject(Scene).SetColor(MiddleColor(Color1, MapColors(lcDuplicator), 0.5));
+  InvPoly:=0;
+  InvFaces:=0;
+  try
+   for I:=0 to PyObject_Length(BuildImages)-1 do
+    begin
+     T:=QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap;
+     BuildPolyhedronsNow(T, InvPoly, InvFaces);
+     T.AddTo3DScene(Scene);
+    end;
+  finally;
+   PythonCodeEnd;
   end;
- TSceneObject(Scene).SetColor(Color1);
+ finally
+  TSceneObject(Scene).SetColor(Color1);
+ end;
 {Include(g_DrawInfo.ModeDessin, mdComputingPolys);}
 end;
 

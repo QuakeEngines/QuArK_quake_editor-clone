@@ -571,14 +571,18 @@ procedure TConsoleForm.ToolbarButton971Click(Sender: TObject);
 var
  P: PyProcessObject;
 begin
- P:=PyProcessObject(RunningProcesses.Objects[ComboBox1.ItemIndex]);
- Py_INCREF(P);
  try
-  if MessageDlg(FmtLoadStr1(5646, [RunningProcesses[ComboBox1.ItemIndex]]),
-   mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    TerminateProcess(P^.Process, 255);
+  P:=PyProcessObject(RunningProcesses.Objects[ComboBox1.ItemIndex]);
+  Py_INCREF(P);
+  try
+   if MessageDlg(FmtLoadStr1(5646, [RunningProcesses[ComboBox1.ItemIndex]]),
+    mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+     TerminateProcess(P^.Process, 255);
+  finally
+   Py_DECREF(P);
+  end;
  finally
-  Py_DECREF(P);
+  PythonCodeEnd;
  end;
 end;
 

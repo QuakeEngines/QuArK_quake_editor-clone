@@ -417,22 +417,27 @@ var
  Form: TQkForm;
  obj: PyObject;
 begin
- Result:=Nil;
- if not PyArg_ParseTupleX(args, 'O', [@obj]) then Exit;
- Form:=PyWindow(self)^.Form;
- NewMainMenu:=TMainMenu.Create(Form);
  try
-  if not FillInMenu(Form, NewMainMenu.Items, obj) then Exit;
-  OldMainMenu:=Form.Menu;
-  Form.Menu:=NewMainMenu;
-  if NewMainMenu=OldMainMenu then
-   NewMainMenu:=Nil
-  else
-   NewMainMenu:=OldMainMenu;
- finally
-  NewMainMenu.Free;
+  Result:=Nil;
+  if not PyArg_ParseTupleX(args, 'O', [@obj]) then Exit;
+  Form:=PyWindow(self)^.Form;
+  NewMainMenu:=TMainMenu.Create(Form);
+  try
+   if not FillInMenu(Form, NewMainMenu.Items, obj) then Exit;
+   OldMainMenu:=Form.Menu;
+   Form.Menu:=NewMainMenu;
+   if NewMainMenu=OldMainMenu then
+    NewMainMenu:=Nil
+   else
+    NewMainMenu:=OldMainMenu;
+  finally
+   NewMainMenu.Free;
+  end;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
  end;
- Result:=PyNoResult;
 end;
 
 var
@@ -3322,35 +3327,29 @@ end;
 function GetPythonValue(value, args: PyObject; Hourglass: Boolean) : PyObject;
 begin
  Result:=Nil;
- if args=Nil then
+ if args=Nil then Exit;
+ if value=Nil then Exit;
+ if PyCallable_Check(value) then
   begin
-   PythonCodeEnd;
-   Exit;
-  end;
- if value=Nil then
-  PythonCodeEnd
- else
-  if PyCallable_Check(value) then
-   begin
-    if Hourglass then
-     ProgressIndicatorStart(0,0);
+   if Hourglass then
+    ProgressIndicatorStart(0,0);
+   try
     try
-     try
-      Result:=PyEval_CallObject(value, args);
-     finally
-      Py_DECREF(args);
-     end;
+     Result:=PyEval_CallObject(value, args);
     finally
-     if Hourglass then
-      ProgressIndicatorStop;
+     Py_DECREF(args);
     end;
-    PythonCodeEnd;
-   end
-  else
-   begin
-    Result:=value;
-    Py_INCREF(Result);
+   finally
+    if Hourglass then
+     ProgressIndicatorStop;
    end;
+   PythonCodeEnd;
+  end
+ else
+  begin
+   Result:=value;
+   Py_INCREF(Result);
+  end;
 end;
 
 function CallMacro(self: PyObject; const fntname: String) : PyObject;

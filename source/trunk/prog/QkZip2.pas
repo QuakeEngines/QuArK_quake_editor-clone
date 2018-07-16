@@ -794,10 +794,10 @@ begin
     if not PyArg_ParseTupleX(args, 's', [@path]) then
       Exit;
     Result:=GetPyObj((QkObjFromPyObj(self) as QZipFolder).GetFolder(path));
-   except
-     EBackToPython;
-     Result:=Nil;
-   end;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
 end;
 }
 {
