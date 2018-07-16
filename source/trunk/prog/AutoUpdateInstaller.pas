@@ -42,11 +42,11 @@ implementation
 
 uses SysUtils, QuarkX, QkConsts;
 
-procedure InstallPackages; stdcall; forward;
+function InstallPackages : DWORD; stdcall; forward;
 
 var
   InstallWindow: TAutoUpdateInstaller;
-  ThreadHandle: Cardinal;
+  ThreadHandle: THandle;
   StopUpdate, ExitWindow: Boolean;
 
 {$R *.DFM}
@@ -55,7 +55,7 @@ var
 
 function DoInstall: Boolean;
 var
-  ThreadId: Cardinal; //Dummy variable
+  ThreadId: DWORD; //Dummy variable
 begin
   Result:=False;
   InstallWindow:=TAutoUpdateInstaller.Create(nil);
@@ -67,6 +67,7 @@ begin
       Exit;
     end;
     SetThreadPriority(ThreadHandle, THREAD_PRIORITY_ABOVE_NORMAL);
+    CloseHandle(ThreadHandle); //Handle will remain valid for the duration of the thread's run.
     InstallWindow.ShowModal;
   finally
     InstallWindow.Free;
@@ -74,7 +75,7 @@ begin
   Result:=True;
 end;
 
-procedure InstallPackages; stdcall;
+function InstallPackages : DWORD; stdcall;
 var
   I, J: Integer;
   UpdateConnection: THTTPConnection;
@@ -83,6 +84,7 @@ var
 begin
   //When interfacing with InstallWindow, make sure to only send Windows-messages,
   //to make it threadsafe-ish.
+  Result:=2;
   try
     try
       TotalFileNumber:=0;
@@ -156,10 +158,12 @@ begin
     on E: Exception do
     begin
       InstallWindow.Label1.Caption:=E.Message;
+      Result:=1;
       Exit;
     end;
   end;
   InstallWindow.Label1.Caption:='QuArK needs to be restarted for the updates to be applied.'; //@
+  Result:=0;
 end;
 
  {------------------------}
