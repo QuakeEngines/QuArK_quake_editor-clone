@@ -954,13 +954,13 @@ class DefaultDrawEntityLines:
            self.drawentityarrows("movewith", entity["targetname"], org, 1, GREEN, view, entities, processentities)
            self.drawentityarrows("pathtarget", entity["targetname"], org, 1, color, view, entities, processentities)
            self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
-        if entity["team"] is not None:  #X7: team (Arg) for enities that use Team's, color Blue
+        if entity["team"] is not None:  #X7: team (Arg) for entities that use Team's, color Blue
            self.drawentityarrows("team", entity["team"], org, 0, BLUE, view, entities, processentities)
-        if entity["team"] is not None:  #X7: team (Arg) for enities that use Team's, color Blue
+        if entity["team"] is not None:  #X7: team (Arg) for entities that use Team's, color Blue
            self.drawentityarrows("team", entity["team"], org, 1, BLUE, view, entities, processentities)
-        if entity["dmgteam"] is not None:  #X7: dmgteam (Arg) for Q2 Lazarus Monsters enities, color Blue
+        if entity["dmgteam"] is not None:  #X7: dmgteam (Arg) for Q2 Lazarus Monsters entities, color Blue
            self.drawentityarrows("dmgteam", entity["dmgteam"], org, 0, BLUE, view, entities, processentities)
-        if entity["dmgteam"] is not None:  #X7: dmgteam (Arg) for Q2 Lazarus Monsters enities, color Blue
+        if entity["dmgteam"] is not None:  #X7: dmgteam (Arg) for Q2 Lazarus Monsters entities, color Blue
            self.drawentityarrows("dmgteam", entity["dmgteam"], org, 1, BLUE, view, entities, processentities)
 ############ SHINE support code start
         if quarkx.setupsubset(SS_GAMES)['GameCfg'] == "Shine":
