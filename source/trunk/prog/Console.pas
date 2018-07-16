@@ -53,8 +53,8 @@ type
     procedure DisplayMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure Timer1Timer(Sender: TObject);
-    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure MouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
+    procedure MouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     destructor Destroy; override;
   private
     ConsoleFont: HFont;
