@@ -917,7 +917,7 @@ begin
   CharModeJeu:=S[1];
 end;
 
-function ModeJeuQuake2: Boolean;
+function ModeJeuQuake2: Boolean; //FIXME: This is a terrible idea!
 begin
  Result := CharModeJeu >= mjQuake2;
 end;
@@ -1116,7 +1116,7 @@ end;
 
 function GetRegCommand : String;
 begin
- Result:=Application.ExeName+' "%1"';
+ Result:='"'+Application.ExeName+'" "%1"';
 end;
 
 procedure MakeAssociations(Config: QObject);
