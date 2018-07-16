@@ -24,6 +24,7 @@ import qutils
 
 def MACRO_displaymap(self, what=None):
     "Called when there is a map to display."
+    import qutils
     qutils.loadmapeditor(what)
     import mapeditor
     if isinstance(self.info, mapeditor.MapEditor):
@@ -37,6 +38,7 @@ def MACRO_displaybsp(self):
 
 def MACRO_displaymdl(self):
     "Called when there is a model to display."
+    import qutils
     qutils.loadmdleditor()
     import mdleditor
     if isinstance(self.info, mdleditor.ModelEditor):
@@ -52,6 +54,7 @@ def MACRO_displaymdl(self):
 
 def MACRO_duplicator(dup):
     "Computes Duplicator images."
+    import qutils
     if quarkx.setupsubset(qutils.SS_MAP, "Options")["IgnoreDup"]:
         return []
 
@@ -72,6 +75,7 @@ def MACRO_duplicator(dup):
 def MACRO_applylinear(entity, matrix):
     "Applies a linear distortion (rotate, zoom, etc) on an entity or a Duplicator."
     # Note : "origin" is updated by QuArK before it calls this macro.
+    import qutils
     qutils.loadmapeditor()
     import mapentities
     mapentities.CallManager("applylinear", entity, matrix)
@@ -131,6 +135,7 @@ def MACRO_buildmaps(maps, mode, extracted, cfgfile="", defaultbsp=None):
         if root is None: continue
         maplist.append((map, root, build))
 
+    import qutils
     qutils.loadmapeditor()
     import mapquakemenu
     mapquakemenu.RebuildAndRun(maplist, None, runquake, text, forcepak, extracted, cfgfile, defaultbsp)
