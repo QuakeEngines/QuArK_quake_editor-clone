@@ -1719,8 +1719,6 @@ begin
     try
 
     PSD2.Init;
-   // Removing line below broke OpenGL for odd sized textures in version 1.24 2004/12/14
-    {PSD2.AlphaBits:=psaNoAlpha;}
     PSD:=GetTex3Description(Texture^);
 
     try
