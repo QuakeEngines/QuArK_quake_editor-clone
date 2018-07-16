@@ -396,17 +396,17 @@ PyErr_SetString: procedure (o: PyObject; c: PChar); cdecl;
 PyErr_ExceptionMatches: function (exc: PyObject) : LongBool; cdecl;
 
 //function PyObject_Hash(o: PyObject) : LongInt; cdecl;
-PyObject_Length: function (o: PyObject) : Integer; cdecl;
+PyObject_Length: function (o: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 PyObject_GetItem: function (o, key: PyObject) : PyObject; cdecl;
 PyObject_HasAttrString: function (o: PyObject; attr_name: PChar) : LongBool; cdecl;
 PyObject_GetAttrString: function (o: PyObject; attr_name: PChar) : PyObject; cdecl;
 PyObject_IsTrue: function (o: PyObject) : LongBool; cdecl;
 PyObject_Str: function (o: PyObject) : PyObject; cdecl;
 PyObject_Repr: function (o: PyObject) : PyObject; cdecl;
-PySequence_GetItem: function (o: PyObject; index: Integer) : PyObject; cdecl;
+PySequence_GetItem: function (o: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 PySequence_In: function (o, value: PyObject) : Integer; cdecl;
-PySequence_Index: function (o, value: PyObject) : Integer; cdecl;
-PySequence_DelItem: function (o: PyObject; index: Integer) : Integer; cdecl;
+PySequence_Index: function (o, value: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
+PySequence_DelItem: function (o: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : Integer; cdecl;
 PyMapping_HasKey: function (o, key: PyObject) : LongBool; cdecl;
 PyMapping_HasKeyString: function (o: PyObject; key: PChar) : LongBool; cdecl;
 PyNumber_Float: function (o: PyObject) : PyObject; cdecl;
@@ -414,14 +414,14 @@ PyNumber_Float: function (o: PyObject) : PyObject; cdecl;
 Py_BuildValue: function (fmt: PChar{...}) : PyObject; cdecl;
 PyArg_ParseTuple: function (src: PyObject; fmt: PChar{...}) : LongBool; cdecl;
 //PyArg_ParseTupleAndKeywords: function (arg, kwdict: PyObject; fmt: PChar; var kwlist: PChar{...}) : LongBool; cdecl;
-PyTuple_New: function (size: Integer) : PyObject; cdecl;
-PyTuple_GetItem: function (tuple: PyObject; index: Integer) : PyObject; cdecl;
-PyTuple_SetItem: function (tuple: PyObject; index: Integer; item: PyObject) : Integer; cdecl;
+PyTuple_New: function (size: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+PyTuple_GetItem: function (tuple: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+PyTuple_SetItem: function (tuple: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; item: PyObject) : Integer; cdecl;
 
-PyList_New: function (size: Integer) : PyObject; cdecl;
-PyList_GetItem: function (list: PyObject; index: Integer) : PyObject; cdecl;
-PyList_SetItem: function (list: PyObject; index: Integer; item: PyObject) : Integer; cdecl;
-PyList_Insert: function (list: PyObject; index: Integer; item: PyObject) : Integer; cdecl;
+PyList_New: function (size: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+PyList_GetItem: function (list: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+PyList_SetItem: function (list: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; item: PyObject) : Integer; cdecl;
+PyList_Insert: function (list: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; item: PyObject) : Integer; cdecl;
 PyList_Append: function (list: PyObject; item: PyObject) : Integer; cdecl;
 
 PyDict_New: function : PyObject; cdecl;
@@ -436,8 +436,8 @@ PyDict_Next: function (dict: PyObject; pos : Py_ssize_tPtr; key : PyObjectPtr; v
 
 PyString_FromString: function (str: PChar) : PyObject; cdecl;
 PyString_AsString: function (o: PyObject) : PChar; cdecl;
-PyString_FromStringAndSize: function (str: PChar; size: Integer) : PyObject; cdecl;
-PyString_Size: function (o: PyObject) : Integer; cdecl;
+PyString_FromStringAndSize: function (str: PChar; size: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+PyString_Size: function (o: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 
 PyInt_FromLong: function (Value: LongInt) : PyObject; cdecl;
 PyInt_AsLong: function (o: PyObject) : LongInt; cdecl;
@@ -462,7 +462,7 @@ PyFloat_AsDouble: function (o: PyObject) : Double; cdecl;
 
 PyObject_Init: function (o: PyObject; t: PyTypeObject) : PyObject; cdecl;
 
-// function _PyObject_NewVar(t: PyTypeObject; i: Integer; o: PyObject) : PyObject; cdecl;
+// function _PyObject_NewVar(t: PyTypeObject; i: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; o: PyObject) : PyObject; cdecl;
 
 PyCFunction_New: function (const Def: TyMethodDef; self: PyObject) : PyObject; cdecl;
 
@@ -560,7 +560,7 @@ const
     (Variable: @@PyObject_Str;               Name: 'PyObject_Str';               MinimalVersion: 0 ),
     (Variable: @@PyObject_Repr;              Name: 'PyObject_Repr';              MinimalVersion: 0 ),
     (Variable: @@PySequence_GetItem;         Name: 'PySequence_GetItem';         MinimalVersion: 0 ),
-    (Variable: @@PySequence_In;              Name: 'PySequence_In';              MinimalVersion: 0 ),
+    (Variable: @@PySequence_In;              Name: 'PySequence_In';              MinimalVersion: 0 ), //Is a legacy alias for the new PySequence_Contains
     (Variable: @@PySequence_Index;           Name: 'PySequence_Index';           MinimalVersion: 0 ),
     (Variable: @@PySequence_DelItem;         Name: 'PySequence_DelItem';         MinimalVersion: 0 ),
     (Variable: @@PyMapping_HasKey;           Name: 'PyMapping_HasKey';           MinimalVersion: 0 ),
