@@ -539,6 +539,8 @@ class PathDuplicator(StandardDuplicator):
 
         templategroup = self.sourcelist()
         templatebbox = quarkx.boundingboxof([templategroup])
+        if templatebbox is None:
+            return []
         templatesize = templatebbox[1] - templatebbox[0]
 
         # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
