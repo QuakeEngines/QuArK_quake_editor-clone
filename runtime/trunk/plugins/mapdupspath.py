@@ -358,7 +358,7 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
 
             def action(self, handle=self, editor=editor, pack=pack):
                 if self.src["distance"]:
-                    distance = eval(self.src["distance"])
+                    distance = float(self.src["distance"])
                 else:
                     distance = 0
                 pitch, yaw = read2vec(self.src["angles"])
