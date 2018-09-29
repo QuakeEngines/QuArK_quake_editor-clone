@@ -42,7 +42,7 @@ type
   TProgressIndicator = record
               NextProgressIndicator: PProgressIndicator;
               Ignore, Text: Integer;
-              StartTime: Cardinal;
+              StartTime: DWORD;
               StartStep, CurrentStep, NumberSteps: Integer;
              end;
 
@@ -55,7 +55,7 @@ procedure ProgressIndicatorStop;
 
 implementation
 
-uses QkObjects, Quarkx;
+uses QkObjects, Quarkx, Logging;
 
 {$R *.DFM}
 
@@ -184,7 +184,7 @@ begin
       CurrentStep:=CurrentStep+Delta;
       if CurrentStep>TotalSteps then
       begin
-        // FIXME: Shouldn't happen!
+        Log(LOG_WARNING, 'Travail: CurrentStep>TotalSteps!');
         CurrentStep:=TotalSteps;
       end;
     end;
