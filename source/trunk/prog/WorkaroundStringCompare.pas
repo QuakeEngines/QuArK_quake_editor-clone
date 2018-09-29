@@ -41,14 +41,14 @@ interface
 
 uses Classes, SysUtils;
 
-function Strict_IndexOfName(Specifics: TStrings; const Spec: String) : Integer;
+function Strict_IndexOfName(const Specifics: TStrings; const Spec: String) : Integer;
 
 implementation
 
-function Strict_IndexOfName(Specifics: TStrings; const Spec: String) : Integer;
+function Strict_IndexOfName(const Specifics: TStrings; const Spec: String) : Integer;
 begin
   Result:=Specifics.IndexOfName(Spec);
-  if Result < 0 then exit;
+  if Result < 0 then Exit;
   if not CompareMem(PByte(Specifics.Names[Result]), PByte(Spec), Length(Spec)) then Result:=-1;
 end;
 
