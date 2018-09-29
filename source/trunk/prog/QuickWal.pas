@@ -433,7 +433,7 @@ end;
 
 { locates folder by given pathname, creating QTextureLists
   when nothing exists }
-function LocateTxListFromPath(Folder: QObject; Path : TStrings) : QObject;
+function LocateTxListFromPath(Folder: QObject; const Path : TStrings) : QObject;
 var
   Index, I: Integer;
   SubFolder: QObject;
@@ -771,12 +771,12 @@ begin
  MessageBeep(0);
 end;
 
-procedure MakeFolder(var Folder, Parental: QObject; Name: String);
+(*procedure MakeFolder(var Folder, Parental: QObject; const Name: String);
 begin
   Folder:=QToolBoxGroup.Create(Name, Nil);
   Folder.FParent:=Parental;
   Parental.SubElements.Add(Folder);
-end;
+end;*)
 
 procedure BuildDynamicFolders(const Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
 var

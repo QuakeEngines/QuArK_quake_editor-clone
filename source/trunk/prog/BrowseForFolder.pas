@@ -26,7 +26,7 @@ interface
 
 uses Windows;
 
-function BrowseForFolderDlg(hwnd: HWnd; var Path: String; Title, CheckFile: String) : Boolean;
+function BrowseForFolderDlg(hwnd: HWnd; var Path: String; Title: String; const CheckFile: String) : Boolean;
 function CheckFileExists(const Path, CheckFile: String) : Boolean;
 
 implementation
@@ -104,7 +104,7 @@ begin
  Result:=0;
 end;
 
-function BrowseForFolderDlg(hwnd: HWnd; var Path: String; Title, CheckFile: String) : Boolean;
+function BrowseForFolderDlg(hwnd: HWnd; var Path: String; Title: String; const CheckFile: String) : Boolean;
 var
  g_pMalloc: IMALLOC;
  pidlFolder: PITEMIDLIST;

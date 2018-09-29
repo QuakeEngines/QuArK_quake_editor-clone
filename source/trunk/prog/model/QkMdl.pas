@@ -31,7 +31,7 @@ type
   private
 //    procedure LoadHLModel(F: TStream; FSize: Integer);
       Procedure ReadHL2Model(F: TStream; FileSize: Integer);
-//      function Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
+//      function Loaded_HL2Skin(Comp: QComponent; const tex_name: string): QImage;
   protected
     procedure LoadFile(F: TStream; FSize: Integer); override;
     procedure SaveFile(Info: TInfoEnreg1); override;
@@ -279,7 +279,7 @@ begin
 end;
     }
 
-function Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
+function Loaded_HL2Skin(Comp: QComponent; const tex_name: string): QImage;
 var
   tex: QFileObject;
 begin
@@ -307,7 +307,7 @@ begin
 end;
 
 
-Procedure LoadHL2VTX(Fname: string);
+Procedure LoadHL2VTX(const Fname: string);
 const
   SpecTris = 'Tris=';
   SpecVtx = 'Vertices=';

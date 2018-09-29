@@ -590,16 +590,15 @@ begin
   end;
 end;
 
-function TagNameToMd3FileName(name, sname: string): String;
-begin
-  result:='';
-       if (name='tag_head')  and (sname='head')  then result:='upper.md3'
-  else if (name='tag_head')  and (sname='upper') then result:='head.md3'
-  else if (name='tag_torso') and (sname='lower') then result:='upper.md3'
-  else if (name='tag_torso') and (sname='upper') then result:='lower.md3';
-end;
-
 function QMd3File.TryAutoLoadParts: boolean;
+  function TagNameToMd3FileName(const name, sname: string): String;
+  begin
+    result:='';
+         if (name='tag_head')  and (sname='head')  then result:='upper.md3'
+    else if (name='tag_head')  and (sname='upper') then result:='head.md3'
+    else if (name='tag_torso') and (sname='lower') then result:='upper.md3'
+    else if (name='tag_torso') and (sname='upper') then result:='lower.md3';
+  end;
 var
   tag: QModelTag;
   mg: QMiscGroup;

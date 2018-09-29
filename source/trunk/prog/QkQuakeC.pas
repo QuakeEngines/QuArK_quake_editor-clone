@@ -412,7 +412,7 @@ procedure TFQQuakeC.CodeEditorFormatLine(I: Integer; const S: string;
 const
  LettresMot = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 
-  function MotReserve(Mot: String) : Boolean;
+  function MotReserve(const Mot: String) : Boolean;
   var
    J: Integer;
   begin

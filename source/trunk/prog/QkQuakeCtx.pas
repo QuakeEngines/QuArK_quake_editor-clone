@@ -271,7 +271,7 @@ begin
   end;
 end;
 
-Function FindFiles(dir, filter: String): TQList;
+Function FindFiles(const dir, filter: String): TQList;
 var
   f: TSearchRec;
   f_e: Integer;
@@ -386,7 +386,7 @@ var
   addonRoot: QFileObject;
   TexRoot: QToolBox;
   TexFolders, oldTexRoot: QObject;
-  Function GetObject(nname, ntypeinfo, s: String): QObject;
+  Function GetObject(const nname, ntypeinfo, s: String): QObject;
   var
     i: Integer;
   begin

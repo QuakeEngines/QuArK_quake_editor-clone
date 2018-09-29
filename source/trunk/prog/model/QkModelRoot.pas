@@ -43,7 +43,7 @@ type
     function BuildComponentList : TQList;
     procedure CheckComponentFrames;
     procedure SetFrames(index: Integer);
-    procedure SetFramesByName(s: string);
+    procedure SetFramesByName(const name: string);
     procedure Dessiner; override;
     destructor Destroy; override;
   end;
@@ -125,7 +125,7 @@ begin
   end;
 end;
 
-procedure QModelRoot.setFramesByName(s: string);
+procedure QModelRoot.setFramesByName(const name: string);
 var
   l: TQList;
   i: Integer;
@@ -133,7 +133,7 @@ begin
   l:=BuildComponentList;
   try
     for i:=0 to l.count-1 do
-      QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(s);
+      QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(name);
   finally
     l.free;
   end;
