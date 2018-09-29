@@ -48,7 +48,8 @@ begin
 end;
 
 procedure QOsFolder.FinalizeFromText;
-begin;
+begin
+     ;
   ReadFolder;
 end;
 
