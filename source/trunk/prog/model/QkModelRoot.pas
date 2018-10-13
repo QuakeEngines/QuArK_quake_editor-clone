@@ -199,21 +199,19 @@ end;
 
 function QModelRoot.Triangles(var P: PComponentTris) : Integer;
 var
-  list: TQList;
+  L: TQList;
 begin
-  list:=TQList.Create;
+  L:=TQList.Create;
   try
-    FindAllSubObjects('', QComponent, Nil, list);
-  except
-    list.clear;
-    list.Free;
-    Raise;
-  end;
-  if list.count<0 then begin
-    result:=0;
-    exit;
-  end else begin
-    Result:=QComponent(List.Items1[0]).Triangles(p);
+    FindAllSubObjects('', QComponent, Nil, L);
+    if L.count<0 then
+    begin
+      result:=0;
+      exit;
+    end;
+    Result:=QComponent(L.Items1[0]).Triangles(p);
+  finally
+    L.Free;
   end;
 end;
 
@@ -300,7 +298,6 @@ begin
     else
       Result:=L[N] as QComponent;
   finally
-    L.Clear;
     L.Free;
   end;
 end;
