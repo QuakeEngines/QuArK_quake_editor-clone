@@ -212,7 +212,7 @@ const
 
  {------------------------}
 
-function CoordShift(P, texO, texS, texT : TVect) : TVect;
+function CoordShift(const P, texO, texS, texT : TVect) : TVect;
 function CentreSurface(P: PSurface) : TVect;
 function SommetDeFace(Surface: PSurface; Sommet: PVertex) : Boolean;
 
@@ -237,7 +237,7 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 implementation
 
 uses QkFileObjects, Undo, PyMapView, QkMap, QkPixelSet, Dialogs, EdSceneObject,
-     Quarkx, QkExceptions, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
+     Quarkx, QkExceptions, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList, Math;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';
@@ -1837,7 +1837,7 @@ begin
 end;*)
 
 
-function CoordShift(P, texO, texS, texT : TVect) : TVect;
+function CoordShift(const P, texO, texS, texT : TVect) : TVect;
 var D: TVect;
 begin
    D:=VecDiff(P,texO);
@@ -1846,15 +1846,8 @@ begin
    Result.Z:=0.0;
 end;
 
-function ATan2(Y, X: Extended): Extended;
-asm
-        FLD     Y
-        FLD     X
-        FPATAN
-        FWAIT
-end;
-
 { algorithm from Q3R as provided by Timothee Besset }
+//It's ComputeAxisBase from q3map/brush_primit.c
 procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 var
  Normal : TVect;
@@ -1868,8 +1861,8 @@ begin
   Normal.Y:=0.0;
  if Abs(Normal.Z)<1e-6 then
   Normal.Z:=0.0;
- RotY:=-ATan2(Normal.Z,sqrt(Normal.Y*Normal.Y+Normal.X*Normal.X));
- RotZ:=ATan2(Normal.Y,Normal.X);
+ RotY:=-ArcTan2(Normal.Z,sqrt(Normal.Y*Normal.Y+Normal.X*Normal.X));
+ RotZ:=ArcTan2(Normal.Y,Normal.X);
  { rotate (0,1,0) and (0,0,1) to compute texS and texT  }
  texS.X:=-Sin(RotZ);
  texS.Y:=Cos(RotZ);
