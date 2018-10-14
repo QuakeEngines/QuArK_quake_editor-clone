@@ -3,6 +3,7 @@
 
 #ifndef __cplusplus
 #include <stdlib.h>
+#include <string.h>
 #else
 #include <cstdlib>
 #include <cstring>
@@ -46,13 +47,15 @@ FxU32 *fullpalette;		// 256x256 array indexed by high word of framebuffer pixels
 FxU8 *texdata;
 int texwmask, texhmask, texh1;
 float stowbase;
-int framew, frameh, framecount, firstcol, firstrow;
+FxU32 framew, frameh, firstcol, firstrow;
+unsigned int framecount;
 FxU32 *framebuffer;		// a pixel is :   [T] ttttttttcccfffff zzzzzzzzzzzzzzzz    (t)exture, (c)olor scheme, (f)og, (z)-depth
 						// 'solid' mode : [S] ccccccccffffffff zzzzzzzzzzzzzzzz    (c)olor, (f)og
 						// paletteless :  [X] bbbggggrrrrfffff zzzzzzzzzzzzzzzz    (r)ed, (g)reen, (b)lue, (f)og, (z)-depth
 float oow_to_w[OOWTABLESIZE];
 FxU32 oow_to_pix[OOWTABLESIZE];
-char colormode, flatdisplay, texturepaletteok, unifiedpalettemode;
+GrColorCombineFunction_t colormode;
+unsigned int flatdisplay, texturepaletteok, unifiedpalettemode;
 
 #define unifiedpalette (unifiedpalettemode&1)
 
@@ -69,8 +72,8 @@ int oow_table_mode;
 
 void BuildFullPalette(void)
 {
-  int l,cs,fogmax;
-  unsigned int i,j,s;
+  int l;
+  unsigned int i,j,s,cs,fogmax;
   int ls[COLORSCHEMES*3];
   int lsfactor[SOLIDCOLORSCHEMES*3];
   float lightfactor;
@@ -143,7 +146,7 @@ void BuildFullPalette(void)
     else
     {
       unsigned int rr,gg,bb;
-	  unsigned int base = j;
+      unsigned int base = j;
       int l24 = 0x24*l;
       int l11 = 0x11*l;
       int rcount, gcount, bcount;
@@ -169,7 +172,7 @@ void BuildFullPalette(void)
       fullpalette[i] = i<<4;*/
 }
 
-void FreeFullPalette()
+void FreeFullPalette(void)
 {
   free(fullpalette);
   fullpalette=0;
@@ -179,7 +182,7 @@ void FreeFullPalette()
 //#define PACKCOLOR(c)  ((((c) & 0x0000F0)<<17) | (((c) & 0x00F000)<<13) | (((c) & 0xE00000)<<8))
 #define PACKCOLOR(c)  ((((c) & 0xF00000)<<1) | (((c) & 0x00F000)<<13) | (((c) & 0x0000E0)<<24))
 
-void FillCurrentPalette()
+void FillCurrentPalette(void)
 {
   unsigned int i;
   FxU32 c;
@@ -422,8 +425,8 @@ void setunifiedpalette(int n)
 void __stdcall softgLoadFrameBuffer(int *buffer, int format)
 {
   static FxU32* framebufferex;
-  unsigned int i;
-  int j,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10, bufferline, end;
+  unsigned int i, end;
+  int j,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10, bufferline;
 
   if (!buffer)
   {
@@ -990,7 +993,7 @@ void __stdcall grDrawTriangle(const GrVertex *a, const GrVertex *b, const GrVert
         {
           curx2++;
           cur2.oow+=deltah.oow;
-      
+
           i = (int)cur2.oow;
           if (i>=OOWTABLESIZE) i=OOWTABLESIZE-1;
           else if (i<0) i=0;
