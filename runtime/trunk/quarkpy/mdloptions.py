@@ -23,7 +23,6 @@ saveFLflat3Dcamerapos = None
 
 
 def newfinishdrawing(editor, view, oldfinish=mdleditor.ModelEditor.finishdrawing):
-
     oldfinish(editor, view)
     MdlOption = quarkx.setupsubset(SS_MODEL, "Options")
     if not MdlOption["Ticks"]:return
@@ -193,8 +192,8 @@ class LineThickDlg(SimpleCancelDlgBox):
     #
     size = (160, 80)
     dlgflags = FWF_NORESIZE
-    dfsep = 0.7 
-    
+    dfsep = 0.7
+
     dlgdef = """
     {
         Style = "9"
@@ -213,9 +212,9 @@ class LineThickDlg(SimpleCancelDlgBox):
     def __init__(self, form, editor, m):
         self.editor = editor
         src = quarkx.newobj(":")
-        thick =  quarkx.setupsubset(SS_MODEL,"Options")['linethickness']
+        thick = quarkx.setupsubset(SS_MODEL,"Options")['linethickness']
         if thick:
-            thick=eval(thick)
+            thick=float(thick)
         else:
             thick=2
         src["thick"] = thick,
@@ -224,7 +223,7 @@ class LineThickDlg(SimpleCancelDlgBox):
 
     def ok(self):
         pass
-        thick = self.src['thick']    
+        thick = self.src['thick']
         if thick is not None:
             thick, = thick
             if thick==2:
@@ -242,9 +241,9 @@ class LineThickDlg(SimpleCancelDlgBox):
 
 
 def getLineThickness():
-     thick =  quarkx.setupsubset(SS_MODEL,"Options")['linethickness']
+     thick = quarkx.setupsubset(SS_MODEL,"Options")['linethickness']
      if thick:
-         return eval(thick)
+         return float(thick)
      else:
          return 2
 
@@ -293,7 +292,6 @@ def mBMake_All_Draglines(m):
 def mSYNC_ISV(m):
     # Sync editor selection in Skin-view function.
     editor = mdleditor.mdleditor
-    from mdlhandles import SkinView1
     if not MdlOption("SYNC_ISV"):
         quarkx.setupsubset(SS_MODEL, "Options")['SYNC_ISV'] = "1"
         editor.SkinVertexSelList = []
@@ -307,6 +305,7 @@ def mSYNC_ISV(m):
             skindrawobject = editor.Root.currentcomponent.currentskin
         except:
             skindrawobject = None
+        from mdlhandles import SkinView1
         if SkinView1 is not None:
             mdlhandles.buildskinvertices(editor, SkinView1, editor.layout, editor.Root.currentcomponent, skindrawobject)
             SkinView1.invalidate(1)
