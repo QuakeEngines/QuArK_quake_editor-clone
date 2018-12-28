@@ -65,7 +65,7 @@ The contributing developers of QuArK
 - Brian "silverpaladin" Layman
         e-mail:         SilverPaladin@neo.rr.com
 
-- "Fredrick Vamstad"
+- Fredrick Vamstad
         e-mail:         fredrick.vamstad@gmail.com
 
 - "DanielPharos"
