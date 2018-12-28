@@ -170,21 +170,16 @@ def MACRO_helpmenu(text):
 
 
 def MACRO_shutdown(text):
-#    quitfile=open(quarkx.exepath+'quit.txt','w')
-#    quitfile.write('quitting\n')
     import qutils
 
     del qutils.ico_objects
     del qutils.ico_editor
-    
+
     for key in qutils.ico_dict.keys():
         del qutils.ico_dict[key]
-#        quitfile.write('zapping '+key+'\n')
     del qutils.ico_dict
 
-#    quitfile.write('done\n')
-#    quitfile.close()
-    
+
 #
 #    ---- Dialog Boxes ----
 #

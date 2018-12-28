@@ -17,7 +17,6 @@ import qmenu
 from qutils import *
 import math
 
-#qmacro.qeditor_loaded=1
 
 pi2 = 2.0 * math.pi
 epsilon = 0.00001
