@@ -82,6 +82,8 @@ ShowUnInstDetails show
 ; Finish page
 !define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
 !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
+!define MUI_FINISHPAGE_LINK "QuArK website"
+!define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
