@@ -13,6 +13,10 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed handling File Association paths with spaces.
+
+* [DanielPharos]: Fixed OpenGL texture loading issues, most commonly with odd-sized textures.
+
 * [DanielPharos]: Cache texture sizes during map loading and saving for a big speed improvement
           - with certain games.
 
