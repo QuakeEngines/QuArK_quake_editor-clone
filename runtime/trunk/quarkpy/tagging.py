@@ -113,7 +113,7 @@ If any of the specified objects are tagged in the specified category,
 untag them.
 """
   t = _gettaglist(editor, key)
-  
+
   # Find out which objects are already tagged
   objstountag = []
   for o in objs:
@@ -290,24 +290,24 @@ def _tagfinishdrawing(editor, view, oldmore=qbaseeditor.BaseEditor.finishdrawing
 
 Uses callback functions set using tagdrawfunc().
 """
-  
+
   oldmore(editor, view)
   cv = view.canvas()
-  
+
   # Make the pen the correct colour, so callback functions don't
   # need to
   oldcolour = cv.pencolor
   cv.pencolor = qbaseeditor.MapColor("Tag")
-  
+
   for k in _drawcallbacks.keys():
     f = _drawcallbacks[k]
     if f is None:
       continue
-    
+
     for obj in _gettaglist(editor, k): # _gettaglist is faster 
       f(editor, view, cv, obj)
-      
+
   # Restore the pen colour
   cv.pencolor = oldcolour
-  
+
 qbaseeditor.BaseEditor.finishdrawing = _tagfinishdrawing

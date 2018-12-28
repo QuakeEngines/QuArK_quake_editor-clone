@@ -3,13 +3,13 @@
 #
 #                      Mad Selector Plugin
 #                        v2, August 2001
-#                     works with Quark 6.3  
+#                     works with Quark 6.3
 #
 #
 #        by tiglari@planetquake.com, with advice
 #          and code snippets from Armin Rigo, and
 #         bug-reports and suggestions from decker.
-#     
+#
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -60,7 +60,7 @@ types = {
     ":b": "brush entity",
     ":p": "polyhedron",
     ":f": "face"  }
-    
+
 #
 # --------- stashing ---------
 # Uses tagging API
@@ -77,10 +77,10 @@ def StashMe(m):
     editor = mapeditor()
     if editor is None: return
     nt.uniquetag(editor, STASH_KEY, m.object)
-  
+
 def getstashed(e):
     return nt.getuniquetag(e, STASH_KEY)
-  
+
 def clearstashed(e):
     nt.cleartags(e, STASH_KEY)
 
@@ -197,7 +197,7 @@ def RefreshTemplate(item, editor):
     m = qmenu.item
     m.editor = editor
     m.item = item
-    refreshTemplateItem = qmenu.item("Refresh &Template", refreshTemplateClick, "|If a template is changed, clicking this function will update those changes to your current map where that template is used.\n\nIt may also update other templates in this same map if they have been changed also.\n\nPress F1 once more to see more details about updating templates in the Infobase. |intro.mapeditor.misctools.html#refreshtemplate")
+    refreshTemplateItem = qmenu.item("Refresh &Template", refreshTemplateClick, "|If a template is changed, clicking this function will update those changes to your current map where that template is used.\n\nIt may also update other templates in this same map if they have been changed also.\n\nPress F1 once more to see more details about updating templates in the Infobase.|intro.mapeditor.misctools.html#refreshtemplate")
     return refreshTemplateItem
 
 def RestrictByMe(m):
@@ -409,7 +409,7 @@ def insertinto(o):
   item.text = text
   item.marked = marked
   return item
- 
+
 def InsertIntoMe(m):
    undo = quarkx.action()
    undo.move(m.marked, m.object)
@@ -429,7 +429,7 @@ def insertover(o):
   item.marked = marked
   item.text = text
   return item
- 
+
 def InsertOverMe(m):
    undo = quarkx.action()
    undo.move(m.marked, m.object.parent, m.object)
@@ -449,7 +449,7 @@ def insertme(o):
   item.text = text
   item.marked = marked
   return item
- 
+
 def InsertMeInto(m):
    undo = quarkx.action()
    undo.move(m.object, m.marked)
@@ -515,7 +515,7 @@ def ExtendToLinkedClick(m):
   retfaces = [o]
   for face in allfaces:
     if face == o:
-      continue     
+      continue
     if face.getint("_tag")==tag:
       retfaces.append(face)
   if len(retfaces) > 1:
@@ -533,13 +533,13 @@ def extmenuitem(String, ClickFunction,o, helptext=""):
 def madfacemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
   "the new right-mouse menu for faces"
   menu = oldmenu(o, editor)
-  menu[:0] = [qmenu.popup("&Extend Selection", 
+  menu[:0] = [qmenu.popup("&Extend Selection",
                 [extendtolinked(editor,o),
                  extmenuitem("to Adjacent faces",ExtendSelClick,o,exttext)]),
               navTreePopup(o, editor),
               facelift(o),
               quarkpy.qmenu.sep]
-  return menu  
+  return menu
 
 quarkpy.mapentities.FaceType.menu = madfacemenu
 
@@ -568,7 +568,7 @@ def madpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
                 restructurepopup(o),
   #              menrestsel,
                 qmenu.sep]
-    return menu  
+    return menu
 
 quarkpy.mapentities.PolyhedronType.menu = madpolymenu
 
@@ -587,7 +587,7 @@ def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
               restructurepopup(o),
 #              menrestsel,
               qmenu.sep]
-  return menu  
+  return menu
 
 quarkpy.mapentities.GroupType.menu = madgroupmenu
 
@@ -603,7 +603,7 @@ def madbezmenu(o, editor, oldmenu=quarkpy.mapentities.BezierType.menu.im_func):
   menu[:0] = [navTreePopup(o, editor),
               restructurepopup(o),
               qmenu.sep]
-  return menu  
+  return menu
 
 quarkpy.mapentities.BezierType.menu = madbezmenu
 
@@ -693,7 +693,7 @@ def maddrag(self, v1, v2, flags, view):
             newcofaces.append(newcoface)
           newpair = (newface, newcofaces)
           newpairs.append(newpair)
-        madsel.newextra = newpairs  
+        madsel.newextra = newpairs
     except (AttributeError): pass
   return (old, new)
 
@@ -721,7 +721,7 @@ def madfinishdrawing(self, view):
   if madsel is None: return
   #
   # clear all if original selection no longer in map
-  #   
+  #
 #  if not tigutes.checktree(editor.Root,editor.madsel.orig):
   if editor.layout.explorer.sellist == [editor.madsel.neworig]:
     editor.madsel.orig = editor.madsel.neworig
@@ -747,7 +747,7 @@ class Madsel:
     self.orig = orig
     self.neworig = None
     self.extra = []
-  oldfinishdrawing = None    
+  oldfinishdrawing = None
 
 def swapfinishdrawing(editor):
   if Madsel.oldfinishdrawing is None:
@@ -874,7 +874,6 @@ class BrowseListDlg(quarkpy.dlgclasses.LiveBrowserDlg):
           Hint = "These are the listed items.  Pick one," $0D " then push buttons on row below for action."
         }
 
-       
         sep: = { Typ="S" Txt=""}
 
         buttons: = {
@@ -886,7 +885,6 @@ class BrowseListDlg(quarkpy.dlgclasses.LiveBrowserDlg):
           Hint1 = "Open the tree-view to the chosen one"
           Hint2 = "Zoom to the chosen one"
           Hint3 = "Both open and Zoom to the chosen one"
-          
         }
 
         num: = {
@@ -931,8 +929,8 @@ def macro_browselist(self, index=0):
         elif index==3:
             editor.dlg_browselist.open(editor)
             editor.dlg_browselist.zoom(editor)
-        
-        
+
+
 quarkpy.qmacro.MACRO_browselist = macro_browselist
 
 
@@ -959,22 +957,19 @@ def linredmenu(self, editor, view):
     def browseSelClick(m, editor=editor):
         browseListFunc(editor, editor.layout.explorer.sellist)
 
-
     item = qmenu.item('&Browse Selection',browseSelClick,browseHelpString)
     return [item]
-    
+
 quarkpy.qhandles.LinRedHandle.menu=linredmenu    
-    
+
 def multreemenu(sellist, editor, oldmenu=quarkpy.mapmenus.MultiSelMenu):
 
     def browseSelClick(m,editor=editor,sellist=sellist):
         browseListFunc(editor,sellist)
 
-        
     item = qmenu.item('&Browse Selection', browseSelClick,browseHelpString)
-
     return [item]+oldmenu(sellist, editor)
-    
+
 quarkpy.mapmenus.MultiSelMenu = multreemenu
 
 def browseMulClick(m):

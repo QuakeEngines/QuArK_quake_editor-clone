@@ -55,21 +55,21 @@ class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
         }
 
         sep: = {Typ="S" Txt=" "}
-        
+
         mirror: = {
         Txt = "Mirror"
         Typ = "X"
         Hint = "Mirror in XZ plane.  Mirror effects can also be produced" $0D " with negative scale values"
         }
-       
+
         sep: = {Typ="S" Txt=" "} 
-        
+
         shear: = {
         Txt = "Shear"
         Typ = "EF003"
         Hint = "Shear angles: Z crunch (toward X axis),"$0D " Y-lift (out of XY plane), Y-twist (from Y-axis orientation)" $0D " For mirror-image, set Y-twist to 180"
         }
-      
+
         sep: = { Typ="S" Txt=""}
 
         exit:py = {Txt="" }
@@ -128,7 +128,7 @@ def macro_linedit(self):
         mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
 
         cols = map(lambda v, mat=mat:~mat*v,cols)
-        
+
 #        cols = quarkx.matrix('1 0 0 0 1 0 0 0 1').cols
         #
         # Now get shear info (the cols have been rotated into
@@ -142,7 +142,7 @@ def macro_linedit(self):
             src["mirror"] = 1
             ytwist = math.pi-ytwist
         src["shear"] = zxshear/deg2rad, ylift/deg2rad, ytwist/deg2rad
-        
+
 
     def action(self, pack=pack, editor=editor):
         src = self.src
@@ -159,12 +159,11 @@ def macro_linedit(self):
         pitch, yaw, roll = tuple(map(lambda a:a*deg2rad, angles))
 
         mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
-                
+
         cols = map(lambda v,mat=mat:mat*v, cols)
 
-
         #
-        # apply change  
+        # apply change
         #
         linear = str(quarkx.matrix(cols[0],cols[1],cols[2]))
         undo = quarkx.action()
@@ -175,8 +174,6 @@ def macro_linedit(self):
         
 
     LinEditDlg(quarkx.clickform, 'linedit', editor, setup, action)
-    
-    
-quarkpy.qmacro.MACRO_linedit = macro_linedit
 
-    
+
+quarkpy.qmacro.MACRO_linedit = macro_linedit

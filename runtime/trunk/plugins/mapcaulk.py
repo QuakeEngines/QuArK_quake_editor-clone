@@ -56,7 +56,7 @@ def polymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_func)
     menu = oldmenu(o, editor)
     caulk = quarkx.setupsubset()["DefaultTextureCaulk"]
     if caulk is not None:
-    
+
         #
         # try to find the texture-selection menu-item, in order
         #  to put the caulker after it
@@ -67,7 +67,7 @@ def polymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_func)
                     texitem = item
             except (AttributeError):
                 pass
-                
+
         def applyCaulk(m,o=o,editor=editor):
             tagged = tagging.gettaggedfaces(editor)
             #
@@ -83,7 +83,7 @@ def polymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_func)
                     if not face in sellist:
                         undo.setspec(face,'tex',CaulkTexture())
             editor.ok(undo,'Caulk poly')
-            
+
         caulkItem = qmenu.item('Caulk non-selected',applyCaulk,"|Caulk texture faces that aren't selected or tagged")
         #
         # fancy Python list-management to put the item where we want it
@@ -104,13 +104,13 @@ def facemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
             undo = quarkx.action()
             undo.setspec(o,'tex',CaulkTexture())
             editor.ok(undo, 'caulk face')
-            
+
      #   for item in menu:
      #       try:
      #           debug(`item.label`)
      #       except (AttributeError):
      #           pass
-                
+
         texpop = findlabelled(menu,'texpop')
         caulkItem = qmenu.item('Caulk face',applyCaulk,"|Put caulk texture on the face")
         texpop.items.append(caulkItem)

@@ -136,7 +136,7 @@ def perptonormthru(source, dest, normthru):
   diff = source-dest
   dot = diff*normthru
   return diff - dot*normthru
-  
+
 #
 # Sets sign of vector so that its dot product is
 #  positive w.r.t. the axis it's most closely
@@ -199,7 +199,7 @@ def matrix_u_v(u,v):
     return quarkx.matrix((u.x, v.x, 0),
                          (u.y, v.y, 0),
                          (u.z, v.z, 1))
-                         
+
 def intersectionPoint2d(p0, d0, p1, d1):
     "intersection in 2D plane, point, direction"
     for v in p0, d0, p1, d1:
@@ -210,13 +210,13 @@ def intersectionPoint2d(p0, d0, p1, d1):
         return 0  # lines parallel
     s = (p0.y*d1.x - p1.y*d1.x - d1.y*p0.x +d1.y*p1.x)/det
     return p0+s*d0
-        
+
 #
 # The two monstrosities below were derived from solving
 #   systems of equations in Maple V.  The idea is to think
 #   of the texture plane as being a plane in a 3d texture
 #   space, so the texture space<->map space mappings are
-#   invertible.  For the cases we're intererested in, the
+#   invertible.  For the cases we're interested in, the
 #   third texture coordinate is always zero, and drops out
 #   of the equations.
 #
@@ -248,7 +248,7 @@ def solveForThreepoints((v1, (s1, t1)), (v2, (s2, t2)), (v3, (s3, t3))):
     d2z = -s1*v3.z+s1*v2.z-s3*v2.z+v3.z*s2-v1.z*s2+v1.z*s3
     d2 = quarkx.vect(d2x, d2y, d2z)/denom
     return p0, d1+p0, d2+p0
-    
+
 #
 # matrix for rotation taking u onto v
 #
@@ -357,4 +357,4 @@ def warpedCircleFrom4Points(n, points):
         #
         mat = matrix_u_v(corner[1], corner[2])
         circle.append(corner[0]+mat*point)
-    return circle    
+    return circle

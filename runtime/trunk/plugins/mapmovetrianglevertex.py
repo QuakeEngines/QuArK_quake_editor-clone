@@ -22,9 +22,6 @@ Info = {
 #  to the statements in this file
 #
 
-#
-# Quarkx is the delphi-defined API
-#
 import quarkx
 import math  # To get sqrt function
 from plugins.mapterrainpos import *  # to import global input from this file
@@ -75,7 +72,7 @@ def terrainprojectpointtoplane(p,n1,o2,n2):
 # Main math function.
 # This does the face movement to rotate them to
 # A new angle when pulled up or down and handles
-# the locked peremiter edges.
+# the locked perimeter edges.
 #
 def TRrotateFace(newface, oldverpos, facemoved, TGlockvertex0, pivot2):
     "rotates newface from oldverpos by facemoved around pivots"

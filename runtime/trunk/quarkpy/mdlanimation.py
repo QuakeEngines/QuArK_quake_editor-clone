@@ -457,7 +457,7 @@ def UpdateplaylistPerComp(self):
                                     quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
                                 editor.MouseDragMode = None
                                 quarkx.update(editor.form)
-                                # This terminates the animation timer stopping the repeditive drawing function.
+                                # This terminates the animation timer stopping the repetitive drawing function.
                                 quarkx.settimer(drawanimation, self, 0)
                                 quarkx.msgbox("Insufficient Frames !\n\nComponent: " + comp.shortname + "\ndoes not have enough frames for CFG Animation.\n\nEither the model was imported using 'min. tag frames'\n\nor some action caused the above component's frame count\nnot to match other components of this 'group'.\n\nTry undoing the import and re-import with 'max. tag frames'\nor adding frames to this component to match the others.\n\nAction Canceled.", MT_ERROR, MB_OK)
                                 Update_Editor_Views(editor)
@@ -503,7 +503,7 @@ def UpdateplaylistPerComp(self):
                                     quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
                                 editor.MouseDragMode = None
                                 quarkx.update(editor.form)
-                                # This terminates the animation timer stopping the repeditive drawing function.
+                                # This terminates the animation timer stopping the repetitive drawing function.
                                 quarkx.settimer(drawanimation, self, 0)
                                 quarkx.msgbox("Insufficient Frames !\n\nComponent: " + comp.shortname + "\ndoes not have enough frames for CFG Animation.\n\nEither the model was imported using 'min. tag frames'\n\nor some action caused the above component's frame count\nnot to match other components of this 'group'.\n\nTry undoing the import and re-import with 'max. tag frames'\nor adding frames to this component to match the others.\n\nAction Canceled.", MT_ERROR, MB_OK)
                                 Update_Editor_Views(editor)
@@ -533,7 +533,7 @@ def UpdateplaylistPerComp(self):
                         quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
                     editor.MouseDragMode = None
                     quarkx.update(editor.form)
-                    # This terminates the animation timer stopping the repeditive drawing function.
+                    # This terminates the animation timer stopping the repetitive drawing function.
                     quarkx.settimer(drawanimation, self, 0)
                     quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
                     Update_Editor_Views(editor)
@@ -568,7 +568,7 @@ def UpdateplaylistPerComp(self):
                 quarkx.setupsubset(SS_MODEL, "Building")["AnimationMode"] = None
             editor.MouseDragMode = None
             quarkx.update(editor.form)
-            # This terminates the animation timer stopping the repeditive drawing function.
+            # This terminates the animation timer stopping the repetitive drawing function.
             quarkx.settimer(drawanimation, self, 0)
             quarkx.msgbox("Improper Action !\n\nYou can only select frames from\nthe same component to animate.\n\nAction Canceled.", MT_ERROR, MB_OK)
             Update_Editor_Views(editor)
@@ -591,7 +591,7 @@ def UpdateplaylistPerComp(self):
                 break
 
 
-##### Below makes the toolbar and arainges its buttons #####
+##### Below makes the toolbar and arranges its buttons #####
 
 class AnimationBar(ToolBar):
     "The Animation tool bar with AnimationModes buttons."
@@ -641,7 +641,7 @@ class AnimationBar(ToolBar):
             btn.state = qtoolbar.normal
             if not MdlOption("AnimationCFGActive") and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] != "1" and quarkx.setupsubset(SS_MODEL, "Options")['InterpolationActive'] != "1":
                 playNR = 0
-                # This terminates the animation timer stopping the repeditive drawing function.
+                # This terminates the animation timer stopping the repetitive drawing function.
                 quarkx.settimer(drawanimation, self, 0)
             if not MdlOption("AnimationCFGActive") and quarkx.setupsubset(SS_MODEL, "Options")['AnimationPaused'] != "1":
                 editor.layout.explorer.sellist = playlist
@@ -736,7 +736,7 @@ class AnimationBar(ToolBar):
             qtoolbar.toggle(btn)
             btn.state = qtoolbar.normal
             playNR = 0
-            # This terminates the animation timer stopping the repeditive drawing function.
+            # This terminates the animation timer stopping the repetitive drawing function.
             quarkx.settimer(drawanimation, self, 0)
             editor.layout.explorer.sellist = holdselection
             comps = editor.Root.findallsubitems("", ':mc')  # Get all components.

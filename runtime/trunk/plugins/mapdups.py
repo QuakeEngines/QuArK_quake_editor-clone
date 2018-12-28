@@ -286,7 +286,7 @@ def dissociate1click(m):
     editor.ok(undo, "dissociate images")
 
 
-dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actural copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
+dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actual copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
 
 def dissociateGroupClick(m):
     editor = mapeditor()
@@ -327,7 +327,7 @@ def dissociateGroupClick(m):
                 editor.ok(undo, "dissociate images in group")
 
 
-DissociateGroupItem = quarkpy.qmenu.item("Dissociate Duplicator images", dissociateGroupClick,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actural copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
+DissociateGroupItem = quarkpy.qmenu.item("Dissociate Duplicator images", dissociateGroupClick,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actual copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
 
 
 #

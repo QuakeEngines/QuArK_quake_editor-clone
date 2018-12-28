@@ -45,7 +45,7 @@ class placepersistent_dialogbox(qmacro.dialogbox):
         df.onchange = self.datachange
         df.flags = 8   # DF_AUTOFOCUS
         dlg.show()
-     
+
   def windowrect(self):
     rect = quarkx.setupsubset(self.editor.MODE,"Options")['dlgdim_'+self.label]
     if rect is not None:
@@ -71,7 +71,7 @@ class LiveEditDlg (placepersistent_dialogbox):
     #
 
         self.editor = editor
-        
+
         src = quarkx.newobj(":")
         self.src = src
         self.action = action
@@ -79,7 +79,7 @@ class LiveEditDlg (placepersistent_dialogbox):
         self.onclosing = onclosing
         self.form = form
         self.setup(self)
-        
+
     #
     # Create the dialog form and the buttons
     #
@@ -125,23 +125,23 @@ class LiveBrowserDlg(LiveButtonDlg):
     endcolor = AQUA
     size = (220,160)
     dfsep = 0.35
-    dlgflags = FWF_KEEPFOCUS 
+    dlgflags = FWF_KEEPFOCUS
 
-  
+
     def __init__(self, label, editor, pack, moresetup=None, moreaction=None, onclosing=None):
 
 
         self.moresetup=moresetup
         self.moreaction=moreaction
-        
+
         self.pack=pack
         pack.seen = 0
-        
+
         #
         # im_func stuff needed because default values methods
         #
         LiveButtonDlg.__init__(self, label, editor, self.presetup.im_func, self.preaction.im_func, onclosing)
-        
+
 
     def presetup(self):
          #
@@ -160,7 +160,7 @@ class LiveBrowserDlg(LiveButtonDlg):
          elif len(ran)==0:
              self["collected"] = ''
              self.chosen = ''
-         
+
          #
          # Note the commas, EF..1 controls take 1-tuples as data
          #

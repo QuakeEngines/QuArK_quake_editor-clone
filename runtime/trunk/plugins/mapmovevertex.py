@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Vertex moveing plugin
+Vertex moving plugin
 """
 
 #
@@ -10,7 +10,7 @@ Vertex moveing plugin
 
 Info = {
    "plug-in":       "Vertex Movement Dialog",
-   "desc":          "dialg for moving vertexes",
+   "desc":          "dialog for moving vertexes",
    "date":          "22 Sep 2000",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.net",

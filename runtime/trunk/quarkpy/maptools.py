@@ -26,7 +26,7 @@ class DisplayBar(qeditor.ToolBar):
 
         gridbtn.caption = "128"  # to determine the button width
 
-        zoombtn = qtoolbar.doublebutton(layout.autozoom1click, getzoommenu, "Choose zoom factor / zoom to fit the level or the selection||Choose zoom factor:\n\nThis button lets you zoom in or out. This button has two parts.\n\nClick on the icon to get a list of common zoom factors, or to enter a custom factor with the keyboard.\n\nClick on the text ('zoom') besides the icon to 'auto-zoom' in and out : the first time you click, the scale is choosen so that you can see the whole level at a glance; the second time you click, the views zoom in on the selected objects.", ico_maped, 14, infobaselink="intro.mapeditor.toolpalettes.display.html#zoom")
+        zoombtn = qtoolbar.doublebutton(layout.autozoom1click, getzoommenu, "Choose zoom factor / zoom to fit the level or the selection||Choose zoom factor:\n\nThis button lets you zoom in or out. This button has two parts.\n\nClick on the icon to get a list of common zoom factors, or to enter a custom factor with the keyboard.\n\nClick on the text ('zoom') besides the icon to 'auto-zoom' in and out : the first time you click, the scale is chosen so that you can see the whole level at a glance; the second time you click, the views zoom in on the selected objects.", ico_maped, 14, infobaselink="intro.mapeditor.toolpalettes.display.html#zoom")
         zoombtn.near = 0
         zoombtn.views = layout.views
         zoombtn.caption = "zoom"

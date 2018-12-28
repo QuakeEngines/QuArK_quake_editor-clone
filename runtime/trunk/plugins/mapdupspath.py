@@ -8,7 +8,7 @@
 Info = {
    "plug-in":       "Path Duplicator",
    "desc":          "Path Duplicator",
-   "date":          "3 feb 01",
+   "date":          "3 feb 2001",
    "author":        "Decker, also tiglari",
    "author e-mail": "decker@planetquake.com, tiglari@planetquake.com",
    "quark":         "Version 6.2"
@@ -487,7 +487,7 @@ class PathDuplicatorPoint(DuplicatorManager):
 
 class PathDuplicator(StandardDuplicator):
 
-    cuberadius = 3096
+    #cuberadius = 3096
 
     def readvalues(self):
         self.origin = self.dup.origin

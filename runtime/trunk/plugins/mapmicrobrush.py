@@ -113,7 +113,7 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
         thin = self.pack.thinnies[index]
         undo.exchange(thin,None)
         self.editor.ok(undo,'delete microbrush')
-        self.pack.thinnies.remove(thin)   
+        self.pack.thinnies.remove(thin)
         self.src["micros"]=''
         #
         # This seems to need to be called to get the dialog
@@ -145,7 +145,7 @@ def macro_zapview(self, index=0):
         editor.microbrushdlg.zap()
     elif index==3:
         editor.microbrushdlg.zapall()
-        
+
 quarkpy.qmacro.MACRO_zapview = macro_zapview
 
 #
@@ -171,7 +171,7 @@ def getThin(thin, editor):
         if brushIsThin(brush,thin):
             thinnies.append(brush)
     return thinnies
-    
+
 def thinClick(m):
     editor=mapeditor()
     thinnies=[]
@@ -184,7 +184,7 @@ def thinClick(m):
     for brush in editor.Root.findallsubitems("",":p"):
         if brushIsThin(brush,thin):
             thinnies.append(brush)
-    
+
     #
     # Here we start the Live Edit dialog invocation sequence.
     #  Data to be tracked during the life of the dialog goes
@@ -195,7 +195,7 @@ def thinClick(m):
     pack.thinnies=thinnies
     pack.thin=thin
     pack.seen=0
-      
+
     #
     # This loads the relevant data into the dialog, gets
     #  recalled after changes.
@@ -229,7 +229,7 @@ def thinClick(m):
         elif len(ran)==0:
             self.src["micros"] = ''
             self.chosen = ''
-        
+
         #
         # Note the commas, EF..1 controls take 1-tuples as data
         #

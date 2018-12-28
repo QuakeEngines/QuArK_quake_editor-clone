@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Start of plugin for advance vertex-dragging
+Start of plugin for advanced vertex-dragging
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -44,7 +44,7 @@ def newvertexdrag(self, v1, v2, flags, view, oldvertexdrag=oldvertexdrag):
         #
         return oldvertexdrag(self, v1, v2, flags, view)
 
-    # 
+    #
     # functional new code goes here, for now we just write something to the
     #  console and make a copy of the original poly
     #
@@ -64,7 +64,7 @@ def newvertexdrag(self, v1, v2, flags, view, oldvertexdrag=oldvertexdrag):
             if not (vertices[i]-self.pos):     # if found self
                 faceverts.extend(vertices[i+1:len(vertices)]) # add all vertices from self
                 faceverts.extend(vertices[0:i]) # add all vertices before self
-	
+
                 #  check if self is coplanar with all other vertices. If so, just recalculate
                 if abs(v2*f.normal-f.dist) < epsilon:
                     break
@@ -94,7 +94,7 @@ def newvertexdrag(self, v1, v2, flags, view, oldvertexdrag=oldvertexdrag):
                             newface.setthreepoints((newpoint,faceverts[j],faceverts[j+1]),0)
                             newfaces.append(newface)
 
-		#Remove old face and replace with new ones.
+                #Remove old face and replace with new ones.
                 newpoly.removeitem(f)
                 for j in range(len(newfaces)):
                     newface=newfaces[j]

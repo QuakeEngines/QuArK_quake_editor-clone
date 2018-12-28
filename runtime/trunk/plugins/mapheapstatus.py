@@ -1,5 +1,12 @@
 """   QuArK  -  Quake Army Knife
+
+Heap debugging functions.
 """
+#
+# Copyright (C) 1996-99 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
 
 import quarkx
 import quarkpy.mapmenus

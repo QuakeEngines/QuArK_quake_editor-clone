@@ -21,7 +21,7 @@ def getEditorSelection(editor=None):
         return None, None
     sel = editor.layout.explorer.uniquesel
     return editor, sel
-    
+
 
 def EscClick(m):
     editor = mapeditor(SS_MAP)
@@ -120,7 +120,7 @@ def getNext(obj):
     if next is None:
         next=parent.subitems[0]
     return next
-    
+
 def getPrevious(obj):
     parent=obj.treeparent
     if parent is None: return
@@ -130,7 +130,7 @@ def getPrevious(obj):
     else:
         prev = parent.subitem(len(parent.subitems)-1)
     return prev
-    
+
 def nextClick(m,editor=None):
     editor, sel = getEditorSelection(editor)
     if sel is None: return

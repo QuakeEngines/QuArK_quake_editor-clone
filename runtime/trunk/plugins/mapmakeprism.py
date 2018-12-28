@@ -292,7 +292,7 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
         quarkx.setupsubset(SS_MAP, "Options")["MakePrism_Ramp"]         = self.src["ramp"]
 
         z_axis = quarkx.vect(0,0,1)
-        
+
         # Create the prism
         if slice:
             p = quarkx.newobj("n-prism:g");
@@ -416,7 +416,7 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
 
 
 
-        # Remove borken polys and faces then Drop the items
+        # Remove broken polys and faces then Drop the items
 
         p.rebuildall()
         list = p.findallsubitems("", ':p')+p.findallsubitems("", ':f')

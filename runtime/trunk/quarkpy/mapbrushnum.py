@@ -61,7 +61,6 @@ class BrushNumDlg(SimpleCancelDlgBox):
     """
 
     def __init__(self, form, editor, brushDict):
-    
         src = quarkx.newobj(":")
         self.src = src
         self.editor = editor
@@ -138,4 +137,4 @@ def LoadBrushNums(editor, filename):
         brushDict = getBrushDict(editor, filename)
         BrushNumDlg(quarkx.clickform, editor, brushDict)
     except CorruptError, msg:
-        quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%msg)
+        quarkx.helppopup("Brush number discrepancy at brush labeled %s; this probably means that the file is corrupt"%msg)

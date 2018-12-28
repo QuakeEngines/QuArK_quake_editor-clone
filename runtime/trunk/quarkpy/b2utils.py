@@ -17,11 +17,9 @@ from maputils import *
 #
 # Here should go things of general utility for managing
 #  quadratic bezier patches
-# 
+#
 
 
-
-within45 = math.cos(deg2rad*45)
 
 def iseven(num):
   return not divmod(num,2)[1]
@@ -41,7 +39,7 @@ def extend_distance_by(v1, v2, ext):
 
 def rowofcp(cp, i):
     return cp[i]
-    
+
 def colofcp(cp, j):
     return map(lambda row,j=j:row[j], cp)
 
@@ -69,11 +67,11 @@ def lengthofseg(p0, p1, p2, divs):
        m0 = b2midcp(p0, q1, m)
        m1 = b2midcp(m, q3, p2)
        return lengthofseg(p0, m0, m, divs-1)+lengthofseg(m, m1, p2, divs-1)
-       
+
 def b2midpoint(p0, p1, p2):
   "midpoint of the b2 line for the three points"
   return 0.25*p0 + 0.5*p1 + 0.25*p2
-  
+
 def b2qtpoint(p0, p1, p2):
   "1 quarter point of the b2 line for the three points"
   return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
@@ -137,7 +135,6 @@ def texcpFromCp(cp, cp2):
         return map(lambda v, v2:quarkx.vect(v.xyz+v2.st), row, row2)
     return map(maprow, cp, cp2)
 
-    
 def listCp(cp):
     cp2 = []
     for row in cp:
@@ -155,7 +152,7 @@ def texcpFromFace(cp, face, editor):
     # Note special code, which inhibits recentering threepoints
     #
     p0, p1, p2 = face.threepoints(6)
-    
+
     def axis(p, p0=p0):
         "turns a texp point into axis for computing b2 texcp's"
         return (p-p0).normalized/abs(p-p0)
@@ -187,7 +184,6 @@ def cpFrom2Rows(row0, row2, bulge=None):
         c=reduce(lambda x,y:x+y,cp[1])/float(len(cp[1]))
         cp[1]=map(lambda v,c=c,b=bulge[1]:c+b*(v-c), cp[1])
     return cp
-
 
 def b2From2Rows(row0, row2, texface, name, bulge=None, subdivide=1, subfunc=None):
      cp = cpFrom2Rows(row0, row2, bulge)
@@ -245,7 +241,7 @@ def undistortColumns(cp):
             ncp[i][j]=quarkx.vect(cp[i][j].xyz+(s, t))
 #    squawk(`nbcp`)
     return ncp
-      
+
 def undistortRows(cp):
     cp = transposeCp(cp)
     cp = undistortColumns(cp)
@@ -278,8 +274,8 @@ def undistortColumnsCaseB(cp):
             s, t, x = (texstart + (length[i-1]/bestlength)*texgap).tuple
             ncp[i][j]=quarkx.vect(cp[i][j].xyz+(s, t))
 
-    return ncp      
-      
+    return ncp
+
 def undistortRowsCaseB(cp):
     cp = transposeCp(cp)
     cp = undistortColumnsCaseB(cp)
@@ -350,7 +346,7 @@ def d5(cp, (i, j)):
         dSdv = cp[i][1]-cp[i][0]
     elif j==len(cp[0])-1:
         dSdv = cp[i][j]-cp[i][j-1]
-    return dSdu, dSdv  
+    return dSdu, dSdv
 
 
 #def faceTexFromCph(cph, face, editor):

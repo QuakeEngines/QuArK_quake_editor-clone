@@ -5,7 +5,7 @@
 #                     works with Quark 6.1
 #
 #
-#                by tiglari@hexenworld.net     
+#                by tiglari@hexenworld.net
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -13,7 +13,7 @@
 #
 #   Please notify bugs & possible improvements to
 #   tiglari@planetquake.com
-#  
+#
 #
 ##########################################################
 
@@ -49,7 +49,7 @@ def facemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func)
 
     def promoteClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Texpop"]="1"
-         
+
     def demoteClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Texpop"]="0"
 
@@ -63,7 +63,7 @@ def facemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func)
 
     def promoteWrapClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Wrappop"]="1"
-         
+
     def demoteWrapClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Wrappop"]="0"
 

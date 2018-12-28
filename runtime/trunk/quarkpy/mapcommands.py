@@ -155,7 +155,7 @@ def BuildTemplatesListClick(m):
     TemplateFile.savefile(TemplateFileName, 1)
     return
 
-NewItem1 = qmenu.item("&Insert map item...", newitem1click, "|Opens the 'New Map items' window:\n\nThis window contains all objects thats possible to use in the map-views and dataform-display. |intro.mapeditor.misctools.html#newmapitem")
+NewItem1 = qmenu.item("&Insert map item...", newitem1click, "|Opens the 'New Map items' window:\n\nThis window contains all objects thats possible to use in the map-views and dataform-display.|intro.mapeditor.misctools.html#newmapitem")
 ConvertHiddenToNoDrawItem = qmenu.item("Convert Hidden flag to NoDraw", ConvertHiddenToNoDrawClick)
 BuildPrefabsListItem = qmenu.item("Build templates list", BuildTemplatesListClick, "|This function will build a list of all .qkm files that exist in the templates folder (if any) and place that list on 'New map items...' to select from.\n\nEach game can have its own templates and list, which this function also creates as a Templates.qrk file with the current game mode name in front of it and places that file in this games 'addons' folder.|intro.mapeditor.misctools.html#templates")
 
@@ -168,7 +168,7 @@ shortcuts = {}
 
 def CommandsMenu():
     "The Commands menu, with its shortcuts."
-    
+
     #
     # Global variables to update from plug-ins.
     #
@@ -180,6 +180,6 @@ def CommandsMenu():
     else:
         items2 = [NewItem1, qmenu.sep, BuildPrefabsListItem]
     items2 = items2 + items
-    
+
     MapHotKeyList("Insert", NewItem1, shortcuts)
     return qmenu.popup("&Commands", items2, onclick), shortcuts

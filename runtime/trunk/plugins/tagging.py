@@ -68,8 +68,8 @@ def gettaggedplane(editor):
         face.setthreepoints(plane,0)
         return face
     return None
-  
-  
+
+
 def gettaggedpt(editor):
   "Returns the tagged point."
   return nt.getuniquetag(editor, POINT)
@@ -82,7 +82,7 @@ def gettaggedlist(editor):
   if len(faces) > 1:
     return faces
   return None
-  
+
 def gettaggedfaces(editor):
   "tagged face or faces"
   faces = nt.gettaglist(editor, FACE)
@@ -148,7 +148,7 @@ def gettaggedtexplane(editor):
     b2cp = gettaggedb2cp(editor)
     if b2cp is not None:
         return quarkpy.b2utils.texPlaneFromCph(b2cp, editor)
-    
+
 
 #
 # --------- setting & clearing tags
@@ -157,11 +157,11 @@ def gettaggedtexplane(editor):
 def cleartag(editor):
   nt.cleartags(editor, PLANE, POINT, FACE, FACEEDGE,
                VTXEDGE, B2CP)
-  
+
 def tagface(face, editor):
   cleartag(editor)
   nt.uniquetag(editor, FACE, face)
-  
+
 def tagplane(plane, editor):
   cleartag(editor)
   nt.uniquetag(editor, PLANE, plane)
@@ -189,7 +189,7 @@ def addtotaggedfaces(face, editor):
   tagged = gettagged(editor)
   if (tagged is not None) or (gettaggedfaces(editor) is not None):
     nt.tag(editor, FACE, face)
-  
+
 def removefromtaggedfaces(face, editor):
   nt.untag(editor, FACE, face)
 

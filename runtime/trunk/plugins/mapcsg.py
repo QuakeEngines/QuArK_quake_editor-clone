@@ -25,7 +25,7 @@ import quarkpy.mapentities
 
 
 def CSGinfo():
-    quarkx.msgbox("To subtract a polyhedron\n - from the map : first select the polyhedron;\n - from another : first select them both.\n\nYou can use a group of polyhedrons as subtracter instead of a single polyhedron.\n\nSee also the help (F1) of the Brush substraction menu command.",
+    quarkx.msgbox("To subtract a polyhedron\n - from the map : first select the polyhedron;\n - from another : first select them both.\n\nYou can use a group of polyhedrons as subtracter instead of a single polyhedron.\n\nSee also the help (F1) of the Brush subtraction menu command.",
       MT_INFORMATION, MB_OK)
 
 
@@ -342,7 +342,7 @@ def FaceSub1click(m):
 
 #--- add the new menu items into the "Commands" menu ---
 
-CSG1 = quarkpy.qmenu.item("&Brush subtraction", CSG1click, "|Brush subtraction:\n\nThis function will subtract one brush from another.\n\nFirst select the brush you want the subtraction to occur on.\nNext select the brush that should be subtracted from the first.\nThen you activate this menu item, or press the accellerator key CTRL+B.\n\nSee the infobase for more detail and other ways to use this function.|intro.mapeditor.menu.html#brushsubtraction")
+CSG1 = quarkpy.qmenu.item("&Brush subtraction", CSG1click, "|Brush subtraction:\n\nThis function will subtract one brush from another.\n\nFirst select the brush you want the subtraction to occur on.\nNext select the brush that should be subtracted from the first.\nThen you activate this menu item, or press the accelerator key CTRL+B.\n\nSee the infobase for more detail and other ways to use this function.|intro.mapeditor.menu.html#brushsubtraction")
 
 FaceSub1 = quarkpy.qmenu.item("&Face Sharing subtraction", FaceSub1click, "|Face Sharing subtraction:\n\nA special version of the previous command, 'Brush subtraction'. The small broken pieces will be designed to share common faces, so that you can still resize the broken polyhedron as a whole without having to resize each piece. This command, however, may produce a result that gets a bit confusing.|intro.mapeditor.menu.html#facesharesubtract")
 

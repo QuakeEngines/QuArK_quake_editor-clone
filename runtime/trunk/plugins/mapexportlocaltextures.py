@@ -1,6 +1,9 @@
-#-------------------------------------------------------------------------------
-# Module: maplocaltexturesexport.py
-#-------------------------------------------------------------------------------
+# QuArK  -  Quake Army Knife
+#
+# Copyright (C) 1996-2000 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
 
 Info = {
    "plug-in":       "Export used textures",

@@ -120,7 +120,7 @@ def pointsToMove(moverow, movecol, i, j, h, w):
 
 def texcpclick(m):
     h, editor = m.h, m.editor
-          
+
     class pack:
         "place to stick stuff"
     pack.ij, pack.b2 = h.ij, h.b2
@@ -306,7 +306,7 @@ class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
     undomsg = Strings[627]
-    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Alt: move whole row (same hue)\n  Shift: move whole column.\n  Shift+Alt key: move everything.  \n S: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
+    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Alt: move whole row (same hue)\n  Shift: move whole column.\n  Shift+Alt key: move everything.\n S: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
     def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
@@ -315,7 +315,7 @@ class CPHandle(qhandles.GenericHandle):
         self.hint = "(%s,%s)--"%ij+self.hint
         self.color = color #DECKER
         self.cursor = CR_CROSSH
-        self.h = len(b2.cp) 
+        self.h = len(b2.cp)
         self.w =  len(b2.cp[0])
 
     def draw(self, view, cv, draghandle=None):
@@ -577,8 +577,8 @@ class CPHandle(qhandles.GenericHandle):
             b2.cp = cp2
             undo_exchange(editor,self.b2,b2,mess)
 
-        alignrow = qmenu.item('Align Row to tagged edge',alignclick,"|Aligns the row to paralell to tagged edge, passing thru this point.|maped.curves.html")
-        aligncol = qmenu.item('Align Col to tagged edge',alignclick,"|Aligns the column to paralell to tagged edge, passing thru this point.|maped.curves.html")
+        alignrow = qmenu.item('Align Row to tagged edge',alignclick,"|Aligns the row to parallel to tagged edge, passing through this point.|maped.curves.html")
+        aligncol = qmenu.item('Align Col to tagged edge',alignclick,"|Aligns the column to parallel to tagged edge, passing through this point.|maped.curves.html")
         if tagged is None:
             alignrow.state=qmenu.disabled
             aligncol.state=qmenu.disabled
@@ -834,7 +834,7 @@ class CPHandle(qhandles.GenericHandle):
             if picked:
                 indexes = map(lambda p,b2=self.b2:cpPos(p,b2),picked)
             else:
-                indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
+                indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap
     #            squawk(`indexes`)
             td = (v2-v1)/128
             for m,n in indexes:
@@ -927,7 +927,7 @@ class CPTextureHandle(qhandles.GenericHandle):
             if i==0:
                 return P_BOTTOM, w
             if i==h-1:
-                return P_TOP, w            
+                return P_TOP, w
 
     # converting to standard ij
     def drag(self, v1, v2, flags, view):
@@ -944,7 +944,7 @@ class CPTextureHandle(qhandles.GenericHandle):
             if picked:
                 indexes = map(lambda p,b2=self.b2:cpPos(p,b2),picked)
             else:
-                indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
+                indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap
             td = (v2-v1)/128
             for m,n in indexes:
                  q = cp[m][n]
@@ -1010,7 +1010,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
         editor.ok(undo,"Spin")
         editor.invalidateviews()
 
-    rotate = qmenu.item("Rotate",rotclick,"|`Rotates' control points without changeing patch shape\n(I'm not sure if it's useful on its own but it helps in the implementation of some things so here it is anyway.)|maped.curves.html")
+    rotate = qmenu.item("Rotate",rotclick,"|`Rotates' control points without changing patch shape\n(I'm not sure if it's useful on its own but it helps in the implementation of some things so here it is anyway.)|maped.curves.html")
 
     def unwarpclick(m,o=o,editor=editor):
         new=o.copy()

@@ -159,7 +159,7 @@ class StandardDuplicator(DuplicatorManager):
             else:
                 self.incrementby=1
             #
-            # Deciding which get increment suffixd
+            # Deciding which get increment suffixed
             #
             if self.dup["increment all target"] is not None:
                 specs = pool_specs(sourcelist)
@@ -358,7 +358,7 @@ class StandardDuplicator(DuplicatorManager):
 
 class OriginDuplicator(DuplicatorManager):
     "Origin for centering of groups"
-    
+
     Icon = (ico_dict['ico_mapdups'], 0)
 
     def buildimages(self, singleimage=None):
@@ -448,7 +448,7 @@ class DupTemplate(StandardDuplicator):
         # get scale
         #
         scale=tuple(map(lambda v:abs(v), cols))
-        cols = tuple(map(lambda v:v.normalized, cols))    
+        cols = tuple(map(lambda v:v.normalized, cols))
         #
         # get rotations, cols[0] is 'rotated X axis, compute the others
         #
@@ -569,7 +569,7 @@ class DupTemplate(StandardDuplicator):
 
         translate = origin;
         if item["usercenter"]:
-            translate = translate - quarkx.vect(item["usercenter"])        
+            translate = translate - quarkx.vect(item["usercenter"])
 
         scale = quarkx.vect("1 1 1")
         if self.dup["scale"] is not None:
@@ -585,7 +585,7 @@ class DupTemplate(StandardDuplicator):
         item.linear(origin, mat)
 
         for correctitem in correctlist:
-            szmangle = correctitem["prev_mangle"]            
+            szmangle = correctitem["prev_mangle"]
             angles = quarkx.vect(szmangle)
             pitch = -angles.x*deg2rad
             yaw = angles.y*deg2rad
@@ -598,7 +598,7 @@ class DupTemplate(StandardDuplicator):
             # get scale
             #
             scale=tuple(map(lambda v:abs(v), cols))
-            cols = tuple(map(lambda v:v.normalized, cols))    
+            cols = tuple(map(lambda v:v.normalized, cols))
             #
             # get rotations, cols[0] is 'rotated X axis, compute the others
             #
@@ -624,11 +624,11 @@ class DupTemplate(StandardDuplicator):
             replacerspecs = []
             for i in specs:
                if (not ((i == "macro") or (i == "origin") or (i == "mangle"))):
-                  replacerspecs = replacerspecs + [i]
+                  replacerspecs.append(i)
             return replacerspecs
 
         def searchandreplace(self, item, replacerspecs):
-            for key in item.dictspec.keys():                
+            for key in item.dictspec.keys():
                 szValue = item[key]
                 nReplaceStart = -1
                 try:

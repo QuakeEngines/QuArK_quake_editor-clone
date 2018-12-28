@@ -229,7 +229,7 @@ class MakeSinXTreeDlg(MakeXTreeDlg):
     aface = self.MakeFace(0)
     aface["v"] = (-self.twidth/2,-self.twidth/2,0, -self.twidth/2,self.twidth/2,0, self.twidth/2,-self.twidth/2,0)
     g.appenditem(aface)
-    
+
     ang=pi*2/self.planes
     addang=pi/self.planes/2
     addlen=sin(addang)/cos(addang)*self.twidth/2
@@ -366,10 +366,10 @@ def MakeXTreeClick(m):
           quarkx.msgbox(game+" is currently not supported, sorry. Please post a mail to Marco.Leise@gmx.de and I'll see what I can do.",MT_INFORMATION, MB_OK)
 
 # in case the developer (that would be me) reloaded the plugin, delete the previous button procedure
-for m in quarkpy.mapcommands.items:
-  if m <> None:
-    if m.text == "Make &X-Tree":
-      quarkpy.mapcommands.items.remove(m)      
+#for m in quarkpy.mapcommands.items:
+#  if m <> None:
+#    if m.text == "Make &X-Tree":
+#      quarkpy.mapcommands.items.remove(m)
 
 # Register the plug-in
 quarkpy.mapcommands.items.append(quarkpy.qmenu.item("Make &X-Tree", MakeXTreeClick))

@@ -7,7 +7,7 @@
 
 Info = {
    "plug-in":       "Texture Search",
-   "desc":          "searches textures",
+   "desc":          "Dialog for searching textures",
    "date":          "16 June 2001",
    "author":        "Andy",
    "author e-mail": "personx@planetquake.com",

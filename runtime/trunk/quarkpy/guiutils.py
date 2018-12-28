@@ -72,4 +72,4 @@ def buildParentPopupList(o, parentpopupitems, editor):
             restricted = 1
         current = current.treeparent;
   #  list.reverse()
-    return list    
+    return list

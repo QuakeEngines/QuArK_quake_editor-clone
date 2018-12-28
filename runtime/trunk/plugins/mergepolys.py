@@ -1,4 +1,3 @@
-
 ########################################################
 #
 #              Poly Merging Code
@@ -8,6 +7,13 @@
 #  tiglari@planetquake.com, April 15, 2001
 #
 #######################################
+
+# QuArK  -  Quake Army Knife
+#
+# Copyright (C) 2001 The QuArK Community
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
 
 import quarkx
 import quarkpy.mapentities
@@ -33,7 +39,7 @@ def same_vertices(face,tagged):
                 break
         else: return 0
     return 1
-  
+
 def useableby(face, poly):
     newface=face.copy()
 #
@@ -146,7 +152,7 @@ def MergePolysInGroup(group):
             pass
         else:
             break
-            
+
     return newgroup
 
 #
@@ -159,7 +165,7 @@ def MergePolysClick(m):
     new = MergePolysInGroup(m.o)
     undo.exchange(m.o, new)
     editor.ok(undo,"merge polys in group")
-    
+
 #
 # makes menu item, put on menu in maptagside
 #

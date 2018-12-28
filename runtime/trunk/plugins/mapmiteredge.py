@@ -301,15 +301,15 @@ def miterEdge(f1, f2, edgepoints, editor):
 def miterfacemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
     "the new right-mouse item for miter function"
     menu = oldmenu(o, editor)
-    
+
     tagged = tagging.gettagged(editor)
     edgepoints = findEdgePoints(o, tagged)
-    
+
     def miterEdgeClick(m, o=o, editor=editor, tagged=tagged, edgepoints=edgepoints):
         miterEdge(o, tagged, edgepoints, editor)
-    
+
     miteritem = qmenu.item("Miter Edge", miterEdgeClick, "|Miter Edge:\n\nMiter edge takes two adjoining faces of two different poly's, and closes the gap 'behind' the corner these faces make.|maped.plugins.miteredge.html")
-    
+
     if edgepoints is None:
         miteritem.state=qmenu.disabled
     menu[:0] = [miteritem]
@@ -631,7 +631,7 @@ def buildwallmakerimages(self, singleimage=None):
             if caulkhull!=None:
                 caulkdepth = int(caulkhull)
                 if self.dup['caulksetback']!=None:
-                    caulksetback = eval(self.dup['caulksetback'])
+                    caulksetback = float(self.dup['caulksetback'])
                 else:
                     caulksetback = 0
                 #

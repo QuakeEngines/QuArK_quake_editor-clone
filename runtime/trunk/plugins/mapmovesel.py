@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Implementation of the Brush Subtraction commands
+Selection moving plugin
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -68,7 +68,7 @@ def AlignClick(m):
         undo.exchange(item,item2)
     editor.ok(undo,"align "+m.mode)
 
-    
+
 def makeitem(mode):
     item=qmenu.item("Align "+mode,AlignClick)
     item.mode=mode
