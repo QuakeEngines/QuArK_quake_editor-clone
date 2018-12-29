@@ -13,6 +13,8 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed a bug corrupting MOHAA patchDef2 and patchDef3 saving.
+
 * [DanielPharos]: Fixed handling File Association paths with spaces.
 
 * [DanielPharos]: Fixed OpenGL texture loading issues, most commonly with odd-sized textures.
