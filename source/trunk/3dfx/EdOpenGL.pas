@@ -254,7 +254,6 @@ begin
   if LP=nil then
   begin
     glBegin(GL_QUADS);
-    CheckOpenGLError('RenderQuad: glBegin');
     try
       light[0]:=LightParams.ZeroLight * Currentf[0];
       light[1]:=LightParams.ZeroLight * Currentf[1];
@@ -432,7 +431,6 @@ begin
     while J<SectionsJ do
     begin
       glBegin(GL_QUAD_STRIP);
-      CheckOpenGLError('RenderQuad: glBegin');
       try
         NormalVector[0]:=NormalePlan[0];
         NormalVector[1]:=NormalePlan[1];
@@ -484,7 +482,6 @@ begin
     LP1:=LP1^.SubLightList;
   end;
   glBegin(GL_TRIANGLE_STRIP);
-  CheckOpenGLError('RenderQuadStrip: glBegin');
   try
     NormalVector[0]:=NormalePlan[0];
     NormalVector[1]:=NormalePlan[1];
@@ -841,7 +838,7 @@ begin
     glEnable(GL_NORMALIZE);
     glEdgeFlag(0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //No padding when copying pixel to OpenGL
-    glPixelStorei(GL_PACK_ALIGNMENT, 1); //No padding when copying pixel data back to memory
+    glPixelStorei(GL_PACK_ALIGNMENT, 4); //WORD-alignment when copying pixel data back to memory
     CheckOpenGLError('Init');
 
     glGetIntegerv(GL_MAX_LIGHTS, @MaxLights);
@@ -2113,7 +2110,7 @@ begin
     with CurrentSurf^ do
     begin
       Inc(CurrentSurf);
-      
+
       if ((PList^.Transparent=TransparentFaces) or (((AlphaColor and $FF000000)=$FF000000) xor TransparentFaces)) then
       begin
 
