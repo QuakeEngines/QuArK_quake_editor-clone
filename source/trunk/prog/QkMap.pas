@@ -3529,6 +3529,17 @@ begin
 
  DecimalPlaces := MapSaveSettings.DecimalPlaces;
 
+ { these means brutally round off the threepoints, whatever they are }
+ WriteIntegers:=Flags2 and soDisableFPCoord <> 0;
+
+// UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
+// ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
+
+ UseIntegralVertices:=(MapSaveSettings.MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
+ ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
+ idea was to force threepoints to integers with less distortion, in aid
+ of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
+
  if TextureSizes=nil then
  begin
    TextureSizes:=TPixelSetSizeCache.Create(nil);
@@ -3565,17 +3576,6 @@ begin
 }
 
     end;
-
-   { these means brutally round off the threepoints, whatever they are }
-   WriteIntegers:=Flags2 and soDisableFPCoord <> 0;
-
-//   UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags2 and soDisableEnhTex<>0);
-//   ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
-
-   UseIntegralVertices:=(MapSaveSettings.MapFormat<>QetpType) and (Flags2 and soUseIntegralVertices<>0);
-   ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
-   idea was to force threepoints to integers with less distortion, in aid
-   of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
 
    if OriginBrush<>Nil then
     begin
@@ -4058,6 +4058,7 @@ begin
      Target.Add(S);
    end
    else
+   begin
      if not ObjectToSave.GetFloatsSpec('patchsubdivisions', SubDivisions) then
      begin
        HorzSubDiv:=1;
@@ -4067,6 +4068,7 @@ begin
      begin
        if (Length(SubDivisions) <> 2) then
        begin
+         Log(LOG_WARNING, 'Ignoring invalid patchsubdivisions specific'); //FIXME: Move to dict!
          HorzSubDiv:=1;
          VertSubDiv:=1;
        end
@@ -4082,6 +4084,7 @@ begin
      2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
      3: Target.Add(Format('   ( %d %d %d %d 0 0 0 )', [cp.W, cp.H, HorzSubDiv, VertSubDiv]));
      end;
+   end;
    Target.Add('   (');
    for J:=0 to cp.W-1 do
     begin
