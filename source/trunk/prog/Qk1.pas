@@ -1888,7 +1888,7 @@ begin
    //Done loading all (if any) files from the commandline. Now process the last remaining things to-do...
    RefreshAssociations(False);
    RestoreAutoSaved('.qkm');
-   RestoreAutoSaved('.qkl');
+   RestoreAutoSaved('.qkl'); //@@@This never runs! AutoRestoreEvent is made! --> Right, dump that CreateEvent. We're already using the CreateMutex above. Just put a tip in the documentation about this!!!
    Counter:=-1;
   end
  else
