@@ -998,6 +998,7 @@ class BaseEditor:
                     skindrawobject = self.Root.currentcomponent.currentskin
                 except:
                     skindrawobject = None
+                import mdlhandles
                 mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                 self.finishdrawing(view)
             if self.dragobject is not None:
@@ -1015,6 +1016,7 @@ class BaseEditor:
                                 skindrawobject = self.Root.currentcomponent.currentskin
                             except:
                                 skindrawobject = None
+                            import mdlhandles
                             mdlhandles.buildskinvertices(self, view, self.layout, self.Root.currentcomponent, skindrawobject)
                             view.invalidate()
                             return
@@ -1041,6 +1043,7 @@ class BaseEditor:
                         mdleditor.commonhandles(self)
                         try:
                             # This section for True3Dmode end of drag.
+                            import mdlhandles
                             if (isinstance(self.dragobject.handle, qhandles.EyePosition) or isinstance(self.dragobject.handle, mdlhandles.MdlEyeDirection)) and flagsmouse == 2056:
                                 if view.info['viewname'] != "editors3Dview" and quarkx.setupsubset(SS_MODEL, "Options")['Full3DTrue3Dmode'] == "1" and self.dragobject.handle.hint.find("floating 3D view") != -1:
                                     import mdlutils
@@ -1182,6 +1185,7 @@ class BaseEditor:
                             elif tag==3: s = "Zview x:" + list[0] + " y:" + list[1]
             else:
                 if self.MODE == SS_MODEL:
+                    import mdlhandles
                     if view.info["viewname"] == "skinview":
                         if (isinstance(handle, mdlhandles.LinRedHandle)) or (isinstance(handle, mdlhandles.LinSideHandle)) or (isinstance(handle, mdlhandles.LinCornerHandle)):
                             try:
@@ -1287,22 +1291,27 @@ class BaseEditor:
         elif flags & MB_DRAGGING:
 
             if self.dragobject is not None:
-                ### To free up L & RMB combo dragging for Model Editor face selection use.
-                if (self.MODE == SS_MODEL) and isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
-                    pass
-                ### Need to do something here, stops Zoom drag handle when selecting faces but does not always remake handles at end of drag.
-                elif (self.MODE == SS_MODEL) and isinstance(self.dragobject, qhandles.HandleDragObject) and (flagsmouse == 1048):
-                    self.dragobject = dragobject = None
-                elif flagsmouse == 16384 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
-                    self.dragobject = dragobject = None
-                    mdleditor.commonhandles(self)
-                else:
-                    if (self.MODE == SS_MODEL) and isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
-                        self.dragobject.dragto(x, y, flags)
+                if (self.MODE == SS_MODEL):
+                    import mdlhandles
+                    ### To free up L & RMB combo dragging for Model Editor face selection use.
+                    if isinstance(self.dragobject, qhandles.FreeZoomDragObject) and flagsmouse == 1048:
+                        pass
+                    ### Need to do something here, stops Zoom drag handle when selecting faces but does not always remake handles at end of drag.
+                    elif isinstance(self.dragobject, qhandles.HandleDragObject) and (flagsmouse == 1048):
+                        self.dragobject = dragobject = None
+                    elif flagsmouse == 16384 and isinstance(self.dragobject, mdlhandles.ModelFaceHandle):
+                        self.dragobject = dragobject = None
+                        mdleditor.commonhandles(self)
                     else:
-                        self.dragobject.dragto(x, y, flags)
+                        if isinstance(self.dragobject.handle, mdlhandles.SkinHandle):
+                            self.dragobject.dragto(x, y, flags)
+                        else:
+                            self.dragobject.dragto(x, y, flags)
+                else:
+                    self.dragobject.dragto(x, y, flags)
             if self.MODE == SS_MODEL:
                 # This section for True3Dmode drags.
+                import mdlhandles
                 try:
                     if flagsmouse != 1048 and quarkx.setupsubset(SS_MODEL, "Options")["EditorTrue3Dmode"] == "1" or quarkx.setupsubset(SS_MODEL, "Options")["Full3DTrue3Dmode"] == "1":
                         if view.info["viewname"] == "editors3Dview" or view.info["viewname"] == "3Dwindow":
@@ -1367,6 +1376,7 @@ class BaseEditor:
 
             if flags & MB_CLICKED:
                 if (self.MODE == SS_MODEL):
+                    import mdlhandles
                     # To stop mouse button(s) click from causing zooming in all views including Skin-view.
                     if (flagsmouse == 264) or (flagsmouse == 280) or (flagsmouse == 288) or (flagsmouse == 296) or (flagsmouse == 344) or (flagsmouse == 352) or (flagsmouse == 552):
                         if (flagsmouse == 264) or (flagsmouse == 288) and self.layout.toolbars["tb_paintmodes"] is not None:
@@ -1495,6 +1505,7 @@ class BaseEditor:
                     self.dragobject = self.HandlesModule.MouseDragging(self,view,x,y,s,handle)
 
                     if (self.MODE == SS_MODEL):
+                        import mdlhandles
                         if view.info["viewname"] == "skinview":
                             if flagsmouse == 520 and self.dragobject is None:
                                 view.depth = (-view.clientarea[0], view.clientarea[1])
