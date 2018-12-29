@@ -47,7 +47,7 @@ type
 
 implementation
 
-uses StrUtils, SysUtils, Logging;
+uses StrUtils, SysUtils, Logging, ExtraFunctionality;
 
 const
   StatusBufferLength : DWORD = 256;
@@ -150,11 +150,7 @@ begin
     if HttpQueryInfo(InetResource, Flag, StatusBuffer, BufferLength, HeaderIndex)=false then
       raise exception.create('HttpQueryInfo failed!');
 
-    try
-      Result:=StrToInt(LeftStr(StatusBuffer, BufferLength));
-    except
-      Result:=Default;
-    end;
+    Result:=StrToIntDef(LeftStr(StatusBuffer, BufferLength), Default);
   finally
     FreeMem(StatusBuffer);
   end;
@@ -167,14 +163,8 @@ var
 begin
   if DataStart<>0 then
   begin
-    //DanielPharos: A bug in Delphi? InternetSetFilePointer returns a cardinal,
-    //but according to the MSDN '-1' is the failed return... How can a cardinal be negative?!?
-    (*if InternetSetFilePointer(InetResource, DataStart, nil, FILE_BEGIN, 0) = -1 then
-    begin
-      FErrorMessage:='Cannot download file: InternetSetFilePointer failed.';
-      Exit;
-    end;*)
-    InternetSetFilePointer(InetResource, DataStart, nil, FILE_BEGIN, 0);
+    if (InternetSetFilePointer(InetResource, DataStart, nil, FILE_BEGIN, 0) = INVALID_SET_FILE_POINTER) and (GetLastError() <> NO_ERROR) then
+      raise exception.create('Cannot download file: InternetSetFilePointer failed.');
   end;
 
   FileData.Seek(0, soFromBeginning);

@@ -67,6 +67,8 @@ const
   SM_STARTER = 88;
   SM_TABLETPC = 86;
 
+  INVALID_SET_FILE_POINTER = DWORD(-1);
+
 var
   SetDllDirectory: function (lpPathName : LPCTSTR) : BOOL; stdcall;
   IsWow64Process: function (hProcess : THandle; var Wow64Process : BOOL): BOOL; stdcall;
