@@ -288,7 +288,7 @@ type
     { Returns "<specific-name>=<args>" }
     function GetArg(const Name: String) : String;
     { Returns "<args>" }
-   {procedure SetTextsSpec(const Name: String; L: TStrings);}
+   {procedure SetTextsSpec(const Name: String; const L: TStrings);}
     function FindSubObject(const nName: String; WantClass, BrowseClass: QObjectClass) : QObject;
     function LocateSubElement(const LocName: String; var Index: Integer) : QObject; overload;
     procedure FindAllSubObjects(const nName: String; {nName='' for all} WantClass, BrowseClass: QObjectClass; L: TQList);
@@ -1909,7 +1909,7 @@ begin
   inherited;
 end;
 
-(*procedure QObject.SetTextsSpec(const Name: String; L: TStrings);
+(*procedure QObject.SetTextsSpec(const Name: String; const L: TStrings);
 var
  S, S1: String;
  I, Taille: Integer;
@@ -2744,7 +2744,7 @@ begin
         S:=Specifics.Names[I];
         if Length(S) > 0 then
         begin
-          S2:=Specifics.ValueFromIndex[I];           
+          S2:=Specifics.ValueFromIndex[I];
 (*          if IsIntSpec(S) then
           begin
             N:=Length(S2) div 4;    { SizeOf(Integer) }
