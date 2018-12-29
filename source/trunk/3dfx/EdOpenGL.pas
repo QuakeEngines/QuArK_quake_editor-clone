@@ -254,6 +254,7 @@ begin
   if LP=nil then
   begin
     glBegin(GL_QUADS);
+    CheckOpenGLError('RenderQuad: glBegin');
     try
       light[0]:=LightParams.ZeroLight * Currentf[0];
       light[1]:=LightParams.ZeroLight * Currentf[1];
@@ -287,6 +288,7 @@ begin
       end;
     finally
       glEnd();
+      CheckOpenGLError('RenderQuad: glEnd');
     end;
   end
   else
@@ -430,6 +432,7 @@ begin
     while J<SectionsJ do
     begin
       glBegin(GL_QUAD_STRIP);
+      CheckOpenGLError('RenderQuad: glBegin');
       try
         NormalVector[0]:=NormalePlan[0];
         NormalVector[1]:=NormalePlan[1];
@@ -455,11 +458,11 @@ begin
         end;
       finally
         glEnd();
+        CheckOpenGLError('RenderQuad: glEnd');
       end;
       Inc(J, StepJ);
     end;
   end;
-  CheckOpenGLError('RenderQuad');
 end;
 
 procedure RenderQuadStrip(PV: PVertex3D;
@@ -481,6 +484,7 @@ begin
     LP1:=LP1^.SubLightList;
   end;
   glBegin(GL_TRIANGLE_STRIP);
+  CheckOpenGLError('RenderQuadStrip: glBegin');
   try
     NormalVector[0]:=NormalePlan[0];
     NormalVector[1]:=NormalePlan[1];
@@ -499,8 +503,8 @@ begin
     end;
   finally
     glEnd();
+    CheckOpenGLError('RenderQuadStrip: glEnd');
   end;
-  CheckOpenGLError('RenderQuadStrip');
 end;
 
  {------------------------}
