@@ -1165,7 +1165,7 @@ begin
           raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
         try
           Source:=SurfaceRect.pBits;
-          Inc(Source, SurfaceRect.Pitch*(pPresParm.BackBufferHeight - 1)); //Vertically flip
+          Inc(Source, SurfaceRect.Pitch*Integer(pPresParm.BackBufferHeight - 1)); //Vertically flip
           Dest:=Bits;
           case PresParm.BackBufferFormat of
           D3DFMT_A2R10G10B10:

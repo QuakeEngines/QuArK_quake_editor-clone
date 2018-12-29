@@ -1573,7 +1573,7 @@ begin
     ScrollLines := 3;
   end;
 
-  VertScrollBar.Position := VertScrollBar.Position + MyTVLineStep * ScrollLines;
+  VertScrollBar.Position := VertScrollBar.Position + MyTVLineStep * Integer(ScrollLines);
   Handled := true;
 end;
 
@@ -1587,7 +1587,7 @@ begin
     ScrollLines := 3;
   end;
 
-  VertScrollBar.Position := VertScrollBar.Position - MyTVLineStep * ScrollLines;
+  VertScrollBar.Position := VertScrollBar.Position - MyTVLineStep * Integer(ScrollLines);
   Handled := true;
 end;
 

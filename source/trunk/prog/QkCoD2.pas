@@ -183,9 +183,9 @@ begin
       Raise EError(5519);
     org:=F.position;
     f.readbuffer(header, sizeof(header));
-    f.seek(org+header.offset_material, soFromBeginning);
+    f.seek(org+Integer(header.offset_material), soFromBeginning);
     S:=ReadString(); //@
-    f.seek(org+header.offset_color_texture, soFromBeginning);
+    f.seek(org+Integer(header.offset_color_texture), soFromBeginning);
     texture_name:=ReadString(); //@
     //@
    end
