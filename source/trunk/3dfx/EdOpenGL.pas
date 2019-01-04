@@ -621,7 +621,7 @@ begin
 
   MadeRCCurrent:=False;
   try
-    for I:=0 to 2 do
+    for I:=Low(OpenGLDisplayLists) to High(OpenGLDisplayLists) do
     begin
       if OpenGLDisplayLists[I]<>0 then
       begin
@@ -1130,7 +1130,7 @@ begin
   ViewDCSet:=False;
   MadeRCCurrent:=False;
   try
-    for I:=0 to 2 do
+    for I:=Low(OpenGLDisplayLists) to High(OpenGLDisplayLists) do
     begin
       if OpenGLDisplayLists[I]<>0 then
       begin
@@ -1145,9 +1145,9 @@ begin
             raise EError(6310);
           MadeRCCurrent := True;
         end;
-
         glDeleteLists(OpenGLDisplayLists[I], 1);
         CheckOpenGLError('StartBuildScene: glDeleteLists');
+
         OpenGLDisplayLists[I]:=0;
       end;
     end;
@@ -1360,254 +1360,252 @@ begin
     glViewport(0, 0, ScreenX, ScreenY);   {Viewport width and height are silently clamped to a range that depends on the implementation. This range is queried by calling glGet with argument GL_MAX_VIEWPORT_DIMS.}
     CheckOpenGLError('glViewPort');
 
-  if Coord.FlatDisplay then
-   begin
-    if DisplayType=dtXY then
+    if Coord.FlatDisplay then
      begin
-      with TXYCoordinates(Coord) do
+      if DisplayType=dtXY then
        begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end
-    else if DisplayType=dtXZ then
-     begin
-      with TXZCoordinates(Coord) do
+        with TXYCoordinates(Coord) do
+         begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+          VX:=VectorX;
+          VY:=VectorY;
+          VZ:=VectorZ;
+         end;
+       end
+      else if DisplayType=dtXZ then
        begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
-       end;
-     end
-    else {if (DisplayType=dtYZ) or (DisplayType=dt2D) then}
-     begin
-      with T2DCoordinates(Coord) do
+        with TXZCoordinates(Coord) do
+         begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+          VX:=VectorX;
+          VY:=VectorY;
+          VZ:=VectorZ;
+         end;
+       end
+      else {if (DisplayType=dtYZ) or (DisplayType=dt2D) then}
        begin
-        Scaling:=ScalingFactor(Nil);
-        LocX:=pDeltaX-ScrCenter.X;
-        LocY:=-(pDeltaY-ScrCenter.Y);
-        VX:=VectorX;
-        VY:=VectorY;
-        VZ:=VectorZ;
+        with T2DCoordinates(Coord) do
+         begin
+          Scaling:=ScalingFactor(Nil);
+          LocX:=pDeltaX-ScrCenter.X;
+          LocY:=-(pDeltaY-ScrCenter.Y);
+          VX:=VectorX;
+          VY:=VectorY;
+          VZ:=VectorZ;
+         end;
        end;
-     end;
 
-    DX:=(ScreenX/2)/(Scaling*Scaling);
-    DY:=(ScreenY/2)/(Scaling*Scaling);
-    //Start using: ChercheExtremites
-    //or better: do it in the BuildScene when the positions are being processed!
+      DX:=(ScreenX/2)/(Scaling*Scaling);
+      DY:=(ScreenY/2)/(Scaling*Scaling);
+      //Start using: ChercheExtremites
+      //or better: do it in the BuildScene when the positions are being processed!
 
-    //DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);
-    DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
-    TransX:=LocX/(Scaling*Scaling);
-    TransY:=LocY/(Scaling*Scaling);
-    TransZ:=-MapLimitSmallest;
-    MatrixTransform[0,0]:=VX.X;
-    MatrixTransform[0,1]:=-VY.X;
-    MatrixTransform[0,2]:=-VZ.X;
-    MatrixTransform[0,3]:=0;
-    MatrixTransform[1,0]:=VX.Y;
-    MatrixTransform[1,1]:=-VY.Y;
-    MatrixTransform[1,2]:=-VZ.Y;
-    MatrixTransform[1,3]:=0;
-    MatrixTransform[2,0]:=VX.Z;
-    MatrixTransform[2,1]:=-VY.Z;
-    MatrixTransform[2,2]:=-VZ.Z;
-    MatrixTransform[2,3]:=0;
-    MatrixTransform[3,0]:=0;
-    MatrixTransform[3,1]:=0;
-    MatrixTransform[3,2]:=0;
-    MatrixTransform[3,3]:=1;
+      //DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);
+      DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
+      TransX:=LocX/(Scaling*Scaling);
+      TransY:=LocY/(Scaling*Scaling);
+      TransZ:=-MapLimitSmallest;
+      MatrixTransform[0,0]:=VX.X;
+      MatrixTransform[0,1]:=-VY.X;
+      MatrixTransform[0,2]:=-VZ.X;
+      MatrixTransform[0,3]:=0;
+      MatrixTransform[1,0]:=VX.Y;
+      MatrixTransform[1,1]:=-VY.Y;
+      MatrixTransform[1,2]:=-VZ.Y;
+      MatrixTransform[1,3]:=0;
+      MatrixTransform[2,0]:=VX.Z;
+      MatrixTransform[2,1]:=-VY.Z;
+      MatrixTransform[2,2]:=-VZ.Z;
+      MatrixTransform[2,3]:=0;
+      MatrixTransform[3,0]:=0;
+      MatrixTransform[3,1]:=0;
+      MatrixTransform[3,2]:=0;
+      MatrixTransform[3,3]:=1;
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity;
-    glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity;
-    glTranslated(TransX, TransY, TransZ);
-    glMultMatrixd(MatrixTransform);
-   end
-  else
-   begin
-    with TCameraCoordinates(Coord) do
-     begin
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity;
-      gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
+      glOrtho(-DX, DX, -DY, DY, -DZ, DZ);
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity;
-      glRotated(PitchAngle * (180/pi), -1,0,0);
-      glRotated(HorzAngle * (180/pi), 0,-1,0);
-      glRotated(120, -1,1,1);
-      TransX:=-Camera.X;
-      TransY:=-Camera.Y;
-      TransZ:=-Camera.Z;
       glTranslated(TransX, TransY, TransZ);
+      glMultMatrixd(MatrixTransform);
+     end
+    else
+     begin
+      with TCameraCoordinates(Coord) do
+       begin
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity;
+        gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity;
+        glRotated(PitchAngle * (180/pi), -1,0,0);
+        glRotated(HorzAngle * (180/pi), 0,-1,0);
+        glRotated(120, -1,1,1);
+        TransX:=-Camera.X;
+        TransY:=-Camera.Y;
+        TransZ:=-Camera.Z;
+        glTranslated(TransX, TransY, TransZ);
+       end;
      end;
-   end;
-  CheckOpenGLError('Render3DView: Camera set-up');
+    CheckOpenGLError('Render3DView: Camera set-up');
 
-  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
-  CheckOpenGLError('Render3DView: glClear');
+    glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
+    CheckOpenGLError('Render3DView: glClear');
 
-  case RenderMode of
-  rmWireframe:
-    begin
-      glDisable(GL_TEXTURE_2D);
-    end;
-  rmSolidcolor:
-    begin
-      glDisable(GL_TEXTURE_2D);
-    end;
-  else //rmTextured:
-    begin
-      glEnable(GL_TEXTURE_2D);
-    end;
-  end;
-  CheckOpenGLError('Render3DView: RenderMode');
-
-  if Lighting and (LightingQuality=0) then
-    glEnable(GL_LIGHTING)
-  else
-    glDisable(GL_LIGHTING);
-  CheckOpenGLError('Render3DView: GL_LIGHTING');
-
-  RebuildDisplayList:=False;
-  if DisplayLists then
-  begin
-    if OpenGLDisplayLists[LightingQuality]=0 then
-    begin
-      OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
-      CheckOpenGLError('Render3DView: glGenLists');
-      if OpenGLDisplayLists[LightingQuality] = 0 then
-        raise EError(6313);
-
-      glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
-      CheckOpenGLError('Render3DView: glNewList');
-
-      RebuildDisplayList:=True;
-    end;
-  end;
-
-  try
-  try
-
-  if RebuildDisplayList or (not DisplayLists) then
-  begin
-    PList:=FListSurfaces;
-    while Assigned(PList) do
-    begin
-      if Transparency then
+    case RenderMode of
+    rmWireframe:
       begin
-        if PList^.Transparent=False then
-          RenderPList(PList, False, Coord);
-      end
-      else
-      begin
-        RenderPList(PList, False, Coord);
-        if PList^.NumberTransparentFaces>0 then
-          RenderPList(PList, True, Coord);
+        glDisable(GL_TEXTURE_2D);
       end;
-      PList:=PList^.Next;
-    end;
-  end
-  else
-  begin
-    glCallList(OpenGLDisplayLists[LightingQuality]);
-    CheckOpenGLError('Render3DView: glCallList');
-  end;
-
-  finally
-    if RebuildDisplayList then
-    begin
-      glEndList();
-      CheckOpenGLError('Render3DView: glEndList');
-    end;
-  end;
-  except
-    if RebuildDisplayList then
-    begin
-      glDeleteLists(OpenGLDisplayLists[LightingQuality], 1);
-      CheckOpenGLError('Render3DView: glDeleteLists');
-
-      OpenGLDisplayLists[LightingQuality]:=0;
-    end;
-    raise;
-  end;
-
-  if Transparency then
-  begin
-    glDisable(GL_CULL_FACE);
-    CheckOpenGLError('Render3DView: GL_CULL_FACE (disable) (Transparency)');
-
-    glDepthMask(GL_FALSE);
-    CheckOpenGLError('Render3DView: glDepthMask (false)');
-
-    PList:=FListSurfaces;
-    while Assigned(PList) do
-    begin
-      if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
+    rmSolidcolor:
       begin
-        PList^.TransparentDrawn:=false;
-        PList^.OpenGLDistance:=Sqr(Plist.OpenGLAveragePosition[0]+TransX)+Sqr(Plist.OpenGLAveragePosition[1]+TransY)+Sqr(Plist.OpenGLAveragePosition[2]+TransZ);
-        //Note: Sqr is the square; Sqrt (note the 'T'!) is the square root
-        //Note: Trans(X/Y/Z) is the NEGATIVE coordinate, so we need to ADD instead of SUBSTRACT
-        //      the two values for the distance-calc.
-      end
-      else
-        PList^.TransparentDrawn:=true;
-      PList:=PList^.Next;
+        glDisable(GL_TEXTURE_2D);
+      end;
+    else //rmTextured:
+      begin
+        glEnable(GL_TEXTURE_2D);
+      end;
     end;
-    repeat
-      FirstItem:=true;
-      LargestDistance:=-1;
-      CurrentPList:=nil;
-      //FIXME: Maybe we can make a list of only the transparent faces? That could be faster!
+    CheckOpenGLError('Render3DView: RenderMode');
+
+    if Lighting and (LightingQuality=0) then
+      glEnable(GL_LIGHTING)
+    else
+      glDisable(GL_LIGHTING);
+    CheckOpenGLError('Render3DView: GL_LIGHTING');
+
+    RebuildDisplayList:=False;
+    if DisplayLists then
+    begin
+      if OpenGLDisplayLists[LightingQuality]=0 then
+      begin
+        OpenGLDisplayLists[LightingQuality]:=glGenLists(1);
+        CheckOpenGLError('Render3DView: glGenLists');
+        if OpenGLDisplayLists[LightingQuality] = 0 then
+          raise EError(6313);
+
+        glNewList(OpenGLDisplayLists[LightingQuality], GL_COMPILE_AND_EXECUTE);
+        CheckOpenGLError('Render3DView: glNewList');
+
+        RebuildDisplayList:=True;
+      end;
+    end;
+
+    try
+      try
+        if RebuildDisplayList or (not DisplayLists) then
+        begin
+          PList:=FListSurfaces;
+          while Assigned(PList) do
+          begin
+            if Transparency then
+            begin
+              if PList^.Transparent=False then
+                RenderPList(PList, False, Coord);
+            end
+            else
+            begin
+              RenderPList(PList, False, Coord);
+              if PList^.NumberTransparentFaces>0 then
+                RenderPList(PList, True, Coord);
+            end;
+            PList:=PList^.Next;
+          end;
+        end
+        else
+        begin
+          glCallList(OpenGLDisplayLists[LightingQuality]);
+          CheckOpenGLError('Render3DView: glCallList');
+        end;
+      finally
+        if RebuildDisplayList then
+        begin
+          glEndList();
+          CheckOpenGLError('Render3DView: glEndList');
+        end;
+      end;
+    except
+      if RebuildDisplayList then
+      begin
+        glDeleteLists(OpenGLDisplayLists[LightingQuality], 1);
+        CheckOpenGLError('Render3DView: glDeleteLists');
+
+        OpenGLDisplayLists[LightingQuality]:=0;
+      end;
+      raise;
+    end;
+
+    if Transparency then
+    begin
+      glDisable(GL_CULL_FACE);
+      CheckOpenGLError('Render3DView: GL_CULL_FACE (disable) (Transparency)');
+
+      glDepthMask(GL_FALSE);
+      CheckOpenGLError('Render3DView: glDepthMask (false)');
+
       PList:=FListSurfaces;
       while Assigned(PList) do
       begin
-        if PList^.TransparentDrawn=false then
+        if (PList^.Transparent=True) or (PList^.NumberTransparentFaces>0) then
         begin
-          Distance:=PList^.OpenGLDistance;
-          //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
-          if (FirstItem or (Distance>LargestDistance)) then
-          begin
-            FirstItem:=false;
-            LargestDistance:=Distance;
-            CurrentPList:=Plist;
-          end;
-        end;
+          PList^.TransparentDrawn:=false;
+          PList^.OpenGLDistance:=Sqr(Plist.OpenGLAveragePosition[0]+TransX)+Sqr(Plist.OpenGLAveragePosition[1]+TransY)+Sqr(Plist.OpenGLAveragePosition[2]+TransZ);
+          //Note: Sqr is the square; Sqrt (note the 'T'!) is the square root
+          //Note: Trans(X/Y/Z) is the NEGATIVE coordinate, so we need to ADD instead of SUBSTRACT
+          //      the two values for the distance-calc.
+        end
+        else
+          PList^.TransparentDrawn:=true;
         PList:=PList^.Next;
       end;
+      repeat
+        FirstItem:=true;
+        LargestDistance:=-1;
+        CurrentPList:=nil;
+        //FIXME: Maybe we can make a list of only the transparent faces? That could be faster!
+        PList:=FListSurfaces;
+        while Assigned(PList) do
+        begin
+          if PList^.TransparentDrawn=false then
+          begin
+            Distance:=PList^.OpenGLDistance;
+            //DanielPharos: Actually, this is distance squared. But we're only comparing, not calculating!
+            if (FirstItem or (Distance>LargestDistance)) then
+            begin
+              FirstItem:=false;
+              LargestDistance:=Distance;
+              CurrentPList:=Plist;
+            end;
+          end;
+          PList:=PList^.Next;
+        end;
 
-      if not (CurrentPList=nil) then
+        if not (CurrentPList=nil) then
+        begin
+          RenderPList(CurrentPList, True, Coord);
+          CurrentPList^.TransparentDrawn:=true;
+        end;
+      until (CurrentPList=nil);
+
+      if Culling then
       begin
-        RenderPList(CurrentPList, True, Coord);
-        CurrentPList^.TransparentDrawn:=true;
+        glEnable(GL_CULL_FACE);
+        CheckOpenGLError('Render3DView: GL_CULL_FACE (enable) (Transparency)');
       end;
-    until (CurrentPList=nil);
-    
-    if Culling then
-    begin
-      glEnable(GL_CULL_FACE);
-      CheckOpenGLError('Render3DView: GL_CULL_FACE (enable) (Transparency)');
+
+      glDepthMask(GL_TRUE);
+      CheckOpenGLError('Render3DView: glDepthMask (true)');
     end;
 
-    glDepthMask(GL_TRUE);
-    CheckOpenGLError('Render3DView: glDepthMask (true)');
-  end;
-
-  glFinish();
-  CheckOpenGLError('Render3DView: glFinish');
+    glFinish();
+    CheckOpenGLError('Render3DView: glFinish');
   finally
     wglMakeCurrent(0, 0);
   end;
