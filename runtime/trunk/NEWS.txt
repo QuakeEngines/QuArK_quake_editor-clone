@@ -13,6 +13,9 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed a bug introduced with the recent OpenGL texture loading fix, producing
+          - corrupt output in the viewport if the width is not a multiple of four.
+
 * [DanielPharos]: Fixed a bug corrupting MOHAA patchDef2 and patchDef3 saving.
 
 * [DanielPharos]: Fixed handling File Association paths with spaces.
