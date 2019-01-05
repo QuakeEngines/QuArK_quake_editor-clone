@@ -542,7 +542,7 @@ begin
       on E: Exception do
        begin
         Scene.ErrorMsg:=GetExceptionMessage(E);
-        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]);
+        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]); //FIXME: Move to dict!
        end;
      end;
 
@@ -604,7 +604,7 @@ begin
       on E: Exception do
        begin
         Scene.ErrorMsg:=GetExceptionMessage(E);
-        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]);
+        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]); //FIXME: Move to dict!
        end;
      end;
 
@@ -2734,6 +2734,7 @@ function mSolidImage(self, args: PyObject) : PyObject; cdecl;
 var
  AltTexSrc: PyObject;
  DC, DC1: HDC;
+ S: String;
 begin
  try
   Result:=Nil;
@@ -2775,8 +2776,9 @@ begin
        except
         on E: Exception do
          begin
-          Log(LOG_WARNING, 'Error in scene: %s', [GetExceptionMessage(E)]);
-          ClearPanel(GetExceptionMessage(E));
+          S:=GetExceptionMessage(E);
+          Log(LOG_WARNING, 'Error in scene: %s', [S]); //FIXME: Move to dict!
+          ClearPanel(S);
           Scene.ClearScene;
           Drawing:=Drawing or dfRebuildScene;
          end;
