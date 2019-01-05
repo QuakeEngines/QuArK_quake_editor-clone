@@ -29,7 +29,7 @@ uses SysUtils;
 const
   QuArKVersion            = 'QuArK 6.6';
   QuArKMinorVersion       = 'Beta 7';
-  QuArKCopyright          = 'Copyright (C) 1996-2017 Armin Rigo and others';
+  QuArKCopyright          = 'Copyright (C) 1996-2018 Armin Rigo and others';
 {$IFDEF CompiledWithDelphi1}
   QuArKUsedCompiler       = 'Delphi 1.0';
 {$ELSE}
@@ -59,7 +59,7 @@ const
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
-  QuArKCompileDate        = 43029;   //This is the compiled date
+  QuArKCompileDate        = 43463;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
