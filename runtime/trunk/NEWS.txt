@@ -13,6 +13,9 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Rewrote the Intel precision assembly code to only change the precision,
+          - not any other floating point flags, and removed it from the Software renderer.
+
 * [DanielPharos]: Fixed a bug introduced with the recent OpenGL texture loading fix, producing
           - corrupt output in the viewport if the width is not a multiple of four.
 
