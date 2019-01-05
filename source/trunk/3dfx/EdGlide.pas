@@ -76,8 +76,6 @@ type
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
-procedure SetIntelPrecision;
-procedure RestoreIntelPrecision;
 procedure Do3DFXTwoMonitorsActivation; //FIXME: Currently unused!
 procedure Do3DFXTwoMonitorsDeactivation; //FIXME: Currently unused!
 procedure Set3DFXGammaCorrection(Value: TDouble);
@@ -96,6 +94,8 @@ uses Game, Quarkx, QkExceptions, Travail,
      PyMath3D, QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 const
+ //See the "Floating Point Vertex Snapping and Area Calculations"-section
+ //of chapter 14 of the Glide 2.4 Programming Guide for more information.
  VertexSnapper = 1.0*(3 shl 18);
 
 type
@@ -114,6 +114,12 @@ type
               s,t: scalar_t;
              end;
  {TSkinType = (stNone, stTexture, stSkin);}
+
+var
+ FPControl: Word;
+
+procedure SetFPUPrecision; forward;
+procedure RestoreFPUPrecision; forward;
 
  {------------------------}
 
@@ -396,14 +402,14 @@ begin
    if not Hardware3DFX then
     Raise EError(6206);
    try
+    SetFPUPrecision;
     try
-     SetIntelPrecision;
      grGlideInit;
      if not grSstQueryHardware(hwconfig) then
       Raise EErrorFmt(6200, ['grSstQueryHardware']);
      if AdapterNo >= hwconfig.num_sst then
       Raise EErrorFmt(6207, [AdapterNo, hwconfig.num_sst]);
-      
+
      grSstSelect(AdapterNo);
      if GlideTimesLoaded=1 then
        //Glide 2 only only supports 1 window at a time. So we can't use ViewWnd here!
@@ -415,7 +421,7 @@ begin
                          2, 1) then //Note: Glide 2 doesn't support single buffering
         Raise EErrorFmt(6200, ['grSstWinOpen']);
     finally
-     RestoreIntelPrecision;
+     RestoreFPUPrecision;
     end;
      // grSstControl(GR_CONTROL_DEACTIVATE);
     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
@@ -759,37 +765,27 @@ end;
 
  {------------------------}
 
-procedure SetIntelPrecision;
+procedure SetFPUPrecision;
 var
- memvar : LongInt;
+ TMPFPControl: Word;
 begin
- //taken directly from the Glide 2.4 programming Guide
  asm
-  finit
+  fstcw [FPControl]
   fwait
-  fstcw word ptr memvar
-  fwait
-  mov eax,memvar
-  and eax,0fffffcffh
-  mov memvar,eax
-  fldcw word ptr memvar
+  push eax
+  mov ax, [FPControl]
+  mov [TMPFPControl], ax
+  pop eax
+  and [TMPFPControl], $FCFF
+  fldcw [TMPFPControl]
   fwait
  end;
 end;
 
-procedure RestoreIntelPrecision;
-var
- memvar : LongInt;
+procedure RestoreFPUPrecision;
 begin
  asm
-  finit
-  fwait
-  fstcw word ptr memvar
-  fwait
-  mov eax,memvar
-  or eax,0300h
-  mov memvar,eax
-  fldcw word ptr memvar
+  fldcw [FPControl]
   fwait
  end;
 end;
@@ -1145,7 +1141,7 @@ var
  PV1, PrevV1, NewV1, TargetV1: TV1;
  CopyV1: array[1..MAX_VERTICES] of TV1;
  Corners: Integer;
- aa, bb, cc, dd, VertexSnapper1, MinRadius, MaxRadius: FxFloat;
+ aa, bb, cc, dd, MinRadius, MaxRadius: FxFloat;
  LocalViewRectLeft,
  LocalViewRectTop,
  LocalViewRectRight,
@@ -1410,8 +1406,6 @@ begin
  LocalViewRectTop   :=ViewRect.Top;
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
-
- VertexSnapper1:=VertexSnapper;
 
  NeedTex:=not SolidColors;
 
@@ -1721,8 +1715,8 @@ begin
             begin
               with VList[I] do
               begin
-                x:=x-VertexSnapper1;
-                y:=y-VertexSnapper1;
+                x:=x-VertexSnapper;
+                y:=y-VertexSnapper;
                 tmuvtx[0].oow:=1.0;
               end;
             end;
