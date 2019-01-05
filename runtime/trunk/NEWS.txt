@@ -13,6 +13,9 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added workaround for OpenGL implementations that cause floating point
+          - exceptions to be raised during rendering.
+
 * [DanielPharos]: Rewrote the Intel precision assembly code to only change the precision,
           - not any other floating point flags, and removed it from the Software renderer.
 

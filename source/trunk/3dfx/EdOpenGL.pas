@@ -42,6 +42,7 @@ type
  private
    RC: HGLRC;
    WorkaroundGDI: Boolean;
+   WorkaroundFPExceptions: Boolean;
    DoubleBuffered: Boolean;
    Fog: Boolean;
    Transparency: Boolean;
@@ -805,6 +806,7 @@ begin
     WorkaroundGDI:=Setup.Specifics.Values['WorkaroundGDI']<>''
   else
     WorkaroundGDI:=false;
+  WorkaroundFPExceptions:=Setup.Specifics.Values['WorkaroundFPExceptions']<>'';
 
   SetViewDC(True);
   try
@@ -1348,9 +1350,24 @@ var
  RebuildDisplayList: Boolean;
  Distance: Double;
  LargestDistance: Double;
+ OldFPControl, FPControl: Word;
 begin
   if not OpenGlLoaded then
     Exit;
+
+  if WorkaroundFPExceptions then
+  asm
+    FSTCW [OldFPControl]
+    FWAIT
+    PUSH eax
+    MOV ax, [OldFPControl]
+    MOV [FPControl], ax
+    POP eax
+    OR [FPControl], $003F
+    FLDCW [FPControl]
+    FWAIT
+  end;
+
   SetViewDC(True);
   try
     if wglMakeCurrent(ViewDC, RC) = false then
@@ -1611,6 +1628,13 @@ begin
   end;
   finally
     SetViewDC(False);
+  end;
+
+  if WorkaroundFPExceptions then
+  asm
+    FNCLEX
+    FLDCW [OldFPControl]
+    FWAIT
   end;
 end;
 

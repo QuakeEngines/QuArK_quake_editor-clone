@@ -141,6 +141,7 @@ QQRKSRC1
         MovingQuality = "2"
         DisableDWM = ""
         WorkaroundGDI = "1"
+        WorkaroundFPExceptions = "1"
         Form = "GeneralOpenGL"
       }
       DirectX:config =
@@ -8103,6 +8104,7 @@ QQRKSRC1
       DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
                                 $0D"If the views are not drawing correctly, try checking this box." }
       WorkaroundGDI: = {Typ="X" Txt="Workaround for GDI" Cap="Enabled" Hint="Due to a Windows limitation, GDI drawing is not allowed in OpenGL windows, and can result in graphical corruption. Enable this option to switch to compliant (but slower) drawing."}
+      WorkaroundFPExceptions: = {Typ="X" Txt="Workaround for FP exceptions" Cap="Enabled" Hint="Some OpenGL implementations assume floating point exceptions are disabled (which they are not in QuArK), causing rendering failures. Enable this option to ignore floating point exceptions during OpenGL rendering."}
     }
     GeneralDirectX:form =
     {
