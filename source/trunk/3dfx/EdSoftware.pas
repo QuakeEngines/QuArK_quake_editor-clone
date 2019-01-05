@@ -96,8 +96,6 @@ type
    function ChangeQuality(nQuality: Integer) : Boolean; override;
  end;
 
-procedure SetIntelPrecision;
-procedure RestoreIntelPrecision;
 procedure Do3DFXTwoMonitorsActivation; //FIXME: Currently unused!
 procedure Do3DFXTwoMonitorsDeactivation; //FIXME: Currently unused!
 procedure Set3DFXGammaCorrection(Value: TDouble);
@@ -108,10 +106,6 @@ implementation
 
 uses Game, Quarkx, QkExceptions, Travail,
      PyMath3D, QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
-
-const
- VertexSnapper = 1.0*(3 shl 18);
- SoftBufferCoarse = 1;
 
 type
  PVect3D = ^TVect3D;
@@ -297,21 +291,16 @@ begin
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
    try
-    try
-     RendererVersion:=softgQuArK;
-     SetIntelPrecision;
-     grGlideInit;
-     if GlideTimesLoaded=1 then
-       if not grSstWinOpen(0,
-                         GR_RESOLUTION_640x480,
-                         GR_REFRESH_60HZ,
-                         GR_COLORFORMAT_ARGB,
-                         GR_ORIGIN_UPPER_LEFT,
-                         2, 1) then
-        Raise EErrorFmt(6100, ['grSstWinOpen']);
-    finally
-     RestoreIntelPrecision;
-    end;
+    RendererVersion:=softgQuArK;
+    grGlideInit;
+    if GlideTimesLoaded=1 then
+      if not grSstWinOpen(0,
+                        GR_RESOLUTION_640x480,
+                        GR_REFRESH_60HZ,
+                        GR_COLORFORMAT_ARGB,
+                        GR_ORIGIN_UPPER_LEFT,
+                        2, 1) then
+       Raise EErrorFmt(6100, ['grSstWinOpen']);
     if Assigned(grDepthBufferMode) then
      grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
     if Assigned(grDepthMask) then
@@ -661,41 +650,6 @@ end;
 
  {------------------------}
 
-procedure SetIntelPrecision;
-var
- memvar : LongInt;
-begin
- //taken directly from the Glide 2.4 programming Guide
- asm
-  finit
-  fwait
-  fstcw word ptr memvar
-  fwait
-  mov eax,memvar
-  and eax,0fffffcffh
-  mov memvar,eax
-  fldcw word ptr memvar
-  fwait
- end;
-end;
-
-procedure RestoreIntelPrecision;
-var
- memvar : LongInt;
-begin
- asm
-  finit
-  fwait
-  fstcw word ptr memvar
-  fwait
-  mov eax,memvar
-  or eax,0300h
-  mov memvar,eax
-  fldcw word ptr memvar
-  fwait
- end;
-end;
-
 procedure Do3DFXTwoMonitorsActivation;
 begin
  if Assigned(grSstControl) then
@@ -757,10 +711,10 @@ begin
  ProjInfo.Up[0]:=-SP*CA*nRFactor;
  ProjInfo.Up[1]:=-SP*SA*nRFactor;
  ProjInfo.Up[2]:=CP*nRFactor;
- ProjInfo.ViewRectLeft  :=ViewRect.Left  +VertexSnapper;
- ProjInfo.ViewRectTop   :=ViewRect.Top   +VertexSnapper;
- ProjInfo.ViewRectRight :=ViewRect.Right +VertexSnapper;
- ProjInfo.ViewRectBottom:=ViewRect.Bottom+VertexSnapper;
+ ProjInfo.ViewRectLeft  :=ViewRect.Left;
+ ProjInfo.ViewRectTop   :=ViewRect.Top;
+ ProjInfo.ViewRectRight :=ViewRect.Right;
+ ProjInfo.ViewRectBottom:=ViewRect.Bottom;
  ProjInfo.ooWFactor:=FarDistance*(1/MaxW);
 end;*)
 
@@ -962,10 +916,10 @@ begin
    oow:=ooWFactor/Dist;
    x:=(Delta[0]*Right[0]
      + Delta[1]*Right[1]
-     + Delta[2]*Right[2]) * oow + (ScreenCenterX+VertexSnapper);
+     + Delta[2]*Right[2]) * oow + ScreenCenterX;
    y:=(Delta[0]*Up[0]
      + Delta[1]*Up[1]
-     + Delta[2]*Up[2]) * oow + (ScreenCenterY+VertexSnapper);
+     + Delta[2]*Up[2]) * oow + ScreenCenterY;
    nOffScreen:=0;
    if x<ViewRectLeft   then Inc(nOffScreen, os_Left) else
    if x>ViewRectRight  then Inc(nOffScreen, os_Right);
@@ -1035,7 +989,7 @@ var
  PV1, PrevV1, NewV1, TargetV1: TV1;
  CopyV1: array[1..MAX_VERTICES] of TV1;
  Corners: Integer;
- aa, bb, cc, dd, VertexSnapper1, MinRadius, MaxRadius: FxFloat;
+ aa, bb, cc, dd, MinRadius, MaxRadius: FxFloat;
  LocalViewRectLeft,
  LocalViewRectTop,
  LocalViewRectRight,
@@ -1301,11 +1255,6 @@ begin
  LocalViewRectTop   :=ViewRect.Top;
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
-
- if (SoftBufferFormat = SoftBufferCoarse) then
-  VertexSnapper1:=VertexSnapper+0.25
- else
-  VertexSnapper1:=VertexSnapper;
 
  NeedTex:=not SolidColors;
 
@@ -1625,8 +1574,6 @@ begin
                 if oow<Minoow-1E-8 then Raise InternalE('N:Minoow');
                 if oow>Maxoow+1E-8 then Raise InternalE('N:Maxoow');
                 {$ENDIF}
-                x:=x-VertexSnapper1;
-                y:=y-VertexSnapper1;
                 tmuvtx[0].oow:=1.0;
               end;
             end;
@@ -1791,28 +1738,28 @@ begin
      ViewRect.DoubleSize:=True
    else
      ViewRect.DoubleSize:=False;
-   ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX);
-   ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY);
+   ViewRect.ProjDx:=ScreenCenterX;
+   ViewRect.ProjDy:=ScreenCenterY;
   end
  else
   begin
    if SoftBufferFormat>0 then
     begin
      ViewRect.DoubleSize:=True;
-     ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-0.5*Coord.ScrCenter.X;
-     ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+0.5*Coord.ScrCenter.Y;
+     ViewRect.ProjDx:=ScreenCenterX-0.5*Coord.ScrCenter.X;
+     ViewRect.ProjDy:=ScreenCenterY+0.5*Coord.ScrCenter.Y;
     end
    else
     begin
      ViewRect.DoubleSize:=False;
-     ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX)-Coord.ScrCenter.X;
-     ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
+     ViewRect.ProjDx:=ScreenCenterX-Coord.ScrCenter.X;
+     ViewRect.ProjDy:=ScreenCenterY+Coord.ScrCenter.Y;
     end;
   end;
- ViewRect.Left  := ViewRect.R.Left  + (VertexSnapper-0.5);
- ViewRect.Top   := ViewRect.R.Top   + (VertexSnapper-0.5);
- ViewRect.Right := ViewRect.R.Right + (VertexSnapper+0.5);
- ViewRect.Bottom:= ViewRect.R.Bottom+ (VertexSnapper+0.5);
+ ViewRect.Left  := ViewRect.R.Left;
+ ViewRect.Top   := ViewRect.R.Top;
+ ViewRect.Right := ViewRect.R.Right;
+ ViewRect.Bottom:= ViewRect.R.Bottom;
 end;
 
 function TSoftwareSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
