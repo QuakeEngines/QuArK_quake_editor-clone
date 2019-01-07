@@ -12,6 +12,7 @@ Core of the Map and Model editors.
 # See comments in file mapeditor.py.
 #
 
+import quarkx
 import qmenu
 import qtoolbar
 import qhandles
@@ -43,6 +44,7 @@ class BaseEditor:
         # debug("MapEditor opens")
         self.form = form
         form.info = self
+        quarkx.clickform = form
         self.layout = None
         self.dragobject = None
         self.Root = None
