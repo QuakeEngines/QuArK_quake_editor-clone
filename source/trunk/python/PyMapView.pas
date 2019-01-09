@@ -542,7 +542,7 @@ begin
       on E: Exception do
        begin
         Scene.ErrorMsg:=GetExceptionMessage(E);
-        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]); //FIXME: Move to dict!
+        Log(LOG_WARNING, LoadStr1(5790), [Scene.ErrorMsg]);
        end;
      end;
 
@@ -604,7 +604,7 @@ begin
       on E: Exception do
        begin
         Scene.ErrorMsg:=GetExceptionMessage(E);
-        Log(LOG_WARNING, 'Error in scene: %s', [Scene.ErrorMsg]); //FIXME: Move to dict!
+        Log(LOG_WARNING, LoadStr1(5790), [Scene.ErrorMsg]);
        end;
      end;
 
@@ -2777,7 +2777,7 @@ begin
         on E: Exception do
          begin
           S:=GetExceptionMessage(E);
-          Log(LOG_WARNING, 'Error in scene: %s', [S]); //FIXME: Move to dict!
+          Log(LOG_WARNING, LoadStr1(5790), [S]);
           ClearPanel(S);
           Scene.ClearScene;
           Drawing:=Drawing or dfRebuildScene;

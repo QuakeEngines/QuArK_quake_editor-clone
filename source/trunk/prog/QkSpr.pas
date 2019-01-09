@@ -148,7 +148,7 @@ begin
       org:=f.Position;
       f.ReadBuffer(head,4);
       if (head<>ID_SPRHEADER) then
-        raise Exception.CreateFmt('Sprite Signiture = %d, Should be: %d',[head,ID_SPRHEADER]);
+        raise EErrorFmt(5797, [head,ID_SPRHEADER]);
       f.ReadBuffer(ver,4);
       f.seek(org,soFromBeginning);
       spr:=getsprite;
@@ -160,7 +160,7 @@ begin
       else if (ver=2)  then
         LoadHLSpr(f, spr)
       else
-        raise Exception.CreateFmt('Sprite Version %d UnSupported, Versions Supported: 1 (Quake 1), and 2 (Half-Life)',[ver]);
+        raise EErrorFmt(5798, [ver]);
       end;
     else inherited;
   end;
@@ -181,9 +181,9 @@ begin
   fs.ReadBuffer(dst,sizeof(dst));
   ID_SPRHeader:=(ord('P') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
   if dst.ident<>ID_SPRHEADER then
-    raise Exception.CreateFmt('Quake 1 Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SPRHEADER]);
+    raise EErrorFmt(5799, [dst.ident,ID_SPRHEADER]);
   if dst.version<>1 then
-    raise Exception.CreateFmt('Quake 1 Sprite Version = %d, Should be: %d',[dst.version,2]);
+    raise EErrorFmt(5800, [dst.version,2]);
   ObjectGameCode:=mjQuake;
   Self.Specifics.Add(format('SPR_STYPE=%d',[dst.sType]));
   Self.Specifics.Add(format('SPR_TXTYPE=%d',[-1]));
@@ -452,9 +452,9 @@ var
 begin
   f.ReadBuffer(Dst,sizeof(dst));
   if dst.ident<>ID_SP2HEADER then
-    raise Exception.CreateFmt('Quake 2 Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SP2HEADER]);
+    raise EErrorFmt(5801, [dst.ident,ID_SP2HEADER]);
   if dst.version<>2 then
-    raise Exception.CreateFmt('Quake 2 Sprite Version = %d, Should be: %d',[dst.version,2]);
+    raise EErrorFmt(5802, [dst.version,2]);
   ObjectGameCode:=mjQuake2;
   Self.Specifics.Add(format('SPR_STYPE=%d',[-1]));
   Self.Specifics.Add(format('SPR_TXTYPE=%d',[-1]));
@@ -525,7 +525,7 @@ begin
         else if fg=mjHalfLife then
           WriteHLSpr(Info.F)
         else
-          raise Exception.CreateFmt('Invalid format (Only Quake 1 & Half-Life) ~ (%s)',[fg]); //FIXME: Move to dict!
+          raise EErrorFmt(5796, [fg]);
        end;
     else
       inherited;
@@ -778,7 +778,7 @@ begin
        1: if index+1>s.SubElements.count-1 then index:=s.SubElements.count-1 else index:=index+1;
       -1: if index-1<0 then index:=0 else index:=index-1;
     else
-      raise Exception.CreateFmt('Invalid Tag! (%d - QSprForm.playClick)',[TComponent(Sender).Tag]);
+      raise EErrorFmt(5803, [TComponent(Sender).Tag]);
   end;
   if index>s.SubElements.count-1 then
     index:=s.SubElements.count-1;

@@ -854,7 +854,7 @@ begin
       NonFaces:=0;
       ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
       if NonFaces>0 then
-        ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored'); //FIXME: Move to dict!
+        ShowMessage(Format(LoadStr1(5792), [NonFaces]));
     finally
       ProgressIndicatorStop;
     end;
@@ -1211,7 +1211,7 @@ begin
   Acces;
   e:=GetBspEntry(FFileHandler.GetLumpEntities());
   if e=nil then
-    raise Exception.Create('No Entities in BSP'); //FIXME: Move to dict!
+    raise Exception.Create(LoadStr1(5791));
   e.acces;
   S:=e.Specifics.Values['Data'];
   for I:=Length(S) downto 1 do
