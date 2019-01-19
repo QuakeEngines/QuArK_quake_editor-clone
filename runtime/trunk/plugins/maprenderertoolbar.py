@@ -78,7 +78,7 @@ class RendererBar(quarkpy.qeditor.ToolBar):
     "The Renderer Settings."
 
     Caption = "Renderer Settings"
-    DefaultPos = ((0, 0, 0, 0), 'topdock', 684, 0, 1)
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 684, 0, 0)
 
     def buildbuttons(self, layout):
         if not quarkpy.qeditor.ico_dict.has_key('ico_renderer'):
