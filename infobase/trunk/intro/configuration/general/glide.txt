@@ -34,6 +34,11 @@ at the cost of some additional noise.
 <i>Face culling</i>. Speeds up rendering by making all the backsides of
 faces invisible.
 
+<i>Texture filtering</i>. This improved the texture quality, mainly under
+high angles. It will make the textures appear less blocky and pixelated.
+The higher the settings, the better the quality, but also the lower the
+performance.
+
 <i>Disable desktop composition</i>. On some systems, the desktop
 composition feature may corrupt the rendered viewport. Enable this
 option to automatically disable the desktop composition feature when a
