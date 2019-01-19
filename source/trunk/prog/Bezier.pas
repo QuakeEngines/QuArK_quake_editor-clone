@@ -25,9 +25,6 @@ interface
 uses Windows, SysUtils, Classes, Python, qmath, qmatrices, QkMesh, PyMath,
      QkObjects, QkMapObjects, QkMapPoly, Qk3D;
 
-const
- BezierMeshDetail = 6;   { number of subdivisions on screen } //FIXME: Make configurable!
-
 type
  TBezier = class(TMesh)
            private
@@ -66,6 +63,7 @@ type
              procedure DrawTexVertices; override;
            end;
 
+function GetBezierDetail: Integer; { number of subdivisions on screen }
 function TriangleSTCoordinates(const cp: TMeshBuf5; I, J: Integer) : vec_st_t;
 
  {------------------------}
@@ -102,7 +100,7 @@ uses QuarkX, QkExceptions, Setup, PyMapView, PyObjects, QkObjectClassList, EdSce
   *   g(u,v) = f(u, f(v,c00,c10,c20), f(v,c01,c11,c21), f(v,c02,c12,c22))
   *
   * The formula can be seen as operating on each coordinate independently,
-  * or on all 5 cordinates at the same time (with vector sum and multiply
+  * or on all 5 coordinates at the same time (with vector sum and multiply
   * in the real 5-dimensional vector space). In TBezier.BuildMeshCache
   * the computations are done on the first 3 coordinates only because the
   * texture coordinates are not cached.
@@ -167,13 +165,24 @@ begin
  Result.t := p0.t*f0 + p1.t*f1 + p2.t*f2;
 end;
 
+function GetBezierDetail: Integer;
+begin
+  Result:=Round(SetupSubSet(ssMap, 'Display').GetFloatSpec('BezierDetail', 6));
+  if Result<2 then
+    Result:=2;
+  if Result>10 then //Let's set an upper limit
+    Result:=10;
+end;
+
 function TriangleSTCoordinates(const cp: TMeshBuf5; I, J: Integer) : vec_st_t;
 var
+ BezierMeshDetail: Integer;
  P, Q1, Q2: PMeshControlPoints5;
  I1, J1: Integer;
  f: TDouble;
  r1, r2, r3: vec_st_t;
 begin
+ BezierMeshDetail:=GetBezierDetail();
  I1:=I div BezierMeshDetail;
  J1:=J div BezierMeshDetail;
  Dec(I, I1*BezierMeshDetail);
@@ -305,11 +314,9 @@ end;
  { Build a cache containing the 3D coordinates of a 6x6 grid (or more for quilts)
     that approximates the patch shape }
 procedure TBezier.BuildMeshCache;
-const
- Delta = 1.0/BezierMeshDetail;
- AlmostOne = 1.0 - Delta/2;
 var
  cp: TMeshBuf5;
+ BezierMeshDetail: Integer;
  I, I0, J, CurJ: Integer;
  u, v: TDouble;
  p0, p1, p2: TVect;
@@ -336,6 +343,7 @@ var
 
 begin
  cp:=ControlPoints;
+ BezierMeshDetail:=GetBezierDetail();
  { I guess some comments would be welcome in the code below... }
  FMeshCache.W:=(cp.W div 2)*BezierMeshDetail+1;
  FMeshCache.H:=(cp.H div 2)*BezierMeshDetail+1;
@@ -360,7 +368,7 @@ begin
         Dest^[1]:=Y;
         Dest^[2]:=Z;
         Inc(Dest);
-        u:=u+Delta;
+        u:=u+(1.0/BezierMeshDetail);
        end;
     end;
    with p2 do
@@ -370,8 +378,8 @@ begin
      Dest^[2]:=Z;
      Inc(Dest);
     end;
-   v:=v+Delta;
-   if v>=AlmostOne then
+   v:=v+(1.0/BezierMeshDetail);
+   if v>=1.0 - (1.0/BezierMeshDetail)/2 then
     begin
      v:=0;
      Inc(CurJ, 2);
@@ -399,8 +407,6 @@ end;
 
  { Compute orthogonal vectors }
 function TBezier.OrthogonalVector(u,v: scalar_t) : TMeshControlPoints3;
-const
- LittleExtra = 0.5/BezierMeshDetail;
 var
  cp: TMeshBuf5;
  I, J: Integer;
@@ -419,7 +425,7 @@ var
 
 begin
  cp:=ControlPoints;
- I:=Trunc(u+LittleExtra); J:=Trunc(v+LittleExtra);
+ I:=Trunc(u+(0.5/GetBezierDetail())); J:=Trunc(v+(0.5/GetBezierDetail()));
  if I>=cp.W div 2 then I:=cp.W div 2-1;
  if J>=cp.H div 2 then J:=cp.H div 2-1;
  Inc(cp.CP, 2*(I + J*cp.W));

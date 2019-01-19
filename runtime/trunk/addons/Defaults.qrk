@@ -2865,6 +2865,7 @@ QQRKSRC1
         // Rotate3D   = '80 2'     // 80 degrees per second during 2 seconds
         FreeZoom      = '1'
         MouseWheel    = '1.25'
+        BezierDetail  = '6'
         ViewMode      = $01      // gray out of view by default
         ArrowSize     = '40 27'
         Form          = "MapDisplay"
@@ -3156,6 +3157,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Zoom multiplication factor used when scrolling with the mousewheel in a view. Must be larger than 1."
       }
+      BezierDetail: = {Txt="Amount of detail in Bezier patches" Typ="EF1" Hint="The higher the number, the smoother the Bezier patches are drawn (2 .. 10)"}
     }
     MdlDisplay:form =
     {

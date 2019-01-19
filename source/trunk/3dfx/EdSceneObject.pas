@@ -454,6 +454,7 @@ var
  BControlPoints: TMeshBuf5;
  stBuffer, st: vec_st_p;
 {PalWarning: TPaletteWarning;}
+  BezierMeshDetail: Integer;
   PolySurface: PSurface;
   Model3DInfo: PModel3DInfo;
   OneBezier:   TBezier;
@@ -1236,6 +1237,7 @@ begin
    end;
 
    CurrentColor:=$FFFFFF;  { and beziers }
+   BezierMeshDetail:=GetBezierDetail();
    I:=0;
    while I<BezierInfo.Count do
    begin
