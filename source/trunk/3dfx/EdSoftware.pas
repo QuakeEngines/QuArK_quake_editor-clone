@@ -318,10 +318,10 @@ begin
   end;
  if (DisplayMode=dmFullScreen) then
   Raise InternalE(LoadStr1(6120));
- 
+
  Coord:=nCoord;
  TTextureManager.AddScene(Self);
- 
+
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
    raise InternalE(LoadStr1(6121));
@@ -343,7 +343,7 @@ begin
  end
  else
  begin
-   FarDistance:=1500;   //DanielPharos: This should be zero... = Disabled FarDistance
+   FarDistance:=GetMapLimit();
  end;
  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
  FogColor:=SwapColor(Setup.IntSpec['FogColor']);

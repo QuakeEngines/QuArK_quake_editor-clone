@@ -58,8 +58,6 @@ type
    LightParams: TLightParams;
    FullBright: TLightParams;
    OpenGLLoaded: Boolean;
-   MapLimit: TVect;
-   MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
    MaxLights: GLint;
    maxAnisotropyTextureFiltering: GLfloat;
    LightingQuality: Integer;
@@ -82,6 +80,7 @@ type
    procedure BuildTexture(Texture: PTexture3); override;
    procedure ChangedViewDC; override;
  public
+   NearDistance: TDouble;
    constructor Create;
    destructor Destroy; override;
    procedure Init(nCoord: TCoordinates;
@@ -711,42 +710,15 @@ begin
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
 
-  try
-   MapLimit:=SetupGameSet.VectSpec['MapLimit'];
-  except
-   MapLimit:=SetupSubSet(ssMap, 'Display').VectSpec['MapLimit'];
-  end;
-  if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
-   begin
-    MapLimit.X:=4096;
-    MapLimit.Y:=4096;
-    MapLimit.Z:=4096;
-   end;
-  if (MapLimit.X < MapLimit.Y) then
-   begin
-    if (MapLimit.X < MapLimit.Z) then
-     MapLimitSmallest:=MapLimit.X
-    else
-     MapLimitSmallest:=MapLimit.Z;
-   end
-  else
-   begin
-    if (MapLimit.Y < MapLimit.Z) then
-     MapLimitSmallest:=MapLimit.Y
-    else
-     MapLimitSmallest:=MapLimit.Z;
-   end;
-
   Setup:=SetupSubSet(ssGeneral, '3D View');
+  NearDistance:=Setup.GetFloatSpec('NearDistance', 1.0);
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
     FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
-    if (FarDistance>MapLimitSmallest) then
-      FarDistance:=MapLimitSmallest;
   end
   else
   begin
-    FarDistance:=MapLimitSmallest;
+    FarDistance:=GetMapLimit();
   end;
   FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
   FogColor:=Setup.IntSpec['FogColor'];
@@ -901,8 +873,6 @@ begin
     begin
       glEnable(GL_FOG);
       glFogi(GL_FOG_MODE, GL_EXP2);
-     {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
-      glFogf(GL_FOG_END, FarDistance);}
       glFogf(GL_FOG_DENSITY, FogDensity/FarDistance);
       glFogfv(GL_FOG_COLOR, @nFogColor);
       glHint(GL_FOG_HINT, GL_NICEST);
@@ -1421,11 +1391,11 @@ begin
       //Start using: ChercheExtremites
       //or better: do it in the BuildScene when the positions are being processed!
 
-      //DZ:=(MapLimitSmallest*2)/(Scaling*Scaling);
+      //DZ:=(GetMapLimit()*2)/(Scaling*Scaling);
       DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
       TransX:=LocX/(Scaling*Scaling);
       TransY:=LocY/(Scaling*Scaling);
-      TransZ:=-MapLimitSmallest;
+      TransZ:=-GetMapLimit();
       MatrixTransform[0,0]:=VX.X;
       MatrixTransform[0,1]:=-VY.X;
       MatrixTransform[0,2]:=-VZ.X;
@@ -1458,7 +1428,7 @@ begin
        begin
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity;
-        gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, FarDistance / 65536, FarDistance);     //DanielPharos: Assuming 16 bit depth buffer
+        gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, NearDistance, FarDistance);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity;
@@ -2054,7 +2024,7 @@ begin
       end;
       TransX:=LocX/(Scaling*Scaling);
       TransY:=LocY/(Scaling*Scaling);
-      TransZ:=-MapLimitSmallest;
+      TransZ:=-GetMapLimit();
     end
     else
     begin

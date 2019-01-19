@@ -120,7 +120,7 @@ type
                  ZeroLight: scalar_t; //Minimum lighting (ambient)
                  BrightnessSaturation: scalar_t; //Maximum brightness cut-off for software lighting
                  SoftwareRange: scalar_t; //Range for software lighting (starting at 0, which is ambient)
-                 IntensityScale: scalar_t; //Game-dependant multiplication factor for the 'light' specific
+                 IntensityScale: scalar_t; //Game-dependent multiplication factor for the 'light' specific
                 end;
 
  TBuildMode = (bmSoftware, bmGlide, bmOpenGL, bmDirect3D);
@@ -187,6 +187,7 @@ type
    procedure AddSprite(const a_Sprite: PSpriteInfo);
    procedure AddBezier(const a_Bezier: TBezier);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
+   function GetMapLimit: Double;
    property ListSurfaces: PSurfaces read FListSurfaces;
    property Initialized: Boolean read FInitialized write FInitialized;
  end;
@@ -1355,6 +1356,37 @@ begin
    TexNames.Free;
  end;
  EndBuildScene;
+end;
+
+function TSceneObject.GetMapLimit: Double;
+var
+  MapLimit: TVect;
+begin
+  try
+   MapLimit:=SetupGameSet.VectSpec['MapLimit'];
+  except
+   MapLimit:=SetupSubSet(ssMap, 'Display').VectSpec['MapLimit'];
+  end;
+  if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
+   begin
+    MapLimit.X:=4096; //FIXME: Some game-dependent default instead?
+    MapLimit.Y:=4096;
+    MapLimit.Z:=4096;
+   end;
+  if (MapLimit.X > MapLimit.Y) then
+   begin
+    if (MapLimit.X > MapLimit.Z) then
+     Result:=MapLimit.X
+    else
+     Result:=MapLimit.Z;
+   end
+  else
+   begin
+    if (MapLimit.Y > MapLimit.Z) then
+     Result:=MapLimit.Y
+    else
+     Result:=MapLimit.Z;
+   end;
 end;
 
 procedure TSceneObject.SetDrawRect(NewRect: TRect);

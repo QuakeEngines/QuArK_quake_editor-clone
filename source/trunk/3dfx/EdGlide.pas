@@ -469,7 +469,7 @@ begin
  end
  else
  begin
-   FarDistance:=1500;   //DanielPharos: This should be zero... = Disabled FarDistance
+   FarDistance:=GetMapLimit();
  end;
  FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
  FogColor:=SwapColor(Setup.IntSpec['FogColor']);
@@ -1822,7 +1822,7 @@ begin
        push esi
        push edi
        mov edi, [Bits]
-    
+
        @BoucleY:
         mov esi, [SrcPtr]
         mov eax, [info.strideInBytes]
@@ -1830,9 +1830,9 @@ begin
         mov [SrcPtr], eax
         mov ecx, [Count1]
         push ebx
-    
+
         @Boucle:
-    
+
          mov eax, [esi]
          mov edx, eax
          shl eax, 11    { 1B }
@@ -1846,7 +1846,7 @@ begin
          and eax, $F8FCF8F8
          bswap eax
          mov [edi], eax
-      
+
          shr edx, 6
          shl dh, 3
          and dl, $F8
@@ -1860,7 +1860,7 @@ begin
          mov dl, ah   { 3G }
          bswap edx
          mov [edi+4], edx
-      
+
          mov ah, bl   { 4B }
          shl eax, 11  { 3R }
          mov al, bh   { 4R }
@@ -1870,14 +1870,14 @@ begin
          bswap eax
          mov [edi+8], eax
          add edi, 12
-      
+
          dec ecx
         jnz @Boucle
-      
+
         pop ebx
         dec [I]
        jnz @BoucleY
-      
+
        pop edi
        pop esi
       end;

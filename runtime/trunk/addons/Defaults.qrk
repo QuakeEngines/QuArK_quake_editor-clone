@@ -58,7 +58,8 @@ QQRKSRC1
         WndRect = '0 0 640 480'
         Entities = "1"
         EntityBoxes = ""
-        FarDistance = '1500'  // objects are totally black at this distance
+        NearDistance = '1.0'  // minimum render distance (OpenGL, Direct3D)
+        FarDistance = '1500'  // maximum render distance
         FogDensity = '1.05'
         VAngle = '30'
         FogColor = $000000

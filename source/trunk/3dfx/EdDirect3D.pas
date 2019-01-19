@@ -48,8 +48,6 @@ type
     Culling: Boolean;
     Dithering: Boolean;
     Direct3DLoaded: Boolean;
-    MapLimit: TVect;
-    MapLimitSmallest: Double; //FIXME: Shouldn't this be MapLimitLargest for best effect?
     MaxLights: DWORD;
     pPresParm: D3DPRESENT_PARAMETERS;
     DXFogColor: D3DColor;
@@ -76,6 +74,7 @@ type
     procedure ChangedViewWnd; override;
     function CheckDeviceState : Boolean;
   public
+    NearDistance: TDouble;
     constructor Create;
     destructor Destroy; override;
     procedure Init(nCoord: TCoordinates;
@@ -292,42 +291,15 @@ begin
   Coord:=nCoord;
   TTextureManager.AddScene(Self);
 
-  try
-   MapLimit:=SetupGameSet.VectSpec['MapLimit'];
-  except
-   MapLimit:=SetupSubSet(ssMap, 'Display').VectSpec['MapLimit'];
-  end;
-  if (MapLimit.X=OriginVectorZero.X) and (MapLimit.Y=OriginVectorZero.Y) and (MapLimit.Z=OriginVectorZero.Z) then
-   begin
-    MapLimit.X:=4096;
-    MapLimit.Y:=4096;
-    MapLimit.Z:=4096;
-   end;
-  if (MapLimit.X < MapLimit.Y) then
-   begin
-    if (MapLimit.X < MapLimit.Z) then
-     MapLimitSmallest:=MapLimit.X
-    else
-     MapLimitSmallest:=MapLimit.Z;
-   end
-  else
-   begin
-    if (MapLimit.Y < MapLimit.Z) then
-     MapLimitSmallest:=MapLimit.Y
-    else
-     MapLimitSmallest:=MapLimit.Z;
-   end;
-
   Setup:=SetupSubSet(ssGeneral, '3D View');
+  NearDistance:=Setup.GetFloatSpec('NearDistance', 1.0);
   if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
   begin
     FarDistance:=Setup.GetFloatSpec('FarDistance', 1500);
-    if (FarDistance>MapLimitSmallest) then
-      FarDistance:=MapLimitSmallest;
   end
   else
   begin
-    FarDistance:=MapLimitSmallest;
+    FarDistance:=GetMapLimit();
   end;
   FogDensity:=Setup.GetFloatSpec('FogDensity', 1);
   FogColor:=Setup.IntSpec['FogColor'];
@@ -475,8 +447,6 @@ begin
   begin
     D3DDevice.SetRenderState(D3DRS_FOGENABLE, 1);  //True := 1
     D3DDevice.SetRenderState(D3DRS_FOGTABLEMODE, DWORD(D3DFOG_EXP2));
-   {D3DDevice.SetRenderState(D3DRS_FOGSTART, FarDistance * kDistFarToShort);
-    D3DDevice.SetRenderState(D3DRS_FOGEND, FarDistance);}
     //Need a trick, because SetRenderState wants a DWORD...
     tmpFogDensity:=FogDensity/FarDistance;
     D3DDevice.SetRenderState(D3DRS_FOGDENSITY, PCardinal(@tmpFogDensity)^);
@@ -974,12 +944,12 @@ begin
 
     DX:=(ScreenX/2)/(Scaling);
     DY:=(ScreenY/2)/(Scaling);
-    //DZ:=(MapLimitSmallest*2)/(Scaling);
+    //DZ:=(GetMapLimit()*2)/(Scaling);
     DZ:=100000;   //DanielPharos: Workaround for the zoom-in-disappear problem
 
     TransX:=LocX/(Scaling);
     TransY:=LocY/(Scaling);
-    TransZ:=-MapLimitSmallest;
+    TransZ:=-GetMapLimit();
     l_Rotation._11:=VX.X*Scaling;
     l_Rotation._12:=-VY.X*Scaling;
     l_Rotation._13:=-VZ.X*Scaling;
@@ -1048,7 +1018,7 @@ begin
       D3DXMatrixLookAtRH(m_View, l_Eye, l_At, l_Up);
 
       //FIXME: OpenGL needed a VCorrection here; Direct3D too?
-      D3DXMatrixPerspectiveFovRH(m_Projection, VCorrection2*D3DXToRadian(VAngleDegrees), ScreenX/ScreenY, FarDistance / 65535.0, FarDistance); //FIXME: Assuming a 16bit depth buffer here
+      D3DXMatrixPerspectiveFovRH(m_Projection, VCorrection2*D3DXToRadian(VAngleDegrees), ScreenX/ScreenY, NearDistance, FarDistance);
     end;
   end;
 
@@ -1076,7 +1046,7 @@ begin
       light._Type := Direct3D9.D3DLIGHT_POINT;
       light.Diffuse := D3DXColorFromDWord(PL^.Color);
       light.Position := D3DXVECTOR3(PL^.Position[0], PL^.Position[1], PL^.Position[2]);
-      light.Range := MapLimitSmallest;
+      light.Range := GetMapLimit();
 
       light.Attenuation0 := 1.0;
       light.Attenuation1 := 0.0;

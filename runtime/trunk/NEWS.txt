@@ -13,6 +13,9 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Set a more sensible minimum render distance. This should reduce Z-buffer
+          - fighting in OpenGL and Direct3D.
+
 * [DanielPharos]: Added workaround for OpenGL implementations that cause floating point
           - exceptions to be raised during rendering.
 
