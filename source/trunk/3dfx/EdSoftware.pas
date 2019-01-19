@@ -176,7 +176,6 @@ end;
 type  { this is the data shared by all existing T3DFXSceneObjects }
   TGlideState = class
   public
-    FMinAddress, FLoopAddress, FMaxAddress: FxU32;
     PerspectiveMode: Byte;
     Accepts16bpp: Boolean;
    {PalWarning: Boolean;}
@@ -186,6 +185,9 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
    {procedure PaletteWarning;}
     procedure Init;
   end;
+
+var
+ qrkGlideState: TGlideState = nil;
 
 constructor TGlideState.Create;
 begin
@@ -325,7 +327,7 @@ begin
  // Assigned check added by SilverPaladin
  if (not Assigned(qrkGlideState)) then
    raise InternalE(LoadStr1(6121));
- TGlideState(qrkGlideState).Init;
+ qrkGlideState.Init;
  if RendererVersion<SoftMultiplePalettes then
   HiColor:=False
  else
@@ -334,7 +336,7 @@ begin
    softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
    HiColor:=HiColor and (RendererVersion>=SoftTexFmt565);
   end;
- TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
+ qrkGlideState.Accepts16bpp:=HiColor;
 
  Setup:=SetupSubSet(ssGeneral, '3D View');
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
@@ -502,7 +504,7 @@ end;*)
 
 function TSoftwareSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
-{PW:=TGlideState(qrkGlideState).PaletteWarning;}
+{PW:=qrkGlideState.PaletteWarning;}
  VertexSize:=SizeOf(TVertex3D);
  FBuildNo:=1;
  Result:=bmSoftware;
@@ -790,7 +792,7 @@ begin
  // Assigned check added by SilverPaladin
  if Assigned(qrkGlideState) then
  begin
-   TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
+   qrkGlideState.SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
  end;
  if Fog=True then
  begin
@@ -1559,7 +1561,7 @@ begin
               // Assigned check added by SilverPaladin
             if (NeedTex and Assigned(qrkGlideState))then
             begin
-              TGlideState(qrkGlideState).NeedTex(PList^.Texture);
+              qrkGlideState.NeedTex(PList^.Texture);
               {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
               NeedTex:=False;
             end;
@@ -1792,7 +1794,7 @@ begin
 
       try
         // Assigned check added by SilverPaladin
-        if (PSD.Format=psf24bpp) and ((Assigned(qrkGlideState) and (TGlideState(qrkGlideState).Accepts16bpp))) then
+        if (PSD.Format=psf24bpp) and ((Assigned(qrkGlideState) and (qrkGlideState.Accepts16bpp))) then
         begin
           format:=GR_TEXFMT_RGB_565;
           if smallLod<>largeLod then

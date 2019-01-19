@@ -1125,7 +1125,6 @@ var
   ** end of routines
   *)
 
-  qrkGlideState: TObject;
   Hardware3DFX: Boolean;
 
 function GetGlideDummyHwnd: HWND;
@@ -1247,12 +1246,6 @@ begin
         end;
       end;
       Log(LOG_INFO, LoadStr1(6205), [RetrieveModuleFilename(GlideLib)]);
-
-      if qrkGlideState<>nil then
-      begin
-        qrkGlideState.Free;
-        qrkGlideState:=Nil;
-      end;
 
       @softgQuArK:=GetProcAddress(GlideLib, softgQuArK_Identifier_FuncName);
       Hardware3DFX:=not Assigned(softgQuArK);

@@ -116,6 +116,7 @@ QQRKSRC1
         Resolution = "7"
         Mirror = "0"
         Dither = "2"
+        TextureFiltering = "1"
         Culling = "1"
         AdapterNo = "0"
         DisableDWM = ""
@@ -8029,6 +8030,13 @@ QQRKSRC1
         Hint = ""
       }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."}
+      TextureFiltering: = {
+        Txt="Texture filtering"
+        Typ="CL"
+        Items  = "None" $0D "Bilinear" $0D "Trilinear"
+        Values = "0"    $0D "1"        $0D "2"
+        Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
+      }
       DisableDWM: = {Typ="X" Txt="Disable desktop composition" Cap="Enabled" Hint="On Windows Vista and higher, desktop composition can interfere with QuArK's drawing functions."
                                 $0D"If the views are not drawing correctly, try checking this box." }
     }

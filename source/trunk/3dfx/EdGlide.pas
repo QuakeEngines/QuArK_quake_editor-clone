@@ -114,6 +114,7 @@ type
               s,t: scalar_t;
              end;
  {TSkinType = (stNone, stTexture, stSkin);}
+ TGlideTextureFiltering = (tfNone, tfBilinear, tfTrilinear);
 
 var
  FPControl: Word;
@@ -135,7 +136,9 @@ type  { this is the data shared by all existing TGlideSceneObjects }
   public
     FMinAddress, FLoopAddress, FMaxAddress: FxU32;
     PerspectiveMode: Byte;
-    Accepts16bpp: Boolean;
+    DitherMode: GrDitherMode_t;
+    CullMode: GrCullMode_t;
+    TextureFiltering: TGlideTextureFiltering;
    {PalWarning: Boolean;}
     constructor Create;
     procedure NeedTex(PTex: PTexture3);
@@ -144,22 +147,17 @@ type  { this is the data shared by all existing TGlideSceneObjects }
     procedure Init;
   end;
 
+var
+ qrkGlideState: TGlideState = nil;
+
 constructor TGlideState.Create;
 begin
  inherited;
- if Hardware3DFX then
-  begin  { first time hardware setup }
-   FMinAddress:=grTexMinAddress(GR_TMU0);
-   FMaxAddress:=grTexMaxAddress(GR_TMU0);
-   FLoopAddress:=FMinAddress;
 
-   grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-   grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
-   grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
-   grTexLodBiasValue(GR_TMU0, +0.5);
-   grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
-   grFogMode(GR_FOG_WITH_TABLE);
-  end;
+ { first time hardware setup }
+ FMinAddress:=grTexMinAddress(GR_TMU0);
+ FMaxAddress:=grTexMaxAddress(GR_TMU0);
+ FLoopAddress:=FMinAddress;
 end;
 
 (*procedure TGlideState.PaletteWarning;
@@ -184,8 +182,7 @@ begin
  if PTex^.info.data=Nil then
   Raise InternalE(LoadStr1(6010));
  {$ENDIF}
- if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
- and Hardware3DFX then
+ if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE) then
   begin
    TextureManager:=TTextureManager.GetInstance;
     { computes destination address }
@@ -258,6 +255,28 @@ end;
 
 procedure TGlideState.Init;
 begin
+ grDitherMode(DitherMode);
+ grCullMode(CullMode);
+
+ if TextureFiltering = tfNone then
+  grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_POINT_SAMPLED, GR_TEXTUREFILTER_POINT_SAMPLED)
+ else
+  grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+
+ grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
+ if TextureFiltering = tfTrilinear then
+  grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXTRUE)
+ else
+  grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
+
+ grTexLodBiasValue(GR_TMU0, +0.5);
+ grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
+ grFogMode(GR_FOG_WITH_TABLE);
+
+ grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+ grDepthMask(FXTRUE);
+ ClearBuffers(0);
+
  SetPerspectiveMode(0);
 end;
 
@@ -273,7 +292,6 @@ end;
 procedure TGlideSceneObject.Init(nCoord: TCoordinates; nDisplayMode: TDisplayMode; nDisplayType: TDisplayType;
           nRenderMode: TRenderMode; const LibName: String; var AllowsGDI: Boolean);
 var
- HiColor: Boolean;
  hwconfig: GrHwConfiguration;
  AdapterNo: Integer;
  FogColor, FrameColor: TColorRef;
@@ -404,7 +422,7 @@ begin
    try
     SetFPUPrecision;
     try
-     grGlideInit;
+     grGlideInit();
      if not grSstQueryHardware(hwconfig) then
       Raise EErrorFmt(6200, ['grSstQueryHardware']);
      if AdapterNo >= hwconfig.num_sst then
@@ -424,10 +442,8 @@ begin
      RestoreFPUPrecision;
     end;
      // grSstControl(GR_CONTROL_DEACTIVATE);
-    grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-    grDepthMask(FXTRUE);
-    ClearBuffers(0);
-    qrkGlideState:=TGlideState.Create;
+    if (not Assigned(qrkGlideState)) then
+     qrkGlideState:=TGlideState.Create();
     GlideLoaded:=true;
    finally
     //If something went wrong, unload Glide because the set-up was incomplete
@@ -438,29 +454,36 @@ begin
  if (DisplayMode=dmFullScreen) then
    Raise InternalE(LoadStr1(6220));
 
+ Coord:=nCoord;
+ TTextureManager.AddScene(Self);
+
+   // Assigned check added by SilverPaladin
+ if (not Assigned(qrkGlideState)) then
+   raise InternalE(LoadStr1(6221));
+
  SetupDither:=StrToInt(Setup.Specifics.Values['Dither']);
  case SetupDither of
- 0: grDitherMode(GR_DITHER_DISABLE);
- 1: grDitherMode(GR_DITHER_2x2);
- 2: grDitherMode(GR_DITHER_4x4);
+ 0: qrkGlideState.DitherMode := GR_DITHER_DISABLE;
+ 1: qrkGlideState.DitherMode := GR_DITHER_2x2;
+ 2: qrkGlideState.DitherMode := GR_DITHER_4x4;
  else
    raise InternalE('Invalid Glide dithering value!');
  end;
- if Setup.Specifics.Values['Culling']<>'' then
-  grCullMode(GR_CULL_NEGATIVE)
- else
-   grCullMode(GR_CULL_DISABLE);
 
- Coord:=nCoord;
- TTextureManager.AddScene(Self);
- 
- // Assigned check added by SilverPaladin
- if (not Assigned(qrkGlideState)) then
-   raise InternalE(LoadStr1(6221));
- TGlideState(qrkGlideState).Init;
- 
- HiColor:=True;
- TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
+ if Setup.Specifics.Values['Culling']<>'' then
+   qrkGlideState.CullMode:=GR_CULL_NEGATIVE
+ else
+   qrkGlideState.CullMode:=GR_CULL_DISABLE;
+
+ case StrToInt(Setup.Specifics.Values['TextureFiltering']) of
+ 0: qrkGlideState.TextureFiltering := tfNone;
+ 1: qrkGlideState.TextureFiltering := tfBilinear;
+ 2: qrkGlideState.TextureFiltering := tfTrilinear;
+ else
+   raise InternalE('Invalid Glide texture filtering value!');
+ end;
+
+ qrkGlideState.Init();
 
  Setup:=SetupSubSet(ssGeneral, '3D View');
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
@@ -615,7 +638,7 @@ end;*)
 
 function TGlideSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
-{PW:=TGlideState(qrkGlideState).PaletteWarning;}
+{PW:=qrkGlideState.PaletteWarning;}
  VertexSize:=SizeOf(TVertex3D);
  FBuildNo:=1;
  Result:=bmGlide;
@@ -928,7 +951,7 @@ begin
 
  // Assigned check added by SilverPaladin
  if Assigned(qrkGlideState) then
-   TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
+   qrkGlideState.SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
  if Fog=True then
    grFogTable(FogTableCache^);
 
@@ -1707,7 +1730,7 @@ begin
               // Assigned check added by SilverPaladin
             if (NeedTex and Assigned(qrkGlideState))then
             begin
-              TGlideState(qrkGlideState).NeedTex(PList^.Texture);
+              qrkGlideState.NeedTex(PList^.Texture);
               NeedTex:=False;
             end;
 
@@ -1811,7 +1834,7 @@ begin
    try
     FillChar(info, SizeOf(info), 0);
     info.size := sizeof(GrLfbInfo_t);
-    if not grLfbLock(GR_LFB_READ_ONLY or GR_LFB_IDLE, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_ANY, FXFALSE, info) then
+    if not grLfbLock(GR_LFB_READ_ONLY or GR_LFB_IDLE, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_ANY, FXFALSE, info) then //FIXME: GR_LFBWRITEMODE_565 ?
       Raise EErrorFmt(6200, ['grLfbLock']);
     try
       I:=bmiHeader.biHeight;
@@ -1927,23 +1950,15 @@ begin
  else
   begin
    XMargin:=(ScreenSizeX-SX) div 2;
-   if (XMargin<0) and Hardware3DFX then XMargin:=0;
+   if (XMargin<0) then XMargin:=0;
    YMargin:=(ScreenSizeY-SY) div 2;
-   if (YMargin<0) and Hardware3DFX then YMargin:=0;
+   if (YMargin<0) then YMargin:=0;
   end;
 
  ViewRect.R.Left:=XMargin;
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- if Hardware3DFX then
-  begin
-  end
- else
-  begin
-   ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
-   ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
-  end;
  if Coord=nil then
   begin
    ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX);
@@ -1992,7 +2007,7 @@ begin
 
       try
         // Assigned check added by SilverPaladin
-        if (PSD.Format=psf24bpp) and ((Assigned(qrkGlideState) and (TGlideState(qrkGlideState).Accepts16bpp))) then
+        if PSD.Format=psf24bpp then
         begin
           format:=GR_TEXFMT_RGB_565;
           if smallLod<>largeLod then
