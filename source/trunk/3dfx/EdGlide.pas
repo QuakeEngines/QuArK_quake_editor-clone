@@ -1882,7 +1882,7 @@ begin
        pop esi
       end;
      finally
-      grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+      grLfbUnlock(GR_LFB_READ_ONLY or GR_LFB_IDLE, GR_BUFFER_BACKBUFFER);
      end;
 
      L:=(ScreenX-bmiHeader.biWidth) div 2;
