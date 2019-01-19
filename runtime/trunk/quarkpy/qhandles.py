@@ -20,6 +20,8 @@ Generic Mouse handles code.
 from qeditor import *
 from qdictionnary import Strings
 import qmenu
+import quarkx
+import math
 
 MOUSEZOOMFACTOR = math.sqrt(2)     # with this value, the zoom factor doubles every two click
 STEP3DVIEW = 64.0
@@ -50,6 +52,7 @@ def aligntogrid(v, mode):
     # mode=0: normal behaviour
     # mode=1: if v is a 3D point that must be forced to grid (when the Ctrl key is down)
     #
+    global grid
     g = grid[mode]
     if g<=0.0:
         return v   # no grid
@@ -1193,7 +1196,7 @@ class RedImageDragObject(DragObject):
                         import qbaseeditor
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         return
-                elif self.view.info['viewname'] != "skinview" and  quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
+                elif self.view.info['viewname'] != "skinview" and quarkx.setupsubset(SS_MODEL, "Options")["LinearBox"] != "1":
                     self.handle.ok(editor, None, None, self.redimages, self.view)
                     return
             except:
@@ -1222,7 +1225,7 @@ class RedImageDragObject(DragObject):
                         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
                         break
 
-## Deals with Sandard Selector movement, face drawing is in drawredimages section
+## Deals with Standard Selector movement, face drawing is in drawredimages section
             else:
                 undo = quarkx.action()
                 for i in range(0,len(old)):
@@ -1600,7 +1603,6 @@ class SideStepDragObject(AnimatedDragObject):
 def vec2rads(v):
     "returns pitch, yaw, in radians"
     v = v.normalized
-    import math
     pitch = -math.sin(v.z)
     yaw = math.atan2(v.y, v.x)
     return pitch, yaw
