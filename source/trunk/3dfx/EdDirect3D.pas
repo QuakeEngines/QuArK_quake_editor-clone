@@ -1052,7 +1052,7 @@ begin
     end;
   end;
 
-  l_Res := D3DDevice.BeginScene;
+  l_Res := D3DDevice.BeginScene();
   if (l_Res <> 0) then
     raise EErrorFmt(6403, ['BeginScene', DXGetErrorString9(l_Res)]);
 
