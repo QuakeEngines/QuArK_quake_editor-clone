@@ -57,7 +57,6 @@ type
     SwapChain: IDirect3DSwapChain9;
     DepthStencilSurface: IDirect3DSurface9;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
-    class procedure ReleaseAllResources;
   protected
     ScreenResized: Boolean;
     TextureFiltering: TTextureFiltering;
@@ -93,6 +92,7 @@ type
     procedure Draw3DView(ToScreen: Boolean); override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
     function ChangeQuality(nQuality: Integer) : Boolean; override;
+    class procedure ReleaseAllResources;
   end;
 
  {------------------------}

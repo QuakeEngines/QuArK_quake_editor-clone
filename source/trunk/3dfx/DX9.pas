@@ -40,7 +40,7 @@ function GetDirect3DDummyHwnd: HWND;
 
 implementation
 
-uses QkDummyWindow, D3Dx9, Logging, QkObjects, Setup, Quarkx, QkExceptions, DXErr9;
+uses QkDummyWindow, D3Dx9, Logging, QkObjects, Setup, Quarkx, QkExceptions, EdDirect3D, DXErr9;
 
 var
   TimesLoaded : Cardinal;
@@ -231,6 +231,8 @@ procedure UnloadDirect3D;
 begin
   if TimesLoaded = 1 then
   begin
+    TDirect3DSceneObject.ReleaseAllResources;
+
     if not (OrigBackBuffer=nil) then
       OrigBackBuffer:=nil;
 

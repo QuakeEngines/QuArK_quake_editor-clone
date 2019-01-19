@@ -1507,10 +1507,8 @@ end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
 begin
- //The state object has to make sure OpenGL has actually been loaded
  if Tex^.OpenGLName<>0 then
-   if qrkGLState<>nil then
-     qrkGLState.ClearTexture(Tex);
+   TGLSceneObject.ClearTexture(Tex);
  if Tex^.Direct3DTexture<>nil then
    Tex^.Direct3DTexture:=nil;
  FreeMem(Tex^.info.data);

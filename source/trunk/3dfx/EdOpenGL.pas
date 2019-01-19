@@ -95,17 +95,9 @@ type
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
+   class procedure ClearTexture(Tex: PTexture3);
+   class procedure ClearAllOpenGLTextures;
  end;
-
-type  { this is the data shared by all existing TGLSceneObjects }
-  TGLState = class
-  public
-    procedure ClearTexture(Tex: PTexture3);
-    procedure ClearAllOpenGLTextures;
-  end;
-  
-var
-  qrkGLState: TGlState;
 
  {------------------------}
 
@@ -2272,9 +2264,7 @@ begin
   end;
 end;
 
- {------------------------}
-
-procedure TGLState.ClearTexture(Tex: PTexture3);
+class procedure TGLSceneObject.ClearTexture(Tex: PTexture3);
 begin
   //DanielPharos: How can you be sure OpenGL has been loaded?
   if (Tex^.OpenGLName<>0) then
@@ -2291,7 +2281,7 @@ begin
   end;
 end;
 
-procedure TGLState.ClearAllOpenGLTextures;
+class procedure TGLSceneObject.ClearAllOpenGLTextures;
 var
  TextureManager: TTextureManager;
  I: Integer;
@@ -2307,8 +2297,4 @@ begin
   end;
 end;
 
-initialization
-  qrkGLState:=TGLState.Create;
-finalization
-  qrkGLState.Free;
 end.

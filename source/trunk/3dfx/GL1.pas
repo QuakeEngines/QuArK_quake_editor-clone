@@ -1036,8 +1036,7 @@ var
 begin
   if TimesLoaded = 1 then
   begin
-    if qrkGLState<>nil then
-      qrkGLState.ClearAllOpenGLTextures;
+    TGLSceneObject.ClearAllOpenGLTextures;
 
     if wglDeleteContext(DummyRC) = false then
       Raise EErrorFmt(6305, ['wglDeleteContext']);
