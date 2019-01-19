@@ -109,7 +109,7 @@ begin
       begin
         //@
         if FSWindow.Scene<>nil then
-          FSWindow.Scene.Draw3DView(True);
+          FSWindow.Scene.Draw3DView();
       end;
     finally
       EndPaint(hWnd, PaintInfo);
@@ -216,7 +216,7 @@ begin
       Q3DObject(FullScreenRoot).AddTo3DScene(Scene);
     Scene.BuildScene(0, nil);
     Scene.Render3DView();
-    Scene.Draw3DView(True);
+    Scene.Draw3DView();
 
   except
     DestroyWindow(Handle);
@@ -270,7 +270,7 @@ begin
 
         Scene.BuildScene(0, nil);
         Scene.Render3DView();
-        Scene.Draw3DView(True);
+        Scene.Draw3DView();
         UpdateWindow(Handle);
       end;
     end

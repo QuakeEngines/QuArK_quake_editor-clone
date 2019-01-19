@@ -89,7 +89,7 @@ type
  *)
     procedure SetViewSize(SX, SY: Integer); override;
     procedure Render3DView; override;
-    procedure Draw3DView(ToScreen: Boolean); override;
+    procedure Draw3DView; override;
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
     function ChangeQuality(nQuality: Integer) : Boolean; override;
     class procedure ReleaseAllResources;
@@ -1076,7 +1076,7 @@ begin
 
 end;
 
-procedure TDirect3DSceneObject.Draw3DView(ToScreen: Boolean);
+procedure TDirect3DSceneObject.Draw3DView;
 var
   l_Res: HResult;
   pBackBuffer: IDirect3DSurface9;

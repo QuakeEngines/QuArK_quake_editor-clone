@@ -1073,8 +1073,9 @@ Strings = {
     6010: "Texture not loaded",
     6011: "Invalid value for %s found: %d. Using default",
     6012: "No valid value for %s found, defaulting to: %d",
-    6013: "Unable to load Desktop Window Manager (DWM).//Desktop Composition may be enabled, causing corruption in OpenGL and DirectX viewports",
+    6013: "Unable to load Desktop Window Manager (DWM).//Desktop Composition may be enabled, causing corruption in OpenGL and Direct3D viewports",
     6014: "Error during handling of the renderer Dummy Window: %s",
+    6015: "Unloading renderer...",
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",

@@ -69,7 +69,7 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
-   procedure Draw3DView(ToScreen: Boolean); override;
+   procedure Draw3DView; override;
    procedure ClearFrame; override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
@@ -1784,7 +1784,7 @@ begin
   end;
 end;
 
-procedure TGlideSceneObject.Draw3DView(ToScreen: Boolean);
+procedure TGlideSceneObject.Draw3DView;
 var
  I, L, R, T, B, Count1: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1806,12 +1806,9 @@ var
 
 begin
  (* In case of hardware drawing:
- if ToScreen then
-  begin
-   grBufferSwap(0);
-   grSstIdle;
-   Exit;
-  end;
+  grBufferSwap(0);
+  grSstIdle;
+  Exit;
  *)
 
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);

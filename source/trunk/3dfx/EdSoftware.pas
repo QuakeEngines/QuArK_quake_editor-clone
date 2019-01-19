@@ -89,7 +89,7 @@ type
                   var AllowsGDI: Boolean); override;
    destructor Destroy; override;
    procedure Render3DView; override;
-   procedure Draw3DView(ToScreen: Boolean); override;
+   procedure Draw3DView; override;
    procedure ClearFrame; override;
    procedure ClearScene; override;
    procedure SetViewSize(SX, SY: Integer); override;
@@ -292,9 +292,9 @@ begin
     Raise EError(6001);
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
-   if Hardware3DFX then
-    Raise EError(6101);
    try
+    if Hardware3DFX then
+     Raise EError(6101);
     RendererVersion:=softgQuArK();
     grGlideInit();
     if GlideTimesLoaded=1 then
@@ -1637,7 +1637,7 @@ begin
   end;
 end;
 
-procedure TSoftwareSceneObject.Draw3DView(ToScreen: Boolean);
+procedure TSoftwareSceneObject.Draw3DView;
 var
  L, R, T, B: Integer;
  bmiHeader: TBitmapInfoHeader;
@@ -1657,8 +1657,6 @@ var
   end;
 
 begin
- //Note: No support for doublebuffering, so ignoring ToScreen
-
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
  FillChar(BmpInfo, SizeOf(BmpInfo), 0);
  with bmiHeader do

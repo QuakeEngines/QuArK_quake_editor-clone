@@ -91,7 +91,7 @@ type
                   var AllowsGDI: Boolean); override;
    procedure ClearScene; override;
    procedure Render3DView; override;
-   procedure Draw3DView(Synch: Boolean); override;
+   procedure Draw3DView; override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
    procedure SetViewSize(SX, SY: Integer); override;
    function ChangeQuality(nQuality: Integer) : Boolean; override;
@@ -918,7 +918,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.Draw3DView(Synch: Boolean);
+procedure TGLSceneObject.Draw3DView;
 var
   SwapHintX, SwapHintY: GLint;
   SwapHintWidth, SwapHintHeight: GLsizei;

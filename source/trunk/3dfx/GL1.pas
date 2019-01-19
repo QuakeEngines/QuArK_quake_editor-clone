@@ -1036,6 +1036,8 @@ var
 begin
   if TimesLoaded = 1 then
   begin
+    Log(LOG_INFO, LoadStr1(6015));
+
     TGLSceneObject.ClearAllOpenGLTextures;
 
     if wglDeleteContext(DummyRC) = false then
@@ -1061,7 +1063,7 @@ begin
       WinSwapHintLoaded:=False;
     end;
 
-    //DanielPharos: This cannot be freed, because the pixel format will then be forgotton,
+    //DanielPharos: This cannot be freed, because the pixel format will then be forgotten,
     //causing errors when OpenGL is restarted!
     {if OpenGL32Lib<>0 then
     begin

@@ -1295,12 +1295,16 @@ var
 begin
   if TimesLoaded = 1 then
   begin
+    Log(LOG_INFO, LoadStr1(6015));
+
     DeleteDummyWindow(DummyWindow);
     DummyWindow := 0;
 
     if GlideLib<>0 then
+    begin
       FreeLibrary(GlideLib);
-    GlideLib := 0;
+      GlideLib := 0;
+    end;
 
     Hardware3DFX := False;
     for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do

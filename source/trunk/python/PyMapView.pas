@@ -697,7 +697,7 @@ begin
  dmRenderingOnly:
   begin
    Scene.Render3DView();
-   Scene.Draw3DView(True);
+   Scene.Draw3DView();
   end;
  end;
 end;
@@ -2771,7 +2771,7 @@ begin
            end;
           Drawing:=Drawing and not dfBuilding;
           Scene.Render3DView();
-          Scene.Draw3DView(False);
+          Scene.Draw3DView();
          end;
        except
         on E: Exception do
@@ -3182,7 +3182,7 @@ begin
                   else
                   begin
                     Scene.Render3DView();
-                    Scene.Draw3DView(True);
+                    Scene.Draw3DView();
                   end;
                  end;
              end;

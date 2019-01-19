@@ -231,6 +231,8 @@ procedure UnloadDirect3D;
 begin
   if TimesLoaded = 1 then
   begin
+    Log(LOG_INFO, LoadStr1(6015));
+
     TDirect3DSceneObject.ReleaseAllResources;
 
     if not (OrigBackBuffer=nil) then
