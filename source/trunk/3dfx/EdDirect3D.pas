@@ -1583,53 +1583,16 @@ begin
     W:=Texture^.LoadedTexW;
     H:=Texture^.LoadedTexH;
 
-    MemSize:=W*H*4;
-    GetMem(TexData, MemSize);
+    PSD:=GetTex3Description(Texture^);
+    PSD2.Init;
     try
-      PSD:=GetTex3Description(Texture^);
-      PSD2.Init;
-      try
-        PSD2.Size.X:=W;
-        PSD2.Size.Y:=H;
-        PSD2.Format:=psf24bpp; //FIXME: Forced for now
-        PSDConvert(PSD2, PSD, ccTemporary);
-
-        Source:=PSD2.StartPointer;
-        Dest:=TexData;
-
-        //FIXME: Format hardcoded right now...
-        //FIXME: MUST check the CAPS2 for dynamic texture!!!
-
-        //FIXME: Change to ASM, see OpenGL!
-        for J:=1 to H do
-        begin
-          Source2:=Source;
-          for I:=1 to W do
-          begin
-            Dest^:=Source2^;
-            Inc(Dest);
-            Inc(Source2);
-
-            Dest^:=Source2^;
-            Inc(Dest);
-            Inc(Source2);
-
-            Dest^:=Source2^;
-            Inc(Dest);
-            Inc(Source2);
-
-            //Alpha
-            PByte(Dest)^:=255;
-            Inc(Dest);
-          end;
-          Inc(Source, PSD2.ScanLine);
-        end;
-      finally
-        PSD2.Done;
-        PSD.Done;
-      end;
+      PSD2.Size.X:=W;
+      PSD2.Size.Y:=H;
+      PSD2.Format:=psf24bpp; //FIXME: Forced for now
+      PSDConvert(PSD2, PSD, ccTemporary);
 
       if (TextureFiltering = tfTrilinear) or (TextureFiltering = tfAnisotropic) then
+        //@@@: An application can discover support for Automatic Generation of Mipmaps (Direct3D 9) in a particular format by calling IDirect3D9::CheckDeviceFormat with D3DUSAGE_AUTOGENMIPMAP. If IDirect3D9::CheckDeviceFormat returns D3DOK_NOAUTOGEN, IDirect3DDevice9::CreateTexture will succeed but it will return a one-level texture.
         l_Res:=D3DDevice.CreateTexture(W, H, 0, D3DUSAGE_DYNAMIC or D3DUSAGE_AUTOGENMIPMAP, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil)
       else
         l_Res:=D3DDevice.CreateTexture(W, H, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, Texture^.Direct3DTexture, nil);
@@ -1641,14 +1604,53 @@ begin
       if (l_Res <> D3D_OK) then
         raise EErrorFmt(6403, ['LockRect', DXGetErrorString9(l_Res)]);
       try
-        CopyMemory(TextureRect.pBits, TexData, MemSize);
+        MemSize:=H*TextureRect.Pitch;
+        GetMem(TexData, MemSize);
+        try
+          Source:=PSD2.StartPointer;
+          Dest:=TexData;
+
+          //FIXME: Format hardcoded right now...
+          //FIXME: MUST check the CAPS2 for dynamic texture!!!
+
+          //FIXME: Change to ASM, see OpenGL!
+          for J:=1 to H do
+          begin
+            Source2:=Source;
+            for I:=1 to W do
+            begin
+              Dest^:=Source2^;
+              Inc(Dest);
+              Inc(Source2);
+
+              Dest^:=Source2^;
+              Inc(Dest);
+              Inc(Source2);
+
+              Dest^:=Source2^;
+              Inc(Dest);
+              Inc(Source2);
+
+              //Alpha
+              PByte(Dest)^:=255;
+              Inc(Dest);
+            end;
+            Inc(Source, PSD2.ScanLine);
+            Inc(Dest, TextureRect.Pitch-W*4);
+          end;
+
+          CopyMemory(TextureRect.pBits, TexData, MemSize);
+        finally
+          FreeMem(TexData);
+        end;
       finally
         l_Res:=Texture^.Direct3DTexture.UnlockRect(0);
         if (l_Res <> D3D_OK) then
           raise EErrorFmt(6403, ['UnlockRect', DXGetErrorString9(l_Res)]);
       end;
     finally
-      FreeMem(TexData);
+      PSD2.Done;
+      PSD.Done;
     end;
   end;
 end;
