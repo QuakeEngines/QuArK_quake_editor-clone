@@ -23,7 +23,7 @@ unit EdSceneObject;
 interface
 
 uses Windows, Classes,
-     Game, PyMath, qmath, Bezier,
+     Game, PyMath, qmath, Bezier, QkMesh,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
      Glide, GL1, Direct3D9, Sprite;
 
@@ -132,7 +132,7 @@ type
    ViewDC: HDC;
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
-   PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
+   PolyFaces, ModelInfo, BezierInfo, MeshInfo, SpriteInfo: TList;
    DisplayMode: TDisplayMode;
    DisplayType: TDisplayType;
    RenderMode: TRenderMode;
@@ -186,6 +186,7 @@ type
    procedure AddModel(const a_Model: PModel3DInfo);
    procedure AddSprite(const a_Sprite: PSpriteInfo);
    procedure AddBezier(const a_Bezier: TBezier);
+   procedure AddMesh(const a_Mesh: TMesh);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
    function GetMapLimit: Double;
    property ListSurfaces: PSurfaces read FListSurfaces;
@@ -262,6 +263,7 @@ begin
  PolyFaces:=TList.Create;
  ModelInfo:=TList.Create;
  BezierInfo:=TList.Create;
+ MeshInfo:=TList.Create;
  SpriteInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
  ViewWnd:=0;
@@ -278,6 +280,7 @@ begin
  PolyFaces.Free;
  ModelInfo.Free;
  BezierInfo.Free;
+ MeshInfo.Free;
  SpriteInfo.Free;
  TemporaryStuff.Free;
  if DWMLoaded then
@@ -322,8 +325,9 @@ begin
   end;
  PolyFaces.Clear;
  ModelInfo.Clear;
- SpriteInfo.Clear;
  BezierInfo.Clear;
+ MeshInfo.Clear;
+ SpriteInfo.Clear;
  TemporaryStuff.Clear;
 end;
 
@@ -377,6 +381,11 @@ begin
   BezierInfo.Add(a_Bezier);
 end;
 
+procedure TSceneObject.AddMesh(const a_Mesh: TMesh);
+begin
+  MeshInfo.Add(a_Mesh);
+end;
+
 procedure TSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
 begin
 end;
@@ -390,6 +399,8 @@ begin
  ModelInfo.Add(TObject(nColor));
  BezierInfo.Add(Nil);
  BezierInfo.Add(TObject(nColor));
+ MeshInfo.Add(Nil);
+ MeshInfo.Add(TObject(nColor));
  SpriteInfo.Add(Nil);
  SpriteInfo.Add(TObject(nColor));
 end;
@@ -439,8 +450,8 @@ var
  Mode: TBuildMode;
  NeedVertexList2: Boolean;
  VertexSize, VertexSize3m: Integer;
- BezierBuf: TBezierMeshBuf3;
- BControlPoints: TBezierMeshBuf5;
+ BezierBuf: TMeshBuf3;
+ BControlPoints: TMeshBuf5;
  stBuffer, st: vec_st_p;
 {PalWarning: TPaletteWarning;}
   PolySurface: PSurface;
@@ -688,6 +699,8 @@ begin
            end;
          end;
        end;
+
+//       @@@Process Meshes
 
        Inc(I); { Increment to get the next element }
      end;
@@ -1352,6 +1365,9 @@ begin
        Inc(I);
      end;
    end;
+
+//   @@@Process Meshes
+
  finally
    TexNames.Free;
  end;

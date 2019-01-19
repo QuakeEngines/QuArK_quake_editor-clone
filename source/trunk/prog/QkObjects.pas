@@ -83,8 +83,9 @@ const
   iiFormElement           = 48;
   iiForm                  = 49;
   iiFormContext           = 50;
+  iiMesh                  = 51;
 
-  InternalImagesCount     = 51;
+  InternalImagesCount     = 52;
 
   fmOpenReadOnly_ShareDenyWrite  = fmOpenRead      or fmShareDenyWrite;
   fmOpenReadWrite_ShareDenyWrite = fmOpenReadWrite or fmShareDenyWrite;

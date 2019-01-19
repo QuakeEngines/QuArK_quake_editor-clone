@@ -175,8 +175,9 @@ iiMD3Bone               = 47
 iiFormElement           = 48
 iiForm                  = 49
 iiFormContext           = 50
+iiMesh                  = 51
 
-iiTotalImageCount       = 51
+iiTotalImageCount       = 52
 
 
 

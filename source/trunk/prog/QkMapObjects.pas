@@ -57,7 +57,7 @@ const
 
 type
  TBBoxInfo = array[0..6] of Single;
- TEntityChoice = set of (ecEntity, ecBrushEntity, ecBezier);
+ TEntityChoice = set of (ecEntity, ecBrushEntity, ecBezier, ecMesh);
  TTreeMap = class(Q3DObject)   { all objects in a map }
             private
              {procedure SetOrigin(const nOrigin: TVect);
@@ -86,6 +86,7 @@ type
               procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); virtual;
               procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); virtual;
               procedure ListeBeziers(Entites: TQList; Flags: Integer); virtual;
+              procedure ListeMeshes(Entites: TQList; Flags: Integer); virtual;
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
              {procedure RefreshColor(Plan: Pointer); virtual;}
@@ -155,6 +156,7 @@ type
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                    procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
+                   //procedure ListeMeshes(Entites: TQList; Flags: Integer); override;
                    procedure AddTo3DScene(Scene: TObject); override;
                    procedure AnalyseClic(Liste: PyObject); override;
                   {function SingleLevel: Boolean; virtual;}
@@ -519,6 +521,10 @@ begin
 end;
 
 procedure TTreeMap.ListeBeziers;
+begin
+end;
+
+procedure TTreeMap.ListeMeshes;
 begin
 end;
 
@@ -2216,6 +2222,14 @@ begin
  for I:=0 to SubElements.Count-1 do
   TTreeMap(SubElements[I]).ListeEntites(Entites, Cat);
 end;
+
+(*procedure TTreeMapGroup.ListeMeshes(Entites: TQList; Cat: TEntityChoice);
+var
+ I: Integer;
+begin
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).ListeMeshes(Entites, Cat);
+end;*)
 
 procedure TTreeMapGroup.ListeBeziers(Entites: TQList; Flags: Integer);
 var

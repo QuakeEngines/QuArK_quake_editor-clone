@@ -78,7 +78,7 @@ between gamemodes.}
 type
  TListeCouleurs =
   (lcVueXZ, lcVueXY, lcSelXZ, lcSelXY, lcOutOfView, lcAxes, lcGridXZ, lcGridXY, lcGridLines,
-   lcBrushEntity, lcDuplicator, lcTag, lcGrayImage, lcBSP, lcDigger, lcBezier);
+   lcBrushEntity, lcDuplicator, lcTag, lcGrayImage, lcBSP, lcDigger, lcBezier, lcMesh);
  TModelColors =
   (mcVueXZ, mcVueXY, mcSelXZ, mcSelXY, mcOutOfView, mcAxes, mcGridXZ, mcGridXY, mcGridLines,
    mcTag, mcGrayImage, mcLinear, mcVertices, mcDrag3DLines, mcSkinLines, mcSkinDragLines);
@@ -872,7 +872,8 @@ const
    'GrayImage',
    'BSP',
    'Digger',
-   'Bezier');
+   'Bezier',
+   'Mesh');
 
 function MapColors(L: TListeCouleurs) : TColor;
 begin

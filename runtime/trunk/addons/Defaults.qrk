@@ -7476,6 +7476,7 @@ QQRKSRC1
           DragImage  = $FF0000
           BSP        = $008080
           Digger     = $FF00FF
+          Mesh       = $008080
           Bezier     = $008080
           Linear     = $FF0080
           NoFillSel  = $FF00FF
@@ -7504,6 +7505,7 @@ QQRKSRC1
           DragImage  = $FF0000
           BSP        = $008080
           Digger     = $FF00FF
+          Mesh       = $008080
           Bezier     = $008080
           Linear     = $FF0080
           NoFillSel  = $FF00FF
@@ -7532,6 +7534,7 @@ QQRKSRC1
           DragImage  = $0000FF
           BSP        = $8080FF
           Digger     = $FF00FF
+          Mesh       = $008080
           Bezier     = $008080
           Linear     = $FF0080
           NoFillSel  = $FF00FF
@@ -7560,6 +7563,7 @@ QQRKSRC1
           DragImage  = $C1DEFF
           BSP        = $419AFF
           Digger     = $FF00FF
+          Mesh       = $008080
           Bezier     = $008080
           Linear     = $FF0080
           NoFillSel  = $FF00FF
@@ -7591,6 +7595,7 @@ QQRKSRC1
       DragImage:  = { Txt="While dragging"              Typ="LI" }
       BSP:        = { Txt="BSP map"                     Typ="LI" }
       Digger:     = { Txt="Digging polyhedrons"         Typ="LI" }
+      Mesh:       = { Txt="Meshes"                      Typ="LI" }
       Bezier:     = { Txt="Bezier patches"              Typ="LI" }
       Linear:     = { Txt="Linear Mapping box"          Typ="LI" }
       NoFillSel:  = { Txt="Poly No Fill Select Color"   Typ="LI" hint = "Poly select color when No Fill is on."}

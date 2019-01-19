@@ -136,6 +136,7 @@ uses
   QkMap in 'prog\QkMap.pas' {FQMap},
   QkMapObjects in 'prog\QkMapObjects.pas',
   QkMapPoly in 'prog\QkMapPoly.pas',
+  QkMesh in 'prog\QkMesh.pas',
   QkNCF in 'prog\QkNCF.pas',
   QkObjectClassList in 'prog\QkObjectClassList.pas',
   QkObjects in 'prog\QkObjects.pas',

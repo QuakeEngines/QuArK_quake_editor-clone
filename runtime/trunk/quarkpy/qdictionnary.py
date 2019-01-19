@@ -1001,6 +1001,8 @@ Strings = {
     5743: "API call '%s' not found in the %s library!",
     5744: "Unable to create Windows event. %s",
     5745: "SpecName too short: %s",
+    5746: "mesh",
+    5747: "Map meshes",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
     5750: "Material '%s' has no image to display",
@@ -1076,7 +1078,7 @@ Strings = {
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",
-    6101: "A hardware Glide driver was loaded, not QuArK's software renderer.",
+    6101: "A hardware Glide driver was loaded, not QuArK's software renderer",
 
     6120: "Software 3D renderer does not support fullscreen views (yet)",
     6121: "You must first call Open3Dfx",

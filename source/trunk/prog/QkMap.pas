@@ -109,7 +109,7 @@ procedure SaveAsMapTextTTreeMapEntity(ObjectToSave: QObject; MapSaveSettings: TM
 procedure SaveAsMapTextTTreeMapGroup(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 procedure SaveAsMapTextTPolygon(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
 procedure SaveAsMapTextTFace(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Brush: TStrings; OriginBrush: PVect; Flags2: Integer);
-procedure SaveAsMapTextTBezier(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
+procedure SaveAsMapTextTMesh(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
 procedure SaveAsMapTextTDuplicator(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 
  {------------------------}
@@ -119,7 +119,7 @@ implementation
 uses
   Setup, Undo, Quarkx, qmatrices, Qk3D, PyMath, QkQuakeMap, QkApplPaths,
   Graphics, StrUtils, Game, QkExceptions, Travail, QkConsts, Logging,
-  PyForms, Bezier, Duplicator, QkPixelSet, Qk6DX, QkVMF, QkSylphis, QkQ2,
+  PyForms, Bezier, QkMesh, Duplicator, QkPixelSet, Qk6DX, QkVMF, QkSylphis, QkQ2,
   { tiglari } QkSin, { /tiglari } MapError, PixelSetSizeCache, QkObjectClassList;
 
 {$R *.DFM}
@@ -255,6 +255,9 @@ begin
       PatchDefVersion:=2;
       if MapVersion>2 then
         PatchDefVersion:=3;
+      if GameCode=mjCoD then
+        PatchDefVersion:=5;
+        //FIXME: Apparently, CoD1 also has patchTerrainDef2 and patchDef4?!? (In q3map!)
     end;
 
   end;
@@ -377,19 +380,17 @@ var
  HullNum, BrushNum, FaceNum: Integer;
  HullList: TQList;
  Source, Prochain: PChar;
- Entities, MapStructure {Rowdy}, MapStructureB {/Rowdy}: TTreeMapGroup;
+ Entities, MapStructure, MapStructureB, MapStructureM : TTreeMapGroup;
  Params: TFaceParams;
  InvPoly, InvFaces: Integer;
  TxCommand: Char;
  OriginBrush: TPolyhedron;
  Facteur: TDouble;
  Delta, Delta1: TVect;
- {Rowdy}
  B: TBezier;
+ M: TMesh;
+ EntiteMesh: TTreeMapSpec;
  EntiteBezier: TTreeMapSpec;
- MeshBuf1: TBezierMeshBuf5;
- pCP1: PBezierControlPoints5;
- {/Rowdy}
  WC33map: Boolean; {Decker}
  SpecIndex: integer; {Decker}
  UAxis, VAxis : TVect;  {wc3.3 stuff/tiglari}
@@ -1199,6 +1200,8 @@ expected one.
    I, J: Integer;
    V5: TVect5;
    TexPath: String;
+   MeshBuf1: TMeshBuf5;
+   pCP1: PMeshControlPoints5;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef2"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1261,7 +1264,7 @@ expected one.
    MeshBuf1.W := Round(V5.X);
    MeshBuf1.H := Round(V5.Y);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TMeshControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect5
      for I:=0 to MeshBuf1.W-1 do
@@ -1300,6 +1303,8 @@ expected one.
    V7: TVect7;
    TexPath: String;
    SubDivisions: array[0..1] of Single;
+   MeshBuf1: TMeshBuf5;
+   pCP1: PMeshControlPoints5;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef3"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1348,7 +1353,7 @@ expected one.
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TMeshControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect7
      for I:=0 to MeshBuf1.W-1 do
@@ -1379,95 +1384,6 @@ expected one.
    end;
  end;
 
- //FIXME: This is more or less a dummy procedure...
- procedure ReadPatchTerrainDef3;
- var
-   I, J: Integer;
-   V7: TVect7;
-   V10: TVect10;
-   TexPath: String;
-   SubDivisions: array[0..1] of Single;
- begin
-   ReadSymbol(sStringToken); // lbrace follows "patchTerrainDef3"
-   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
-
-   { DanielPharos: We've got a problem here...
-   Map versions 2 and higher explicitly put 'textures/' in front
-   of the paths! All we can do for the moment is cutting that off.
-   In the future, somebody should change QuArK's behaviour to where
-   you can set if this path gets prefixed. }
-   if MapVersion>1 then
-   begin
-     TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
-     if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
-       S:=RightStr(S,Length(S)-Length(TexPath));
-   end;
-
-   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
-     S:=LowerCase(S);
-   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-
-//   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
-//   EntiteBezier.SubElements.Add(B); //&&&
-//   B.NomTex:=S;   { here we get the texture-name }
-
-   if MapVersion>1 then
-     ReadSymbol(sStringQuotedToken) // lparen follows texture
-   else
-     ReadSymbol(sStringToken); // lparen follows texture
-
-   // now comes 7 numbers which tell how many control points there are
-   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
-   // and we only need the first and second values
-   V7:=ReadVect7(False);
-   // Nr 1: Width (many lines of control points there are)
-   // Nr 2: Height (how many control points on each line)
-   // Nr 3: HorzSubdivisions (tesselation?)
-   // Nr 4: VertSubdivisions (tesselation?)
-   // Nr 5: contents/flags (?)
-   // Nr 6: contents/flags (?)
-   // Nr 7: contents/flags (?)
-
-   SubDivisions[0]:=V7.X3;
-   SubDivisions[1]:=V7.X4;
-//   B.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
-
-   MeshBuf1.W := Round(V7.X1);
-   MeshBuf1.H := Round(V7.X2);
-
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
-   try
-     ReadSymbol(sBracketLeft); // lparen follows vect7
-     for I:=0 to MeshBuf1.W-1 do
-     begin
-       pCP1:=MeshBuf1.CP;
-       Inc(pCP1, I);
-       ReadSymbol(sBracketLeft); // read the leading lparen for the line
-       for J:=1 to MeshBuf1.H do
-       begin
-         V10:=ReadVect10(False);
-         pCP1^[0]:=V10.X1;
-         pCP1^[1]:=V10.X2;
-         pCP1^[2]:=V10.X3;
-         pCP1^[3]:=V10.X4;
-         pCP1^[4]:=V10.X5;
-         //FIXME: What are the other values? (6-9 look like color-RGBA)
-         Inc(pCP1, MeshBuf1.W);
-       end;
-       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
-     end;
-//     B.ControlPoints:=MeshBuf1; //FIXME: Doesn't work...!
-//     B.AutoSetSmooth;
-
-     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchTerrainDef3 }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
-   finally
-     FreeMem(MeshBuf1.CP);
-   end;
- end;
-
- //FIXME: This is more or less a dummy procedure...
  procedure ReadPatchDef5;
  var
    I, J: Integer;
@@ -1475,6 +1391,8 @@ expected one.
    V10: TVect10;
    TexPath: String;
    SubDivisions: array[0..1] of Single;
+   MeshBuf1: TMeshBuf5;
+   pCP1: PMeshControlPoints5;
  begin
    ReadSymbol(sStringToken); // lbrace follows "patchDef5"
    ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
@@ -1495,9 +1413,104 @@ expected one.
      S:=LowerCase(S);
    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
-//   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
-//   EntiteBezier.SubElements.Add(B); //&&&
-//   B.NomTex:=S;   { here we get the texture-name }
+   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+   EntiteBezier.SubElements.Add(B); //&&&
+   B.NomTex:=S;   { here we get the texture-name }
+
+   if MapVersion>1 then
+     ReadSymbol(sStringQuotedToken) // lparen follows texture
+   else
+     ReadSymbol(sStringToken); // lparen follows texture
+
+   // now comes 7 numbers which tell how many control points there are
+   // use ReadVect7 which is the same as ReadVect but expects 7 numbers
+   // and we only need the first and second values
+   V7:=ReadVect7(False);
+   // Nr 1: Width (many lines of control points there are)
+   // Nr 2: Height (how many control points on each line)
+   // Nr 3: Flags
+   // Nr 4: ?
+   // Nr 5: ?
+   // Nr 6: Sample size
+   // Nr 7: ?
+   //FIXME: Patch LOD groups?
+
+   SubDivisions[0]:=V7.X3;
+   SubDivisions[1]:=V7.X4;
+   B.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
+
+   MeshBuf1.W := Round(V7.X1);
+   MeshBuf1.H := Round(V7.X2);
+
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TMeshControlPoints5));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect7
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V10:=ReadVect10(False);
+         pCP1^[0]:=V10.X1;
+         pCP1^[1]:=V10.X2;
+         pCP1^[2]:=V10.X3;
+         pCP1^[3]:=V10.X4;
+         pCP1^[4]:=V10.X5;
+(*		 @@@Red (0-255)
+		 Green (0-255)
+		 Blue (0-255)
+		 Alpha (0-255)
+		 Height*)
+         //FIXME: What are the other values? (6-9 look like color-RGBA)
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
+     end;
+     B.ControlPoints:=MeshBuf1;
+     B.AutoSetSmooth;
+
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef5 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
+ end;
+
+ procedure ReadPatchTerrainDef3;
+ var
+   I, J: Integer;
+   V7: TVect7;
+   V10: TVect10;
+   TexPath: String;
+   SubDivisions: array[0..1] of Single;
+   MeshBuf1: TMeshBuf5;
+   pCP1: PMeshControlPoints5;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "patchTerrainDef3"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   { DanielPharos: We've got a problem here...
+   Map versions 2 and higher explicitly put 'textures/' in front
+   of the paths! All we can do for the moment is cutting that off.
+   In the future, somebody should change QuArK's behaviour to where
+   you can set if this path gets prefixed. }
+   if MapVersion>1 then
+   begin
+     TexPath:=IncludeTrailingPathDelimiter(GameTexturesPath);
+     if LowerCase(LeftStr(ConvertPath(S),Length(TexPath)))=TexPath then
+       S:=RightStr(S,Length(S)-Length(TexPath));
+   end;
+
+   if SetupGameSet.Specifics.Values['TextureNameUppercase']<>'' then
+     S:=LowerCase(S);
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+   M:=TMesh.Create(LoadStr1(5746), EntiteMesh); // 5746 = "mesh"
+   EntiteMesh.SubElements.Add(M); //&&&
+   M.NomTex:=S;   { here we get the texture-name }
 
    if MapVersion>1 then
      ReadSymbol(sStringQuotedToken) // lparen follows texture
@@ -1518,12 +1531,12 @@ expected one.
 
    SubDivisions[0]:=V7.X3;
    SubDivisions[1]:=V7.X4;
-//   B.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
+   M.SetFloatsSpec('patchsubdivisions', SubDivisions); //FIXME: These really are integer...
 
    MeshBuf1.W := Round(V7.X1);
    MeshBuf1.H := Round(V7.X2);
 
-   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TBezierControlPoints5));
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(TMeshControlPoints5));
    try
      ReadSymbol(sBracketLeft); // lparen follows vect7
      for I:=0 to MeshBuf1.W-1 do
@@ -1544,11 +1557,10 @@ expected one.
        end;
        ReadSymbol(sBracketRight); // read the trailing rparen for the line end
      end;
-//     B.ControlPoints:=MeshBuf1;
-//     B.AutoSetSmooth;
+     M.ControlPoints:=MeshBuf1;
 
      ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef5 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchTerrainDef3 }
      ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
    finally
      FreeMem(MeshBuf1.CP);
@@ -2089,6 +2101,7 @@ begin
       *  Racine.SubElements.Add(MapStructureB);
       *)
      {/Rowdy}
+     MapStructureM:=Nil;
      ReadSymbol(sEOF);
      while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
                    The first real char ought to be {.  If it is, it
@@ -2176,9 +2189,8 @@ begin
           Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(252)]);
          Entite:=Racine;
          EntitePoly:=MapStructure;
-         {Rowdy}
          EntiteBezier:=MapStructureB;
-         {/Rowdy}
+         EntiteMesh:=MapStructureM;
          WorldSpawn:=True;
          HullNum:=0;
          Racine.Name:=ClassnameWorldspawn;
@@ -2192,9 +2204,8 @@ begin
           Entite:=TTreeMapBrush.Create(Classname, Entities);
          Entities.SubElements.Add(Entite);
          EntitePoly:=Entite;
-         {Rowdy}
          EntiteBezier:=Entite;
-         {/Rowdy}
+         EntiteMesh:=Entite;
         end;
 
        OriginBrush:=Nil;
@@ -2222,7 +2233,7 @@ begin
                // A patchDef2 means it is at least a Quake 3 map
                if Result=mjQuake then
                 Result:=mjQ3A;
-              { Armin: create the MapStructureB group if not already done }
+              { create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
                  MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
@@ -2238,7 +2249,7 @@ begin
                // A patchDef3 means it is at least a Doom 3 map
                if Result=mjQuake then
                  Result:=mjDoom3;
-               { Armin: create the MapStructureB group if not already done }
+               { create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
                  MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
@@ -2247,26 +2258,12 @@ begin
                end;
                ReadPatchDef3();
              end
-             else if LowerCase(s)='patchterraindef3' then
-             begin
-               // A patchTerrainDef3 means it is at least a Call of Duty 1 map
-               if Result=mjQuake then
-                 Result:=mjCoD;
-               { Armin: create the MapStructureB group if not already done }
-               if EntiteBezier=Nil then
-               begin
-                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
-                 Racine.SubElements.Add(MapStructureB);
-                 EntiteBezier:=MapStructureB;
-               end;
-               ReadPatchTerrainDef3();
-             end
              else if LowerCase(s)='patchdef5' then
              begin
                // A patchDef5 means it is at least a Call of Duty 1 map
                if Result=mjQuake then
                  Result:=mjCoD;
-               { Armin: create the MapStructureB group if not already done }
+               { create the MapStructureB group if not already done }
                if EntiteBezier=Nil then
                begin
                  MapStructureB:=TTreeMapGroup.Create(LoadStr1(262), Racine);
@@ -2274,6 +2271,20 @@ begin
                  EntiteBezier:=MapStructureB;
                end;
                ReadPatchDef5();
+             end
+             else if LowerCase(s)='patchterraindef3' then
+             begin
+               // A patchTerrainDef3 means it is at least a Call of Duty 1 map
+               if Result=mjQuake then
+                 Result:=mjCoD;
+               { create the MapStructureM group if not already done }
+               if EntiteMesh=Nil then
+               begin
+                 MapStructureM:=TTreeMapGroup.Create(LoadStr1(5747), Racine);
+                 Racine.SubElements.Add(MapStructureM);
+                 EntiteMesh:=MapStructureM;
+               end;
+               ReadPatchTerrainDef3();
              end
              else if LowerCase(s)='brushdef' then
              begin
@@ -2756,8 +2767,8 @@ begin
     //SaveAsMapTextTPolygon(ObjectToSave, MapSaveSettings, Texte, OriginBrush, Flags2)
   else if ObjectToSave is TFace then
     //SaveAsMapTextTFace(ObjectToSave, MapSaveSettings, Texte, OriginBrush, Flags2)
-  else if ObjectToSave is TBezier then
-    //SaveAsMapTextTBezier(ObjectToSave, MapSaveSettings, Texte)
+  else if ObjectToSave is TMesh then
+    //SaveAsMapTextTMesh(ObjectToSave, MapSaveSettings, Texte)
   else
     raise InternalE(LoadStr1(5525));
 end;
@@ -2849,7 +2860,17 @@ begin
     begin
      I:=I+1;
      Texte.Add(CommentMapLine('Bezier '+IntToStr(J)+' (Brush '+IntToStr(I)+')'));
-     SaveAsMapTextTBezier(TBezier(Polyedres[J]), MapSaveSettings, Texte);
+     SaveAsMapTextTMesh(TBezier(Polyedres[J]), MapSaveSettings, Texte);
+    end;
+    { proceed with meshes } //@@@@@@MapStructure: Make configurable... Brushes, entities, beziers, meshes, etc.
+    I:=Polyedres.Count-1;
+    Polyedres.Clear;
+    ListeMeshes(Polyedres, Flags2);
+    for J:=0 to Polyedres.Count-1 do
+    begin
+     I:=I+1;
+     Texte.Add(CommentMapLine('Mesh '+IntToStr(J)+' (Brush '+IntToStr(I)+')'));
+     SaveAsMapTextTMesh(TMesh(Polyedres[J]), MapSaveSettings, Texte);
     end;
    finally
     Polyedres.Free;
@@ -4009,9 +4030,9 @@ begin
   end;
 end;
 
-procedure SaveAsMapTextTBezier(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
+procedure SaveAsMapTextTMesh(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Target: TStrings);
 var
- cp: TBezierMeshBuf5;
+ cp: TMeshBuf5;
  I, J, K, R: Integer;
  S: String;
  Value: PSingle;
@@ -4029,12 +4050,13 @@ begin
 
  cp:=ControlPoints;
  if (cp.W>1) and (cp.H>1) then
-  begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
+  begin   { ignore mesh lines (with only 1 row or 1 column of control points) }
    Target.Add(CommentMapLine(Ancestry));
    Target.Add(' {');
    case MapSaveSettings.PatchDefVersion of
    2: Target.Add('  patchDef2');
    3: Target.Add('  patchDef3');
+   5: Target.Add('  patchDef5');
    end;
    Target.Add('  {');
 
@@ -4059,7 +4081,7 @@ begin
      2: S:=Format('   ( %d %d 0 0 0', [cp.W, cp.H]);
      3: S:=Format('   ( %d %d 0 0 0 0 0', [cp.W, cp.H]); //FIXME: SubDivisions?
      end;
-     MohaaSurfaceParms(TBezier(ObjectToSave), S);
+     MohaaSurfaceParms(TMesh(ObjectToSave), S);
      S:=S+' )';
      Target.Add(S);
    end
@@ -4089,6 +4111,7 @@ begin
      case MapSaveSettings.PatchDefVersion of
      2: Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
      3: Target.Add(Format('   ( %d %d %d %d 0 0 0 )', [cp.W, cp.H, HorzSubDiv, VertSubDiv]));
+     5: Target.Add(Format('   ( %d %d %d %d 0 0 0 )', [cp.W, cp.H, HorzSubDiv, VertSubDiv]));
      end;
    end;
    Target.Add('   (');
@@ -4108,6 +4131,8 @@ begin
           S:=S+FloatToStrF(Value^, ffFixed, 20, DecimalPlaces)+' ';
          Inc(Value);
         end;
+       if MapSaveSettings.PatchDefVersion>= 5 then
+        S:=S+'255 255 255 255 0 '; //FIXME: Light values? (CoD1)
        S:=S+') ';
        Inc(Value, 5*(cp.W-1));
       end;
