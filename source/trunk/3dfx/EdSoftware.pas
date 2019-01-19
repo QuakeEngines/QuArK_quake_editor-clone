@@ -290,9 +290,11 @@ begin
     Raise EError(6001);
    if not LoadGlide(LibName, GetQPath(pQuArKDll)) then
     Raise EErrorFmt(6002, [LibName, GetLastError]);
+   if Hardware3DFX then
+    Raise EError(6101);
    try
-    RendererVersion:=softgQuArK;
-    grGlideInit;
+    RendererVersion:=softgQuArK();
+    grGlideInit();
     if GlideTimesLoaded=1 then
       if not grSstWinOpen(0,
                         GR_RESOLUTION_640x480,
@@ -306,7 +308,7 @@ begin
     if Assigned(grDepthMask) then
      grDepthMask(FXTRUE);
     ClearBuffers(0);
-    qrkGlideState:=TGlideState.Create;
+    qrkGlideState:=TGlideState.Create();
     RendererLoaded:=true;
    finally
     //If something went wrong, unload Glide because the set-up was incomplete

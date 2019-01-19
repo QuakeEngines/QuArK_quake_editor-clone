@@ -1076,6 +1076,7 @@ Strings = {
 
     # DanielPharos would like to reserve 6100 .. 6199 for the software renderer
     6100: "Error with the Software 3D drivers//%s failed",
+    6101: "A hardware Glide driver was loaded, not QuArK's software renderer.",
 
     6120: "Software 3D renderer does not support fullscreen views (yet)",
     6121: "You must first call Open3Dfx",
