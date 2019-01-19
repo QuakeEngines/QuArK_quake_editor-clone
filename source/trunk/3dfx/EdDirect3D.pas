@@ -57,6 +57,7 @@ type
     SwapChain: IDirect3DSwapChain9;
     DepthStencilSurface: IDirect3DSurface9;
     procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean; SourceCoord: TCoordinates);
+    class procedure ReleaseAllResources;
   protected
     ScreenResized: Boolean;
     TextureFiltering: TTextureFiltering;
@@ -93,15 +94,6 @@ type
     procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
     function ChangeQuality(nQuality: Integer) : Boolean; override;
   end;
-
-type  { this is the data shared by all existing TDirect3DSceneObjects }
-  TDirect3DState = class
-  public
-    procedure ReleaseAllResources;
-  end;
-
-var
-  qrkDXState: TDirect3DState;
 
  {------------------------}
 
@@ -511,7 +503,7 @@ begin
 
   if NeedReset then
   begin
-    qrkDXState.ReleaseAllResources;
+    ReleaseAllResources;
 
     OrigBackBuffer:=nil;
 
@@ -1625,9 +1617,7 @@ begin
   end;
 end;
 
- {------------------------}
-
-procedure TDirect3DState.ReleaseAllResources;
+class procedure TDirect3DSceneObject.ReleaseAllResources;
 var
  TextureManager: TTextureManager;
  I: Integer;
@@ -1651,10 +1641,4 @@ begin
   end;
 end;
 
- {------------------------}
-
-initialization
-  qrkDXState:=TDirect3DState.Create;
-finalization
-  qrkDXState.Free;
 end.
