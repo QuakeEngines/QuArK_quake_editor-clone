@@ -156,7 +156,7 @@ begin
     PatchDefVersion := -1;
   end;
 end;
-       
+
 function GetDecimalPlaces(GameCode: Char): Integer;
 begin
  // Rowdy: 17-Feb-2005 it seems that Torque wants more decimal places in .map files,
@@ -236,20 +236,26 @@ begin
       DecimalPlaces:=GetDecimalPlaces(GameCode);
 
     //Resolve BrushDefVersion
-    BrushDefVersion:=0;
-    if MapVersion>0 then
-      BrushDefVersion:=3
-    else
-      if GameCode=mjCoD then
-        BrushDefVersion:=0
-      else if GameCode>=mjQ3A then
-        //DanielPharos: This should select all Quake3 and better games.
-        BrushDefVersion:=1;
+    if BrushDefVersion=-1 then
+    begin
+      BrushDefVersion:=0;
+      if MapVersion>0 then
+        BrushDefVersion:=3
+      else
+        if GameCode=mjCoD then
+          BrushDefVersion:=0
+        else if GameCode>=mjQ3A then
+          //DanielPharos: This should select all Quake3 and better games.
+          BrushDefVersion:=1;
+    end;
 
     //Resolve PatchDefVersion
-    PatchDefVersion:=2;
-    if MapVersion>2 then
-      PatchDefVersion:=3;
+    if PatchDefVersion=-1 then
+    begin
+      PatchDefVersion:=2;
+      if MapVersion>2 then
+        PatchDefVersion:=3;
+    end;
 
   end;
 end;
@@ -1131,7 +1137,7 @@ expected one.
        NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
        SetThreePointsEx(NP0,NP1,NP2,Normale);
      except
-       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1)); //FIXME: Move to dict!
+       g_MapError.AddText(Format(LoadStr1(5793), [FaceNum, BrushNum, HullNum+1]));
      end;
   end;
  end;
@@ -1741,7 +1747,7 @@ expected one.
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
     if Denom=0 then
     begin
-      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1)); //FIXME: Move to dict!
+      g_MapError.AddText(Format(LoadStr1(5794), [FaceNum, BrushNum, HullNum+1]));
       Denom := 0.000001;
     end;
     P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
@@ -1855,7 +1861,7 @@ expected one.
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
     if Denom=0 then
     begin
-      g_MapError.AddText('Problem with coordinates of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1)); //FIXME: Move to dict! Everywhere!
+      g_MapError.AddText(Format(LoadStr1(5794), [FaceNum, BrushNum, HullNum+1]));
       Denom := 0.000001;
     end;
     P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
@@ -4068,7 +4074,7 @@ begin
      begin
        if (Length(SubDivisions) <> 2) then
        begin
-         Log(LOG_WARNING, 'Ignoring invalid patchsubdivisions specific'); //FIXME: Move to dict!
+         Log(LOG_WARNING, LoadStr1(5795));
          HorzSubDiv:=1;
          VertSubDiv:=1;
        end
