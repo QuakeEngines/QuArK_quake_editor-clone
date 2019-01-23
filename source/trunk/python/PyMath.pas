@@ -87,7 +87,7 @@ type
    (*{ normal vector end }
     function VecteurNormalDe(const Centre, Normale: TVect) : TVect;*)
      { scaling factor, if any }
-    function ScalingFactor(Pt: PVect) : TDouble; virtual;
+    function ScalingFactor(const Pt: PVect) : TDouble; virtual;
      { set as current CCoord }
     procedure SetAsCCoord(nDC: HDC);
      { checks for orthogonality }
@@ -111,7 +111,7 @@ type
     pProjZ, Facteur: TDouble;
     procedure InitProjVar;
   public
-    function ScalingFactor(Pt: PVect) : TDouble; override;
+    function ScalingFactor(const Pt: PVect) : TDouble; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
   end;
 
@@ -174,7 +174,7 @@ type
     mx, mxinv: TMatrixTransformation;
     procedure InitProjVar;
   public
-    function ScalingFactor(Pt: PVect) : TDouble; override;
+    function ScalingFactor(const Pt: PVect) : TDouble; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
     function Espace(const P: TPointProj) : TVect; override;
     function Proj(const V: TVect) : TPointProj; override;
@@ -1010,7 +1010,7 @@ begin
  SetROP2(g_DrawInfo.DC, R2_CopyPen);
 end;
 
-function TCoordinates.ScalingFactor(Pt: PVect) : TDouble;
+function TCoordinates.ScalingFactor(const Pt: PVect) : TDouble;
 begin
  ScalingFactor:=1.0;
 end;
@@ -1250,7 +1250,7 @@ end;
 
  {------------------------}
 
-function T2DCoordinates.ScalingFactor(Pt: PVect) : TDouble;
+function T2DCoordinates.ScalingFactor(const Pt: PVect) : TDouble;
 begin
  ScalingFactor:=pProjZ;
 end;

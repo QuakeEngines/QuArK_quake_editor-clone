@@ -46,7 +46,7 @@ type
     function VectorEye(const Pt: TVect) : TVect; override;
     function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
-    function ScalingFactor(Pt: PVect) : TDouble; override;
+    function ScalingFactor(const Pt: PVect) : TDouble; override;
     property FCheckRadius: TDouble read ooWFactor;
   end;
 
@@ -167,7 +167,7 @@ begin
   Result:=(oow2>=0) or (oow1<oow2);
 end;
 
-function T3DCoordinates.ScalingFactor(Pt: PVect) : TDouble;
+function T3DCoordinates.ScalingFactor(const Pt: PVect) : TDouble;
 var
  Delta: TVect;
  Dist: TDouble;
