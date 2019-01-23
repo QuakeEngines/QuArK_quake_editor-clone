@@ -88,9 +88,9 @@ function vtocol255(const R,G,B: TDouble) : TColor;
 procedure NormaliseCol1(var V: TVect);
 {function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
 function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
-function MakeVect(X, Y, Z : Double) : TVect; overload;
-function MakeVect(V: vec3_t) : TVect; overload;
-function MakeVect5(V: vec5_t) : TVect5;
+function MakeVect(const X, Y, Z : Double) : TVect; overload;
+function MakeVect(const V: vec3_t) : TVect; overload;
+function MakeVect5(const V: vec5_t) : TVect5;
 function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
@@ -797,21 +797,21 @@ begin
   end;
 end;
 
-function MakeVect(X, Y, Z : Double) : TVect; overload;
+function MakeVect(const X, Y, Z : Double) : TVect; overload;
 begin
   Result.X:=X;
   Result.Y:=Y;
   Result.Z:=Z;
 end;
 
-function MakeVect(V: vec3_t) : TVect; overload;
+function MakeVect(const V: vec3_t) : TVect; overload;
 begin
   Result.X:=V[0];
   Result.Y:=V[1];
   Result.Z:=V[2];
 end;
 
-function MakeVect5(V: vec5_t) : TVect5;
+function MakeVect5(const V: vec5_t) : TVect5;
 begin
   Result.X:=V[0];
   Result.Y:=V[1];
