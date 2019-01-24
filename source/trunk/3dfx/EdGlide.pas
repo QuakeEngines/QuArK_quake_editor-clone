@@ -420,28 +420,23 @@ begin
    if not Hardware3DFX then
     Raise EError(6206);
    try
-    SetFPUPrecision;
-    try
-     grGlideInit();
-     if not grSstQueryHardware(hwconfig) then
-      Raise EErrorFmt(6200, ['grSstQueryHardware']);
-     if AdapterNo >= hwconfig.num_sst then
-      Raise EErrorFmt(6207, [AdapterNo, hwconfig.num_sst]);
+    grGlideInit();
+    if not grSstQueryHardware(hwconfig) then
+     Raise EErrorFmt(6200, ['grSstQueryHardware']);
+    if AdapterNo >= hwconfig.num_sst then
+     Raise EErrorFmt(6207, [AdapterNo, hwconfig.num_sst]);
 
-     grSstSelect(AdapterNo);
-     if GlideTimesLoaded=1 then
-       //Glide 2 only only supports 1 window at a time. So we can't use ViewWnd here!
-       if not grSstWinOpen(GetGlideDummyHwnd,
-                         Resolution,
-                         GR_REFRESH_60HZ,
-                         GR_COLORFORMAT_ARGB,
-                         Origin,
-                         2, 1) then //Note: Glide 2 doesn't support single buffering
-        Raise EErrorFmt(6200, ['grSstWinOpen']);
-    finally
-     RestoreFPUPrecision;
-    end;
-     // grSstControl(GR_CONTROL_DEACTIVATE);
+    grSstSelect(AdapterNo);
+    if GlideTimesLoaded=1 then
+      //Glide 2 only only supports 1 window at a time. So we can't use ViewWnd here!
+      if not grSstWinOpen(GetGlideDummyHwnd,
+                        Resolution,
+                        GR_REFRESH_60HZ,
+                        GR_COLORFORMAT_ARGB,
+                        Origin,
+                        2, 1) then //Note: Glide 2 doesn't support single buffering
+       Raise EErrorFmt(6200, ['grSstWinOpen']);
+    // grSstControl(GR_CONTROL_DEACTIVATE);
     if (not Assigned(qrkGlideState)) then
      qrkGlideState:=TGlideState.Create();
     GlideLoaded:=true;
@@ -533,10 +528,11 @@ begin
    if GlideTimesLoaded=1 then
     begin
      Do3DFXTwoMonitorsDeactivation;
-     // Assigned check added by SilverPaladin
      if (Assigned(qrkGlideState)) then
-      qrkGlideState.Free;
-     qrkGlideState:=Nil;
+      begin
+       qrkGlideState.Free;
+       qrkGlideState:=Nil;
+      end;
      grSstWinClose;
      grGlideShutdown;
     end;
@@ -949,9 +945,7 @@ begin
  else
    guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
 
- // Assigned check added by SilverPaladin
- if Assigned(qrkGlideState) then
-   qrkGlideState.SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
+ qrkGlideState.SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1);
  if Fog=True then
    grFogTable(FogTableCache^);
 
@@ -1727,40 +1721,44 @@ begin
 
           if (N>=3) {and (bb-aa>MinVertexDist1) and (dd-cc>MinVertexDist1)} then
           begin
-              // Assigned check added by SilverPaladin
-            if (NeedTex and Assigned(qrkGlideState))then
+            if NeedTex then
             begin
               qrkGlideState.NeedTex(PList^.Texture);
               NeedTex:=False;
             end;
 
-            for I:=0 to N-1 do
-            begin
-              with VList[I] do
-              begin
-                x:=x-VertexSnapper;
-                y:=y-VertexSnapper;
-                tmuvtx[0].oow:=1.0;
-              end;
-            end;
-
-            if IteratedAlpha then
-            begin
+            SetFPUPrecision();
+            try
               for I:=0 to N-1 do
               begin
                 with VList[I] do
-                  a:=oow * (MinW*255.0);
+                begin
+                  x:=x-VertexSnapper;
+                  y:=y-VertexSnapper;
+                  tmuvtx[0].oow:=1.0;
+                end;
               end;
-            end;
 
-           {grDrawPlanarPolygonVertexList(N, VList[0]);
-           {grDrawPolygonVertexList(N, VList[0]);}
-            for I:=1 to N-2 do
-            begin
-              if {Abs((VList[I+1].x-VList[0].x)*(VList[I].y-VList[0].y)
-                    -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
-               > MinTriangleArea2} True then
-                grDrawTriangle(VList[0], VList[I], VList[I+1]);
+              if IteratedAlpha then
+              begin
+                for I:=0 to N-1 do
+                begin
+                  with VList[I] do
+                    a:=oow * (MinW*255.0);
+                end;
+              end;
+
+             {grDrawPlanarPolygonVertexList(N, VList[0]);
+             {grDrawPolygonVertexList(N, VList[0]);}
+              for I:=1 to N-2 do
+              begin
+                if {Abs((VList[I+1].x-VList[0].x)*(VList[I].y-VList[0].y)
+                      -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
+                 > MinTriangleArea2} True then
+                  grDrawTriangle(VList[0], VList[I], VList[I+1]);
+              end;
+            finally
+              RestoreFPUPrecision();
             end;
           end;
         end;
