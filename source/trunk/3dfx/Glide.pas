@@ -56,7 +56,7 @@ const
  MAX_NUM_SST            = 4;
  MAX_MIPMAPS_PER_SST    = 1024;
  GR_FOG_TABLE_SIZE      = 64;
- GR_NULL_MIPMAP_HANDLE  = FxU32(-1);
+ GR_NULL_MIPMAP_HANDLE  = GrMipMapId_t(-1);
  GR_ZDEPTHVALUE_NEAREST  = $FFFF;
  GR_ZDEPTHVALUE_FARTHEST = $0000;
  GR_WDEPTHVALUE_NEAREST  = $0000;
@@ -450,12 +450,18 @@ const
  GR_TEXBASE_64       = $2;
  GR_TEXBASE_32_TO_1  = $3;
 
+{$IFDEF GLIDE3}
+ GLIDE3_EXTRA_STATE  = 68;
+{$ELSE}
+ GLIDE3_EXTRA_STATE  = 0;
+{$ENDIF}
+
 const
- GLIDE_STATE_PAD_SIZE = 312+68;
+ GLIDE_STATE_PAD_SIZE = 312 + GLIDE3_EXTRA_STATE;
 
 type
  GrState = record
-   pad: array[0..GLIDE_STATE_PAD_SIZE-1] of Char;
+   pad: array[0..GLIDE_STATE_PAD_SIZE-1] of Byte;
  end;
 
  {---------------------}
@@ -502,6 +508,34 @@ const
 const
  GLIDE_NUM_TMU = 2;
 
+{$IFDEF GLIDE3}
+const
+ GR_FLOAT        = 0;
+ GR_U8           = 1;
+
+ GR_VERTEX       = 0;
+ GR_COLOR        = 1;
+ GR_TEXTURE0     = 2;
+ GR_TEXTURE1     = 3;
+
+ GR_VERTEX_XYZ   = 3;
+ GR_VERTEX_XYZW  = 4;
+
+ GR_COLOR_RGB    = 3;
+ GR_COLOR_RGBA   = 4;
+
+ GR_TEX_NONE     = 0;
+ GR_TEX_ST       = 2;
+ GR_TEX_STW      = 3;
+
+ GR_POINTS               = 0;
+ GR_LINE_STRIP           = 1;
+ GR_POLYGON              = 2;
+ GR_TRIANGLE_STRIP       = 3;
+ GR_TRIANGLE_FAN         = 4;
+ GR_TRIANGLES            = 5;
+{$ENDIF}
+
 type
  GrTmuVertex = record
    sow, tow, oow: Single;
@@ -533,7 +567,7 @@ type
   mipmap_mode: GrMipMapMode_t;               (* mip map mode for this texture *)
   magfilter_mode: GrTextureFilterMode_t;       (* filtering to be used when magnified *)
   minfilter_mode: GrTextureFilterMode_t;       (* filtering to be used with minified  *)
-  s_clamp_mode, t_clamp_mode: GrTextureClampMode_t    ;         (* how this texture should be clamped in s/t *)
+  s_clamp_mode, t_clamp_mode: GrTextureClampMode_t;         (* how this texture should be clamped in s/t *)
   tLOD: FxU32;                   (* Register value for tLOD register *)
   tTextureMode: FxU32;           (* Register value for tTextureMode register
                                            not including non-texture specific bits *)
