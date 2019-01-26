@@ -107,6 +107,8 @@ begin
   {OnKeyDown:=FormKeyDown;}
    OnKeyPress:=FormKeyPress;
   end;*)
+ Constraints.MinHeight:=Height-ClientHeight+16;
+ Constraints.MinWidth:=Width-ClientWidth+16;
  Caption:=nCaption;
  MarsCap.ActiveBeginColor:=clNavy;
  MarsCap.ActiveEndColor:=clNavy;
