@@ -1552,9 +1552,9 @@ begin
   end;
 
  for I:=0 to 255 do
-  nPalette[I]:=(GammaBuffer[Lmp^[I,0]] shl 16)
-            or (GammaBuffer[Lmp^[I,1]] shl 8)
-            or (GammaBuffer[Lmp^[I,2]]);
+  nPalette.data[I]:=(GammaBuffer[Lmp^[I,0]] shl 16)
+                 or (GammaBuffer[Lmp^[I,1]] shl 8)
+                 or (GammaBuffer[Lmp^[I,2]]);
  if PaletteCache=Nil then
   begin
    PaletteCache:=TList.Create;

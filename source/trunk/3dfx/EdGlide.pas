@@ -1756,6 +1756,7 @@ begin
                       -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
                  > MinTriangleArea2} True then
                   grDrawTriangle(VList[0], VList[I], VList[I+1]);
+                  //FIXME: Implement grAADrawTriangle too?
               end;
             finally
               RestoreFPUPrecision();
