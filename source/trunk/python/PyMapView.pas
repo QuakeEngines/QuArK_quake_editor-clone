@@ -161,7 +161,7 @@ type
                  function SetCameraPosition(value: PyObject) : Boolean;
                protected
                  Canvas: TControlCanvas;
-                 procedure Resize; override;
+                 procedure ResizeViewport(Sender: TObject);
                  procedure wmMove(var Msg: TMessage); message wm_Move;
                  procedure wmPaint(var Msg: TMessage); message wm_Paint;
                 {procedure wmCaptureChanged(var Msg: TMessage); message wm_CaptureChanged;}
@@ -241,6 +241,7 @@ begin
  inherited;
  PressingMouseButton:=mbNotPressing;
  OnPaint:=Paint;
+ OnResize:=ResizeViewport;
  OnSetCursor:=SetCursor;
  OnEnter:=FocusChanged;
  OnExit:=FocusChanged;
@@ -1003,7 +1004,7 @@ begin
  CallMouseEvent(MapViewObject, FOnMouse, M.X, M.Y, mbMouseMove, [], H);
 end;
 
-procedure TPyMapView.Resize;
+procedure TPyMapView.ResizeViewport;
 begin
  if MapViewProj<>Nil then
   begin
@@ -1020,6 +1021,7 @@ begin
 
   end;
  SetRedLines;
+ Invalidate;
 end;
 
 procedure TPyMapView.wmMove(var Msg: TMessage);
