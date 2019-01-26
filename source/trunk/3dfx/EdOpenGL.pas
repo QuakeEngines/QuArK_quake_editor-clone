@@ -742,7 +742,7 @@ begin
   FullBright.ZeroLight:=1.0;
   FullBright.BrightnessSaturation:=0.0;
   FullBright.SoftwareRange:=0.0;
-  FullBright.IntensityScale:=1.0;  
+  FullBright.IntensityScale:=1.0;
 
   Dithering:=Setup.Specifics.Values['Dither']<>'';
   VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);

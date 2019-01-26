@@ -1040,7 +1040,7 @@ begin
 
       light.Attenuation0 := 1.0;
       light.Attenuation1 := 0.0;
-      light.Attenuation2 := 5.0 / (PL^.Brightness * PL^.Brightness);
+      light.Attenuation2 := 1.0 / (SetupGameSet.GetFloatSpec('LightIntensityScale', 7500.0) * PL^.Brightness);
 
       l_Res:=D3DDevice.SetLight(LightCurrent, light);
       if (l_Res <> D3D_OK) then
