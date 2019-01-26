@@ -260,6 +260,7 @@ var
   Setup: QObject;
   l_Res: HResult;
   WindowRect: TRect;
+  Ambient: Integer;
 begin
   ClearScene;
 
@@ -449,8 +450,13 @@ begin
 
   if Lighting then
   begin
+    Ambient:=Round(Setup.GetFloatSpec('Ambient', 50));
+    if Ambient<0 then
+      Ambient:=0;
+    if Ambient>255 then
+      Ambient:=255;
     D3DDevice.SetRenderState(D3DRS_LIGHTING, 1);  //True := 1
-    D3DDevice.SetRenderState(D3DRS_AMBIENT, D3DXColorToDWord(D3DXColor(255, 255, 255, 0))); //FIXME!
+    D3DDevice.SetRenderState(D3DRS_AMBIENT, D3DCOLOR_RGBA(Ambient, Ambient, Ambient, 0));
     D3DDevice.SetRenderState(D3DRS_NORMALIZENORMALS, 1); //True := 1
   end
   else
@@ -470,14 +476,6 @@ begin
     D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 1) //FIXME!
   else
     D3DDevice.SetRenderState(D3DRS_DITHERENABLE, 0); //FIXME!
-
-{  // Create material
-  FillChar(l_Material, SizeOf(l_Material), 0);
-  l_Material.dcvDiffuse  := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
-  l_Material.dcvAmbient  := TD3DColorValue(D3DXColor(1.00, 1.00, 1.00, 0.00));
-  l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
-  l_Material.dvPower     := 100.0;
-  D3DDevice.SetMaterial(l_Material);   }
 end;
 
 function TDirect3DSceneObject.CheckDeviceState : Boolean;
@@ -1404,10 +1402,18 @@ begin
           //@SwapColors?!?
 
           material.Diffuse := D3DXCOLOR(Currentf[0], Currentf[1], Currentf[2], Currentf[3]);
-          //material.Ambient := D3DXCOLOR(1.0, 1.0, 1.0, 1.0);
         end
         else
           material.Diffuse := D3DXCOLOR(1.0, 1.0, 1.0, 1.0);
+        material.Ambient := D3DXCOLOR(1.0, 1.0, 1.0, 1.0);
+
+{  // Create material
+  FillChar(l_Material, SizeOf(l_Material), 0);
+  l_Material.dcvDiffuse  := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
+  l_Material.dcvAmbient  := TD3DColorValue(D3DXColor(1.00, 1.00, 1.00, 0.00));
+  l_Material.dcvSpecular := TD3DColorValue(D3DXColor(0.00, 0.00, 0.00, 0.00));
+  l_Material.dvPower     := 100.0;
+  D3DDevice.SetMaterial(l_Material);   }
 
         l_Res:=D3DDevice.SetMaterial(material);
         if (l_Res <> D3D_OK) then

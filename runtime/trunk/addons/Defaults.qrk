@@ -157,6 +157,7 @@ QQRKSRC1
         VCorrection = '0.92'
         Dither = ""
         TextureFiltering = "1"
+        Ambient = '50'
         Culling = "1"
         HighPrecision = ""
         DisableDWM = ""
@@ -8187,6 +8188,13 @@ QQRKSRC1
         Items  = "None" $0D "Bilinear" $0D "Trilinear" $0D "Anisotropic"
         Values = "0"    $0D "1"        $0D "2"         $0D "3"
         Hint = "Texture filtering to use to improve texture sampling (the higher, the better the quality)."
+      }
+      Ambient: = {
+        Txt = "Ambient lighting brightness"
+        Typ = "EF1"
+        Hint="The brightness of the ambient lighting."
+        Min = '0'
+        Max = '255'
       }
       Culling: = {Typ="X" Txt="Face culling" Cap="Enabled" Hint="Speeds up rendering by making all the backsides of faces invisible."
                                 $0D"This doesn't apply to transparent faces." }

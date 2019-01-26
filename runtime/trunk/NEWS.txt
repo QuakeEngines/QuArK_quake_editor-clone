@@ -13,6 +13,8 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added ambient lighting support to Direct3D renderer.
+
 * [DanielPharos]: Added trilinear texture filtering to Glide renderer.
 
 * [DanielPharos]: Set a more sensible minimum render distance. This should reduce Z-buffer
