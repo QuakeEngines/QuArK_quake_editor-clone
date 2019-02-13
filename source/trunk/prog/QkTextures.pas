@@ -1125,6 +1125,7 @@ begin
           Bsp:=NeedGameFileBase(Arg, ConcatPaths([GameMapPath, S+'.bsp']), '') as QBsp;
           Bsp.AddRef(+1);
           try
+            Bsp.Acces;
             TexList:=Bsp.BspEntry[Bsp.FileHandler.GetLumpTextures()] as QTextureList;
             TexList.AddRef(+1);
             try
