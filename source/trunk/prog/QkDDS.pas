@@ -262,13 +262,9 @@ begin
           S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveFormatNVDXT'];
         if S<>'' then
         begin
-          try
-            TexFormat:=strtoint(S);
-            if (TexFormat < 0) or (TexFormat > 11) then
-              TexFormat := 2;
-          except
+          TexFormat:=StrToIntDef(S, 2);
+          if (TexFormat < 0) or (TexFormat > 12) then
             TexFormat := 2;
-          end;
         end;
 
         if PSD.Format = psf8bpp then
@@ -294,6 +290,7 @@ begin
             Inc(Dest, 3);
           end;
 
+          //FIXME: Change this code! Use QkTga (or whatever) instead!!! Look at AutoSave temps file code!
           Dest:=PByte(ilGetData);
           CheckDevILError(ilGetError);
           SourceImg:=PChar(PSD.Data);
@@ -357,6 +354,7 @@ begin
                 PRGB(Dest)^[2]:=PRGB(pSourceImg)^[0];
                 PRGB(Dest)^[1]:=PRGB(pSourceImg)^[1];
                 PRGB(Dest)^[0]:=PRGB(pSourceImg)^[2];
+//				@@@What about alpha?
                 Inc(pSourceImg, 3);
                 Inc(Dest, 3);
               end;
@@ -377,13 +375,9 @@ begin
       S:=SetupSubSet(ssFiles, 'DDS').Specifics.Values['SaveQualityNVDXT'];
       if S<>'' then
       begin
-        try
-          Quality:=strtoint(S);
-          if (Quality < 0) or (Quality > 3) then
-            Quality := 2;
-        except
+        Quality:=StrToIntDef(S, 2);
+        if (Quality < 0) or (Quality > 3) then
           Quality := 2;
-        end;
       end;
 
       DumpFileName:=ConcatPaths([GetQPath(pQuArK), '0']);
@@ -417,8 +411,9 @@ begin
         7: TexFormatParameter:='u8888';
         8: TexFormatParameter:='u888';
         9: TexFormatParameter:='u555';
-        10: TexFormatParameter:='l8';
-        11: TexFormatParameter:='a8';
+        10: TexFormatParameter:='l8'; //@8bit only!
+        11: TexFormatParameter:='a8'; //@8bit only!
+        12: TexFormatParameter:='a8l8'; //@16 bit only!
         end;
 
         case Quality of
@@ -433,14 +428,14 @@ begin
         NVDXTStartupInfo.dwFlags:=STARTF_USESHOWWINDOW;
         NVDXTStartupInfo.wShowWindow:=SW_HIDE+SW_MINIMIZE;
         try
-          if Windows.CreateProcess(PChar(ConcatPaths([GetQPath(pQuArKDll), 'nvdxt.exe'])), PChar('nvdxt.exe -rescale nearest -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then
+          if Windows.CreateProcess(PChar(ConcatPaths([GetQPath(pQuArKDll), 'nvdxt.exe'])), PChar('nvdxt.exe -rescale nearest -file "'+DumpFileName+'.tga" -output "'+DumpFileName+'.dds" -@@@@8,16,24,32! -'+TexFormatParameter+' -'+QualityParameter), nil, nil, false, 0, nil, PChar(GetQPath(pQuArKDll)), NVDXTStartupInfo, NVDXTProcessInformation)=false then //@@@-8, -16, -24, -32 bits!
             LogAndRaiseError('Unable to save DDS file. Call to CreateProcess failed.');
+          CloseHandle(NVDXTProcessInformation.hThread);
 
           //DanielPharos: This is kinda dangerous, but NVDXT should exit rather quickly!
-          if WaitForSingleObject(NVDXTProcessInformation.hProcess,INFINITE)=WAIT_FAILED then
-            LogAndRaiseError('Unable to save DDS file. Call to WaitForSingleObject failed.');
+          if WaitForSingleObject(NVDXTProcessInformation.hProcess, INFINITE)=WAIT_FAILED then
+            LogAndRaiseError('Unable to save DDS file. Call to WaitForSingleObject failed.'); //@@@MOVE TO DICT!
         finally
-          CloseHandle(NVDXTProcessInformation.hThread);
           CloseHandle(NVDXTProcessInformation.hProcess);
         end;
       finally

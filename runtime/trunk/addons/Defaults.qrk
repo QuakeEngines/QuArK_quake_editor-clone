@@ -7050,7 +7050,7 @@ QQRKSRC1
         Typ = "CL"
         Txt = "Format of exported non-alpha DDS textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                 "10"$0D"11"
+                 "10"$0D"11"$0D"12"
         Items = "DXT1c"
              $0D "DXT1a"
              $0D "DXT3"
@@ -7063,6 +7063,7 @@ QQRKSRC1
              $0D "U555"
              $0D "L8"
              $0D "A8"
+             $0D "A8L8"
         Hint = "The format the DDS texture will be saved in when using the NVDXT library"
       }
       SaveFormatANVDXT: =
@@ -7070,7 +7071,7 @@ QQRKSRC1
         Typ = "CL"
         Txt = "Format of exported alpha DDS textures"
         Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                 "10"$0D"11"
+                 "10"$0D"11"$0D"12"
         Items = "DXT1c"
              $0D "DXT1a"
              $0D "DXT3"
@@ -7083,6 +7084,7 @@ QQRKSRC1
              $0D "U555"
              $0D "L8"
              $0D "A8"
+             $0D "A8L8"
         Hint = "The format the DDS texture with alpha will be saved in when using the NVDXT library"
       }
       SaveQualityNVDXT: =
