@@ -48,56 +48,6 @@ uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
 
  {------------------------}
 
-
-(* The wc3.3 220 map format texture rep is quite close
-  to the texinfo_t data structure used by qbsp.  This
-  consists of 2 axes lying in one of the three planes
-  normal to the axes, plus offsets, & the formula for
-  computing the texture coordinate of a point xyz on
-  a face is:
-   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
-   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
-  (Max McGuire's Quake2 BSP file format tutorial on
-   www.flipcode.com)
-
-  However wc3.3 does *not* seem to require the texture-vectors
-  to lie in an axis plane, and if you write with that assumption
-  (projecting the points), things get distorted.
-
-  U/V Axis/Shift are straight from the 4-vectors, param[3]
-  is rot which is ignored (implicit from the axes), while
-  param[4,5] are UV scales.  Diferent from the bsp-format
-  is that the axes are normalized to length 1, and you
-  divide by the scale to get the .bsp-version of the axis.
-  (Zoner's HL tools source, textures.cpp) *)
-
-procedure WC33Params( BrushNum,Facenum:Integer; Params: TFaceParams;UAxis, VAxis : TVect; UShift, VShift: Double;Surface: TFace);
-
- var
-  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
- begin
-   PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
-   PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
-    { note p.i.t.a sign-flip }
-   PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
-   with Surface do
-   begin
-     TexNorm:=Cross(UAxis,VAxis);
-     Normalise(TexNorm);
-     PlanePoint:=VecScale(Dist, Normale);
-     (* could perhaps be optimized by 'partial evaluation' *)
-     try
-       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
-       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
-       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-       SetThreePointsEx(NP0,NP1,NP2,Normale);
-     except
-       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum));
-     end;
-  end;
- end;
-
-
 function ReadEntityList(Root: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 const
  cSeperators = [' ', #13, #10, Chr(vk_Tab)];
@@ -473,7 +423,8 @@ expected one.
       ReadSymbol(sStringQuotedToken);
     end; // side attributes
 
-    WC33Params( FaceNum,BrushNum,Params,UAxis, VAxis , UShift, VShift,Surface);
+    if not WC22Params(Surface, Params, UAxis, VAxis, UShift, VShift) then
+      g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)); //FIXME: Move to dict!
 
     if (SymbolType=sStringToken) and (CompareText(S,'dispinfo')=0) then
     begin

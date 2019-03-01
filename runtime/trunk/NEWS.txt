@@ -13,6 +13,8 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added .rmf file UV texture coordinate loading.
+
 * [DanielPharos]: Fixed a bug causing access violations when trying to load textures from
           - Quake 1 or Hexen 2 when the corresponding .bsp file hadn't been loaded yet.
 

@@ -101,6 +101,7 @@ type
  {------------------------}
 
 function GetDefaultMapSaveSettings : TMapSaveSettings;
+function WC22Params(Surface: TFace; const Params: TFaceParams; const UAxis, VAxis : TVect; const UShift, VShift: Double) : Boolean;
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 procedure SaveAsMapText(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
 procedure SaveAsMapTextTTreeMapBrush(ObjectToSave: QObject; MapSaveSettings: TMapSaveSettings; Negatif: TQList; Texte: TStrings; Flags2: Integer; HxStrings: TStrings);
@@ -193,7 +194,7 @@ begin
   else if StrComp(S, 'HL2')              = 0 then Result := HL2Type
   else
   begin
-    Log(LOG_WARNING,LoadStr1(5702)+'\nDefaulting to Classic Quake',[S]);
+    Log(LOG_WARNING,LoadStr1(5702)+'\nDefaulting to Classic Quake',[S]); //@MOVE TO DICT!
     //Raise EErrorFmt(5702, [S]);
     Result:=CQType
   end;
@@ -347,6 +348,54 @@ end;
 
  {------------------------}
 
+(* The wc3.3 220 map format texture rep is quite close
+  to the texinfo_t data structure used by qbsp.  This
+  consists of 2 axes lying in one of the three planes
+  normal to the axes, plus offsets, & the formula for
+  computing the texture coordinate of a point xyz on
+  a face is:
+   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
+   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
+  (Max McGuire's Quake2 BSP file format tutorial on
+   www.flipcode.com)
+
+  However wc3.3 does *not* seem to require the texture-vectors
+  to lie in an axis plane, and if you write with that assumption
+  (projecting the points), things get distorted.
+
+  U/V Axis/Shift are straight from the 4-vectors, param[3]
+  is rot which is ignored (implicit from the axes), while
+  param[4,5] are UV scales.  Different from the bsp-format
+  is that the axes are normalized to length 1, and you
+  divide by the scale to get the .bsp-version of the axis.
+  (Zoner's HL tools source, textures.cpp) *)
+
+function WC22Params(Surface: TFace; const Params: TFaceParams; const UAxis, VAxis : TVect; const UShift, VShift: Double) : Boolean;
+var
+ PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
+begin
+  Result:=True;
+  PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
+  PP1:=VecSum(PP0,VecScale(Params[4]*EchelleTexture,UAxis));
+   { note p.i.t.a sign-flip }
+  PP2:=VecSum(PP0,VecScale(-Params[5]*EchelleTexture,VAxis));
+  with Surface do
+  begin
+    TexNorm:=Cross(UAxis,VAxis);
+    Normalise(TexNorm);
+    PlanePoint:=VecScale(Dist, Normale);
+    (* could perhaps be optimized by 'partial evaluation' *)
+    try
+      NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
+      NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
+      NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
+      SetThreePointsEx(NP0,NP1,NP2,Normale);
+    except
+      Result:=False;
+    end;
+ end;
+end;
+
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 const
  cSeperators = [' ', #13, #10, Chr(vk_Tab)];
@@ -391,9 +440,9 @@ var
  M: TMesh;
  EntiteMesh: TTreeMapSpec;
  EntiteBezier: TTreeMapSpec;
- WC33map: Boolean; {Decker}
+ WorldcraftMap: Boolean;
  SpecIndex: integer; {Decker}
- UAxis, VAxis : TVect;  {wc3.3 stuff/tiglari}
+ UAxis, VAxis : TVect;
  UShift, VShift: Double;
  TextureSizesFree: Boolean;
 
@@ -1096,53 +1145,6 @@ expected one.
    ReadSymbol(sNumValueToken);
  end;
 
-(* The wc3.3 220 map format texture rep is quite close
-  to the texinfo_t data structure used by qbsp.  This
-  consists of 2 axes lying in one of the three planes
-  normal to the axes, plus offsets, & the formula for
-  computing the texture coordinate of a point xyz on
-  a face is:
-   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
-   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
-  (Max McGuire's Quake2 BSP file format tutorial on
-   www.flipcode.com)
-
-  However wc3.3 does *not* seem to require the texture-vectors
-  to lie in an axis plane, and if you write with that assumption
-  (projecting the points), things get distorted.
-
-  U/V Axis/Shift are straight from the 4-vectors, param[3]
-  is rot which is ignored (implicit from the axes), while
-  param[4,5] are UV scales.  Different from the bsp-format
-  is that the axes are normalized to length 1, and you
-  divide by the scale to get the .bsp-version of the axis.
-  (Zoner's HL tools source, textures.cpp) *)
-
- procedure WC33Params(Surface: TFace);
- var
-  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
- begin
-   PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
-   PP1:=VecSum(PP0,VecScale(Params[4]*EchelleTexture,UAxis));
-    { note p.i.t.a sign-flip }
-   PP2:=VecSum(PP0,VecScale(-Params[5]*EchelleTexture,VAxis));
-   with Surface do
-   begin
-     TexNorm:=Cross(UAxis,VAxis);
-     Normalise(TexNorm);
-     PlanePoint:=VecScale(Dist, Normale);
-     (* could perhaps be optimized by 'partial evaluation' *)
-     try
-       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
-       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
-       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-       SetThreePointsEx(NP0,NP1,NP2,Normale);
-     except
-       g_MapError.AddText(Format(LoadStr1(5793), [FaceNum, BrushNum, HullNum+1]));
-     end;
-  end;
- end;
-
  procedure ReadCOD2Flags;
  begin
    //FIXME: We need to do this right. At the moment, we're just dumping the data!
@@ -1597,8 +1599,8 @@ expected one.
     {DECKER}
     if (SymbolType=sSquareBracketLeft) then
     begin
-      { WorldCraft3.3 map-format version 220 encountered }
-      WC33map:=True;
+      { WorldCraft map-format version 220 or higher encountered }
+      WorldcraftMap:=True;
       {Params[1]:=ReadSquareTex4();} {Read some texture scale/position thingy}
       ReadSquareTex4(UAxis, UShift);
       ReadSymbol(sSquareBracketRight);
@@ -1704,8 +1706,11 @@ expected one.
       '1': ;
       '2': Surface.TextureMirror:=True;
      else
-      if WC33Map then
-        WC33Params(Surface)
+      if WorldcraftMap then
+       begin
+        if not WC22Params(Surface, Params, UAxis, VAxis, UShift, VShift) then
+         g_MapError.AddText(Format(LoadStr1(5793), [FaceNum, BrushNum, HullNum+1]));
+       end
       else
        with Surface do
         SetFaceFromParams(Normale, Dist, Params);
@@ -2078,7 +2083,7 @@ begin
     Prochain:=Source+Granularite;   //point at which progress marker will be ticked
     Result:=mjQuake;     //Result is info about what game the map is for
     Q2Tex:=False;
-    WC33map:=False; {Decker}
+    WorldcraftMap:=False;
     g_MapError.Clear;
     ReadSymbolForceToText:=False;    //ReadSymbol is not to expect text
     LineNoBeingParsed:=1;
@@ -2372,7 +2377,7 @@ begin
           end;
         end;
 
-       if (WC33map) then
+       if (WorldcraftMap) then
        begin
          { Remove the spec/arg "mapversion" from worldspawn,
            since QuArK will write it depending on whether the
@@ -3409,7 +3414,7 @@ var
 *)
     QV0:=VecSum(VecScale(aa, D1), VecScale(bb, D2));
     QV1:=VecSum(VecScale(-bb, D1), VecScale(-dd, D2));
-  
+
     {
       side->td.vects.quark.vects[0][3] = -DotProduct(side->td.vects.quark.vects[0], side->planepts[0]);
       side->td.vects.quark.vects[1][3] = -DotProduct(side->td.vects.quark.vects[1], side->planepts[0]);

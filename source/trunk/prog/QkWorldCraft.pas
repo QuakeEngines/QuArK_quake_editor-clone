@@ -104,7 +104,7 @@ procedure QRmfMapFile.LoadFile(F: TStream; FSize: Integer);
     StringLength: Byte;
   begin
     FillChar(StringLength, SizeOf(Byte), 0);
-    F.ReadBuffer(StringLength, 1); //1 = SizeOf(Byte)
+    F.ReadBuffer(StringLength, SizeOf(Byte)); 
     if StringLength > 128 then
       Log(LOG_INFO, LoadStr1(5787));
     SetLength(Result, StringLength);
@@ -125,6 +125,8 @@ var
  Entite, EntitePoly: TTreeMapSpec;
  Entities, MapStructure: TTreeMapGroup;
  ModeJeu: Char;
+
+ BrushNum, FaceNum: Integer;
 
  RMFVersion: Single;
  RMFHeader: array[0..2] of Byte;
@@ -187,6 +189,9 @@ var
    LoadPlanePoints: array[0..2, 0..2] of Single;
    i: Integer;
    Surface: TFace;
+   Params: TFaceParams;
+   UAxis, VAxis : TVect;
+   UShift, VShift: Double;
  begin
    Surface:=TFace.Create(LoadStr1(139), P);
    P.SubElements.Add(Surface);
@@ -205,38 +210,28 @@ var
 
      // Read the rest - skip the name
      F.ReadBuffer(OldTex.rotate, SizeOf(OldTex.rotate) + SizeOf(OldTex.shift) + SizeOf(OldTex.scale));
-
-     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 1.2 then
    begin
      // Didn't have smooth/material groups
      F.ReadBuffer(OldTex.texture[0], 40);
      F.ReadBuffer(OldTex.texture[0], SizeOf(OldTex.texture) - (MAX_PATH) + SizeOf(OldTex.rotate) + SizeOf(OldTex.shift) + SizeOf(OldTex.scale));
-
-     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 1.7 then
    begin
      // No quake2 fields yet and smaller texture size.
      F.ReadBuffer(OldTex.texture[0], 40);
      F.ReadBuffer(OldTex.rotate, SizeOf(OldTex) - 3*SizeOf(Integer) - MAX_PATH);
-
-     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 1.8 then
    begin
      // Texture name field changed from 40 to MAX_PATH in size.
      F.ReadBuffer(OldTex.texture[0], 40);
      F.ReadBuffer(OldTex.rotate, SizeOf(OldTex) - MAX_PATH);
-
-     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else if RMFVersion < 2.2 then
    begin
      F.ReadBuffer(OldTex.texture[0], SizeOf(OldTex));
-
-     Surface.NomTex:=CharToPas(OldTex.texture);
    end
    else
    begin
@@ -246,8 +241,11 @@ var
      //
      F.ReadBuffer(OldTex33.texture[0], SizeOf(OldTex33));
      //@
+   end;
 
-     Surface.NomTex:=CharToPas(OldTex33.texture);
+   if RMFVersion < 1.8 then
+   begin
+     OldTex.texture[40]:=0;
    end;
 
    if RMFVersion < 0.6 then
@@ -265,6 +263,51 @@ var
    Surface.SetThreePoints(MakeVect(LoadPoints[0][0], LoadPoints[0][1], LoadPoints[0][2]), MakeVect(LoadPoints[2][0], LoadPoints[2][1], LoadPoints[2][2]), MakeVect(LoadPoints[1][0], LoadPoints[1][1], LoadPoints[1][2]));  //FIXME
    if not Surface.LoadData then
      raise InternalE('LoadData failure');   //FIXME: ERROR!
+
+   // If reading from a pre-2.2 RMF file, copy the texture info from the old format.
+   if RMFVersion < 2.2 then
+   begin
+     Surface.NomTex:=CharToPas(OldTex.texture);
+
+      //FIXME: OldTex.smooth
+      //FIXME: OldTex.material
+      //FIXME: OldTex.q2surface
+      //FIXME: OldTex.q2contents
+     Params[1]:=OldTex.shift[0];
+     Params[2]:=OldTex.shift[1];
+     Params[3]:=OldTex.rotate;
+     Params[4]:=OldTex.scale[0];
+     Params[5]:=OldTex.scale[1];
+     with Surface do
+       SetFaceFromParams(Normale, Dist, Params);
+   end
+   else
+   begin
+     Surface.NomTex:=CharToPas(OldTex33.texture);
+
+     //FIXME: OldTex33.smooth
+     //FIXME: OldTex33.material
+     //FIXME: OldTex33.q2surface
+     //FIXME: OldTex33.q2contents
+     //FIXME: OldTex33.nLightmapScale
+     //FIXME if texture.nLightmapScale == 0 then Use Default Value from GameConfig
+
+     UAxis.x := OldTex33.UAxis[0];
+     UAxis.y := OldTex33.UAxis[1];
+     UAxis.z := OldTex33.UAxis[2];
+     UShift := OldTex33.UAxis[3];
+
+     VAxis.x := OldTex33.VAxis[0];
+     VAxis.y := OldTex33.VAxis[1];
+     VAxis.z := OldTex33.VAxis[2];
+     VShift := OldTex33.VAxis[3];
+
+     Params[3]:=OldTex33.rotate;
+     Params[4]:=OldTex33.scale[0];
+     Params[5]:=OldTex33.scale[1];
+     if not WC22Params(Surface, Params, UAxis, VAxis , UShift, VShift) then
+       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)); //FIXME: Move to dict!
+   end;
 
    if RMFVersion >= 0.7 then
    begin
@@ -294,13 +337,17 @@ var
    P: TPolyhedron;
  begin
    LoadMapClass;
+   FaceNum:=0;
 
    P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
    EntitePoly.SubElements.Add(P);
 
    F.ReadBuffer(DummyInteger, SizeOf(Integer)); //Number of faces
    for i := 0 to DummyInteger-1 do
+   begin
      LoadMapFace(P);
+     FaceNum:=FaceNum+1;
+   end;
      //@
  end;
 
@@ -308,6 +355,7 @@ var
  var
    i: Integer;
  begin
+   BrushNum:=0;
    if RMFVersion < 1.0 then
    begin
      // kill group information .. unfortunate
@@ -337,7 +385,10 @@ var
      else if DummyString = 'CMapHelper' then //used?
        LoadMapHelper
      else if DummyString = 'CMapSolid' then
-       LoadMapSolid
+     begin
+       LoadMapSolid();
+       BrushNum:=BrushNum+1;
+     end
      else
        Raise EErrorFmt(5779, [FmtLoadStr1(5784, [DummyString])]);
    end;
