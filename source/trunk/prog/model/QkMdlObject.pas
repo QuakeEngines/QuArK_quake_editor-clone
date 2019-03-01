@@ -31,6 +31,9 @@ type
     s,t: SmallInt;
   end;
 
+const
+  MaxCVertices = 100;   { vertices per component, maximum }
+
 (***********  QuArK objects  ***********)
 
 type

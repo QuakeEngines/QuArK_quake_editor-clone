@@ -515,7 +515,7 @@ const
   Spec1 = 'Tris';
   Spec2 = 'Vertices';
 type
-  TVertexMap = array[0..99] of Integer;
+  TVertexMap = array[0..MaxCVertices-1] of Integer;
 var
   Bits: TBits;
   I, J, B: Integer;
@@ -739,7 +739,7 @@ end;
 
 procedure QComponent.Dessiner;
 type
-  TProjArray = array[0..99] of TPointProj;
+  TProjArray = array[0..MaxCVertices-1] of TPointProj;
 var
   I, J, K, TrisCount, FillTrisCount: Integer;
   L: TList;
@@ -954,7 +954,7 @@ end;
 
 procedure QComponent.AnalyseClic(Liste: PyObject);
 type
-  vec3_array_t = array[0..99] of record v3: vec3_t end;
+  vec3_array_t = array[0..MaxCVertices-1] of record v3: vec3_t end;
 var
   I, Count, L, PrevL: Integer;
   CTris: PComponentTris;

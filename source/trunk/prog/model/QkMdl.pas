@@ -805,7 +805,7 @@ const
   Spec2 = 'Vertices=';
 type
   PVertxArray = ^TVertxArray;
-  TVertxArray = array[0..99] of stvert_t;
+  TVertxArray = array[0..MaxCVertices-1] of stvert_t;
 var
   mdl: mdl_t;
   Root: QModelRoot;
@@ -1034,7 +1034,7 @@ end;
 procedure QMdlFile.SaveFile(Info: TInfoEnreg1);
 type
   PVertxArray = ^TVertxArray;
-  TVertxArray = array[0..99] of stvert_t;
+  TVertxArray = array[0..MaxCVertices-1] of stvert_t;
 
   PVertexNode = ^TVertexNode;
   TVertexNode = record
@@ -1045,10 +1045,10 @@ type
       1: (st: dstvert_t);
       2: (longst: LongInt);
   end;
-  TVertexMap = array[0..99] of PVertexNode;
-  trivertx_array_t = array[0..99] of trivertx_t;
-  vec3_array_t = array[0..99] of vec3_t;
-  TVect_array = array[0..99] of TVect;
+  TVertexMap = array[0..MaxCVertices-1] of PVertexNode;
+  trivertx_array_t = array[0..MaxCVertices-1] of trivertx_t;
+  vec3_array_t = array[0..MaxCVertices-1] of vec3_t;
+  TVect_array = array[0..MaxCVertices-1] of TVect;
 var
   Root: QModelRoot;
   TheComp: QComponent;

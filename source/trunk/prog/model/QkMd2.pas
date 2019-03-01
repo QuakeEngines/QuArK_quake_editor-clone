@@ -141,7 +141,7 @@ const
   Spec1 = 'Tris=';
   Spec2 = 'Vertices=';
 type
-  dstvert_array = array[0..99] of dstvert_t;
+  dstvert_array = array[0..MaxCVertices-1] of dstvert_t;
 var
   Size: array[1..2] of Single;
   Root: QModelRoot;
@@ -244,7 +244,7 @@ end;
 
 procedure BuildGlCmds(L: TList; stData: dstvert_p; triangles: dtriangle_p; num_tris, skinwidth, skinheight: Integer);
 type
- TIntegerArray = array[0..99] of Integer;
+ TIntegerArray = array[0..MaxCVertices-1] of Integer;
 var
  Used, Used2: TBits;
  I, J, bestlen, len, startv: Integer;
@@ -440,8 +440,8 @@ end;
 
 procedure QMd2File.SaveFile(Info: TInfoEnreg1);
 type
-  TVect_array = array[0..99] of TVect;
-  vec3_array_t = array[0..99] of vec3_t;
+  TVect_array = array[0..MaxCVertices-1] of TVect;
+  vec3_array_t = array[0..MaxCVertices-1] of vec3_t;
 var
   mdl: dmdl_t;
   Root: QModelRoot;

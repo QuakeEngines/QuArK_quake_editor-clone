@@ -46,6 +46,7 @@ type
 function SearchForHoles(pol, sta: PyObject) : PyObject;
 const
  DebutCompteur = 50;
+ MaxBufferSize = 100;
 type
  PInfo = ^TInfo;
  TInfo = record
@@ -54,7 +55,7 @@ type
           Face: PSurface;
          end;
  PTableauInfo = ^TTableauInfo;
- TTableauInfo = array[0..99] of TInfo;
+ TTableauInfo = array[0..MaxBufferSize-1] of TInfo;
  PInfoSource = ^TInfoSource;
  TInfoSource = record
                 P: TVect;
