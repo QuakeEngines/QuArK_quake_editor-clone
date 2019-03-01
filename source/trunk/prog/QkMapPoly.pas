@@ -27,7 +27,10 @@ uses SysUtils, Windows, Classes, Graphics,
      QkExplorer, Setup, QkTextures, Python, PyMath;
 
 const
- MaxFVertices  = 64;   { sommets par face, maximum }
+ MaxFVertices = 64;   { vertices per face, maximum }
+ MaxPVertices = 100;   { vertices per polygon, maximum }
+ MaxPEdges = 100;   { edges per polygon, maximum }
+{MaxPFaces = 100;}  { faces per polygon, maximum }
  EchelleTexture = 128;
  CannotEditFaceYet = '!';
 
@@ -49,13 +52,13 @@ type
  TFVertexTable = array[0..MaxFVertices-1] of PVertex;
 
  PTamponAretes = ^TTamponAretes;
- TTamponAretes = array[0..99] of Word;
+ TTamponAretes = array[0..MaxPEdges-1] of Word; //Edge buffer
 
  TPolyhedronState = (psUnknown, psOk, psError);
  EPolyedreInvalide = class(Exception)
                      end;
 
- TFaceParams = array[1..5] of TDouble;
+ TFaceParams = array[1..5] of TDouble; //Shift X, Shift Y, rotate, Scale X, Scale Y
 
  TFace     = class;
  PSurface = ^TSurface;
@@ -1213,8 +1216,8 @@ end;
 function TPolyhedron.ConstructVertices1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
 type
   TUnSommet = record Ar: Integer; end;
-  TableauSommets = array[0..99] of TUnSommet;
-  TableauEntiers = array[0..99] of Integer;
+  TableauSommets = array[0..MaxPVertices-1] of TUnSommet;
+ {TableauEntiers = array[0..MaxPFaces-1] of Integer;}
 var
   FaceCount: Integer;
   I, J, K: Integer;
@@ -1601,8 +1604,8 @@ const
  PlaceHolder = PVertex(1);
 type
  TUnSommet = record Ar: Integer; end;
- TableauSommets = array[0..99] of TUnSommet;
- TableauEntiers = array[0..99] of Integer;
+ TableauSommets = array[0..MaxPVertices-1] of TUnSommet;
+{TableauEntiers = array[0..MaxPFaces-1] of Integer;}
 var
  I, J, L: Integer;
  FI, FJ: TFace;
@@ -1883,7 +1886,7 @@ type
  TUnSommet = record
               Pt: TPointProj;
              end;
- TableauSommets = array[0..99] of TUnSommet;
+ TableauSommets = array[0..MaxPVertices-1] of TUnSommet;
 var
  I, J, Base, BaseNombre{, NoSommet}: Integer;
  NewPen: Boolean;
@@ -2873,7 +2876,7 @@ begin
  SetThreePointsEx(V1, P2, P3, Normale);
 end;
 
-(* original etp version, kept for comparsion, note call of
+(* original etp version, kept for comparison, note call of
    SetThreePointsEx_etp, which was SetThreePOintsEx
 procedure TFace.SetThreePointsUserTex_etp(const V1, V2, V3: TVect; AltTexSrc: QObject);
 var
