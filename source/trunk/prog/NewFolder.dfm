@@ -30,12 +30,13 @@ object NewFolderDlg: TNewFolderDlg
   object Label2: TLabel
     Left = 48
     Top = 64
-    Width = 333
+    Width = 345
     Height = 33
     AutoSize = False
     Caption = 
       'The folder will only appear in the Toolbox as long as this file ' +
       'is opened or if you register this file as an Add-on.'
+    WordWrap = True
   end
   object Label3: TLabel
     Left = 48
