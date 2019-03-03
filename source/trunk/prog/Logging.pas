@@ -65,6 +65,10 @@ var
   LogLevel: cardinal;
   LogLevelEnv: string;
 
+const
+  //Default level is 'warning'
+  DefaultLogLevel = LOG_WARNING;
+
 Procedure aLog(Logger: TLogName; const s: string); forward;
 
  {------------------------}
@@ -208,16 +212,11 @@ initialization
     Windows.MessageBox(0, 'Environmental variable QUARK_LOG_PATCHNAME found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
   LogLevelEnv:=GetEnvironmentVariable('QUARK_LOG_LEVEL');
   if LogLevelEnv='' then
-    //Default level is 'warning'
-    LogLevel:=LOG_WARNING
+    LogLevel:=DefaultLogLevel
   else
   begin
     Windows.MessageBox(0, 'Environmental variable QUARK_LOG_LEVEL found. QuArK will use its value.', 'Environmental variable found', MB_TASKMODAL or MB_ICONINFORMATION or MB_OK);
-    try
-      LogLevel:=StrToInt(LogLevelEnv);
-    except
-      LogLevel:=LOG_WARNING;
-    end;
+    LogLevel:=StrToIntDef(LogLevelEnv, DefaultLogLevel);
   end;
   OpenLogFile;
 finalization
