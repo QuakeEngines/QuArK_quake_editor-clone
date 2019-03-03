@@ -1463,7 +1463,7 @@ begin
       begin
         if Info^.Code <> qsCodeFileLink then
         begin
-          { a sub-objects }
+          { a sub-object }
           Q:=ConstructQObject(Name, Self);
           FSubElements.Add(Q);
           LoadedItem(rf_Private, F, Q, Size);
