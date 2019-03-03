@@ -6,7 +6,7 @@ author: Decker
 </noscript>
 <script language="javascript">
 <!--
-imgsPrefix = "intro.mapeditor.overview."; /* This is a hack due to BUILD.PY */
+imgsPrefix = "pics/intro.mapeditor.overview."; /* This is a hack due to BUILD.PY */
 imgsA = new Array("menu",
                   "display",
                   "mousemodes",
@@ -18,11 +18,11 @@ imgsA = new Array("menu",
                   "layout",
                   "hintbox");
 imgsB = new Array();
-for (i=0; i<20; i+=2) {
-  imgsB[i] = new Image();
-  imgsB[i].src = imgsPrefix+imgsA[i/2]+".png";
-  imgsB[i+1] = new Image();
-  imgsB[i+1].src = imgsPrefix+imgsA[i/2]+"_s.png";
+for (i=0; i<imgsA.length; i+=1) {
+  imgsB[i*2] = new Image();
+  imgsB[i*2].src = imgsPrefix+imgsA[i]+".png";
+  imgsB[i*2+1] = new Image();
+  imgsB[i*2+1].src = imgsPrefix+imgsA[i]+"_s.png";
 }
 function imgchange(imgname,num,typ)
 {

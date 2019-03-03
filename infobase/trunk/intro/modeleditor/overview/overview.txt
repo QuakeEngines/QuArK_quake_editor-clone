@@ -6,7 +6,7 @@ author: cdunde
 </noscript>
 <script language="javascript">
 <!--
-imgsPrefix = "intro.modeleditor.overview."; /* This is a hack due to BUILD.PY */
+imgsPrefix = "pics/intro.modeleditor.overview."; /* This is a hack due to BUILD.PY */
 imgsA = new Array("menu",
                   "display",
                   "viewselect",
@@ -24,11 +24,11 @@ imgsA = new Array("menu",
                   "skinview",
                   "hintbox2");
 imgsB = new Array();
-for (i=0; i<32; i+=2) {
-  imgsB[i] = new Image();
-  imgsB[i].src = imgsPrefix+imgsA[i/2]+".png";
-  imgsB[i+1] = new Image();
-  imgsB[i+1].src = imgsPrefix+imgsA[i/2]+"_s.png";
+for (i=0; i<imgsA.length; i+=1) {
+  imgsB[i*2] = new Image();
+  imgsB[i*2].src = imgsPrefix+imgsA[i]+".png";
+  imgsB[i*2+1] = new Image();
+  imgsB[i*2+1].src = imgsPrefix+imgsA[i]+"_s.png";
 }
 function imgchange(imgname,num,typ)
 {
