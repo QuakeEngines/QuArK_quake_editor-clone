@@ -1024,7 +1024,7 @@ class TypeOfConversionDlg(quarkpy.qmacro.dialogbox):
                    "with the file types you will be SELECTING BELOW,"$0D
                    "from the game's pak files and place them in the same folder"$0D
                    "where the pak files are. If needed make DUMMY folders"$0D
-                   "to MEMIC EXACTLY how they are arranged in the pak files."$0D
+                   "to MIMIC EXACTLY how they are arranged in the pak files."$0D
                    "Then click this Path Selector's '...' button"$0D
                    "and select the folder that the PAK files are in, the game folder."$0D
                    "After Steps 1 & 2 selections are made, click the 'Make .qrk files' button."
