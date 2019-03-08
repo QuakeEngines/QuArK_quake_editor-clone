@@ -380,7 +380,7 @@ class ModelLayout(BaseLayout):
         skingridbtn.caption = str(self.editor.skingridstep)  # To show the setting value on the button.
         skinzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         skinzoombtn.near = 1
-        Vertexdragmodebtn = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink='intro.modeleditor.skinview.html#selection')
+        Vertexdragmodebtn = qtoolbar.button(maptogglebtn, "Vertex drag mode||When this button is deactivated a common vertex handle will move adjoining mesh faces, when activated individual face vertexes can be moved.", ico_mdlskv, 0, "Skin-view", infobaselink="intro.modeleditor.skinview.html#selection")
         Vertexdragmodebtn.mode = self.MODE
         Vertexdragmodebtn.tag = "SingleVertexDrag"
         Vertexdragmodebtn.state = (qtoolbar.selected,0)[not MapOption("SingleVertexDrag", self.MODE)]
@@ -445,10 +445,10 @@ class ModelLayout(BaseLayout):
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
         thesepages = []
-        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiEntity, "Specifics/Args-view", infobaselink='intro.mapeditor.dataforms.html#specsargsview')
+        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiEntity, "Specifics/Args-view", infobaselink="intro.mapeditor.dataforms.html#specsargsview")
         page1.pc = [self.bs_dataform(panel)]
         thesepages.append(page1)
-        skin = qtoolbar.button(self.fillskinform, "Skin-view||Skin-view:\n\nParameters about the selected skin", ico_objects, iiPcx, "Skin-view", infobaselink='intro.mapeditor.dataforms.html#faceview')
+        skin = qtoolbar.button(self.fillskinform, "Skin-view||Skin-view:\n\nParameters about the selected skin", ico_objects, iiPcx, "Skin-view", infobaselink="intro.mapeditor.dataforms.html#faceview")
         skin.pc = [self.bs_skinform(panel)]
         thesepages.append(skin)
         return thesepages, mppages
