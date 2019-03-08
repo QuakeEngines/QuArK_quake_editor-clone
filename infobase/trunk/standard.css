@@ -6,9 +6,6 @@ BODY {
   color: #000000;
 }
 P {
-  font-family: MS Sans Serif, Arial;
-  font-size: 10pt;
-  color: #000000;
   margin-left: 0;
   margin-right: 0;
 }
@@ -18,23 +15,18 @@ P.sm {
 A:link {
   color: #3060c0;
   text-decoration: none;
-  font-family: MS Sans Serif, Arial;
 }
 A:visited {
   color: #1050a0;
   text-decoration: none;
-  font-family: MS Sans Serif, Arial;
 }
 .sm {
-  font-family: MS Sans Serif, Arial;
   font-size: 8pt;
-  color: #000000;
 }
 .warning {
   font-size: 12pt; color: #FF0000;
 }
 .topheadline {
-  font-family: MS Sans Serif, Arial;
   font-size: 24pt;
   font-weight: bold;
 }
@@ -53,16 +45,14 @@ P.subsubheadline {
   font-weight: bold;
   font-size: 10pt;
 }
+P.item {
+  font-weight: bold;
+}
 TABLE.tight {
   border-spacing: 0;
 }
 TR.headline {
   background: #E0E0E0;
-}
-UL {
-  font-family: MS Sans Serif, Arial;
-  font-size: 10pt;
-  color: #000000;
 }
 UL.section {
   list-style: none;
@@ -75,28 +65,14 @@ UL.subsection, UL.index {
   margin-top: 5;
   margin-bottom: 5;
 }
-TH, TD, OL {
-  font-family: MS Sans Serif, Arial;
-  font-size: 10pt;
-  color: #000000;
+TH, TD {
   padding: 0;
-}
-DL {
-  font-family: MS Sans Serif, Arial;
-  font-size: 10pt;
-  color: #000000;
 }
 DT {
   font-weight: bold;
-  font-family: MS Sans Serif, Arial;
-  font-size: 10pt;
-  color: #000000;
   margin: 5, 20, 0, 20; /* this because of Netscape4 - Decker */
 }
 DD {
-  font-family: MS Sans Serif, Arial;
-  font-size: 10pt;
-  color: #000000;
   margin: 0, 20, 0, 70; /* this because of Netscape4 - Decker */
 }
 SPAN.added {
@@ -107,10 +83,8 @@ SPAN.added {
 }
 SPAN.q_a {
 /* (Q)uestion and (A)nswers */
-  font-family: MS Sans Serif, Arial;
   font-size: 12pt;
   font-weight: bold;
-  color: #000000;
 }
 .doccode {
   font-family: Courier New, Courier;
@@ -128,10 +102,6 @@ DIV.sections {
 }
 PRE {
   font-family: Fixed;
-}
-P.item {
-  font-family: MS Sans Serif, Arial;
-  font-weight: bold;
 }
 TT {
   color: #880000;
