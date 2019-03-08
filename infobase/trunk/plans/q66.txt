@@ -10,19 +10,22 @@ to be delayed till 6.7, or never to happen at all.
 <br>status: never done!
 
 <LI>Fix all drawing issues still remaining (mostly with OpenGL) (DanielPharos)
-<br>status: more or less done
+<br>status: done!
 
 <LI>Expand the model editor (cdunde)
 <br>status: well underway
 
 <LI>Fully working Direct3D renderer (DanielPharos)
+<br>status: workable, but needs performance improvements
+
+<LI>Full screen renderer that supports animations and shaders (DanielPharos)
 <br>status: slowly making progress
 
 <LI>OpenGL shader-rendering (DanielPharos)
 <br>status: envisioned
 
 <LI>Improve QuArKSAS (DanielPharos)
-<br>status: planned
+<br>status: obsolete
 
 <LI>Left-overs from 6.5
 <br>status: ...
