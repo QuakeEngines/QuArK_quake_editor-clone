@@ -971,8 +971,10 @@ begin
   end
   else
     PakList:=ListPakFiles(Path);
+  try
 
   FoundShaders:=TStringList.Create;
+  try
   if ShaderFilter then
   begin
     ShaderList:=TStringList.Create;
@@ -985,6 +987,7 @@ begin
     else
       ShaderList:=TStringList.Create;
   end;
+  try
 
   TexturesPath:=GameTexturesPath;
   if FolderFilter then
@@ -1073,10 +1076,15 @@ begin
     end;
   end;
 
-  //FIXME: These will leak if something went wrong!
-  PakList.Free;
-  ShaderList.Free;
-  FoundShaders.Free;
+  finally
+    ShaderList.Free;
+  end;
+  finally
+    FoundShaders.Free;
+  end;
+  finally
+    PakList.Free;
+  end;
 end;
 
 procedure TQuickWalParser.FormActivate(Sender: TObject);
