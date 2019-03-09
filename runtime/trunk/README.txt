@@ -49,14 +49,14 @@ QuArK Forums at http://quark.sourceforge.net/forums/.
 2. Where can I get QuArK?
 -------------------------
 
-QuArK for 32-bit Windows is available as a free download from the 
+QuArK for 32-bit Windows is available as a free download from the
 QuArK website as an executable installer or as a zip archive.
 
 The latest release is always available from
 http://sourceforge.net/projects/quark.
 
-Source archives are also available, or you could use anonymous cvs to
-checkout the sources from our SourceForge cvs repository (the project
+Source archives are also available, or you could use anonymous svn to
+checkout the sources from our SourceForge svn repository (the project
 name is 'quark').
 
 
@@ -119,8 +119,8 @@ the help snippet, and will take you to the relevant Infobase page
 or you can simply press F1 a second time to go to that page.
 
 The Help menu also has links you can click on that will take you directly
-to the 'QuArK web site' where you will find other links to assist you
-and the 'QuArK Forums site' for a wealth of information on the use of QuArK,
+to the QuArK website where you will find other links to assist you and
+the 'QuArK Forums site' for a wealth of information on the use of QuArK,
 specific games it supports, tutorials and the opportunity to join the forums
 and post questions and get answers to suit your particular needs.
 
