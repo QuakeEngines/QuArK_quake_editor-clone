@@ -119,6 +119,7 @@ procedure QRmfMapFile.LoadFile(F: TStream; FSize: Integer);
 
 var
  Racine: TTreeMapBrush;
+ MapStructure : TTreeMapGroup;
  ModeJeu: Char;
 
  BrushNum, FaceNum: Integer;
@@ -288,8 +289,9 @@ var
 
       //FIXME: OldTex.smooth
       //FIXME: OldTex.material
-      //FIXME: OldTex.q2surface
-      //FIXME: OldTex.q2contents
+     Surface.Specifics.Values['Contents']:=IntToStr(OldTex.q2contents);
+     Surface.Specifics.Values['Flags']:=IntToStr(OldTex.q2surface);
+
      Params[1]:=OldTex.shift[0];
      Params[2]:=OldTex.shift[1];
      Params[3]:=OldTex.rotate;
@@ -304,8 +306,8 @@ var
 
      //FIXME: OldTex33.smooth
      //FIXME: OldTex33.material
-     //FIXME: OldTex33.q2surface @@@Deze kunnen al!
-     //FIXME: OldTex33.q2contents
+     Surface.Specifics.Values['Contents']:=IntToStr(OldTex33.q2contents);
+     Surface.Specifics.Values['Flags']:=IntToStr(OldTex33.q2surface);
      //FIXME: OldTex33.nLightmapScale
      //FIXME if texture.nLightmapScale == 0 then Use Default Value from GameConfig
 
@@ -371,6 +373,7 @@ var
  procedure LoadMapClass(var obj : TTreeMap);
  var
    i: Integer;
+   obj2: TTreeMap;
  begin
    BrushNum:=0;
    if RMFVersion < 1.0 then
@@ -390,20 +393,26 @@ var
    F.ReadBuffer(DummyByte, SizeOf(Byte));
    F.ReadBuffer(DummyByte, SizeOf(Byte));
 
+   //We want to load all the geometry into a separate group
+   if obj=Racine then
+     obj2:=MapStructure
+   else
+     obj2:=obj;
+
    //Load children
    F.ReadBuffer(DummyInteger, SizeOf(Integer));
    for i := 0 to DummyInteger-1 do
    begin
      DummyString:=ReadRMFString(); //Name of pChild
      if DummyString = 'CMapEntity' then
-       LoadMapEntity(obj)
+       LoadMapEntity(obj2)
      else if DummyString = 'CMapGroup' then
-       LoadMapGroup(obj)
+       LoadMapGroup(obj2)
      else if DummyString = 'CMapHelper' then //used?
-       LoadMapHelper(obj)
+       LoadMapHelper(obj2)
      else if DummyString = 'CMapSolid' then
      begin
-       LoadMapSolid(obj);
+       LoadMapSolid(obj2);
        BrushNum:=BrushNum+1;
      end
      else
@@ -483,6 +492,9 @@ begin
         ModeJeu:=mjHalfLife;
         g_MapError.Clear;
 
+        MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
+        Racine.SubElements.Add(MapStructure);
+
         //LoadMapWorld:
         if FSize<SizeOf(RMFVersion) then
           Raise EError(5519);
@@ -531,7 +543,7 @@ begin
         begin
           F.ReadBuffer(DummyInteger, SizeOf(Integer));
           for i := 0 to DummyInteger-1 do
-            LoadMapPath(TTreeMap(Racine));
+            LoadMapPath(TTreeMap(Racine)); //FIXME: Make a separate group!
         end;
 
         // read camera
