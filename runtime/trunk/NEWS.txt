@@ -13,6 +13,9 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Improvements to .rmf file loading: many more things are now loading properly,
+          - including groups, entities with brushes, and the origin of entities.
+
 * [DanielPharos]: Added .rmf file UV texture coordinate loading.
 
 * [DanielPharos]: Fixed a bug causing access violations when trying to load textures from
