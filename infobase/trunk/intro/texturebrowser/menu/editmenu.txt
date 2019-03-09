@@ -1,8 +1,13 @@
 title: Edit menu
 author: Rowdy
 
-<table border=0 cellspacing=0>
-<tr><td valign=top>
+<div style="float: right;">
+<img border=0>edit.png</img>
+
+<img border=0>copyobjectas.png</img>
+
+<img border=0>importfiles.png</img>
+</div>
 
 <i>Undo</i> Allows you to quickly and simply undo the last change.
 
@@ -46,14 +51,3 @@ object.  External editors are configured in
 such as the type and size.  Also allows you to copy the item to the clipboard.
 
 <i>Configuration...</i> Runs the <ref> intro/configuration </ref>.
-
-</td><td valign=top>
-
-<img border=0>edit.png</img>
-
-<img border=0>copyobjectas.png</img>
-
-<img border=0>importfiles.png</img>
-
-</td></tr>
-</table>
