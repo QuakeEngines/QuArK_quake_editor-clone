@@ -2,52 +2,28 @@ title: .Qrk files
 author: Tiglari
 
 <pre>
-Useful additions:
-  *a rundown of the major compoments of a game-support file and an addon file.
-  *a guide to Typ's in :form's
+ToDo: *add a rundown of the major components of a game-support file and an addon file.
 </pre>
 
-.qrk files are just QObjects stored in files.  There are actually
-two kinds of .qrk files, text and binary (both unfortunately with
-the extension .qrk).  The text files can be read an edited with
-a text-editor (although the format is initially forbidding), whereas
-the binaries are much more compact, and allow `delay loading'
-which helps QuArK manage big ones with less chugging.
+.qrk files are just QObjects stored in files. There are actually two kinds of .qrk files, text and binary (both unfortunately with the extension .qrk). The text files can be read an edited with a text-editor (although the format is initially forbidding), whereas the binaries are much more compact, and allow `delay loading' which helps QuArK manage big ones with less chugging.
 
-To get a text version of a binary *.qrk, just open it, and save then save
-it (as `structured text', with the extension .txt to keep the file system
-happy).  The `technical info' zips for the older QuArK versions,
-and the current development snapshots, contain the
-text versions of the *.qrk files, which furthermore tend to contain useful
-information such as comments on the syntax, etc.
+To get a text version of a binary *.qrk, just open it, and save then save it (as `structured text', with the extension .txt to keep the file system happy). The `technical info' zips for the older QuArK versions, and the current development snapshots, contain the text versions of the *.qrk files, which furthermore tend to contain useful information such as comments on the syntax, etc.
 
-A (text format) .Qrk begins with the line `QQRKSRC1', which says
-that it's a QuArK text format file.  Then there can be comment
-lines beginning with `//' (everything after `//' on a line is
-igored), whitespace and blank lines etc. until we get down to
-business with a line whose first nonblack character is:
+A (text format) .Qrk begins with the line `QQRKSRC1', which says that it's a QuArK text format file. Then there can be comment lines beginning with `//' (everything after `//' on a line is ignored), whitespace and blank lines etc. until we get down to business with a line whose first nonblank character is:
 
   '{'.
 
-'{' opens a QObject.  We already know that QObjects have two
-`Specifics' (name-value pairs), and `Subitems', which are
-QObjects which will have a `name' specific.  So it's not too
-surprising that the rest of a QObject will consist of a series
-of pairs:
+'{' opens a QObject.  We already know that QObjects have two `Specifics' (name-value pairs), and `Subitems', which are QObjects which will have a `name' specific. So it's not too surprising that the rest of a QObject will consist of a series of pairs:
 
 <code>
   &lt;Name> = &lt;Value>
 </code>
 
-  (where &lt;Value> can be as large an expanse of text as you like,
-   if it's a great big QOobject)
+  (where &lt;Value> can be as large an expanse of text as you like, if it's a great big QObject)
 
-Until we fetch up at the end with the closing `}', after which the
-file must end.
+Until we fetch up at the end with the closing `}', after which the file must end.
 
-So let's look at the beginning of the Portal of Praevus add-on
-(I started as a Hexen II entity guy, so we gotta have some Hx2
-content here ...)
+So let's look at the beginning of the Portal of Praevus add-on (I started as a Hexen II entity guy, so we gotta have some Hx2 content here ...)
 
 <code>
 QQRKSRC1
@@ -72,27 +48,13 @@ QQRKSRC1
     }
 </code>
 
-After the opening guff, we see that the first specific is
-`QuArKProtected'. This will cause a warning to pop up whenever QuArK
-tries to save/overwrite this file (only use this if the file is
-considered part of QuArK).  'QuArKProtected''s value is a string, enclosed
-in quotes.  There are several other schemes for representing values, such
-as Hex codes, which we'll get into shortly.
+After the opening guff, we see that the first specific is `QuArKProtected'. This will cause a warning to pop up whenever QuArK tries to save/overwrite this file (only use this if the file is considered part of QuArK).  'QuArKProtected''s value is a string, enclosed in quotes. There are several other schemes for representing values, such as Hex codes, which we'll get into shortly.
 
-Then comes our first subelement.  Its Name specific will be
-`praevus directory infos.qctx'.  Its shortname is `praevus directory infos'
-and its extension is .qctx, so it's a Quake Context, and modifies
-how things are done (here where to look for info about the game).
-This particular QObject has two ordinary string-specifics,
-and then ends.  So it goes on with more subelements until the final
-'}' on line 6108.
+Then comes our first subelement. Its Name specific will be `praevus directory infos.qctx'. Its shortname is `praevus directory infos' and its extension is .qctx, so it's a Quake Context, and modifies how things are done (here where to look for info about the game). This particular QObject has two ordinary string-specifics, and then ends. So it goes on with more subelements until the final '}' on line 6108.
 
 So that's the basic idea, but there is a bit more to it than that.
 
-First, in addition to strings, there are several additional types of
-specific-values.  Binary data is introduced with `$'.  So for example
-the line from the Defaults.qrk file prescribing the red default
-color for tags is:
+First, in addition to strings, there are several additional types of specific-values. Binary data is introduced with `$'. So for example the line from the Defaults.qrk file prescribing the red default color for tags is:
 
 <code>
   Tag        = $FF0000
@@ -100,36 +62,27 @@ color for tags is:
 
 (a standard <g>RGB</g> color code, for those new to such things)
 
-Multiline strings can be specified as sequences of ordinary "-bounded
-strings separated by `$0D':
+Multiline strings can be specified as sequences of ordinary "-bounded strings separated by `$0D':
 
 <code>
   Hint = "This ought to work"
       $0D"  if it doesn't, why not try extreme skiing?"
 </code>
 
-And sequences of numbers are bounded by ', a bounding box for example
-might be specified as:
+And sequences of numbers are bounded by ', a bounding box for example might be specified as:
 
 <code>
      bbox = '-8 -8 -8 8 8 8'
 </code>
 
-All this and some more stuff that I haven't seen exemplified is
-prescribed in the function ConstructObjsFromText
-in the file QkFileObject.
+All this and some more stuff that I haven't seen exemplified is prescribed in the function ConstructObjsFromText in the file QkFileObject.
 
-* sections on the major components of the major kinds of .qrk file would go nicely here *
+* ToDo: sections on the major components of the major kinds of .qrk file would go nicely here *
 
 <strong>Forms:</strong>
- For game supporters, one of the most important kinds of components
- of .qrk files are :forms, since these control how the specifics
- of entities are entered into maps.  :forms are also important
- in Python coding, since they are used to control in making dialog
- boxes, etc.
+ For game supporters, one of the most important kinds of components of .qrk files are :forms, since these control how the specifics of entities are entered into maps. :forms are also important in Python coding, since they are used to control in making dialog boxes, etc.
 
- To get a sense of how it goes, here's the beginning of the entity
- forms specifications from DATAH2.QRK:
+ To get a sense of how it goes, here's the beginning of the entity forms specifications from DATAH2.QRK:
 
 <code>
    Entity forms.qctx =
@@ -157,41 +110,10 @@ in the file QkFileObject.
      ....
 </code>
 
-Entity Forms is a Quake Context, its subitems are a (big) list of
-:form objects.  These have some specifics (all QObjects, regardless
-of type, can have specifics freely added to them), and then comes
-a list of subitems.  Each subitem is a little window, `control'
-or `widget' (GUI geekspeak) whereby some attribute of the entity
-can be set by the editor.  I need to call them something, so I'll
-call them `fields'.
+Entity Forms is a Quake Context, its subitems are a (big) list of :form objects. These have some specifics (all QObjects, regardless of type, can have specifics freely added to them), and then comes a list of subitems. Each subitem is a little window, `control' or `widget' (GUI geekspeak) whereby some attribute of the entity can be set by the editor. I need to call them something, so I'll call them `fields'.
 
-The way fields work is a bit devious.  They have names like `more:',
-`spawnflags:', etc. (colon, null extension). Then inside the brackets are
-listed further specifics, of which the most important is `Typ'.  Typ
-determines what kind of control is used; X1 for example is a checkbox that
-sets the first bit position (flag) in an integer.  Usually the name
-determines what attribute of the entity is being set, so the `spawnflags'
-subitem sets the the first bit position of the `spawnflags' attribute of
-the entity.  But not always; `more:' above is just a label.
+The way fields work is a bit devious. They have names like `more:', `spawnflags:', etc. (colon, null extension). Then inside the brackets are listed further specifics, of which the most important is `Typ'. Typ determines what kind of control is used; X1 for example is a checkbox that sets the first bit position (flag) in an integer. Usually the name determines what attribute of the entity is being set, so the `spawnflags' subitem sets the the first bit position of the `spawnflags' attribute of the entity. But not always; `more:' above is just a label.
 
-Another important specific of fields is `Txt'.  This is the `label'
-that appears to the left of the data-entry widget itself.  If it's
-"&", then the name of the field is used as the label, so if you look
-at entity specifics in the map editor, you'll see the name of the
-various entity attributes on the left, their values on the right
-(in the data-entry widgets).  Their are various further field specifics,
-"Cap" for additional text (appearing on the right) and "Hint",
-for flyover hints, and whatever more the delphi code for that
-kind of Typ happends to support.  So the :more button calls up
-an additional window for entering further specifics, its form is
-given as the value of the Form specific.
+Another important specific of fields is `Txt'. This is the `label' that appears to the left of the data-entry widget itself. If it's "&", then the name of the field is used as the label, so if you look at entity specifics in the map editor, you'll see the name of the various entity attributes on the left, their values on the right (in the data-entry widgets). Their are various further field specifics, "Cap" for additional text (appearing on the right) and "Hint", for flyover hints, and whatever more the Delphi code for that kind of Typ happens to support. So the :more button calls up an additional window for entering further specifics, its form is given as the value of the Form specific.
 
-Unfortunately, there is no solid list of all the Typs (programmers
-might like to know that they're defined in a big cascade of
-Case statements in prog/FormCfg.pas:TFormCfg..wmMessageInterne;
-once you've got the hang of it, it's not too hard to add new ones,
-without fully understanding everything that's going on).  Browsing
-in the text versions of the game support files, especially dataq2.qrk,
-is a way to get started learning them.
-
- * A guide to Typ's would also be nice to have *
+Next is a large list of all the different Typs (programmers might like to know that they're defined in a big cascade of Case statements in prog/FormCfg.pas:TFormCfg..wmMessageInterne; once you've got the hang of it, it's not too hard to add new ones, without fully understanding everything that's going on). Browsing in the text versions of the game support files, especially dataq2.qrk, is a way to get started learning them.
