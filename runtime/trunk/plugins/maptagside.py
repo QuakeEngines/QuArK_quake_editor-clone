@@ -1118,7 +1118,9 @@ def PillarWrapClick(m):
     times = circuit/projlength
   repeat = math.floor(times)
   if times - repeat > .5:
-    repeat = repeat + 1
+    repeat = repeat + 1.0
+  if repeat < 1.0:
+    repeat = 1.0
   #squawk("t="+`times`+"; r="+`repeat`)
   #
   # replength is the desired length of projection of the
