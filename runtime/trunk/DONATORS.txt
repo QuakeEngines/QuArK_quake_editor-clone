@@ -16,6 +16,16 @@ The QuArK Developers would like to thank
 the following donators for their support:
 ----------------------------------------
 
+- Jochum 'Hipshot' Skoglund
+
+- Jim G.
+
+- Andrew L.
+                            "Please continue your fantastic work"
+
+- Wallace R.
+           "I wanted to do this for a very long time; Thank you!"
+
 - Warcus
                        "Creativity MUST win!! F*ck the consoles!"
 
@@ -45,5 +55,3 @@ the following donators for their support:
                                         "Quake Army Knife rocks!"
 
 - zy_fireblade
-
-- Jochum Skoglund
