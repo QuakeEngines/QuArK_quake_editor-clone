@@ -483,7 +483,7 @@ begin
 
    if Scene<>Nil then
     begin
-     if (Scene is TSoftwareSceneObject) or (Scene is TGLSceneObject) then
+     if (Scene is TSoftwareSceneObject) or (Scene is TGLSceneObject) or (Scene is TDirect3DSceneObject) then
      begin
        StillQuality:=StrToIntDef(ConfigSubSrc.Specifics.Values['StillQuality'], 0);
        MovingQuality:=StrToIntDef(ConfigSubSrc.Specifics.Values['MovingQuality'], 2);
@@ -1418,6 +1418,7 @@ var
  nHorzAngle, nPitchAngle: TDouble;
  BackBuffer, OldBmp: HBitmap;
  Brush: HBrush;
+ NeedFullRedraw: Boolean;
 {$IFDEF POSITIONLOG}
  F: System.Text;
 {$ENDIF}
@@ -1467,6 +1468,7 @@ begin
    Exit;
   end;
 
+ NeedFullRedraw:=false;
  if GetKey3D(Key, K1) then
   begin
    Result:=True;
@@ -1633,6 +1635,7 @@ begin
        DrawMode:=dmRenderingOnly;
        try
          Repaint;
+         NeedFullRedraw:=true;
        finally
          DrawMode:=dmFull;
        end;
@@ -1664,7 +1667,7 @@ begin
 
     if ViewMode<>vmWireframe then
      begin
-      if Scene.ChangeQuality(StillQuality) then
+      if Scene.ChangeQuality(StillQuality) or NeedFullRedraw then
        Invalidate;
      end;
    end;
