@@ -798,7 +798,7 @@ begin
      else
       UpdateFromSetup;
     end;
-  end;  
+  end;
 end;
 
 procedure QToolbarButton.CreateMenuItem(nOwner: TWinControl; nParent: TMenuItem; ShortCuts: TStringList);
