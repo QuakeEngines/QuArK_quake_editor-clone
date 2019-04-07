@@ -122,6 +122,7 @@ const  { for SetupChanged }
  {------------------------}
 
 procedure InitSetup;
+procedure CloseSetupSet;
 procedure SetupChanged(Level: Integer);
 function SetupSubSet(Root: TSetupSet; const SubSet: String) : QObject;
 function SetupSubSetEx(Root: TSetupSet; const SubSet: String; Create: Boolean) : QObject;
@@ -1259,8 +1260,12 @@ procedure CloseSetupSet;
 var
  T: TSetupSet;
 begin
- for T:=Low(g_SetupSet) to High(g_SetupSet) do
-  g_SetupSet[T].AddRef(-1);
+ for T:=High(T) downto Low(T) do
+  if g_SetupSet[T]<>Nil then
+   begin
+    g_SetupSet[T].AddRef(-1);
+    g_SetupSet[T]:=Nil;
+   end;
 // PyDict_SetItemString(QuarkxDict, 'setupset', Py_None);
 end;
 
@@ -1268,8 +1273,6 @@ initialization
   RegisterQObject(QConfig, 'a');
 
 finalization
-  CloseSetupSet;
-
   if g_TexExtensions<>nil then
    g_TexExtensions.Free;
 

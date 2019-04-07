@@ -3516,6 +3516,7 @@ begin
    Exit;
   s:=PyString_FromString(PChar('dummy')); //Just a dummy object...
   CallMacro(s, 'shutdown');
+  CloseSetupSet;
   Py_Finalize;
   //FIXME: This apparently creates problems...
   {UnInitializePython;}

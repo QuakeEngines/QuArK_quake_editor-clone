@@ -1564,8 +1564,10 @@ begin
  end;
  ClearGameBuffers(False);
  ClearPool(True);
+ {CloseSetupSet;  called by ShutdownPython}
 // QObjectClassList.Free;
  ClearConsole;
+
  ShutdownPython;
  FreeConsole;
  Application.OnException:=OldException;
