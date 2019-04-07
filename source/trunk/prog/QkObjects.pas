@@ -423,7 +423,7 @@ procedure DataDump;
 implementation
 
 uses
-  {$IFDEF Debug} MemTester, {$ENDIF}
+  {$IFDEF Debug} MemTester, QkConsts, {$ENDIF}
   QkObjectClassList, QkFileObjects, QkExplorer, Travail, Game,
   PyObjects, PyImages, Quarkx, QkExceptions, Qk1, Logging{, ExtraFunctionality};
 
@@ -2981,7 +2981,7 @@ var
 begin
   Text:=TStringList.Create;
   try
-    Text.Add(QuArKVersion);
+    Text.Add(QuArKVersion + ' ' + QuArKMinorVersion);
     Text.Add(HeavyMemDump);
 
     Text.Add('-----');

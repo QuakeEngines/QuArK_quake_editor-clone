@@ -219,7 +219,7 @@ begin
   S := 'QuArK comes with ABSOLUTELY NO WARRANTY; this is free software, and you are welcome '
        + 'to redistribute it under certain conditions. For details, see ''?'', ''About''.';
   {$IFDEF Debug}
-  S := 'DEBUG ' + QuArKVersion;
+  S := 'DEBUG ' + QuArKVersion + ' ' + QuArKMinorVersion;
   Info^.TextSize := 22;
   {$ENDIF}
   StrPCopy(Info^.Text, S); //DanielPharos: S must NOT be longer than 255 characters!
