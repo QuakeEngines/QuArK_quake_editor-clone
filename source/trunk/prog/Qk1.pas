@@ -242,7 +242,8 @@ uses Undo, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   ObjProp, qmath, QkInclude, Running, Output1, QkTreeView, PyProcess,
   Console, Python, Quarkx, About, {$IFDEF Debug} MemTester, {$ENDIF}
   PyMapView, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths,
-  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, QkConsts, Logging, SystemDetails;
+  QkExceptions, QkQuakeCtx, QkSteamFS, AutoUpdater, QkConsts, Toolbar1,
+  Logging, SystemDetails;
 
 var
   g_Mutex: THandle = 0;
@@ -1549,6 +1550,7 @@ end;
 procedure TForm1.FormDestroy(Sender: TObject);
 var
  Done: Boolean;
+ I: Integer;
 begin
  //Forcefully process idle jobs.
  //DanielPharos: This prevents memory leaks of the idle jobs. Perhaps we could simply dispose of them?
@@ -1565,6 +1567,16 @@ begin
  ClearGameBuffers(False);
  ClearPool(True);
  {CloseSetupSet;  called by ShutdownPython}
+
+ //Remove the QObjects from the dynamically created components;
+ //otherwise, they can't be unloaded!
+ for I:=0 to Self.ComponentCount-1 do
+ begin
+   if Components[I] is TDynToolbarButton97 then
+     TDynToolbarButton97(Components[I]).SrcObj:=Nil;
+   if Components[I] is TDynMenuItem then
+     TDynMenuItem(Components[I]).SrcObj:=Nil;
+ end;
 // QObjectClassList.Free;
  ClearConsole;
 
