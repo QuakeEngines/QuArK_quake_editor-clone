@@ -503,7 +503,7 @@ begin
  P:=PChar(S)+Start;
  Result:=Length(S)-Start;
  {$IFDEF Debug}
- if Result<0 then Raise InternalE(Format('No BSP Data for %d', [EntryIndex, ]));
+ if Result<0 then Raise InternalE(Format('No BSP Data for %d', [EntryIndex]));
  {$ENDIF}
 end;
 
