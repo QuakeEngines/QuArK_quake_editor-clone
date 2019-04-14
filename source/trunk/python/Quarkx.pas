@@ -3273,10 +3273,13 @@ begin
  obj:=PyObject_GetItem(Py_xStrings, @key);
  if obj=Nil then
   Exit;
- P:=PyString_AsString(obj);
- if P<>Nil then
-  Result:=StrPas(P);
- Py_DECREF(obj);
+ try
+  P:=PyString_AsString(obj);
+  if P<>Nil then
+   Result:=StrPas(P);
+ finally
+  Py_DECREF(obj);
+ end;
 end;
 
 function FmtLoadStr1(I: Integer; Args: array of const) : String;
@@ -3518,8 +3521,7 @@ begin
   CallMacro(s, 'shutdown');
   CloseSetupSet;
   Py_Finalize;
-  //FIXME: This apparently creates problems...
-  {UnInitializePython;}
+  {UnInitializePython;} //FIXME: This creates problems, as not all Python objects have been freed yet...
   PythonLoaded := False;
 end;
 
