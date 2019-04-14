@@ -1003,6 +1003,7 @@ var
  I: Integer;
  MaxRecentFiles: Integer;
  NewMenuItem: TMenuItem;
+ obj: PyObject;
 begin
  F:=ValidParentForm(FileMenu.PopupComponent as TControl);
  QF1:=F is TQForm1;
@@ -1086,8 +1087,13 @@ begin
    end;
    FileMenu.Tag:=1;
   end;
-  CallMacro(GetEmptyTuple,'loadentityplugins');
-  CallMacro(GetEmptyTuple,'loadmdlimportexportplugins');
+  obj:=GetEmptyTuple;
+  try
+    Py_XDECREF(CallMacro(obj,'loadentityplugins'));
+    Py_XDECREF(CallMacro(obj,'loadmdlimportexportplugins'));
+  finally
+    Py_DECREF(obj);
+  end;
 end;
 
 procedure TForm1.WindowMenuPopup(Sender: TObject);
