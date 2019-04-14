@@ -3376,8 +3376,7 @@ begin
   fnt:=PyDict_GetItemString(MacrosDict, PChar('MACRO_'+fntname));
   if fnt=Nil then
   begin
-    //FIXME: FIND A BETTER WAY!
-    Log(LOG_WARNING, 'Macro ' + fntname + 'not found!');
+    Log(LOG_WARNING, FmtLoadStr1(5806, [fntname]));
     Exit;
   end;
   if Hourglass then

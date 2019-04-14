@@ -1062,6 +1062,7 @@ Strings = {
     5803: "Invalid Tag! (%d - QSprForm.playClick)",
     5804: "Exception at address %p: %s",
     5805: "Unable to find file in pak file",
+    5806: "Macro %s not found",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
