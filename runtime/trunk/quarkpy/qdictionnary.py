@@ -1060,6 +1060,8 @@ Strings = {
     5801: "Quake 2 Sprite Signature = %d, Should be: %d",
     5802: "Quake 2 Sprite Version = %d, Should be: %d",
     5803: "Invalid Tag! (%d - QSprForm.playClick)",
+    5804: "Exception at address %p: %s",
+    5805: "Unable to find file in pak file",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",

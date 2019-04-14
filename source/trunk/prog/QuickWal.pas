@@ -831,7 +831,7 @@ begin
   ParseRec(S, Base, '', DiskFolder);
  except
   on E:Exception do
-   Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+   Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
  end;
  try
   { Find 'game' textures in directory }
@@ -839,7 +839,7 @@ begin
   ParseRec(S, Base, '', DiskFolder);
  except
   on E:Exception do
-   Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+   Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
  end;
 
  if DiskFolder.SubElements.Count>0 then
@@ -871,7 +871,7 @@ begin
        ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
      except
       on E:Exception do
-       Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+       Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
      end;
      try
       { Find 'game' textures in package-files }
@@ -883,7 +883,7 @@ begin
        ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
      except
       on E:Exception do
-       Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+       Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
      end;
      if SearchResultList<>Nil then
       begin
@@ -1001,7 +1001,7 @@ begin
    ParseShaderFiles(S, Base, '', Q, ShaderList, FoundShaders);
   except
    on E:Exception do
-    Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+    Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
   end;
 
   if not FolderFilter then
@@ -1026,7 +1026,7 @@ begin
         end;
       except
        on E:Exception do
-        Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+        Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
       end;
     finally
       Pak.AddRef(-1);
@@ -1046,7 +1046,7 @@ begin
    ParseTextureFolders(S, Base, Filter, Q);
   except
    on E:Exception do
-    Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+    Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
   end;
 
   if not (ShaderFilter or FolderFilter) then
@@ -1069,7 +1069,7 @@ begin
           ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
       except
        on E:Exception do
-        Log(LOG_WARNING, LoadStr1(5788), [E.Message]);
+        Log(LOG_WARNING, LoadStr1(5804), [ExceptAddr, FmtLoadStr1(5788, [E.Message])]);
       end;
     finally
       Pak.AddRef(-1);

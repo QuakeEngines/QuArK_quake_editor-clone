@@ -986,8 +986,11 @@ begin
             try
               Result:=PakFile.FindFile(FilenameAlias);
             except
-              //FIXME: Log error?
-              Result:=Nil;
+             on E:Exception do
+              begin
+               Log(LOG_WARNING, LoadStr(5804), [ExceptAddr, FmtLoadStr1(5805, [E.Message])]);
+               Result:=Nil;
+              end;
             end;
             if (Result<>Nil) then
               Exit; // found it
