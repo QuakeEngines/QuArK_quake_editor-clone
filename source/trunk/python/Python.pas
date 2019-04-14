@@ -938,7 +938,7 @@ end;}
 
 function Py_BuildValueX(fmt: PChar; Args: array of const) : PyObject;
 asm                     { Comments added by Decker, but I'm not sure they are correct!! }
- push edi               { save the value of edi for later retrival }
+ push edi               { save the value of edi for later retrieval }
  add ecx, ecx           { multiply ecx with 2}
  add ecx, ecx           { multiply ecx with 2 again - so in reality its "ecx = ecx * 4" }
  lea edi, [ecx+8]       { load edi register with the result of "ecx + 8" }
