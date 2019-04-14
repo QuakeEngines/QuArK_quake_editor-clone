@@ -3513,12 +3513,16 @@ end;
 
 procedure ShutdownPython;
 var
-  s: PyObject;
+  obj: PyObject;
 begin
   if not PythonLoaded then
    Exit;
-  s:=PyString_FromString(PChar('dummy')); //Just a dummy object...
-  CallMacro(s, 'shutdown');
+  obj:=GetEmptyTuple;
+  try
+    Py_XDECREF(CallMacro(obj, 'shutdown'));
+  finally
+    Py_DECREF(obj);
+  end;
   CloseSetupSet;
   Py_Finalize;
   {UnInitializePython;} //FIXME: This creates problems, as not all Python objects have been freed yet...
