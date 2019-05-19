@@ -1,12 +1,12 @@
- 
+
 ########################################################
 #
 #                          Slider Plugin
 #                          v2.0, Aug 2001
-#                      works with Quark 6.3        
+#                      works with Quark 6.3
 #
 #
-#                    by tiglari@planetquake.com     
+#                    by tiglari@planetquake.com
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -45,12 +45,12 @@ from quarkpy.maputils import *
 #  First we define the slider's dialog, then a Click function
 #   to bring it up when an appropriate menu-button, and finally
 #   redefine a bunch of menus to put the Click function on them.
-#  
+#
 
 #
 # see the dialogs in quarkpy.qeditor and plugins.mapsearch
 #  for commented basic dilaog code.  LiveEditDlg is a jazzed
-#  up descendent of quarkpy.qmacro.dialogbox, adapted for
+#  up descendant of quarkpy.qmacro.dialogbox, adapted for
 #  dialogs that are supposed to drive things around on the
 #  screen While U Watch.
 #
@@ -76,8 +76,8 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "Movement Along Axis, offset from present position." $0D "  Increment 1 or gridstep"
         }
 
-        sep: = {Typ="S" Txt=" "} 
-        
+        sep: = {Typ="S" Txt=" "}
+
         around: = 
         {
         Txt = "Around"
@@ -85,8 +85,8 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "Movement Around Axis, offset from preset position." $0D "  In degrees, regardless of grid" $0D "  But FORCE option will force to grid after movement."
         }
 
-        sep: = {Typ="S" Txt=" "} 
-        
+        sep: = {Typ="S" Txt=" "}
+
         force: =
         {
         Txt = "Grid"
@@ -104,7 +104,7 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
 #
 # ---- Click Function
 #
-       
+
 #
 #    First an auxiliary:
 #
@@ -136,7 +136,7 @@ def gridify(delta, diff, gridstep):
 def EdgeSlideClick(m):
     editor = m.editor
     edge = m.tagged
-    
+
     #
     # parameters are stuffed into the pack class/object,
     #  and passed thereby
@@ -153,7 +153,7 @@ def EdgeSlideClick(m):
     #  the dlg's changes are executed
     #
     pack.orig_object=pack.o
-      
+
     #
     # this initializes the dialog's values, via code in
     #  dlgclasses.LiveEdit dialog that runs the function
@@ -172,18 +172,18 @@ def EdgeSlideClick(m):
         self.point = pack.edge[0]
         src["along"] = str(pack.along)
         src["around"] = str(int(pack.around/deg2rad))
-      
+
     #
     # And here's the `action' function that gets called
     #  every time you change the data in the dialog box.
     #
     def action(self, pack=pack, editor=m.editor):
         src = self.src
-        delta = eval(src["along"]) # cumulative displacement from inital position
+        delta = float(src["along"]) # cumulative displacement from initial position
         if delta != pack.along:
             delta = gridify(delta, delta-pack.along, editor.gridstep)
         pack.along=delta
-        phi = eval(src["around"])*deg2rad
+        phi = float(src["around"])*deg2rad
         new = pack.orig_object.copy()
         matrix = ArbRotationMatrix(self.axis, phi)
         new.linear(self.point, matrix)
@@ -270,7 +270,7 @@ class PlaneSlideDlg (quarkpy.dlgclasses.LiveEditDlg):
 def PlaneSlideClick(m):
     editor = m.editor
     plane = m.tagged
-    
+
     #
     # parameters are stuffed into the pack class/object,
     #  and passed thereby
@@ -288,28 +288,28 @@ def PlaneSlideClick(m):
     #  the dlg's changes are executed
     #
     pack.orig_object=pack.o
-    
+
     def setup(self, pack=pack):
         src = self.src
 
         src["away"] = str(pack.away)
         src["across"] = "%.1f %.1f"%pack.across
-      
-      
+
+
     #
     # And here's the `action' function that gets called
     #  every time you change the data in the dialog box.
     #
     def action(self, pack=pack, editor=m.editor):
         src = self.src
-        away = eval(src["away"]) # cumulative displacement from inital position
+        away = float(src["away"]) # cumulative displacement from initial position
 
         def griddo(new, old, step=editor.gridstep):
             if new != old:
                 return gridify(new, new-old, step)
             else:
                 return new
-            
+
         if away != pack.away:
             away = gridify(away, away-pack.away, editor.gridstep)
         pack.away=away
@@ -339,11 +339,11 @@ def PlaneSlideClick(m):
     #  uses (and across sessions).
     #
     PlaneSlideDlg(quarkx.clickform, 'plane_slide', editor, setup, action)
-    
+
 #
 #  --- Now for the menus:
 #
- 
+
 types = {
     ":e": "Entity",
     ":g": "Group",
@@ -401,10 +401,10 @@ def makePlaneSlide(o, editor):
 for Type in (quarkpy.mapentities.PolyhedronType,
              quarkpy.mapentities.GroupType,
              quarkpy.mapentities.BrushEntityType):
-             
+
     def newmenu(o, editor, oldmenu=Type.menu.im_func):
         menu = oldmenu(o, editor)
         menu[:0] = [slidePopup(o,editor)]
         return menu
-        
+
     Type.menu = newmenu

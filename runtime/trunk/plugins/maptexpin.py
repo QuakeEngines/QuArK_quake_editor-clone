@@ -4,7 +4,7 @@
 #
 #
 #                  by tiglari@hexenworld.met
-#     
+#
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -12,7 +12,6 @@
 #
 #   Please notify bugs & possible improvements to
 #   tiglari@hexenworld.net
-#  
 #
 ##########################################################
 
@@ -64,7 +63,7 @@ def removeFromAttr(object, attr, thing):
 
 
 
-    
+
 #
 # Pinning dialog
 #
@@ -85,10 +84,10 @@ class VtxPinDlg(quarkpy.dlgclasses.placepersistent_dialogbox):
     {
         Style = "9"
         Caption = "Vertex Pinning"
-        
+
         st:= { Txt = "st" Typ = "EF02"
                Hint = "Tex coordinates for this vertex, W, H." }
-        
+
         pin:= { Txt = "pin:" Typ = "ER"
                    Hint = "# vertex being pinned (read-only)" }
 
@@ -104,7 +103,7 @@ class VtxPinDlg(quarkpy.dlgclasses.placepersistent_dialogbox):
        texp = face.threepoints(2)
 
        self.src["pin"] = msg
-       
+
        self.oldtex=texCoords(pos, texp, 128)
        self.src["st"] = self.oldtex
        self.facepins = facepins
@@ -155,12 +154,11 @@ class VtxPinDlg(quarkpy.dlgclasses.placepersistent_dialogbox):
         editor.invalidateviews()
         qmacro.dialogbox.close(self, dlg)
 
-
     def cancel(self, dlg):
           qmacro.dialogbox.close(self, dlg)
 
 
-    
+
 #
 # New menu for vertexes
 #
@@ -220,22 +218,22 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
         for pin in editor.pinned[:]:
             if not pos-pin[0]:
                 editor.pinned.remove(pin)
-          
+
         editor.invalidateviews()
-                
+
     def clearAllClick(m, editor=editor):
         delattr(editor,'pinned')
         editor.invalidateviews()
     
     if face is not None:
-        stString = " (%.1f, %.1f)"%texCoords(self.pos, face.threepoints(2), 128) 
+        stString = " (%.1f, %.1f)"%texCoords(self.pos, face.threepoints(2), 128)
     else:
         stString = ""
     pinItem = qmenu.item('&Pin Vertex '+stString,pinClick,"|`pin' the texture on the face at the vertex. A face must be selected.\n\nAfter three pins have been set, the texture is repositioned so that the texture coordinates for the pinned points are as specified.")
     stItem = qmenu.item(stString, None,"No action")
     clearPin = qmenu.item('Clear Pin', clearPinClick)
     clearPins = qmenu.item('Clear All Pins', clearAllClick)
-    
+
     clearPin.state= qmenu.disabled
     if pinned is None:
         clearPins.state = qmenu.disabled
@@ -245,7 +243,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
     if repin:
         pinItem.text = 'Re&pin Vertex'
         clearPin.state = qmenu.normal
-        
+
     #
     #  Promote/Demote of submenu seems like a good idea to
     #   apply to other submenus.
@@ -254,7 +252,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
 
     def promoteClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Pinners"]="1"
-         
+
     def demoteClick(m):
         quarkx.setupsubset(SS_MAP, "Options")["Pinners"]="0"
 
@@ -264,7 +262,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
         promoteItem = qmenu.item('Promote Pinning',promoteClick, "|Pinning menu items get promoted onto main vertex menu")
 
     pinList = [pinItem, clearPin, clearPins, promoteItem]
-    
+
     if promote=="1":
         pinners = pinList
     else:
@@ -272,7 +270,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
 
 
     return  pinners+oldmenu(self,editor,view)
-    
+
 quarkpy.maphandles.VertexHandle.menu = vertexmenu
 
 
@@ -312,7 +310,6 @@ def pinfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdra
 #         else:
 #             cv.pencolor = MapColor("Bezier")
 #             tagging.drawsquare(cv,p1,8)
-              
 
       cv.pencolor=MapColor("Duplicator")
       try:

@@ -144,8 +144,8 @@ class LineThickDlg(SimpleCancelDlgBox):
     # dialog layout
     #
     size = (160, 75)
-    dfsep = 0.7 
-    
+    dfsep = 0.7
+
     dlgdef = """
     {
         Style = "9"
@@ -153,20 +153,19 @@ class LineThickDlg(SimpleCancelDlgBox):
 
         thick: =
         {
-        Txt = "Line Thickness:"
-        Typ = "EF1"
-        Hint = "Needn't be an integer."
+          Txt = "Line Thickness:"
+          Typ = "EF1"
+          Hint = "Needn't be an integer."
         }
         cancel:py = {Txt="" }
     }
     """
 
     def __init__(self, form, editor, m):
-    
         src = quarkx.newobj(":")
-        thick =  quarkx.setupsubset(SS_MAP,"Options")['linethickness']
+        thick = quarkx.setupsubset(SS_MAP,"Options")['linethickness']
         if thick:
-            thick=eval(thick)
+            thick=float(thick)
         else:
             thick=3
         src["thick"] = thick,
@@ -174,8 +173,7 @@ class LineThickDlg(SimpleCancelDlgBox):
         SimpleCancelDlgBox.__init__(self,form,src)
 
     def ok(self):
-        pass
-        thick = self.src['thick']    
+        thick = self.src['thick']
         if thick is not None:
             thick, = thick
             if thick==3:
@@ -184,24 +182,24 @@ class LineThickDlg(SimpleCancelDlgBox):
                 quarkx.setupsubset(SS_MAP,"Options")['linethickness']="%4.2f"%thick
 
 def getLineThickness():
-     thick =  quarkx.setupsubset(SS_MAP,"Options")['linethickness']
+     thick = quarkx.setupsubset(SS_MAP,"Options")['linethickness']
      if thick:
-         return eval(thick)
+         return float(thick)
      else:
          return 3
-     
+
 def getThinLineThickness():
-     thick =  getLineThickness()
+     thick = getLineThickness()
      if thick > 1:
          thick = thick-1
      return thick
-     
+
 def setLineThick(m):
     editor = mapeditor()
     if editor is None:
         return
     LineThickDlg(quarkx.clickform, editor, m)
-    
+
 lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.|intro.mapeditor.menu.html#optionsmenu")
 
 

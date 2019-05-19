@@ -15,12 +15,7 @@ import quarkpy.mapoptions
 from quarkpy.maputils import *
 
 
-prevreload = ""
-
-class remodule:
-  "a place to stick stuff"
-
-class ReloadDlg (quarkpy.qmacro .dialogbox):
+class ReloadDlg (quarkpy.qmacro.dialogbox):
     #
     # dialog layout
     #
@@ -29,7 +24,7 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
     size = (200,120)
     dfsep = 0.35
     flags = FWF_KEEPFOCUS
-    
+
     dlgdef = """
         {
         Style = "9"
@@ -120,12 +115,12 @@ def ReloadClick(m):
 
     command = "reload(%s)"%module.replace(".py", "")
     eval(command)
-    
+
   editor=mapeditor()
   if editor is None: return
   ReloadDlg(quarkx.clickform,editor,action)
 
-hint = "|Reload:\n\nThis is a 'Developer Mode' funciton to help with debugging, etc.|intro.mapeditor.menu.html#reload"
+hint = "|Reload:\n\nThis is a 'Developer Mode' function to help with debugging, etc.|intro.mapeditor.menu.html#reload"
 
 menreload = qmenu.item("Reload",ReloadClick,hint)
 

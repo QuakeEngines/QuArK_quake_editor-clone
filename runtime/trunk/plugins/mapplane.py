@@ -7,7 +7,7 @@
 #
 
 Info = {
-   "plug-in":       "Three Pooint Plane plugin",
+   "plug-in":       "Three Point Plane plugin",
    "desc":          "Define a plane from three points",
    "date":          "May 25, 2001",
    "author":        "tiglari",
@@ -32,25 +32,25 @@ from tagging import *
 class PlaneHandle(quarkpy.maphandles.CenterHandle):
 
     def __init__(self, pos, dup, color):
-        self.dup=dup
-        quarkpy.maphandles.CenterHandle.__init__(self,pos,dup,color)
+        self.dup = dup
+        quarkpy.maphandles.CenterHandle.__init__(self, pos, dup, color)
 
     def menu(self, editor, view):
         oldmenu = quarkpy.maphandles.CenterHandle.menu(self, editor, view)
 
         def tagplane(m,self=self, editor=editor):
-            p0,p1,p2,p3=self.pozzies()
-            tagplane((p1,p2,p3),editor)
+            p0, p1, p2,p3=self.pozzies()
+            tagplane((p1, p2, p3), editor)
 
         def glueplane(m, self=self, editor=editor):
-            p1,p2,p3=editor.tagging.taggedplane
-            plane=self.centerof
-            undo=quarkx.action()
-            for (spec,val) in (("P1", p1), ("P2",p2), ("P3",p3)):
-                 undo.setspec(plane,spec,val.tuple)                 
-            editor.ok(undo,"Glue plane to tagged")            
+            p1, p2, p3 = editor.tagging.taggedplane
+            plane = self.centerof
+            undo = quarkx.action()
+            for (spec,val) in (("P1", p1), ("P2", p2), ("P3", p3)):
+                 undo.setspec(plane, spec, val.tuple)
+            editor.ok(undo,"Glue plane to tagged")
 
-        tagitem = qmenu.item("Tag Plane",tagplane)
+        tagitem = qmenu.item("Tag Plane", tagplane)
         glueitem = qmenu.item("Glue to tagged plane", glueplane)
 
         tagged = gettaggedplane(editor)
@@ -59,10 +59,10 @@ class PlaneHandle(quarkpy.maphandles.CenterHandle):
         return [tagitem, glueitem]+oldmenu
 
     def pozzies(self):
-        def getpos(spec,dup=self.dup):
+        def getpos(spec, dup=self.dup):
             return quarkx.vect(dup[spec])
-        points = map(getpos,("P1","P2","P3"))
-        return [reduce(lambda x,y:x+y,points)/3.0]+points
+        points = map(getpos, ("P1", "P2", "P3"))
+        return [reduce(lambda x, y: x+y, points) / 3.0]+points
 
 
 
@@ -73,7 +73,7 @@ class PlaneCenterHandle(PlaneHandle):
     "A handle for accessing the center a plane."
 
     def __init__(self, dup):
-        self.dup=dup # gotto do this first
+        self.dup = dup # gotto do this first
         self.pos = self.pozzies()[0]
         PlaneHandle.__init__(self, self.pos, dup, MapColor("Axis"))
 
@@ -133,7 +133,7 @@ class PlanePointHandle(PlaneHandle):
           newpos = pos0+delta
       if delta or (flags&MB_REDIMAGE):
           new = self.centerof.copy()
-          new[spec]=newpos.tuple
+          new[spec] = newpos.tuple
           new = [new]
       else:
           new = None
@@ -150,7 +150,7 @@ class PlaneDuplicator(StandardDuplicator):
             return PlanePointHandle(self.dup,spec)
         list = map(makehandle,["P1", "P2", "P3"])+[PlaneCenterHandle(self.dup)]
         return list
-        
+
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup plane":  PlaneDuplicator,
@@ -170,17 +170,17 @@ def make3points(m):
     # gettaggedplane returns a face, we want the points,
     #  assumes item disabled if taggedplane nexistepas
     #
-    p1,p2,p3=editor.tagging.taggedplane
+    p1, p2, p3 = editor.tagging.taggedplane
     plane = quarkx.newobj("plane duplicator:d")
-    plane["macro"]="dup plane"
-    for (spec,val) in (("P1", p1), ("P2",p2), ("P3",p3)):
+    plane["macro"] = "dup plane"
+    for (spec,val) in (("P1", p1), ("P2", p2), ("P3", p3)):
 #         debug('spec '+spec+'; val: '+`val`)
          plane[spec]=val.tuple
-    undo=quarkx.action()
+    undo = quarkx.action()
     sel = editor.layout.explorer.uniquesel
-    parent=sel.treeparent
+    parent = sel.treeparent
     while not parent.acceptitem(plane):
-       parent=parent.treeparent
+       parent = parent.treeparent
     undo.put(parent,plane,sel)
     editor.ok(undo,"Create 3point plane")
     editor.layout.explorer.uniquesel=plane
@@ -195,7 +195,7 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
        planeItem.state=qmenu.disabled
     else:
        planeItem.state=qmenu.normal
-      
+
 #quarkpy.mapcommands.onclick = commandsclick
 
 #quarkpy.mapcommands.items.append(planeItem)

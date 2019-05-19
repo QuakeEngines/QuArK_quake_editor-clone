@@ -5,7 +5,7 @@
 #
 #
 #                  by tiglari@hexenworld.com
-#     
+#
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -13,7 +13,7 @@
 #
 #   Please notify bugs & possible improvements to
 #   tiglari@hexenworld.com
-#  
+#
 #
 ##########################################################
 
@@ -61,7 +61,7 @@ class TexPosDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "x, y scales; map units per texture tile" $0D "  y is the direction along the edge away from the closest corner," $0D "  x is the direction along the other edge at that corner, away from it"
         }
 
-        sep: = {Typ="S" Txt=" "} 
+        sep: = {Typ="S" Txt=" "}
 
         offset: =
         {
@@ -70,41 +70,37 @@ class TexPosDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "x, y offsets; floats map units" $0D "  y is the direction along the edge away from the closest corner," $0D "  x is the direction along the other edge at that corner, away from it"
         }
 
-        sep: = {Typ="S" Txt=" "} 
+        sep: = {Typ="S" Txt=" "}
 
         tilt: = {
         Txt = "Tilt"
         Typ = "EU"
         Hint = "`tilt' angle, in degrees."
         }
-        
-        sep: = {Typ="S" Txt=" "} 
+
+        sep: = {Typ="S" Txt=" "}
 
         shear: = {
         Txt = "Shear"
         Typ = "EU"
         Hint = "`shear' angle, in degrees." $0D "  (angle between texture y-axis and perp to texture x-axis)"
         }
-        
-      
+
+
         sep: = { Typ="S" Txt=""}
 
         exit:py = {Txt="" }
     }
     """
 
-def read2vec(vals):
-  strings = vals.split()
-  return eval(strings[0]), eval(strings[1])
-
 def PosTexClick(m):
   editor = mapeditor()
-  
+
   class pack:
     "just a place to stick stuff"
-  
+
   pack.o = m.o
-  
+
   def setup(self, pack=pack):
     editor.texposdlg=self
     src = self.src
@@ -126,8 +122,8 @@ def PosTexClick(m):
 
     self.src["tilt"] = "%.1f"%degcycle(tilt)
     self.src["shear"] = "%.1f"%degcycle(shear)
-    
-    
+
+
   def action(self, pack=pack, editor=editor):
     face = pack.o
     offsetx, offsety = read2vec(self.src["offset"])
@@ -179,5 +175,5 @@ def texmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
   texitem.o = o
   texpop.items[1:1] = [texitem]
   return menu
-  
+
 quarkpy.mapentities.FaceType.menu = texmenu

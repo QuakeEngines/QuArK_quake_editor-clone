@@ -155,7 +155,7 @@ class StandardDuplicator(DuplicatorManager):
         #
         if self.dup["increment suffix"]=="1":
             if self.dup["increment by"]:
-                self.incrementby=eval(self.dup["increment by"])
+                self.incrementby=int(self.dup["increment by"])
             else:
                 self.incrementby=1
             #

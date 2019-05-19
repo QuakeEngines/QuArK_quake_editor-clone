@@ -22,7 +22,7 @@ from quarkpy.maputils import *
 #                   in bytes. This will grow as your program's dynamic memory
 #                   usage grows.
 #TotalUncommitted  The total number of bytes (of TotalAddrSpace) for which
-#                   space has not been allocated in the swap file. 
+#                   space has not been allocated in the swap file.
 #TotalCommitted    The total number of bytes (of TotalAddrSpace) for which
 #                   space has been allocated in the swap file.
 #                   Note:TotalUncommitted + TotalCommitted = TotalAddrSpace
@@ -34,7 +34,7 @@ from quarkpy.maputils import *
 #                   address space will be allocated from the OS; TotalAddrSpace
 #                   will be incremented accordingly.
 #FreeSmall         Total bytes of small memory blocks which are not currently
-#                   allocated by your program. 
+#                   allocated by your program.
 #FreeBig           Total bytes of big memory blocks which are not currently
 #                   allocated by your program. Large free blocks can be
 #                   created by coalescing smaller, contiguous, free blocks
@@ -45,7 +45,7 @@ from quarkpy.maputils import *
 #                   These three fields (Unused, FreeBig, and FreeSmall) refer
 #                   to dynamic allocation by the user program.
 #Overhead          The total number of bytes required by the heap manager to
-#                   manage all the blocks dynamically allocated by your program. 
+#                   manage all the blocks dynamically allocated by your program.
 #HeapErrorCode     Indicates the current status of the heap, as internally
 #                   determined.
 
@@ -68,19 +68,17 @@ class HeapStatus(quarkpy.dlgclasses.placepersistent_dialogbox):
 
         TotalAllocated: =
         {
-        Txt = "&"
-        Typ = "ESR"
-        Hint = "Total Bytes Allocated by the Program"
+          Txt = "&"
+          Typ = "ESR"
+          Hint = "Total Bytes Allocated by the Program"
         }
 
         ChangeAllocated: =
         {
-        Txt = "&"
-        Typ = "ESR"
-        Hint = "Change in Total Bytes Allocated by the Program"
+          Txt = "&"
+          Typ = "ESR"
+          Hint = "Change in Total Bytes Allocated by the Program"
         }
-
-        
 
         sep: = { Typ="S" Txt=" " }
 

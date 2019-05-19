@@ -67,18 +67,18 @@ class FindTargetDlg (quarkpy.dlgclasses.LiveEditDlg):
           Typ = "EF1"
           Txt = "# found"
         }
-          
+
         sep: = { Typ="S" Txt=""}
 
         buttons: = {
-        Typ = "PM"
-        Num = "1"
-        Macro = "viewtargetted"
-        Caps = "I"
-        Txt = "Actions:"
-        Hint1 = "Inspect the chosen one"
+          Typ = "PM"
+          Num = "1"
+          Macro = "viewtargetted"
+          Caps = "I"
+          Txt = "Actions:"
+          Hint1 = "Inspect the chosen one"
         }
-        
+
         sep: = { Typ="S" Txt=""}
 
         specific: = {
@@ -86,7 +86,7 @@ class FindTargetDlg (quarkpy.dlgclasses.LiveEditDlg):
           Txt = "specific:"
           Hint = "This is the targetting specific whose value is being checked"
         }
-        
+
         value: = {
           Typ = "E"
           Txt = "value:"
@@ -100,7 +100,7 @@ class FindTargetDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
     def inspect(self):
-        index = eval(self.src["found"])
+        index = int(self.src["found"])
         #
         # FIXME: dumb hack, revise mapmadsel
         #
@@ -114,7 +114,7 @@ class FindTargetDlg (quarkpy.dlgclasses.LiveEditDlg):
         Spec1 = qmenu.item("", quarkpy.mapmenus.set_mpp_page, "")
         Spec1.page = 1 # specifics page
         quarkpy.mapmenus.set_mpp_page(Spec1) 
-        
+
 
 #
 # Define the viewtargetted macro here, put the definition into
@@ -126,31 +126,31 @@ def macro_viewtargetted(self, index=0):
     if editor is None: return
     if index==1:
         editor.findtargetdlg.inspect()
-        
+
 quarkpy.qmacro.MACRO_viewtargetted = macro_viewtargetted
 
-           
+
 def getSpecVal(spec, val, editor):
     found = []
     for item in editor.Root.findallsubitems("",":b")+editor.Root.findallsubitems("",":e"):
         if item[spec]==val:
             found.append(item)
     return found
-    
+
 
 def findClick(m, spec=None, val=None):
     editor=mapeditor()
     #
     # Here we start the Live Edit dialog invocation sequence.
     #  Data to be tracked during the life of the dialog goes
-    #  here.  
+    #  here.
     #
     class pack:
         "stick stuff in this"
     pack.slist = []
     pack.klist = []
     pack.seen = 0
-        
+
     def setup(self, pack=pack, editor=editor, spec=spec, val=val):
         self.pack=pack
         #
@@ -159,15 +159,15 @@ def findClick(m, spec=None, val=None):
         # Cleaned up in onclosing below.
         #
         editor.findtargetdlg=self
-        
+
         if self.src['specific'] is None:
             if spec:
                 self.src['specific']=spec
-            
+
         if self.src['value'] is None:
             if val:
                 self.src['value']=val
-            
+
         if self.src['value']:
             targetted = getSpecVal(spec,self.src['value'], editor)
             ran = range(len(targetted))
@@ -177,7 +177,7 @@ def findClick(m, spec=None, val=None):
             #
             #  wtf doesn't this work, item loads but function is trashed
             #
-             
+
             self.src["found$Items"] = "\015".join(pack.slist)
             self.src["found$Values"] = "\015".join(pack.klist)
             self.src["num"]=len(pack.klist),
@@ -202,7 +202,7 @@ def findClick(m, spec=None, val=None):
     #
     def onclosing(self,editor=editor):
         del editor.findtargetdlg
-        
+
     #
     # And here's the invocation. 2nd arg is a label for storing
     #  position info in setup.qrk.
@@ -222,19 +222,19 @@ def targetpopup(o):
 
     def targettedClick(m, o=o):
         findClick(m, 'targetname', o[m.spec])
-        
+
     targettingItem = qmenu.item('entities targetting this one', targettingClick, "|Find entities targetting this entity")
     if o['targetname'] is None:
         targettingItem.state=qmenu.disabled
 
     list = [targettingItem]
-    
+
     for specific in o.dictspec.keys():
         if specific[-6:] == 'target':
             item = qmenu.item('entities targetted by '+specific, targettedClick, "|Find entities targetted by the specific %s"%specific)
             item.spec = specific
             list.append(item)
- 
+
     return qmenu.popup("Find targetted/ing", list, None,
        "|commands for finding entities targetting and targetted by this one")
 
