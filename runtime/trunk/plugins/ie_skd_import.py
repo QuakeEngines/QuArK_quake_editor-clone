@@ -1355,7 +1355,7 @@ class skc_obj:
 def check4skin(file, Component, material_name, message, version):
     material_name = material_name.lower() # Make sure all text is lower case.
     # Try to locate and load Component's skin textures.
-    ImageTypes = [".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds"]
+    ImageTypes = (".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds")
 
     if logging == 1:
         tobj.logcon ("----------------------------------------------------------")
@@ -1438,7 +1438,7 @@ def check4skin(file, Component, material_name, message, version):
             if found_skin_file is not None and skin_name.endswith(material_name):
                 break
         if found_skin_file is None:
-            message = message + "The shader file:\r\n  " + shader_file + "\r\nshows a texture name: " + file_skin_name + "\r\nbut cound not locate any type of skin texture named: " + skin_name + "\r\nNo texture loaded for Component: " + Component.shortname + "\r\n\r\n"
+            message = message + "The shader file:\r\n  " + shader_file + "\r\nshows a texture name: " + file_skin_name + "\r\nbut could not locate any type of skin texture named: " + skin_name + "\r\nNo texture loaded for Component: " + Component.shortname + "\r\n\r\n"
     elif found_skin_file is None: # Last effort, try to find and load any skin texture files in the models folder.
         files = os.listdir(path)
         skinsize = [0, 0]
@@ -1461,7 +1461,7 @@ def check4skin(file, Component, material_name, message, version):
                         tobj.logcon (skin.name)
 
         if found_skin_file is None:
-            message = message + "Cound not locate any type of skin textures for Component:\r\n  " + Component.shortname + "\r\n\r\n"
+            message = message + "Could not locate any type of skin textures for Component:\r\n  " + Component.shortname + "\r\n\r\n"
 
     if logging == 1:
         tobj.logcon ("")

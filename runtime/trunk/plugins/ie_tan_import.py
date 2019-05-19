@@ -592,7 +592,7 @@ def check_skin_name(skin_name):
 
 def check4skin(file, Component, material_name, message):
     # Try to locate and load Component's skin textures.
-    ImageTypes = [".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds"]
+    ImageTypes = (".ftx", ".tga", ".jpg", ".bmp", ".png", ".dds")
     if logging == 1:
         tobj.logcon ("----------------------------------------------------------")
         tobj.logcon ("Skins group data: " + Component.name + " skins")
@@ -662,7 +662,7 @@ def check4skin(file, Component, material_name, message):
                     break
             if path.endswith("\\models") or found_skin_file is not None:
                 if found_skin_file is None:
-                    message = message + "The .tik file:\r\n  " + tik_file + "\r\nshows a texture name: " + file_skin_name + "\r\nbut cound not locate any type of skin texture named: " + skin_name + "\r\nNo texture loaded for Component: " + Component.shortname + "\r\n\r\n"
+                    message = message + "The .tik file:\r\n  " + tik_file + "\r\nshows a texture name: " + file_skin_name + "\r\nbut could not locate any type of skin texture named: " + skin_name + "\r\nNo texture loaded for Component: " + Component.shortname + "\r\n\r\n"
                 break
             path = path.rsplit('\\', 1)[0]
     else: # Last effort, try to find and load any skin texture files in the models folder.
@@ -686,7 +686,7 @@ def check4skin(file, Component, material_name, message):
                     if logging == 1:
                         tobj.logcon (skin.name)
         if found_skin_file is None:
-            message = message + "Cound not locate any type of skin textures for Component:\r\n  " + Component.shortname + "\r\n\r\n"
+            message = message + "Could not locate any type of skin textures for Component:\r\n  " + Component.shortname + "\r\n\r\n"
     if logging == 1:
         tobj.logcon ("")
     return message

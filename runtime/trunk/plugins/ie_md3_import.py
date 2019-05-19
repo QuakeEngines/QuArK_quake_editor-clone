@@ -449,7 +449,7 @@ def Import(editor, basepath, filename):
             framesgroup.appenditem(frame)
 
         # Create the "Skins:sg" group.
-        ImageTypes = [".tga", ".jpg", ".bmp", ".png", ".dds"]
+        ImageTypes = (".tga", ".jpg", ".bmp", ".png", ".dds")
         skinsize = (0, 0)
         skingroup = quarkx.newobj('Skins:sg')
         skingroup['type'] = chr(2)
