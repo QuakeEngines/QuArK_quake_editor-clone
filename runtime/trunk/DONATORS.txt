@@ -16,7 +16,7 @@ The QuArK Developers would like to thank
 the following donators for their support:
 ----------------------------------------
 
-- Jochum 'Hipshot' Skoglund
+- Hipshot
 
 - Jim G.
 
