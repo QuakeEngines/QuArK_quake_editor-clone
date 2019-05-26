@@ -1,14 +1,10 @@
-
 ; QuArK installer x.x.x
 ; HomePage: http://quark.sourceforge.net/
 ; Author:  Fredrick Vamstad, DanielPharos & cdunde
 ; Date:     18 Aug. 2005 & 5 January 2007
 ; nullsoft NSIS installer program available at:
 ;   http://nsis.sourceforge.net
-; Please use at least NSIS 2.51.
-;
-; Last update April 5, 2007 - cdunde
-;
+
 ; Setup and Use to create QuArK NSIS installer:
 ; ============================================
 ; 1) Change "INSTALLER_EXENAME" (line 31) below to the name of the installer executable file.
@@ -229,9 +225,6 @@ Section "$(TEXT_SEC01_TITLE)" SEC01
   File "${BUILDDIR}\addons\Quake_4\*.*"
   SetOutPath "$INSTDIR\addons\RTCW"
   File "${BUILDDIR}\addons\RTCW\*.*"
-  SetOutPath "$INSTDIR\addons\RTCW\QuArK files"
-  SetOutPath "$INSTDIR\addons\RTCW\QuArK files\bspc"
-  File "${BUILDDIR}\addons\RTCW\QuArK files\bspc\*.*"
   SetOutPath "$INSTDIR\addons\RTCW-ET"
   File "${BUILDDIR}\addons\RTCW-ET\*.*"
   SetOutPath "$INSTDIR\addons\Sin"
@@ -312,7 +305,6 @@ Section Uninstall
   Delete "$INSTDIR\addons\SOF\*.*"
   Delete "$INSTDIR\addons\Sin\*.*"
   Delete "$INSTDIR\addons\RTCW-ET\*.*"
-  Delete "$INSTDIR\addons\RTCW\QuArK files\bspc\*.*"
   Delete "$INSTDIR\addons\RTCW\*.*"
   Delete "$INSTDIR\addons\Quake_4\*.*"
   Delete "$INSTDIR\addons\Quake_3\*.*"
@@ -362,8 +354,6 @@ Section Uninstall
   RMDir "$INSTDIR\addons\SOF"
   RMDir "$INSTDIR\addons\Sin"
   RMDir "$INSTDIR\addons\RTCW-ET"
-  RMDir "$INSTDIR\addons\RTCW\QuArK files\bspc"
-  RMDir "$INSTDIR\addons\RTCW\QuArK files"
   RMDir "$INSTDIR\addons\RTCW"
   RMDir "$INSTDIR\addons\Quake_4"
   RMDir "$INSTDIR\addons\Quake_3"
