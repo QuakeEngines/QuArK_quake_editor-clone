@@ -299,7 +299,7 @@ type
 
 implementation
 
-uses ShlObj, TlHelp32, Psapi, Registry, Logging, QkExceptions;
+uses ShlObj, ActiveX, TlHelp32, Psapi, Registry, Logging, QkExceptions;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
@@ -869,17 +869,28 @@ function GetSpecialFolder(Handle: Hwnd; nFolder: Integer): string;
 var
   PIDL: PItemIDList;
   Path: LPSTR;
+  err: HResult;
+  AMalloc: IMalloc;
 begin
   Result:='';
-  Path:=StrAlloc(MAX_PATH);
+
+  err:=SHGetSpecialFolderLocation(Handle, nFolder, PIDL);
+  if err<>S_OK then
+  begin
+    Log(LOG_WARNING, 'Failed to get special folder %d: error 0x%x', [nFolder, LongWord(err)]);
+    Exit;
+  end;
   try
-    SHGetSpecialFolderLocation(Handle, nFolder, PIDL);
-
-    if SHGetPathFromIDList(PIDL, Path) then
-      Result:=StrPas(Path);
-
+    Path:=StrAlloc(MAX_PATH);
+    try
+      if SHGetPathFromIDList(PIDL, Path) then
+        Result:=StrPas(Path);
+    finally
+      StrDispose(Path);
+    end;
   finally
-    StrDispose(Path);
+    SHGetMalloc(AMalloc);
+    AMalloc.Free(PIDL);
   end;
 end;
 
