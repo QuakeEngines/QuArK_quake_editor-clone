@@ -24,7 +24,7 @@ SetCompressor /SOLID lzma   ; We will use LZMA for best compression
 
 !define BUILDDIR "C:\QuArK_installer_files"
 !define SPLASHDIR "C:\QuArK_installer_splash_image"
-!define INSTALLER_EXENAME "quark-win32-6.6.0Beta7nightly21oct2017.exe"
+!define INSTALLER_EXENAME "quark-win32-6.6.0Beta7nightly26may2019.exe"
 !define PRODUCT_NAME "QuArK"
 !define PRODUCT_NAME_FULL "Quake Army Knife"
 !define PRODUCT_VERSION "6.6.0 Beta 7"
@@ -280,7 +280,7 @@ Section -StartMenuIcons
   CreateShortCut "$SMPROGRAMS\QuArK\Forum.lnk" "${PRODUCT_WEB_FORUM}"
   CreateShortCut "$SMPROGRAMS\QuArK\Online Infobase.lnk" "${PRODUCT_INFOBASE}"
   CreateShortCut "$SMPROGRAMS\QuArK\Readme.lnk" "$INSTDIR\README.txt"
-  CreateShortCut "$SMPROGRAMS\QuArK\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  ;CreateShortCut "$SMPROGRAMS\QuArK\Uninstall.lnk" "$INSTDIR\uninst.exe"   ;Against Windows 95+ Guidelines; can be done through the Add/Remove Programs configuration screen panel
 SectionEnd
 
 Section -Post
@@ -291,7 +291,10 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\QuArK.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallLocation" "${INSTDIR}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "HelpLink" "${PRODUCT_WEB_FORUM}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Readme" "$INSTDIR\README.txt"
 SectionEnd
 
 Section Uninstall
