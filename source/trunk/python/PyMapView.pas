@@ -958,19 +958,21 @@ begin
    arglist:=Py_BuildValueX('OiiiO', [self, X, Y, Flags or nFlags, nHandle]);
    if arglist=Nil then Exit;
    try
-    callresult:=PyEval_CallObject(fnt, arglist);
-   finally
-    Py_DECREF(arglist);
-   end;
-   if callresult=nil then
-    begin
-     PythonCodeEnd;
-     Exit;
+    try
+     callresult:=PyEval_CallObject(fnt, arglist);
+    finally
+     Py_DECREF(arglist);
     end;
-   if (callresult<>Nil) and (callresult<>Py_None) then
-    Result:=PyInt_AsLong(callresult);
-   Py_XDECREF(callresult);
-   PythonCodeEnd;
+    if callresult=nil then Exit;
+    try
+     if callresult<>Py_None then
+      Result:=PyInt_AsLong(callresult);
+    finally
+     Py_DECREF(callresult);
+    end;
+   finally
+    PythonCodeEnd;
+   end;
   end;
 end;
 
