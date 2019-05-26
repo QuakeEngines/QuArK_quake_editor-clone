@@ -3436,7 +3436,7 @@ begin
 end;
 
 var ProbableCauseOfFatalError: array[-9..6] of String = (
-   {-9}    ' (Unable to initialise Python module "Quarkx")',
+   {-9}    ' (Unable to initialize Python module "Quarkx")',
    {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
    {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
    {-6}    '',
