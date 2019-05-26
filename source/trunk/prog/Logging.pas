@@ -116,13 +116,6 @@ begin
   else
     Log(LOG_PASCAL, 'QuArK version is %s %s',[QuarkVersion, QuArKMinorVersion]);
   Log(LOG_PASCAL, 'Loglevel is %d',[LogLevel]);
-  (* DanielPharos: OLD CODE + NEW CODE
-  {$IFDEF NoShare}
-  Log('Spec Mem Sharing Off');
-  {$ELSE}
-  Log('Spec Mem Sharing On');
-  {$ENDIF}
-  *)
 end;
 
 Procedure aLog(logger: TLogName; const s: string);
