@@ -118,7 +118,7 @@ class VtxDragDlg(quarkpy.dlgclasses.LiveEditDlg):
     #
 
     endcolor = AQUA
-    size = (140,120)
+    size = (240,220)
     dfsep = 0.50
 
     dlgdef = """
@@ -155,7 +155,7 @@ class VtxDragDlg(quarkpy.dlgclasses.LiveEditDlg):
         Typ="X"
         Hint="If this is checked, vertexes will move to grid positions"
         }
-        
+
         griddel: =
         {
         Txt = "Grid Delta"
@@ -223,7 +223,7 @@ def rotateFace(face, mvtx, delta, pivot, pivot2):
     #
     newpoints = tuple(map(proj2plane, (map(unproj, pcoords))))
     face.setthreepoints(newpoints,3)
-    
+
 
 #
 # Here's the function that does the real work of moving the faces.
@@ -267,7 +267,7 @@ def moveFaces(faces, mvtx, delta, poly, locklist, freezelist, sloppy=None):
         if len(facelocked) == 0:
             proj = delta*norm
             newface.translate(proj*norm)
-#            debug('translated '+newface.shortname)    
+#            debug('translated '+newface.shortname)
         if len(facelocked) == 1:
             #
             # this autolock stuff isn't working right so its
@@ -296,7 +296,7 @@ def moveFaces(faces, mvtx, delta, poly, locklist, freezelist, sloppy=None):
                     #  indexing situations.
                     #
                     facelocked.append(vtxes[secondlockindex%cyclelength])
-        if len(facelocked)==1:        
+        if len(facelocked)==1:
                 #
                 # rotate around perp to line from mftx to pivot
                 #
@@ -358,12 +358,12 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
                  if not (vtx-pos):
                     moving.append(face)
                     continue
-    
+
          #
          # Now start setting up the live edit dialog; this is
          #  a black magic process that you just follow
          #
-         
+
          #
          #  The objects that the dialog is going to manipulate
          #   are stuffed into a `pack' object
@@ -373,7 +373,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
          pack.poly = poly
          pack.moving = moving
          pack.pos = pos
- 
+
          #
          # Now define a setup function with `self' as its first
          #  argument, and any number of further default arguments
@@ -405,7 +405,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
              self.src["X"] = "%f"%pos.x
              self.src["Y"] = "%f"%pos.y
              self.src["Z"] = "%f"%pos.z
-             
+
          #
          # `action' is the function that is called when the
          #   data in the dialog box is changed
@@ -527,7 +527,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
                      if not src["sloppy"]:
                          quarkx.msgbox("Moving Vertex Lost",MT_INFORMATION,MB_OK)
                  break
-                 
+
              #
              # Now put the replacement info into pack (if
              #  this isn't done, undo won't work right for
@@ -548,14 +548,14 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
              options["movevertex_gridpos"]=self.src["gridpos"]
              options["movevertex_griddel"]=self.src["griddel"]
              options["movevertex_sloppy"]=self.src["sloppy"]
-             
+
          #
          # This is an optional callback for final cleanup
          #
          def onclosing(self, editor=editor):
              delAttr(editor,'movingvertex')
              editor.invalidateviews()
-         
+
          #
          # And at least create the dialog.
          # quarkx.clickform is the window last clicked in,
@@ -570,7 +570,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
          #  functions we've defined, and the last as an option.
          #
          VtxDragDlg(quarkx.clickform, 'vtxdrag', editor, setup, action, onclosing)
-             
+
     #
     # And now a bunch of simple litte menu item callbacks
     #
@@ -583,19 +583,19 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
         # redraw the views to see the effect.
         #
         editor.invalidateviews()
-        
+
     def clearclick(m, self=self, editor=editor):
         delAttr(editor,'lockedVertices')
         delAttr(editor,'frozenFaces')
         editor.invalidateviews()
-    
+
     def unlockclick(m, editor=editor):
         removeFromAttr(editor,'lockedVertices',m.unlockMe)
 #        editor.lockedVertices.remove(m.unlockMe)
 #        if editor.lockedVertices == []:
 #            del editor.lockedVertices
         editor.invalidateviews()
- 
+
 
     #
     # Moving a containing group so that the vertex shifts to ongrid
@@ -616,11 +616,11 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
             item = qmenu.item(object.name,Shifter, "Move me")
             item.menuicon = object.geticon(1)
             return item
-            
+
         poly=self.poly
         list=guiutils.buildParentPopupList(self.poly,makeitem, editor)
         return list
-     
+
     #
     # And their menu items
     #
@@ -650,7 +650,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
     #  front of the old.
     #
     return [moveparentitem, moveitem, locker, clearitem]+oldmenu(self,editor,view)
-    
+
 #
 # And here's the magic bit; when vertexmenu got defined, the
 #  original menu function for quarkpy.maphandles.VertexHandle
@@ -691,7 +691,7 @@ def lockfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdr
          pass
       else:
          if view.info["type"] == "3D":
-              scalefactor = 50
+             scalefactor = 50
          else:
              scalefactor = 30
          scale = view.scale(moving)
@@ -700,11 +700,11 @@ def lockfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdr
              p0 = view.proj(moving)
              p1 = view.proj(moving+(scalefactor/scale)*quarkx.vect(axis))
              cv.line(p0, p1)
-                 
+
 #         else:
 #             cv.pencolor = MapColor("Bezier")
 #             tagging.drawsquare(cv,p1,8)
-              
+
 
       cv.pencolor=MapColor("Duplicator")
       try:
@@ -712,7 +712,7 @@ def lockfinishdrawing(editor, view, oldmore=quarkpy.mapeditor.MapEditor.finishdr
               drawredface(view,cv,face)
       except (AttributeError):
           pass
-      
+
       oldmore(editor, view)
 
 quarkpy.mapeditor.MapEditor.finishdrawing = lockfinishdrawing
@@ -740,7 +740,7 @@ def find3DView(editor):
 # And now the whole bizness again to lock every vertex of a face
 #
 def lockfacemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
-    
+
     def lockclick(m,face=o,editor=editor):
         locks = getAttr(editor,'lockedVertices',[])
         for poly in face.faceof:
@@ -748,7 +748,7 @@ def lockfacemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_f
                 locks.append(quarkpy.maphandles.VertexHandle(vtx, poly))
         editor.lockedVertices = locks
         editor.invalidateviews()
-     
+
     def unlockclick(m, face=o, editor=editor):
         try:
             locks = editor.lockedVertices
@@ -760,7 +760,7 @@ def lockfacemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_f
                     if not (hvtx.pos-vtx):
                         locks.remove(hvtx)
         editor.invalidateviews()
-                        
+
     def viewclick(m, face=o, editor=editor):
         if quarkx.keydown('\020')==1: # shift is down
             reverse = 1
@@ -796,7 +796,7 @@ def lockfacemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_f
     def freezeclick(m, face=o, editor=editor):
         appendToAttr(editor, 'frozenFaces', face)
         editor.invalidateviews()
-        
+
     def unfreezeclick(m, face=o, editor=editor):
         removeFromAttr(editor, 'frozenFaces', face)
         editor.invalidateviews()
@@ -815,7 +815,7 @@ def lockfacemenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_f
             if o is face:
                 freezer = unfreezeitem
                 break
-                
+
     viewitem = qmenu.item("Look At", viewclick, "|An open 3D view shifts to look at this face head on.\n (SHIFT to look at the face from the back)")
 
     locking = qmenu.popup("Lock/Freeze",[lockitem,unlockitem, freezer],
@@ -830,9 +830,9 @@ quarkpy.mapentities.FaceType.menu = lockfacemenu
 #  Code for looking at center of selection
 #
 def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandle.OriginItems.im_func):
-  
+
     menu = oldoriginmenu(self, editor, view)
-    
+
     if view is not None:
 
       def seePointClick(m,self=self,editor=editor):
@@ -844,7 +844,7 @@ def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandl
         editor.invalidateviews()
 
       seeitem = qmenu.item("Look To",seePointClick,"|Aims an open 3d view at object")
-    
+
       menu[1:1] = [seeitem]
 
     return menu
@@ -865,9 +865,9 @@ quarkpy.qhandles.GenericHandle.OriginItems = originmenu
 def circleinit(self, editor, view, x, y, old = quarkpy.qhandles.SideStepDragObject.__init__):
     self.editor = editor
     old(self, editor, view, x, y)
-    
+
 quarkpy.qhandles.SideStepDragObject.__init__= circleinit
-    
+
 def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObject.dragto):
     sel = self.editor.layout.explorer.sellist
     if sel and quarkx.keydown('Z')==1:
