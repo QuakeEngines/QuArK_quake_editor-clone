@@ -1593,7 +1593,11 @@ begin
  g_Form1:=nil;
  Application.UnHookMainWindow(WindowHook);
  if g_Mutex <> 0 then
+ begin
    ReleaseMutex(g_Mutex);
+   CloseHandle(g_Mutex);
+   g_Mutex:=0;
+ end;
 end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
