@@ -729,14 +729,14 @@ QQRKSRC1
         DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
-        BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
+        BuildPgmsDir = ""
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
         ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
-        BuildPgm1  = "nothing needed, preset in Defaults.qrk file"
+        BuildPgm1  = ""
         BuildCheck1= ""
         MapCommentsPrefix = "//"
 
@@ -797,7 +797,7 @@ QQRKSRC1
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\Activision\EF2\QuArk files\bspc"
+        BuildPgmsDir = "C:\Program Files\Activision\EF2\QuArK files\bspc"
         StupidBuildToolKludge = "1" // Run tools from base directory setting
         OutputMapFormat = "Classic Quake"
         ForceFaceFlags = "1"
@@ -1591,14 +1591,14 @@ QQRKSRC1
         DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
-        BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
+        BuildPgmsDir = ""
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
         ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
-        BuildPgm1  = "nothing needed, preset in Defaults.qrk file"
+        BuildPgm1  = ""
         BuildCheck1= ""
         MapCommentsPrefix = "//"
 
@@ -1855,14 +1855,14 @@ QQRKSRC1
         DecimalPlaces = '5'
 
         Console = "1"                  // "Run these build-programs..." setting
-        BuildPgmsDir = "nothing needed, preset in Defaults.qrk file"
+        BuildPgmsDir = ""
         StupidBuildToolKludge = ""     // "Run tools from base directory" setting
         OutputMapFormat = "Brush Primitives"
         ForceFaceFlags = ""
         SupportsBrushPrim = "1"        // hidden setting
         AlwaysWriteThreeFields = "1"   // hidden setting
 
-        BuildPgm1  = "nothing needed, preset in Defaults.qrk file"
+        BuildPgm1  = ""
         //BuildArgs1 = "-moddir .."
         BuildCheck1= ""
         //BuildPgm2  = "Q3MAP.EXE"
@@ -1931,17 +1931,17 @@ QQRKSRC1
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\bspc"
+        BuildPgmsDir = "C:\Program Files\Return to Castle Wolfenstein\QuArK files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
         OutputMapFormat = "Brush Primitives"
         ForceFaceFlags = ""
         AlwaysWriteThreeFields = "1"
-        BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
+        BuildPgm1  = "C:\Program Files\Return to Castle Wolfenstein\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
         BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
+        BuildPgm2  = "C:\Program Files\Return to Castle Wolfenstein\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
-        BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArk files\q3map_2.5.16_win32_x86\q3map2.exe"
+        BuildPgm3  = "C:\Program Files\Return to Castle Wolfenstein\QuArK files\q3map_2.5.16_win32_x86\q3map2.exe"
         BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
         BuildPgm4 = "BSPC.EXE"
         BuildArgs4 = "-ext _b0 -cfg "$22"%buildpgmsdir%\aascfg_lg.c"$22" -bsp2aas "$22"%basepath%\%gamedir%\%file%.bsp"$22
@@ -2287,7 +2287,7 @@ QQRKSRC1
         LightingOuterConeKeyword = ""    // <-- ex: "" if game does not use or ex: "_cone2" is the specifics name that gives the spotlight outer size.
 
         Console = "1"
-        BuildPgmsDir = "C:\Program Files\Raven\Star Trek Voyager Elite Force\QuArk files\bspc"
+        BuildPgmsDir = "C:\Program Files\Raven\Star Trek Voyager Elite Force\QuArK files\bspc"
         StupidBuildToolKludge = "" // Run tools from base directory setting
         OutputMapFormat = "Brush Primitives"
         ForceFaceFlags = ""
