@@ -87,10 +87,14 @@ begin
   try
     case StrToInt(Setup.Specifics.Values['SaveFormatDevIL']) of
     0: Flag:=IL_DXT1;
-    1: Flag:=IL_DXT2;
-    2: Flag:=IL_DXT3;
-    3: Flag:=IL_DXT4;
-    4: Flag:=IL_DXT5;
+    1: Flag:=IL_DXT1A;
+    2: Flag:=IL_DXT2;
+    3: Flag:=IL_DXT3;
+    4: Flag:=IL_DXT4;
+    5: Flag:=IL_DXT5;
+    6: Flag:=IL_ATI1N;
+    7: Flag:=IL_3DC;
+    8: Flag:=IL_RXGB;
     else
       Flag:=IL_DXT1;
     end;

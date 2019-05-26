@@ -7103,12 +7103,16 @@ QQRKSRC1
       {
         Typ = "CL"
         Txt = "Format of exported DDS textures"
-        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"
+        Values =  "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"
         Items = "DXT1"
-             $0D "DXT2"
-             $0D "DXT3"
-             $0D "DXT4"
-             $0D "DXT5"
+            $0D "DXT1A"
+            $0D "DXT2"
+            $0D "DXT3"
+            $0D "DXT4"
+            $0D "DXT5"
+            $0D "ATI1N"
+            $0D "3DC"
+            $0D "RXGB"
         Hint = "The format the DDS texture will be saved in when using the DevIL library"
       }
     }
