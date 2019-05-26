@@ -303,7 +303,8 @@ uses ShlObj, ActiveX, TlHelp32, Psapi, Registry, Logging, QkExceptions;
 
 type
   TPlatformType = (osWin95Comp, osWinNTComp);
-  TPlatform = (osWin95, osWin98, osWin98SE, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin7, osWin8, osWin81, osWin2008, osWin2008R2, osWin2012, osWin2012R2); //Note: Not all are currently detected!
+  TPlatform = (osWin95, osWin98, osWin98SE, osWinME, osWinNT4, osWin2000, osWinXP, osWin2003, osWinVista, osWin7, osWin8, osWin81, osWin2008, osWin2008R2, osWin2012, osWin2012R2, osWin10, osWin2016); //Note: Not all are currently detected!
+  //FIXME: See: https://docs.microsoft.com/en-gb/windows/desktop/api/winnt/ns-winnt-_osversioninfoexa
 
   TStrBuf = array[0..11] of char;
 
@@ -644,14 +645,14 @@ begin
                $1E: result:='Nehalem';
                $25: result:='Westmere';
                $26: result:='Bonnell';
-               $27: result:='Bonnell';
+               $27: result:='Saltwell';
                $2A: result:='Sandy Bridge';
                $2C: result:='Westmere';
                $2D: result:='Sandy Bridge';
                $2E: result:='Nehalem';
                $2F: result:='Westmere';
-               $35: result:='Bonnell';
-               $36: result:='Bonnell';
+               $35: result:='Saltwell';
+               $36: result:='Saltwell';
                $37: result:='Silvermont';
                $3A: result:='Ivy Bridge';
                $3C: result:='Haswell';
@@ -659,8 +660,20 @@ begin
                $3E: result:='Ivy Bridge';
                $3F: result:='Haswell';
                $45: result:='Haswell';
+               $46: result:='Haswell';
+               $47: result:='Broadwell';
                $4A: result:='Silvermont';
+               $4C: result:='Airmont';
                $4D: result:='Silvermont';
+               $4E: result:='Skylake';
+               $4F: result:='Broadwell';
+               $55: result:='Skylake/Cascade Lake/Cooper Lake';
+               $56: result:='Broadwell';
+               $5A: result:='Silvermont';
+               $5C: result:='Goldmont';
+               $5D: result:='Silvermont';
+               $5E: result:='Skylake';
+               $5F: result:='Goldmont';
                else result:='Unknown';
              end;
           2: case Model of
@@ -1096,6 +1109,22 @@ begin
          begin
           Platform:='Unknown (Probably OK)';
           WindowsPlatform:=osWinVista;
+         end;
+        end;
+        WindowsPlatformCompatibility:=osWinNTComp;
+       end;
+      10:
+       begin
+        case MinorVersion of
+        0:
+         begin
+          Platform:='Windows 10';
+          WindowsPlatform:=osWin10;
+         end;
+        else
+         begin
+          Platform:='Unknown (Probably OK)';
+          WindowsPlatform:=osWin10;
          end;
         end;
         WindowsPlatformCompatibility:=osWinNTComp;
