@@ -5,7 +5,7 @@ dir = "Z:\\workspace\\Copy of runtime"
 if os.path.exists(os.path.join(dir, ".svn")):
 	print("WARNING: SVN directory found: %s" % (os.path.join(dir, ".svn"), ))
 
-if not os.path.exists(os.path.join(dir, "Setup.qrk")):
+if os.path.exists(os.path.join(dir, "Setup.qrk")):
 	print("WARNING: Setup.qrk file found: %s" % (os.path.join(dir, "Setup.qrk"), ))
 
 if not os.path.exists(os.path.join(dir, "help")):
