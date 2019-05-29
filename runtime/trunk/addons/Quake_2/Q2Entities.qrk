@@ -14768,9 +14768,9 @@ QQRKSRC1
         Hint = "Specifies how the played sound will attenuate with distance fr"
          "om the speaker origin."$0D"Attenuation=3 will be used if LOOPED_ON o"
          "r LOOPED_OFF are set."
-        Items = "1) None, send to whole level"$0D"2) Normal fighting sounds"$0D"3) "
-         "Idle sound level"$0D"4) Ambient sound level"
-        Values = "1"$0D"2"$0D"3"$0D"4"
+        Items = "-1) None, send to whole level"$0D"1) Normal fighting sounds"$0D"2) "
+         "Idle sound level"$0D"3) Ambient sound level"
+        Values = "-1"$0D"1"$0D"2"$0D"3"
       }
       noise: =
       {
