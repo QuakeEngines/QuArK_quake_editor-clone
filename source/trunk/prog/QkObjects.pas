@@ -412,7 +412,6 @@ function PackedStrToInt(const S: String) : Integer;
 procedure ReleaseStream(S: TStream);
 
 {$IFDEF Debug}
-var g_MemQObject: TQList;
 procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
@@ -432,6 +431,10 @@ var
 
 const
   chrFloatSpec = 128;
+
+{$IFDEF Debug}
+var g_MemQObject: TQList;
+{$ENDIF}
 
  {------------------------}
 
