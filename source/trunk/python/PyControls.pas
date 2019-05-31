@@ -56,12 +56,21 @@ function NewControl(var nType: TyTypeObject; nControl: TControl) : PyControlF;
 procedure PythonDrop1(self: PyObject; wParam: Integer; Source: TObject; Target: TControl; X, Y: Integer);
 procedure PythonDrop(nForm: TForm; lParam: LongInt; Button: Boolean);
 
+{$IFDEF Debug}
+procedure DumpControls;
+{$ENDIF}
+
  {-------------------}
 
 implementation
 
-uses QkExceptions, QkForm, Quarkx, PyForms, PyFloating, PyFullscreen,
+uses {$IFDEF Debug} QkConsts, Logging, {$ENDIF}
+     QkExceptions, QkForm, Quarkx, PyForms, PyFloating, PyFullscreen,
      QkObjects, QkExplorer, PyObjects, PyToolbars;
+
+{$IFDEF Debug}
+var g_Controls: TStringList;
+{$ENDIF}
 
  {-------------------}
 
@@ -85,6 +94,9 @@ begin
    Info:=Nil;
    FOnDrop:=Nil;
   end;
+ {$IFDEF Debug}
+ g_Controls.Add(format('%p=%s', [Result, nType.tp_name]));
+ {$ENDIF}
 end;
 
 (*procedure TyControl.SetFlags(nFlags: Byte);
@@ -159,6 +171,10 @@ end;
  {-------------------}
 
 procedure ControlDestructor(o: PyObject); cdecl;
+{$IFDEF Debug}
+var
+ I: Integer;
+{$ENDIF}
 begin
  try
   with PyControlF(o)^ do
@@ -171,6 +187,13 @@ begin
     Py_XDECREF(FOnDrop);
     Py_XDECREF(Info);
    end;
+  {$IFDEF Debug}
+  I:=g_Controls.IndexOfName(format('%p' , [o]));
+  if I=-1 then
+   Log(LOG_WARNING, 'DEBUG: Destroying untracked %p', [o])
+  else
+   g_Controls.Delete(I);
+  {$ENDIF}
   FreeMem(o);
  except
   EBackToPython;
@@ -530,5 +553,42 @@ begin
 end;
 
  {-------------------}
+
+{$IFDEF Debug}
+procedure DumpControls;
+const
+  ControlDumpFile = 'ControlDump.txt';
+var
+  Text: TStringList;
+  I: Integer;
+begin
+  Text:=TStringList.Create;
+  try
+    Text.Add(QuArKVersion + ' ' + QuArKMinorVersion);
+
+    Text.Add('-----');
+
+    Text.Add(Format('%s %s', ['Address', 'Type']));
+    for I:=0 to g_Controls.Count-1 do
+    begin
+      Text.Add(Format('%s %s', [g_Controls.Names[I], g_Controls.ValueFromIndex[I]]))
+    end;
+
+    Text.SaveToFile(ExtractFilePath(ParamStr(0))+ControlDumpFile);
+  finally
+    Text.Free;
+  end;
+end;
+{$ENDIF}
+
+ {-------------------}
+
+{$IFDEF Debug}
+initialization
+  g_Controls:=TStringList.Create;
+
+finalization
+  g_Controls.Free;
+{$ENDIF}
 
 end.
