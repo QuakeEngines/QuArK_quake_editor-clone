@@ -1853,13 +1853,13 @@ class Rotator2D(DragObject):
 
 def MouseDragging(editor, view, x, y, s, handle, redcolor):
     "Called when the user drags the mouse on a map view."
-    
+
     if handle is None:
         if getAttr(editor,'frozenselection') is not None:
             if editor.layout.explorer.uniquesel is not None:
                 if "S" in s and "R" in s:
                     return editor.FrozenDragObject(view,x,y,s,redcolor)
-        
+
         if "C" in s:
             if view.info["type"]=="3D":
                 return CircleStrafeDragObject(editor, view, x, y)
@@ -1923,7 +1923,7 @@ def MouseClicked(editor, view, x, y, s, handle):
         #    can be manipulated
         #
         return flags+"1"
-            
+
     if view.info["type"]=="3D":
         #
         # Zoom in and out on 3D views -- make the camera walk forward or backward.
@@ -2147,7 +2147,7 @@ def z_recenter(view3d, list):
         view3d.depth = (bmin, bmax)  # This fixes the drifting problem when in regular 3D mode.
     except:
         pass # When we are in true 3D perspective mode to avoid error.
-    
+
 
 def flat3Dview(view3d, layout, selonly=0):
 
