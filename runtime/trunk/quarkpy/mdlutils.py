@@ -4539,7 +4539,6 @@ def Update_Editor_Views(editor, option=4):
     import qhandles
     import mdlmgr
     mdlmgr.treeviewselchanged = 1
-    editorview = editor.layout.views[0]
     newhandles = mdlhandles.BuildCommonHandles(editor, editor.layout.explorer)
     True3Dview = None
     if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] == "1":
