@@ -76,7 +76,7 @@ class BaseLayout:
 
 
     def setupchanged(self, level):
-        "Reads setup-dependant information for the layout."
+        "Reads setup-dependent information for the layout."
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         if setup["CloseOnSetup"]:
             try:
