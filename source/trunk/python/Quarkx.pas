@@ -3331,28 +3331,31 @@ function GetPythonValue(value, args: PyObject; Hourglass: Boolean) : PyObject;
 begin
  Result:=Nil;
  if args=Nil then Exit;
- if value=Nil then Exit;
- if PyCallable_Check(value) then
-  begin
-   if Hourglass then
-    ProgressIndicatorStart(0,0);
-   try
-    try
-     Result:=PyEval_CallObject(value, args);
-    finally
-     Py_DECREF(args);
+ try
+  if value=Nil then Exit;
+  try
+   if PyCallable_Check(value) then
+    begin
+     if Hourglass then
+      ProgressIndicatorStart(0,0);
+     try
+      Result:=PyEval_CallObject(value, args);
+     finally
+      if Hourglass then
+       ProgressIndicatorStop;
+     end;
+    end
+   else
+    begin
+     Result:=value;
+     Py_INCREF(Result);
     end;
-   finally
-    if Hourglass then
-     ProgressIndicatorStop;
-   end;
+  finally
    PythonCodeEnd;
-  end
- else
-  begin
-   Result:=value;
-   Py_INCREF(Result);
   end;
+ finally
+  Py_DECREF(args);
+ end;
 end;
 
 function CallMacro(self: PyObject; const fntname: String) : PyObject;
