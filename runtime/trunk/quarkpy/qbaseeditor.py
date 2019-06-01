@@ -744,7 +744,7 @@ class BaseEditor:
                 dlg.close()
 
     def setupchanged(self, level):
-        "Update the setup-dependant parameters."
+        "Update the setup-dependent parameters."
         setup = quarkx.setupsubset(self.MODE, "Display")
         qhandles.lengthnormalvect, = setup["NormalVector"]
         self.gridstep, = setup["GridStep"]

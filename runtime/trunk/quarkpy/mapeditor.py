@@ -149,7 +149,7 @@ class MapEditor(BaseEditor):
 
 
     def setupchanged(self, level):
-        "Update the setup-dependant parameters."
+        "Update the setup-dependent parameters."
         quarkx.setpoolobj("BoundingBoxes", None)
         BaseEditor.setupchanged(self, level)
         try:

@@ -1753,7 +1753,7 @@ class EntityManager:
         return []
 
     def handlesopt(o, editor):
-        "Optimized view-independant version of 'handles'."
+        "Optimized view-independent version of 'handles'."
         return []
 
     def applylinear(entity, matrix):
