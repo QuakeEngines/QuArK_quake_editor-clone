@@ -660,7 +660,7 @@ def SetupChanged(level):
 
 
 #
-# Pool Manager : when you read data that don't change, like icon
+# Pool Manager : when you read data that doesn't change, like icon
 # bitmaps, you should store the result in the Pool so that if you
 # need the data again you don't have to reload it. So instead of :
 #     functionthatloadstuff(argument, ...)
@@ -681,7 +681,7 @@ def LoadPoolObj(tag, loadfn, *loadargs):
 def debug(text):
     import sys
     sys.stderr.write(text+"\n")
-    # rowdy: debug logging #FIXME: Make this a toggable option
+    # rowdy: debug logging #FIXME: Make this a togglable option
     #o = open('c:/rowdy/QuArK_debug.log', 'a')
     #o.write('%s\n' % text)
     #o.close()
