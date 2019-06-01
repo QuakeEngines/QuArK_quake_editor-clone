@@ -1200,7 +1200,6 @@ class UserDataPanel:
         return btn
 
     def buildbuttons(self, btnpanel):
-        # mapicons = LoadPoolObj("ico_usermap", LoadIconSet1, "usermap16", 1.0)
         Btns = []
         for p in self.objlist:
             Btns.append(self.newbutton(p, btnpanel))
