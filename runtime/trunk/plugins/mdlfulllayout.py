@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Example Plug-in which define a new screen layout.
+Plug-in which define the Full-screen 3D screen layout.
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -10,7 +10,7 @@ Example Plug-in which define a new screen layout.
 
 Info = {
    "plug-in":       "Model Full-screen 3D Layout",
-   "desc":          "The full-screen 3D wireframe Screen Layout.",
+   "desc":          "The full-screen 3D Screen Layout.",
    "date":          "13 dec 98",
    "author":        "Armin Rigo",
    "author e-mail": "arigo@planetquake.com",
@@ -21,18 +21,46 @@ import quarkpy.qhandles
 from quarkpy.mdlmgr import *
 
 
+#
+# The Full 3D Layout is implemented as a subclass of the base class ModelLayout.
+#
+
 class Full3DLayout(ModelLayout):
     "The full-screen 3D layout."
 
     from quarkpy.qbaseeditor import currentview
     shortname = "Full 3D"
 
+    def clearrefs(self):
+        ModelLayout.clearrefs(self)
+        self.View3D = None
+
     def buildscreen(self, form):
+
+        #
+        # We put the standard left panel first.
+        #
+
         self.bs_leftpanel(form)
+
+        #
+        # Create the 3D view in the section (0,0) (it is there by default).
+        #
+
         self.View3D = form.mainpanel.newmapview()
         self.View3D.viewtype="editor"
+
+        #
+        # Put these two views in the view lists.
+        #
+
         self.views[:] = [self.View3D]
         self.baseviews = self.views[:]
+
+        #
+        # Setup initial display parameters.
+        #
+
         self.View3D.viewmode = "tex"
         self.View3D.info = {
           "type": "3D",
@@ -68,5 +96,9 @@ class Full3DLayout(ModelLayout):
                        view.proj(view.space(10000, 10000, 10000)).z)
             view.depth = fulldepth
 
+
+#
+# Register the new layout.
+#
 
 LayoutsList.append(Full3DLayout)

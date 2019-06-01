@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Plug-in which define the 4-views screen layouts.
+Plug-in which define the 4-views UnrealEd Style screen layout.
 """
 #
 # Copyright (C) 2001 Andy Vincent
@@ -75,5 +75,11 @@ class FourViewsLayoutUEd(FourViewsLayout):
         self.sblinks.append((1, self.ViewXY, 0, self.ViewYZ))
         self.ViewYZ.flags = self.ViewYZ.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
         self.ViewXY.flags = self.ViewXY.flags &~ MV_HSCROLLBAR
-        
+
+
+
+#
+# Register the new layout.
+#
+
 LayoutsList.append(FourViewsLayoutUEd)

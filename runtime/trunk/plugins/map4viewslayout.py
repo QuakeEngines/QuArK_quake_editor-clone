@@ -27,6 +27,13 @@ from quarkpy.mapmgr import *
 class FourViewsLayout(MapLayout):
     "The 4-views layout, abstract class for FourViewsLayout1 and FourViewsLayout2."
 
+    def clearrefs(self):
+        MapLayout.clearrefs(self)
+        self.ViewXY = None
+        self.ViewXZ = None
+        self.ViewYZ = None
+        self.View3D = None
+
     def buildbase(self, form):
 
         #

@@ -3084,19 +3084,7 @@ QQRKSRC1
       }
       Layouts:config =
       {
-        _layout = "4 views"
-        4 views:config =
-        {
-          LeftPanel = $B4
-          LeftPanelV = '0.37000'
-          ViewMode = "wwwt"
-          secs = '0.50000 0.50000'
-          tb_animation = "((208, 102, 429, 152), 'topdock', 0, 1, 1)"
-          tb_movepal = "((0, 0, 0, 0), 'topdock', 341, 0, 1)"
-          tb_AxisLock = "((0, 0, 0, 0), 'topdock', 218, 0, 1)"
-          tb_display = "((0, 0, 0, 0), 'topdock', 0, 0, 1)"
-          tb_objmodes = "((0, 0, 0, 0), 'topdock', 674, 0, 1)"
-        }
+        _layout = "4 views (b)"
       }
     }
     Toolbars and Menus:config =

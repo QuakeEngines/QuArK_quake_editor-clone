@@ -29,6 +29,13 @@ class ThreeViewsLayout(MapLayout):
 
     shortname = "3 views"
 
+    def clearrefs(self):
+        MapLayout.clearrefs(self)
+        self.threeviews_toppanel = None
+        self.ViewXY = None
+        self.ViewXZ = None
+        self.View3D = None
+
     def buildscreen(self, form):
 
         #

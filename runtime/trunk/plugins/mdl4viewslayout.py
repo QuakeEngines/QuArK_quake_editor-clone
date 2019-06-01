@@ -21,11 +21,18 @@ import quarkpy.qhandles
 from quarkpy.mdlmgr import *
 
 #
-# See comments in map4viewslayout.py.
+# The 4-Views Layout is implemented as a subclass of the base class ModelLayout.
 #
 
 class FourViewsLayout(ModelLayout):
     "The 4-views layout, abstract class for FourViewsLayout1 and FourViewsLayout2."
+
+    def clearrefs(self):
+        ModelLayout.clearrefs(self)
+        self.ViewXY = None
+        self.ViewXZ = None
+        self.ViewYZ = None
+        self.View3D = None
 
     def buildbase(self, form):
 
@@ -96,7 +103,7 @@ class FourViewsLayout(ModelLayout):
     ### rotation is based on the center of the editor view or the model (0,0,0).
         if quarkx.setupsubset(SS_MODEL, "Options")['EditorTrue3Dmode'] != "1":
             quarkpy.qhandles.flat3Dview(self.View3D, self)
-            del self.View3D.info["noclick"] 
+            del self.View3D.info["noclick"]
 
 
     #
@@ -184,7 +191,7 @@ class FourViewsLayout(ModelLayout):
         x1,y1,x2,y2 = self.ViewXY.redlinesrect
         corner1 = self.ViewXY.space(x1, y1, 0.0)
         corner2 = self.ViewXY.space(x2, y2, 0.0)
-        
+
         xzdepth = (self.ViewXZ.proj(corner2).z,
                    self.ViewXZ.proj(corner1).z)
 
@@ -246,10 +253,77 @@ class FourViewsLayout(ModelLayout):
 
 
 
+
+class FourViewsLayout1(FourViewsLayout):
+
+    from quarkpy.qbaseeditor import currentview
+    shortname = "4 views (a)"
+
+    def buildscreen(self, form):
+
+        #
+        # Build the base.
+        #
+
+        self.buildbase(form)
+
+        #
+        # Divide the main panel into 4 sections.
+        # horizontally, 2 sections split at 50% of the width
+        # vertically, 2 sections split at 50% of the height
+        #
+
+        form.mainpanel.sections = ((0.50, ), (0.50,))
+
+        #
+        # Put the XY view in the section (0,1), i.e. left down.
+        #
+
+        self.ViewXY.section = (0,1)
+
+        #
+        # The XZ view is in the section (0,0) (it is there by default).
+        #
+
+        #
+        # Put the YZ view in the section (1,0).
+        #
+
+        self.ViewYZ.section = (1,0)
+
+        #
+        # Put the 3D view in the section (1,1).
+        #
+
+        self.View3D.section = (1,1)
+
+        #
+        # Link the horizontal position of the XZ view to that of the
+        # XY view, and the vertical position of the XZ and YZ views,
+        # and remove the extra scroll bars.
+        #
+
+        self.sblinks.append((0, self.ViewXY, 0, self.ViewXZ))
+        self.sblinks.append((1, self.ViewYZ, 1, self.ViewXZ))
+        self.sblinks.append((1, self.ViewXY, 0, self.ViewYZ))
+        self.ViewXZ.flags = self.ViewXZ.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
+        self.ViewYZ.flags = self.ViewYZ.flags &~ MV_HSCROLLBAR
+
+        #
+        # To set the qbaseeditor's global currentview for proper creation and
+        # drawing of handles when switching from one layout to another.
+        #
+
+        quarkpy.qbaseeditor.currentview = self.View3D
+
+
+
+
+
 class FourViewsLayout2(FourViewsLayout):
 
     from quarkpy.qbaseeditor import currentview
-    shortname = "4 views"
+    shortname = "4 views (b)"
 
     def buildscreen(self, form):
 
@@ -305,13 +379,14 @@ class FourViewsLayout2(FourViewsLayout):
         # To set the qbaseeditor's global currentview for proper creation and
         # drawing of handles when switching from one layout to another.
         #
-        
+
         quarkpy.qbaseeditor.currentview = self.View3D
 
 
 
 #
-# Register the new layout. (this one is the default one, so add it at the front of the list)
+# Register the new layouts.
 #
 
-LayoutsList.insert(0, FourViewsLayout2)
+LayoutsList.append(FourViewsLayout1)
+LayoutsList.append(FourViewsLayout2)

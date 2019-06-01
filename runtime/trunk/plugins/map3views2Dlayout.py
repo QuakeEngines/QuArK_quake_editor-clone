@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Modified Plug-in which define the Classical screen layout.
+Plug-in which define the modified 3-views 2D screen layout.
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -8,12 +8,9 @@ Modified Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-### Nurail - Mar 22, 2003 - Modification of map3viewslayout for 2D only views.
-
-
 Info = {
    "plug-in":       "3-Views 2D Layout",
-   "desc":          "QuArK's 3-views Screen Layout.",
+   "desc":          "QuArK's Modified 3-views Screen Layout.",
    "date":          "22 March 2003",
    "author":        "Nurail/Armin Rigo",
    "author e-mail": "nurail@yahoo.com",
@@ -31,6 +28,13 @@ class ThreeViews2DLayout(MapLayout):
     "The 3-views QuArK layout with only 2D windows."
 
     shortname = "3 views (2D)"
+
+    def clearrefs(self):
+        MapLayout.clearrefs(self)
+        self.threeviews_toppanel = None
+        self.ViewXY = None
+        self.ViewXZ = None
+        self.ViewYZ = None
 
     def buildscreen(self, form):
 
@@ -114,7 +118,7 @@ class ThreeViews2DLayout(MapLayout):
         self.sblinks.append((1, self.ViewYZ, 1, self.ViewXZ))
         self.sblinks.append((1, self.ViewXY, 0, self.ViewYZ))
         self.ViewXZ.flags = self.ViewXZ.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-        
+
 
     #
     # The following function is called when the configuration changed.

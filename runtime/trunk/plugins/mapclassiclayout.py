@@ -29,6 +29,11 @@ class ClassicLayout(MapLayout):
 
     shortname = "Classic"
 
+    def clearrefs(self):
+        MapLayout.clearrefs(self)
+        self.ViewXY = None
+        self.ViewXZ = None
+
     def buildscreen(self, form):
 
         #
