@@ -451,7 +451,7 @@ function GetExplorerAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
- L: TList;
+ L: TQList;
 begin
  try
   for I:=Low(MethodTable) to High(MethodTable) do

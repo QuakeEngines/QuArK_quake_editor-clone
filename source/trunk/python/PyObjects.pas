@@ -32,7 +32,7 @@ uses SysUtils, Classes, Python, QkObjects, Dialogs;
 
 function QkObjFromPyObj(o: PyObject) : QObject;
 function GetPyObj(Q: QObject) : PyObject;
-function QListToPyList(L: TList) : PyObject;
+function QListToPyList(L: TQList) : PyObject;
 procedure PyListToQList(list: PyObject; L: TQList; Cls: QObjectClass);
 function GetPySpecArg(var Spec: String; value: PyObject) : String;
 
@@ -135,13 +135,13 @@ begin
  Py_INCREF(Result);
 end;
 
-function QListToPyList(L: TList) : PyObject;
+function QListToPyList(L: TQList) : PyObject;
 var
  I: Integer;
 begin
  Result:=PyList_New(L.Count);
  for I:=0 to L.Count-1 do
-  PyList_SetItem(Result, I, GetPyObj(QObject(L[I])));
+  PyList_SetItem(Result, I, GetPyObj(L[I]));
 end;
 
 procedure PyListToQList(list: PyObject; L: TQList; Cls: QObjectClass);
