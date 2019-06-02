@@ -237,10 +237,10 @@ begin
    for I:=FreeGBList.Count-1 downto 0 do
     begin
      B:=PGameBuffer(FreeGBList[I]);
-{$IFDEF Debug}
+     {$IFDEF Debug}
      if B^.RefCount<>0 then
       Raise InternalE('ClearGBList');
-{$ENDIF}
+     {$ENDIF}
      DeleteObject(B^.Palette);
      DeleteObject(B^.PaletteReelle);
     {B^.AddOns.AddRef(-1);}
@@ -281,7 +281,7 @@ begin
       {$IFDEF Debug}
       if B^.RefCount<0 then
         Raise InternalE('DeleteGameBuffer');
-     {$ENDIF}
+      {$ENDIF}
       DeleteObject(B^.Palette);
       DeleteObject(B^.PaletteReelle);
      {B^.AddOns.AddRef(-1);}
@@ -297,10 +297,10 @@ begin
    Dec(B^.RefCount);
    if B^.RefCount<=0 then
     begin
-{$IFDEF Debug}
+     {$IFDEF Debug}
      if B^.RefCount<0 then
       Raise InternalE('DelayDeleteGameBuffer');
-{$ENDIF}
+     {$ENDIF}
      if FreeGBList=Nil then
       FreeGBList:=TList.Create;
      FreeGBList.Add(B);
@@ -1119,7 +1119,7 @@ begin
 
  InitGammaBuffer(FG);
 
- GetMem(Log, SizeOf(TLogPalette)+255*SizeOf(TPaletteEntry));
+ GetMem(Log, SizeOf(TLogPalette)+255*SizeOf(TPaletteEntry)); //255 because one entry is already in TLogPalette.
  try
    Log^.palVersion:=$300;
    Log^.palNumEntries:=256;
