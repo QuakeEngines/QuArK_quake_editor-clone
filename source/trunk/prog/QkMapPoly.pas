@@ -2509,6 +2509,7 @@ begin
     if Me.SubElements[i] is TFace then
       Me.SubElements[i].Flags := Me.SubElements[i].Flags or ofTreeViewSubElement;
   Result:=Py_None;
+  Py_INCREF(Result);
  except
   EBackToPython;
   Result:=Nil;

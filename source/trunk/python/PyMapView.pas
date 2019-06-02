@@ -883,6 +883,7 @@ var
  p: TPoint;
 begin
  Result:=Py_None;
+ Py_INCREF(Result);
  if MapViewProj=Nil then Exit;
  try
   Count:=PyObject_Length(FHandles);
@@ -930,6 +931,7 @@ begin
             Right:=p.x+SizeX;
             Bottom:=p.y+SizeY;
            end;
+         Py_DECREF(Result);
          Result:=item;
          Exit;
         end;
@@ -2923,7 +2925,10 @@ begin
              if Image<>nil then
               Result:=Py_BuildValueX('O', [GetPyObj(Image)])
              else
-              Result:=Py_None;
+              begin
+               Result:=Py_None;
+               Py_INCREF(Result);
+              end;
            Exit;
           end
          else if StrComp(attr, 'border')=0 then
