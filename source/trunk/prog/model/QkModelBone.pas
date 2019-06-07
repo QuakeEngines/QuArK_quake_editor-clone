@@ -307,7 +307,7 @@ var
   P: PyVect;
   M: PyMatrix;
   S, S0: String;
-  DictLen: Py_ssize_t;
+  DictLen: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF};
   DestP: vec3_p;
   DestM: PMatrixTransformation;
   DestV: PChar;
@@ -383,7 +383,7 @@ begin
         Move(N, DestV^, SizeOf(Integer));
         I:=I+SizeOf(Integer);
         DictLen:=0;
-        while (PyDict_Next(value, Py_ssize_tPtr(@DictLen), @DictKey, @DictValue)<>0) do
+        while (PyDict_Next(value, @DictLen, @DictKey, @DictValue)<>0) do
         begin
           S2:=PyString_AsString(DictKey);
           SetLength(S, I+Length(S2)+1);
@@ -425,7 +425,7 @@ begin
         Move(N, DestV^, SizeOf(Integer));
         I:=I+SizeOf(Integer);
         DictLen:=0;
-        while (PyDict_Next(value, Py_ssize_tPtr(@DictLen), @DictKey, @DictValue)<>0) do
+        while (PyDict_Next(value, @DictLen, @DictKey, @DictValue)<>0) do
         begin
           S2:=PyString_AsString(DictKey);
           SetLength(S, I+Length(S2)+1);

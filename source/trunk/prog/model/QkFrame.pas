@@ -348,6 +348,7 @@ function QFrame.PyGetAttr(attr: PChar) : PyObject;
 var
   I, Count: Integer;
   P: vec3_p;
+{  v: PyVect; }
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
@@ -356,7 +357,9 @@ begin
       Count:=GetBoneMovement(Pb);
       Result:=PyList_New(Count);
       for I:=0 to Count-1 do begin
-        PyList_SetItem(Result, I, Py_BuildValueX('(sO)',[PChar(Pb^.Name), MakePyVectv(Pb^.new_offset) ]));
+        v:=MakePyVectv(Pb^.new_offset);
+        PyList_SetItem(Result, I, Py_BuildValueX('(sO)',[PChar(Pb^.Name), v]));
+        PyDECREF(v);
         Inc(Pb);
       end;
       Exit;

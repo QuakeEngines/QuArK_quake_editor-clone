@@ -41,7 +41,7 @@ type
                     function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                     function AccepteDestination(Q: QObject) : Boolean;
                     procedure GO(Method: Integer);
-                    procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+                    procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
                     procedure RenderAsText;
                     function AllowDrag(Target: QObject) : Boolean;
                   end;
@@ -402,7 +402,7 @@ begin
  end;
 end;
 
-procedure QExplorerGroup.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QExplorerGroup.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 var
  I: Integer;
 begin

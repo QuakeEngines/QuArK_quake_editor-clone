@@ -39,7 +39,7 @@ type
              function TestConversionType(I: Integer) : QFileObjectClass; override;
              procedure ObjectState(var E: TEtatObjet); override;
              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-             procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+             procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
            end;
  QHexenC = class(QQuakeC)
            protected
@@ -242,7 +242,7 @@ begin
   Result:=TestConversionText(I);
 end;
 
-procedure QQuakeC.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QQuakeC.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 begin
  QCList.Add(Self);
 end;

@@ -165,7 +165,7 @@ type
                   procedure LoadFromStream(F: TStream);
                   function PyGetAttr(attr: PChar) : PyObject; override;
                   function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
-                  procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); dynamic;
+                  procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); dynamic;
                 end;
  {QQuArKFileObject = class(QFileObject)
                      protected
@@ -1556,7 +1556,7 @@ begin
  Result:=False;
 end;
 
-procedure QFileObject.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QFileObject.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 begin
 end;
 
@@ -2163,8 +2163,8 @@ var
  astext: PyObject;
  Format: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   alt:='';
   astext:=Nil;
   if not PyArg_ParseTupleX(args, '|sO', [@alt, @astext]) then Exit;
@@ -2182,6 +2182,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2195,8 +2196,8 @@ var
  ConvertClass: QFileObjectClass;
  Source: QFileObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   convert:=Nil;
   if not PyArg_ParseTupleX(args, '|s', [@convert]) then
    Exit;
@@ -2215,8 +2216,11 @@ begin
        Py_DECREF(Result);
        Exit;
       end;
-     PyList_Append(Result, obj);
-     Py_DECREF(obj);
+     try
+       PyList_Append(Result, obj);
+     finally
+       Py_DECREF(obj);
+     end;
      Inc(I);
     until False;
    end
@@ -2225,15 +2229,11 @@ begin
     begin
      Result:=@PythonObj;
      Py_INCREF(Result);
-     try
-      if not ConversionFrom(Source) then
-       Raise EErrorFmt(5673, [Source.Name+Source.TypeInfo, Name+TypeInfo]);
-     except
-      Py_DECREF(Result);
-      Raise;
-     end;
+     if not ConversionFrom(Source) then
+      Raise EErrorFmt(5673, [Source.Name+Source.TypeInfo, Name+TypeInfo]);
     end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2241,11 +2241,13 @@ end;
 
 function qOpeninWindow(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as QFileObject do
     OpenStandAloneWindow(Nil, False);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

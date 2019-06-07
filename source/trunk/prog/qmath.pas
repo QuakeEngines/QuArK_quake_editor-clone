@@ -94,6 +94,7 @@ function MakeVect5(const V: vec5_t) : TVect5;
 function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
+function Vec3Add(const V, W: vec3_t) : vec3_t;
 function Vec3Diff(const V, W : vec3_t) : vec3_t;
 function Vec3Length(const V : vec3_t) : TDouble;
 function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;
@@ -184,9 +185,9 @@ var
  F : TDouble;
 begin
  S:=Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
- F:=1/S;
  if (S = 0) then
    exit;
+ F:=1/S;
  V.X:=V.X*F;
  V.Y:=V.Y*F;
  V.Z:=V.Z*F;
@@ -839,6 +840,13 @@ begin
  Result.X:=R*V.X;
  Result.Y:=R*V.Y;
  Result.Z:=R*V.Z;
+end;
+
+function Vec3Add(const V, W: vec3_t) : vec3_t;
+begin
+   Result[0]:=V[0]+W[0];
+   Result[1]:=V[1]+W[1];
+   Result[2]:=V[2]+W[2];
 end;
 
 function Vec3Diff(const V, W : vec3_t) : vec3_t;

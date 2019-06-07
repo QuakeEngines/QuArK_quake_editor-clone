@@ -874,6 +874,7 @@ begin
   Screen.Cursor:=crCrossHS;
 end;
 
+//Note: Returns the PyObject WITHOUT having increased the ref count!
 function TPyMapView.GetHandle(X,Y: Integer; Corrige: Boolean; MouseArea: PRect) : PyObject;
 var
  SizeX, SizeY: Integer;
@@ -883,7 +884,6 @@ var
  p: TPoint;
 begin
  Result:=Py_None;
- Py_INCREF(Result);
  if MapViewProj=Nil then Exit;
  try
   Count:=PyObject_Length(FHandles);
@@ -931,7 +931,6 @@ begin
             Right:=p.x+SizeX;
             Bottom:=p.y+SizeY;
            end;
-         Py_DECREF(Result);
          Result:=item;
          Exit;
         end;
@@ -1248,7 +1247,7 @@ begin
      MouseTimerTimer(Nil);
     end;
    g_DrawInfo.ShiftState:=Shift;
-   if CurrentHandle = PyNoResult then
+   if CurrentHandle = Py_None then
    begin
      CurrentHandleX:=GetHandle(X+CorrectionX, Y+CorrectionY, False, nil);
      Py_INCREF(CurrentHandleX);
@@ -1256,7 +1255,7 @@ begin
    else
      CurrentHandleX:=CurrentHandle;
    HiddenMouse:=CallMouseEvent(MapViewObject, FOnMouse, X+CorrectionX, Y+CorrectionY, mbDragging, Shift, CurrentHandleX);
-   if CurrentHandle = PyNoResult then
+   if CurrentHandle = Py_None then
    begin
      Py_DECREF(CurrentHandleX);
      CurrentHandleX:=PyNoResult;
@@ -2126,8 +2125,9 @@ var
  mx: PyMatrix;
  rng, cpos: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;   { known 'type's :  XY  XY-  XZ  XZ-  YZ  YZ-  2D  2D-  3D }
+  //known 'type's :  XY  XY-  XZ  XZ-  YZ  YZ-  2D  2D-  3D
  {Angle:=0.0;
   Scale:=1.0;
   VAngle:=0.0;
@@ -2269,6 +2269,7 @@ begin
     end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2278,8 +2279,8 @@ function mScrollTo(self, args: PyObject) : PyObject; cdecl;
 var
  objX, objY: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'OO', [@objX, @objY]) then
    Exit;
   if PyControlF(self)^.QkControl<>Nil then
@@ -2292,6 +2293,7 @@ begin
     end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2306,12 +2308,13 @@ var
  Brush, Brush1: HBrush;
  C, OtherColor: TColorRef;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   flags:=0;
   if (PyControlF(self)^.QkControl=Nil)
   or ((PyControlF(self)^.QkControl as TPyMapView).MapViewProj=Nil) then
    begin
+    //FIXME: Or is this an error? (i.e. exit without setting Result to PyNoResult?)
     Result:=PyNoResult;
     Exit;
    end;
@@ -2442,6 +2445,7 @@ begin
 
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2452,8 +2456,8 @@ var
  V: TVect;
  P: TPointProj;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if PyObject_Length(args)=1 then
    begin
     if not PyArg_ParseTupleX(args, 'O!', [@TyVect_Type, @Result]) then
@@ -2476,6 +2480,7 @@ begin
   else
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2485,8 +2490,8 @@ function mSpace(self, args: PyObject) : PyObject; cdecl;
 var
  Pt: TPointProj;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if PyObject_Length(args)=1 then
    begin
     if not PyArg_ParseTupleX(args, 'O!', [@TyVect_Type, @Result]) then
@@ -2510,6 +2515,7 @@ begin
   else
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2519,8 +2525,8 @@ function mSetDepth(self, args: PyObject) : PyObject; cdecl;
 var
  d1, d2: Double;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if PyObject_Length(args)=1 then
    args:=PyTuple_GetItem(args, 0);
   if not PyArg_ParseTupleX(args, 'dd', [@d1, @d2]) then
@@ -2541,6 +2547,7 @@ begin
      end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2552,8 +2559,8 @@ var
  ctr: PyVect;
  P: TPointProj;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   ctr:=Nil;
   if not PyArg_ParseTupleX(args, 'ii|O!', [@rx, @ry, @TyVect_Type, @ctr]) then
    Exit;
@@ -2582,6 +2589,7 @@ begin
      end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2615,6 +2623,7 @@ function mCanvas(self, args: PyObject) : PyObject; cdecl;
 var
  C: TColor;
 begin
+ Result:=Nil;
  try
   if PyControlF(self)^.QkControl<>Nil then
    begin
@@ -2642,6 +2651,7 @@ begin
   else
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2653,8 +2663,8 @@ var
  P: PChar;
  V: TVect;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@obj]) then
    Exit;
   V:={Origine}OriginVectorZero;
@@ -2677,6 +2687,7 @@ begin
      end;
   Result:=MakePyVect(V);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2688,8 +2699,8 @@ var
  V: PVect;
  F: TDouble;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   v1:=Nil;
   if not PyArg_ParseTupleX(args, '|O!', [@TyVect_Type, @v1]) then
    Exit;
@@ -2706,6 +2717,7 @@ begin
      end;
   Result:=PyFloat_FromDouble(F);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2718,8 +2730,8 @@ var
  norg: PyVect;
  V: TVect;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   flags:=0;
   color2:=0;
   norg:=Nil;
@@ -2734,6 +2746,7 @@ begin
     .DrawGrid(v1obj^.V, v2obj^.V, color, color2, flags, V);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2745,8 +2758,8 @@ var
  DC, DC1: HDC;
  S: String;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   AltTexSrc:=Nil;
   if not PyArg_ParseTupleX(args, '|O', [@AltTexSrc]) then
    Exit;
@@ -2796,6 +2809,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2815,6 +2829,7 @@ begin
   InvalidateRect(TWinControl(PyControlF(self)^.QkControl).Handle, @R, false);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2889,7 +2904,9 @@ var
  I: Integer;
  R: TRect;
  centerX: PyVect;
+ o: PyObject;
 begin
+ Result:=Nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -2898,7 +2915,6 @@ begin
      Exit;
     end;
 
-  Result:=PyNoResult;
   with PyControlF(self)^ do
    case attr[0] of
     'a': if StrComp(attr, 'animation')=0 then
@@ -2913,8 +2929,13 @@ begin
             with (QkControl as TPyMapView).BackgroundImage do
              begin
               centerX:=MakePyVect(center);
-              Result:=Py_BuildValueX('OOii', [centerX, PyFloat_FromDouble(scale), offset, multiple]);
-              Py_DECREF(centerX);
+              o:=PyFloat_FromDouble(scale);
+              try
+               Result:=Py_BuildValueX('OOii', [centerX, o, offset, multiple]);
+              finally
+               Py_DECREF(centerX);
+               Py_DECREF(o);
+              end;
              end;
            Exit;
           end
@@ -2923,12 +2944,9 @@ begin
            if QkControl<>Nil then
             with (QkControl as TPyMapView).BackgroundImage do
              if Image<>nil then
-              Result:=Py_BuildValueX('O', [GetPyObj(Image)])
+              Result:=Py_BuildValueX('O', [@Image.PythonObj])
              else
-              begin
-               Result:=Py_None;
-               Py_INCREF(Result);
-              end;
+              Result:=PyNoResult;
            Exit;
           end
          else if StrComp(attr, 'border')=0 then
@@ -3059,6 +3077,7 @@ begin
    end;
 
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

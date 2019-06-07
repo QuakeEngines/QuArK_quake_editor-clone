@@ -293,10 +293,7 @@ begin
       if R then
         Result:=MakePyVectv(P^)
       else
-       begin
-        Result:=Py_None;
-        Py_INCREF(Result);
-       end;
+        Result:=PyNoResult;
       Exit;
     end;
     'e': if StrComp(attr, 'end_point')=0 then begin
@@ -304,20 +301,14 @@ begin
       if R then
         Result:=MakePyVectv(P^)
       else
-       begin
-        Result:=Py_None;
-        Py_INCREF(Result);
-       end;
+        Result:=PyNoResult;
       Exit;
     end else if StrComp(attr, 'end_offset')=0 then begin
       R:=GetEndOffset(P);
       if R then
         Result:=MakePyVectv(P^)
       else
-       begin
-        Result:=Py_None;
-        Py_INCREF(Result);
-       end;
+        Result:=PyNoResult;
       Exit;
     end;
     'b': if StrComp(attr, 'bone_length')=0 then begin

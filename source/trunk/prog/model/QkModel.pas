@@ -35,7 +35,7 @@ type
     function ConversionFrom(Source: QFileObject) : Boolean; override;
     procedure ObjectState(var E: TEtatObjet); override;
     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-    procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+    procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
     function GetRoot : QModelRoot;
     function TestConversionType(I: Integer) : QFileObjectClass; override;
   end;
@@ -105,7 +105,7 @@ begin
   end;
 end;
 
-procedure QModel.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QModel.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 var
   S: String;
   filename: PyObject;

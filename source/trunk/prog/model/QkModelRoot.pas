@@ -57,8 +57,8 @@ var
   u: PyObject;
   Q: QObject;
 begin
+  Result:=Nil;
   try
-    Result:=Nil;
     if not PyArg_ParseTupleX(args, 'O', [@u]) then
       Exit;
     Q:=QkObjFromPyObj(u);
@@ -68,6 +68,7 @@ begin
       SetCurrentComponent(QComponent(Q));
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -75,11 +76,13 @@ end;
 
 function qCheckComponents(self, args: PyObject) : PyObject; cdecl;
 begin
+  Result:=Nil;
   try
     with QkObjFromPyObj(self) as QModelRoot do
       CheckComponentFrames;
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -87,11 +90,13 @@ end;
 
 function qTryAutoLoadParts(self, args: PyObject) : PyObject; cdecl;
 begin
+  Result:=Nil;
   try
     with QkObjFromPyObj(self) as QModelRoot do
       QMD3File(FParent).TryAutoLoadParts;
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;

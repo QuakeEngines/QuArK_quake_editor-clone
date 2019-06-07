@@ -69,8 +69,8 @@ type
 
  {------------------------}
 
-function ImageList_length(self: PyObject) : Py_ssize_t; cdecl;
-function ImageList_item(self: PyObject; i: Py_ssize_t) : PyObject; cdecl;
+function ImageList_length(self: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
+function ImageList_item(self: PyObject; i: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 procedure FreeImageList(o: PyObject); cdecl;
 function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
 procedure FreeImage1(o: PyObject); cdecl;
@@ -302,6 +302,7 @@ end;
 
 function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   case attr[0] of
    'd': if StrComp(attr, 'disabledimage')=0 then
@@ -319,6 +320,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -350,23 +352,25 @@ begin
  end;
 end;
 
-function ImageList_length(self: PyObject) : Py_ssize_t; cdecl;
+function ImageList_length(self: PyObject) : {$IFDEF Python25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 begin
  try
   Result:=ImageList_GetImageCount(PyImageList(self)^.Handle);
  except
   EBackToPython;
-  Result:=0;
+  Result:=-1;
  end;
 end;
 
-function ImageList_item(self: PyObject; i: Py_ssize_t) : PyObject; cdecl;
+function ImageList_item(self: PyObject; i: {$IFDEF Python25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   if (i>=ImageList_length(self)) then
    Raise EError(4445);
   Result:=PyImageList(self)^.NeedImage(False, i);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -750,6 +754,7 @@ end;
 
 function iCanvas(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   if PyControlF(self)^.QkControl<>Nil then
    begin
@@ -767,6 +772,7 @@ begin
   else
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -801,6 +807,7 @@ var
  Attr1: PyObjectPtr;
  I: Integer;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -837,6 +844,7 @@ begin
     Py_INCREF(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

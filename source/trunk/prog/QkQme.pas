@@ -39,7 +39,7 @@ type
           procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-          procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+          procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
         end;
 
 type
@@ -679,7 +679,7 @@ begin
  end;
 end;
 
-procedure QQme.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QQme.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 var
  I: Integer;
 begin

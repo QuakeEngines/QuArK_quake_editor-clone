@@ -384,8 +384,8 @@ var
  Info: ^TWaiterInfo;
  Dummy: DWORD;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@fnt]) then
    Exit;
   Info:=nil;
@@ -406,6 +406,7 @@ begin
   Py_INCREF(fnt);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -420,8 +421,8 @@ var
  I: Integer;
  ExitCode: DWORD;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
     begin
@@ -441,7 +442,9 @@ begin
          end;
   end;
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
+  Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

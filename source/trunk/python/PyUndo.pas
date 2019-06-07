@@ -37,8 +37,8 @@ var
  obj1: PyObject;
  txt: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!s', [@TyObject_Type, @obj1, @txt]) then
    Exit;
   if g_ListeActions=Nil then
@@ -46,6 +46,7 @@ begin
   FinAction(QkObjFromPyObj(obj1), txt);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -53,10 +54,12 @@ end;
 
 function uCancel(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   AnnuleAction;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -68,8 +71,8 @@ var
  Q1, Q2: QObject;
  U: TQObjectUndo;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   obj3:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!|O', [@TyObject_Type, @obj1, @TyObject_Type, @obj2, @obj3]) then
    Exit;
@@ -85,6 +88,7 @@ begin
    U.InsererAvant:=QkObjFromPyObj(obj3);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -96,8 +100,8 @@ var
  Q1, Q2: QObject;
  U: TQObjectUndo;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   obj3:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O|O', [@TyObject_Type, @obj1, @obj2, @obj3]) then
    Exit;
@@ -113,6 +117,7 @@ begin
    U.InsererAvant:=QkObjFromPyObj(obj3);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -126,8 +131,8 @@ var
  nPosition: Integer;
  Q: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nPosition:=sp_Auto;
   if not PyArg_ParseTupleX(args, 'O!sO|i', [@TyObject_Type, @obj1, @P, @obj2, @nPosition]) then
    Exit;
@@ -152,6 +157,7 @@ begin
   g_ListeActions.Add(TSpecificUndo.Create('', nSpec, nArg, nPosition, Q));
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -162,8 +168,8 @@ var
  obj1: PyObject;
  P: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!s', [@TyObject_Type, @obj1, @P]) then
    Exit;
   if g_ListeActions=Nil then
@@ -171,6 +177,7 @@ begin
   g_ListeActions.Add(TNameUndo.Create('', P, QkObjFromPyObj(obj1)));
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -180,8 +187,8 @@ function uMove(self, args: PyObject) : PyObject; cdecl;
 var
  obj1, obj2, obj3: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   obj3:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!|O', [@TyObject_Type, @obj1, @TyObject_Type, @obj2, @obj3]) then
    Exit;
@@ -190,6 +197,7 @@ begin
   g_ListeActions.Add(TMoveUndo.Create('', QkObjFromPyObj(obj1), QkObjFromPyObj(obj2), QkObjFromPyObj(obj3)));
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

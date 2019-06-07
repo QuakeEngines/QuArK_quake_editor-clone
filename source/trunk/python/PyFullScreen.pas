@@ -180,12 +180,14 @@ end;
 
 function fClose(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   with PyControlF(self)^ do
    if QkControl<>Nil then
     (QkControl as TPyFullscreenWnd).Close;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -291,6 +293,7 @@ begin
     Py_INCREF(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

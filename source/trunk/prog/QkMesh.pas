@@ -916,11 +916,13 @@ var
  I, J : Integer;
 }
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as TMesh do
     SwapSides;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

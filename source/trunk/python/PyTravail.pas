@@ -34,12 +34,14 @@ uses Quarkx, QkExceptions, Travail;
 
 function tProgress(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   if PyList_GetItem(self,0)=Py_None then
    Raise EError(4451);
   ProgressIndicatorIncrement;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -47,6 +49,7 @@ end;
 
 function tClose(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   if PyList_GetItem(self,0)<>Py_None then
    begin
@@ -55,6 +58,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -64,15 +68,17 @@ function tChangeCount(self, args: PyObject) : PyObject; cdecl;
 var
  nCount: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'i', [@nCount]) then
    Exit;
   if PyList_GetItem(self,0)=Py_None then
    Raise EError(4451);
   ProgressIndicatorChangeMax(-1, nCount);
   PyList_SetItem(self,0, PyInt_FromLong(nCount));
+  Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -80,10 +86,12 @@ end;
 
 function tCount(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   Result:=PyList_GetItem(self,0);
   Py_INCREF(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

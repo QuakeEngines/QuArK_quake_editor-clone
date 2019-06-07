@@ -227,8 +227,8 @@ var
  Q: QObject;
  obj: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@obj]) then
    Exit;
   Q:=QkObjFromPyObj(obj);
@@ -239,6 +239,7 @@ begin
     (QkControl as TPythonExplorer).AddRoot(Q);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -246,12 +247,14 @@ end;
 
 function eClear(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   with PyControl(self)^ do
    if QkControl<>Nil then
     (QkControl as TPythonExplorer).ClearView;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -259,12 +262,14 @@ end;
 *)
 function fClose(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   with PyControlF(self)^ do
    if QkControl<>Nil then
     (QkControl as TPyFloatingWnd).CloseNow;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -275,8 +280,8 @@ var
  ok: PyObject;
  Sender: TObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   ok:=Nil;
   if not PyArg_ParseTupleX(args, '|O', [@ok]) then
    Exit;
@@ -288,6 +293,7 @@ begin
     GlobalDoCancel(Sender);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -325,6 +331,7 @@ var
  Attr1: PyObjectPtr;
  I: Integer;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -400,6 +407,7 @@ begin
     Py_INCREF(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

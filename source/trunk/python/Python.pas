@@ -39,21 +39,23 @@ in here! YOU HAVE BEEN WARNED!
 type
  CFILE = Pointer;
 
+ {$IFDEF PYTHON25}
  Py_ssize_t = size_t;
  Py_ssize_tPtr = ^Py_ssize_t;
+ {$ENDIF}
 
  PyObjectPtr = ^PyObject;
  PyTypeObject = ^TyTypeObject;
 
  PyObject = ^TyObject;
  TyObject = object
-             ob_refcnt: Py_ssize_t;
+             ob_refcnt: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF};
              ob_type: PyTypeObject;
             end;
 
  PyVarObject = ^TyVarObject;
  TyVarObject = object(TyObject)
-                ob_size: Py_ssize_t;
+                ob_size: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF};
                end;
  PyIntObject = ^TyIntObject;
  TyIntObject = object(TyObject)
@@ -74,11 +76,11 @@ type
  TyCFunctionKey = function(self, args, keys: PyObject) : PyObject; cdecl;
  PTymethodDef = ^TyMethodDef;
  TyMethodDef = packed record
-                ml_name: PChar;
+                ml_name: (*const*) PChar;
                 case Integer of
                  0: (ml_meth: TyCFunction;
                      ml_flags: Integer;
-                     ml_doc: PChar);
+                     ml_doc: (*const*) PChar);
                  1: (ml_keymeth: TyCFunctionKey);
                end;
 
@@ -86,7 +88,7 @@ type
  PyMemberDef = packed record
    name : PChar;
    _type : integer;
-   offset : Py_ssize_t;
+   offset : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF};
    flags : integer;
    doc : PChar;
  end;
@@ -107,50 +109,51 @@ type
  descrsetfunc      = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
  initproc          = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
  newfunc           = function (t: PyTypeObject; ob1, ob2 : PyObject) : PyObject; cdecl;
- allocfunc         = function (t: PyTypeObject; i : Py_ssize_t) : PyObject; cdecl;
+ allocfunc         = function (t: PyTypeObject; i : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}) : PyObject; cdecl;
  freefunc          = procedure(ptr: Pointer); cdecl;
- pydestructor      = procedure(ob: PyObject); cdecl;
- richcmpfunc       = function (ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
+ FnRichCmpFunc       = function (ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
 
  FnUnaryFunc         = function(o1: PyObject) : PyObject; cdecl;
- FnBinaryfunc        = function(o1,o2: PyObject) : PyObject; cdecl;
- FnTernaryfunc       = function(o1,o2,o3: PyObject) : PyObject; cdecl;
+ FnBinaryFunc        = function(o1,o2: PyObject) : PyObject; cdecl;
+ FnTernaryFunc       = function(o1,o2,o3: PyObject) : PyObject; cdecl;
  FnInquiry           = function(o: PyObject) : Integer; cdecl;
- FnLenfunc           = function(o: PyObject) : Py_ssize_t; cdecl;
- FnIntargfunc        = function(o: PyObject; i1: Integer) : PyObject; cdecl;
- FnIntintargfunc     = function(o: PyObject; i1, i2: Integer) : PyObject; cdecl;
- FnSSizeArgfunc      = function(o: PyObject; i1: Py_ssize_t) : PyObject; cdecl;
- FnSSizeSSizeArgfunc = function(o: PyObject; i1: Py_ssize_t; i2: Py_ssize_t) : PyObject; cdecl;
+ {$IFDEF PYTHON25}FnLenfunc           = function(o: PyObject) : Py_ssize_t; cdecl;{$ENDIF}
+ FnIntArgFunc        = function(o: PyObject; i1: Integer) : PyObject; cdecl;
+ FnIntintargFunc     = function(o: PyObject; i1, i2: Integer) : PyObject; cdecl;
+ {$IFDEF PYTHON25}FnSSizeArgFunc      = function(o: PyObject; i1: Py_ssize_t) : PyObject; cdecl;{$ENDIF}
+ {$IFDEF PYTHON25}FnSSizeSSizeArgFunc = function(o: PyObject; i1: Py_ssize_t; i2: Py_ssize_t) : PyObject; cdecl;{$ENDIF}
 
- FnIntobjargproc        = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
- FnIntintobjargproc     = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
- FnSSizeObjArgproc      = function(o: PyObject; i: Py_ssize_t; o2: PyObject) : Integer; cdecl;
- FnSSizeSSizeObjArgproc = function(o: PyObject; i1, i2: Py_ssize_t; o2: PyObject) : Integer; cdecl;
- FnObjobjargproc        = function(o1,o2,o3: PyObject) : Integer; cdecl;
+ FnIntObjArgProc        = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
+ FnIntIntObjArgProc     = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
+ {$IFDEF PYTHON25}FnSSizeObjArgProc      = function(o: PyObject; i: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
+ {$IFDEF PYTHON25}FnSSizeSSizeObjArgProc = function(o: PyObject; i1, i2: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
+ FnObjObjArgProc        = function(o1,o2,o3: PyObject) : Integer; cdecl;
 
  FnDestructor    = procedure(o: PyObject); cdecl;
- FnPrintfunc     = function(o: PyObject; f: CFILE; i: Integer) : Integer; cdecl;
- FnGetattrfunc   = function(o: PyObject; attr: PChar) : PyObject; cdecl;
- FnGetattrofunc  = function(o: PyObject; attr: PyObject) : PyObject; cdecl;
- FnSetattrfunc   = function(o: PyObject; attr: PChar; v: PyObject) : Integer; cdecl;
- FnSetattrofunc  = function(o: PyObject; attr: PyObject; v: PyObject) : Integer; cdecl;
- FnCmpfunc       = function(o1, o2: PyObject) : Integer; cdecl;
+ FnPrintFunc     = function(o: PyObject; f: CFILE; i: Integer) : Integer; cdecl;
+ FnGetAttrFunc   = function(o: PyObject; attr: PChar) : PyObject; cdecl;
+ FnGetAttrOFunc  = function(o: PyObject; attr: PyObject) : PyObject; cdecl;
+ FnSetAttrFunc   = function(o: PyObject; attr: PChar; v: PyObject) : Integer; cdecl;
+ FnSetAttrOFunc  = function(o: PyObject; attr: PyObject; v: PyObject) : Integer; cdecl;
+ FnCmpFunc       = function(o1, o2: PyObject) : Integer; cdecl;
  FnReprfunc      = function(o: PyObject) : PyObject; cdecl;
  FnHashfunc      = function(o: PyObject) : LongInt; cdecl;
  FnCoercion      = function(var o1, o2: PyObject) : Integer; cdecl;
 
- inquiry         = function(ob1 : PyObject): integer; cdecl;
- visitproc       = function(ob1: PyObject; ptr: Pointer): integer; cdecl;
- traverseproc    = function(ob1: PyObject; proc: visitproc; ptr: Pointer): integer; cdecl;
- getiterfunc     = function(ob1 : PyObject) : PyObject; cdecl;
- iternextfunc    = function(ob1 : PyObject) : PyObject; cdecl;
+ FnObjObjProc      = function(ob1, obj2: PyObject): integer; cdecl;
+ FnVisitProc       = function(ob1: PyObject; ptr: Pointer): integer; cdecl;
+ FnTraverseProc    = function(ob1: PyObject; proc: FnVisitProc; ptr: Pointer): integer; cdecl;
+ FnGetIterFunc     = function(ob1 : PyObject) : PyObject; cdecl;
+ FnIterNextFunc    = function(ob1 : PyObject) : PyObject; cdecl;
 
- readbufferproc    = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
- writebufferproc   = function(o: PyObject; i: Py_ssize_t; p: Pointer): Py_ssize_t; cdecl;
- segcountproc      = function(o: PyObject; i: Py_ssize_t): Py_ssize_t; cdecl;
- charbufferproc    = function(o: PyObject; i: Py_ssize_t; p: PChar): Py_ssize_t; cdecl;
- getbufferproc     = function(o: PyObject; p: Pointer; i: Integer): Integer; cdecl;
- releasebufferproc = procedure(o: PyObject; p: Pointer); cdecl;
+ FnReadBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ FnWriteBufferProc   = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ FnSegCountProc      = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ FnCharBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: PChar): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ {$IFDEF PYTHON26}
+ FnGetBufferProc     = function(o: PyObject; p: Pointer; i: Integer): Integer; cdecl;
+ FnReleaseBufferProc = procedure(o: PyObject; p: Pointer); cdecl;
+ {$ENDIF}
 
  PyNumberMethods = ^TyNumberMethods;
  TyNumberMethods = packed record
@@ -182,46 +185,49 @@ type
 
  PySequenceMethods = ^TySequenceMethods;
  TySequenceMethods = packed record
-                      sq_length: FnLenfunc;
+                      sq_length: {$IFDEF PYTHON25}FnLenfunc{$ELSE}FnInquiry{$ENDIF};
                       sq_concat: FnBinaryfunc;
-                      sq_repeat: FnSSizeArgfunc;
-                      sq_item: FnSSizeArgfunc;
-                      sq_slice: FnSSizeSSizeArgfunc;
-                      sq_ass_item: FnSSizeObjArgproc;
-                      sq_ass_slice: FnSSizeSSizeObjArgproc;
+                      sq_repeat: {$IFDEF PYTHON25}FnSSizeArgfunc{$ELSE}FnIntArgFunc{$ENDIF};
+                      sq_item: {$IFDEF PYTHON25}FnSSizeArgfunc{$ELSE}FnIntArgFunc{$ENDIF};
+                      sq_slice: {$IFDEF PYTHON25}FnSSizeSSizeArgfunc;{$ELSE}FnIntIntArgFunc{$ENDIF};
+                      sq_ass_item: {$IFDEF PYTHON25}FnSSizeObjArgproc{$ELSE}FnIntObjArgProc{$ENDIF};
+                      sq_ass_slice: {$IFDEF PYTHON25}FnSSizeSSizeObjArgproc{$ELSE}FnIntIntObjArgProc{$ENDIF};
+                      sq_contains: FnObjObjProc;
 {$IFDEF PYTHON20}
-                      sq_inplace_concat: FnBinaryfunc;
-                      sq_inplace_repeat: FnSSizeArgfunc;
+                      sq_inplace_concat: FnBinaryFunc;
+                      sq_inplace_repeat: {$IFDEF PYTHON25}FnSSizeArgFunc{$ELSE}FnIntArgFunc{$ENDIF};
 {$ENDIF}
                      end;
 
  PyMappingMethods = ^TyMappingMethods;
  TyMappingMethods = packed record
-                     mp_length: FnLenfunc;
-                     mp_subscript: FnBinaryfunc;
-                     mp_ass_subscript: FnObjObjArgproc;
+                     mp_length: {$IFDEF PYTHON25}FnLenFunc{$ELSE}FnInquiry{$ENDIF};
+                     mp_subscript: FnBinaryFunc;
+                     mp_ass_subscript: FnObjObjArgProc;
                     end;
 
  PyBufferProcs = ^TyBufferProcs;
  TyBufferProcs = packed record
-                  bf_getreadbuffer: readbufferproc;
-                  bf_getwritebuffer: writebufferproc;
-                  bf_getsegcount: segcountproc;
-                  bf_getcharbuffer: charbufferproc;
-                  bf_getbuffer: getbufferproc;
-                  bf_releasebuffer: releasebufferproc;
+                  bf_getreadbuffer: FnReadBufferProc;
+                  bf_getwritebuffer: FnWriteBufferProc;
+                  bf_getsegcount: FnSegCountProc;
+                  bf_getcharbuffer: FnCharBufferProc;
+                  {$IFDEF PYTHON26}
+                  bf_getbuffer: FnGetBufferProc;
+                  bf_releasebuffer: FnReleaseBufferProc;
+                  {$ENDIF}
                  end;
 
  TyTypeObject = object(TyVarObject)
-                 tp_name: PChar;
-                 tp_basicsize, tp_itemsize: Py_ssize_t;
+                 tp_name: (*const*) PChar;
+                 tp_basicsize, tp_itemsize: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF};
 
                  tp_dealloc: FnDestructor;
-                 tp_print: FnPrintfunc;
-                 tp_getattr: FnGetattrfunc;
-                 tp_setattr: FnSetattrfunc;
-                 tp_compare: FnCmpfunc;
-                 tp_repr: FnReprfunc;
+                 tp_print: FnPrintFunc;
+                 tp_getattr: FnGetAttrFunc;
+                 tp_setattr: FnSetAttrFunc;
+                 tp_compare: FnCmpFunc;
+                 tp_repr: FnReprFunc;
 
                  tp_as_number: PyNumberMethods;
                  tp_as_sequence: PySequenceMethods;
@@ -240,16 +246,16 @@ type
                  tp_doc: PChar;
 
 {$IFDEF PYTHON20}
-                 tp_traverse:    traverseproc;   // call function for all accessible objects
-                 tp_clear:       inquiry;   // delete references to contained objects
+                 tp_traverse:    FnTraverseProc;   // call function for all accessible objects
+                 tp_clear:       FnInquiry;   // delete references to contained objects
 {$ENDIF}
 {$IFDEF PYTHON21}
-                 tp_richcompare: richcmpfunc;   // rich comparisons
-                 tp_weaklistoffset: Py_ssize_t;   // weak reference enabler
+                 tp_richcompare: FnRichCmpFunc;   // rich comparisons
+                 tp_weaklistoffset: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}LongInt{$ENDIF};   // weak reference enabler
 {$ENDIF}
 {$IFDEF PYTHON22}
-                 tp_iter: getiterfunc;
-                 tp_iternext: iternextfunc;
+                 tp_iter: FnGetIterFunc;
+                 tp_iternext: FnIterNextFunc;
 
                  tp_methods          : PTyMethodDef;
                  tp_members          : PPyMemberDef;
@@ -258,18 +264,18 @@ type
                  tp_dict             : PyObject;
                  tp_descr_get        : descrgetfunc;
                  tp_descr_set        : descrsetfunc;
-                 tp_dictoffset       : Py_ssize_t;
+                 tp_dictoffset       : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}LongInt{$ENDIF};
                  tp_init             : initproc;
                  tp_alloc            : allocfunc;
                  tp_new              : newfunc;
                  tp_free             : freefunc; // Low-level free-memory routine
-                 tp_is_gc            : inquiry; // For PyObject_IS_GC
+                 tp_is_gc            : FnInquiry; // For PyObject_IS_GC
                  tp_bases            : PyObject;
                  tp_mro              : PyObject; // method resolution order
                  tp_cache            : PyObject;
                  tp_subclasses       : PyObject;
                  tp_weaklist         : PyObject;
-                 tp_del              : PyDestructor;
+                 tp_del              : FnDestructor;
 {$ENDIF}
 {$IFDEF PYTHON26}
                  tp_version_tag      : Cardinal; //Type attribute cache version tag
@@ -357,23 +363,23 @@ var
 Py_Initialize: procedure; cdecl;
 Py_Finalize: procedure; cdecl;
 Py_SetProgramName: procedure (name : PChar); cdecl;
-Py_GetVersion: function : PChar; cdecl;
-//Py_GetBuildNumber: function : PChar; cdecl; //New in Python 2.5
-//Py_GetPlatform: function : PChar; cdecl;
-//Py_GetCopyright: function : PChar; cdecl;
-//Py_GetCompiler: function : PChar; cdecl;
-//Py_GetBuildInfo: function : PChar; cdecl;
+Py_GetVersion: function : (*const*) PChar; cdecl;
+//Py_GetBuildNumber: function : (*const*) PChar; cdecl; //New in Python 2.5
+//Py_GetPlatform: function : (*const*) PChar; cdecl;
+//Py_GetCopyright: function : (*const*) PChar; cdecl;
+//Py_GetCompiler: function : (*const*) PChar; cdecl;
+//Py_GetBuildInfo: function : (*const*) PChar; cdecl;
 
-PyRun_SimpleString: function (P: PChar) : Integer; cdecl;
-//PyRun_String: function (str: PChar; start: Integer; Globals, Locals: PyObject) : PyObject; cdecl;
-//Py_CompileString: function (str, filename: PChar; start: Integer) : PyObject; cdecl;
+PyRun_SimpleString: function (const P: PChar) : Integer; cdecl;
+//PyRun_String: function (const str: PChar; start: Integer; Globals, Locals: PyObject) : PyObject; cdecl;
+//Py_CompileString: function (const str, filename: PChar; start: Integer) : PyObject; cdecl;
 
 //Py_InitModule: function (name: PChar; const MethodDef) : PyObject; cdecl;
-//Py_InitModule3: function (name: PChar; const MethodDef; r1: PChar) : PyObject; cdecl;
-Py_InitModule4: function (name: PChar; const MethodDef; r1: PChar; r2: PyObject; Version: Integer) : PyObject; cdecl;
+//Py_InitModule3: function (name: PChar; const MethodDef; doc: PChar) : PyObject; cdecl;
+Py_InitModule4: function (name: PChar; const MethodDef; doc: PChar; self: PyObject; Version: Integer) : PyObject; cdecl;
 PyModule_GetDict: function (module: PyObject) : PyObject; cdecl;
-PyModule_New: function (name: PChar) : PyObject; cdecl;
-//PyImport_ImportModule: function (name: PChar) : PyObject; cdecl;
+PyModule_New: function (const name: PChar) : PyObject; cdecl;
+//PyImport_ImportModule: function (const name: PChar) : PyObject; cdecl;
 
 //PyEval_GetGlobals: function : PyObject; cdecl;
 //PyEval_GetLocals: function : PyObject; cdecl;
@@ -389,17 +395,17 @@ PyErr_Print: procedure; cdecl;
 PyErr_Clear: procedure; cdecl;
 PyErr_Occurred: function : PyObject; cdecl;
 PyErr_Fetch: procedure (var o1, o2, o3: PyObject); cdecl;
-//PyErr_Restore: procedure (o1, o2, o3: PyObject); cdecl;
+PyErr_Restore: procedure (o1, o2, o3: PyObject); cdecl;
 PyErr_NewException: function (name: PChar; base, dict: PyObject) : PyObject; cdecl;
-PyErr_SetString: procedure (o: PyObject; c: PChar); cdecl;
+PyErr_SetString: procedure (o: PyObject; const c: PChar); cdecl;
 //function PyErr_BadArgument : Integer; cdecl;
 PyErr_ExceptionMatches: function (exc: PyObject) : LongBool; cdecl;
 
 //function PyObject_Hash(o: PyObject) : LongInt; cdecl;
 PyObject_Length: function (o: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 PyObject_GetItem: function (o, key: PyObject) : PyObject; cdecl;
-PyObject_HasAttrString: function (o: PyObject; attr_name: PChar) : LongBool; cdecl;
-PyObject_GetAttrString: function (o: PyObject; attr_name: PChar) : PyObject; cdecl;
+PyObject_HasAttrString: function (o: PyObject; const attr_name: PChar) : LongBool; cdecl;
+PyObject_GetAttrString: function (o: PyObject; const attr_name: PChar) : PyObject; cdecl;
 PyObject_IsTrue: function (o: PyObject) : LongBool; cdecl;
 PyObject_Str: function (o: PyObject) : PyObject; cdecl;
 PyObject_Repr: function (o: PyObject) : PyObject; cdecl;
@@ -411,9 +417,9 @@ PyMapping_HasKey: function (o, key: PyObject) : LongBool; cdecl;
 PyMapping_HasKeyString: function (o: PyObject; key: PChar) : LongBool; cdecl;
 PyNumber_Float: function (o: PyObject) : PyObject; cdecl;
 
-Py_BuildValue: function (fmt: PChar{...}) : PyObject; cdecl;
-PyArg_ParseTuple: function (src: PyObject; fmt: PChar{...}) : LongBool; cdecl;
-//PyArg_ParseTupleAndKeywords: function (arg, kwdict: PyObject; fmt: PChar; var kwlist: PChar{...}) : LongBool; cdecl;
+Py_BuildValue: function (const fmt: PChar{...}) : PyObject; cdecl;
+PyArg_ParseTuple: function (src: PyObject; const fmt: PChar{...}) : LongBool; cdecl;
+//PyArg_ParseTupleAndKeywords: function (arg, kwdict: PyObject; const fmt: PChar; var kwlist: PChar{...}) : LongBool; cdecl;
 PyTuple_New: function (size: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 PyTuple_GetItem: function (tuple: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 PyTuple_SetItem: function (tuple: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; item: PyObject) : Integer; cdecl;
@@ -425,18 +431,18 @@ PyList_Insert: function (list: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$E
 PyList_Append: function (list: PyObject; item: PyObject) : Integer; cdecl;
 
 PyDict_New: function : PyObject; cdecl;
-PyDict_SetItemString: function (dict: PyObject; key: PChar; item: PyObject) : Integer; cdecl;
-PyDict_GetItemString: function (dict: PyObject; key: PChar) : PyObject; cdecl;
+PyDict_SetItemString: function (dict: PyObject; const key: PChar; item: PyObject) : Integer; cdecl;
+PyDict_GetItemString: function (dict: PyObject; const key: PChar) : PyObject; cdecl;
 PyDict_GetItem: function (dict, key: PyObject) : PyObject; cdecl;
 PyDict_Keys: function (dict: PyObject) : PyObject; cdecl;
 PyDict_Values: function (dict: PyObject) : PyObject; cdecl;
 //function PyDict_Items(dict: PyObject) : PyObject; cdecl;
 //function PyDict_DelItemString(dict: PyObject; key: PChar) : Integer; cdecl;
-PyDict_Next: function (dict: PyObject; pos : Py_ssize_tPtr; key : PyObjectPtr; value : PyObjectPtr) : Integer; cdecl;
+PyDict_Next: function (dict: PyObject; pos : {$IFDEF PYTHON25} Py_ssize_tPtr {$ELSE} PInteger {$ENDIF}; key : PyObjectPtr; value : PyObjectPtr) : Integer; cdecl;
 
-PyString_FromString: function (str: PChar) : PyObject; cdecl;
+PyString_FromString: function (const str: PChar) : PyObject; cdecl;
 PyString_AsString: function (o: PyObject) : PChar; cdecl;
-PyString_FromStringAndSize: function (str: PChar; size: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+PyString_FromStringAndSize: function (const str: PChar; size: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 PyString_Size: function (o: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 
 PyInt_FromLong: function (Value: LongInt) : PyObject; cdecl;
@@ -478,21 +484,20 @@ PyGC_Collect: procedure; cdecl;
 
 function PyObject_NEW(t: PyTypeObject) : PyObject;
 {function PyObject_NEWVAR(t: PyTypeObject; i: Integer) : PyObject;}
-function Py_BuildValueX(fmt: PChar; Args: array of const) : PyObject;
+function Py_BuildValueX(const fmt: PChar; Args: array of const) : PyObject;
 function Py_BuildValueDD(v1, v2: Double) : PyObject;
 function Py_BuildValueDDD(v1, v2, v3: Double) : PyObject;
 function Py_BuildValueD5(v1, v2, v3, v4, v5: Double) : PyObject;
 function Py_BuildValueODD(v1: PyObject; v2, v3: Double) : PyObject;
-function PyArg_ParseTupleX(src: PyObject; fmt: PChar; AllArgs: array of const) : LongBool;
-{function PyArg_ParseTupleAndKeywordsX(arg, kwdict: PyObject; fmt: PChar; var kwlist: PChar; AllArgs: array of const) : LongBool;
- pascal;}
+function PyArg_ParseTupleX(src: PyObject; const fmt: PChar; AllArgs: array of const) : LongBool;
+//function PyArg_ParseTupleAndKeywordsX(arg, kwdict: PyObject; const fmt: PChar; var kwlist: PChar; AllArgs: array of const) : LongBool;  pascal;
 procedure Py_INCREF(o: PyObject);
 procedure Py_DECREF(o: PyObject);
 procedure Py_Dealloc(o: PyObject);
 procedure Py_XINCREF(o: PyObject);
 procedure Py_XDECREF(o: PyObject);
-{function PySeq_Length(o: PyObject) : Integer;
-function PySeq_Item(o: PyObject; index: Integer) : PyObject;}
+//function PySeq_Length(o: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF};
+//function PySeq_Item(o: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject;
 
 var
  PyInt_Type:    PyTypeObject;
@@ -519,7 +524,7 @@ uses
  {-------------------}
 
 const
-  PythonProcList: array[0..58] of record
+  PythonProcList: array[0..59] of record
                                     Variable: Pointer;
                                     Name: PChar;
                                     MinimalVersion: Integer; //Exact meaning in GoodPythonVersion
@@ -548,7 +553,7 @@ const
     (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear';                MinimalVersion: 0 ),
     (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred';             MinimalVersion: 0 ),
     (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch';                MinimalVersion: 0 ),
-//  (Variable: @@PyErr_Restore;              Name: 'PyErr_Restore';              MinimalVersion: 0 ),
+    (Variable: @@PyErr_Restore;              Name: 'PyErr_Restore';              MinimalVersion: 0 ),
     (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException';         MinimalVersion: 0 ),
     (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString';            MinimalVersion: 0 ),
     (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches';     MinimalVersion: 0 ),
@@ -783,8 +788,8 @@ begin
   FoundGoodVersion:=False;
   FoundOwnVersion:=False;
   
-  //DanielPharos: We're going to assume the Python version numbers is
-  //format of integers delimited by periods '.', with the number starting
+  //DanielPharos: We're going to assume the Python version information always
+  //is formated as integers delimited by periods '.', with the number starting
   //after a space ' '.
   Index:=Pos(' ', s);
   if Index <> 0 then
@@ -796,7 +801,7 @@ begin
     begin
       if VersionNumber[0] > 2 then
       begin
-        //Python 3 or larger: Procede at own risk!
+        //Python 3 or larger: Proceed at own risk!
         FoundGoodVersion:=True;
         LogAndWarn('Unsupported, future version ('+VersionNumberString+') of Python found! QuArK might behave unpredictably!');
       end
@@ -936,7 +941,7 @@ begin
  Result:=_PyObject_NewVar(t,i,o);
 end;}
 
-function Py_BuildValueX(fmt: PChar; Args: array of const) : PyObject;
+function Py_BuildValueX(const fmt: PChar; Args: array of const) : PyObject;
 asm                     { Comments added by Decker, but I'm not sure they are correct!! }
  push edi               { save the value of edi for later retrieval }
  add ecx, ecx           { multiply ecx with 2}
@@ -955,7 +960,7 @@ asm                     { Comments added by Decker, but I'm not sure they are co
  pop edi                { get the saved value of edi }
 end;
 
-function PyArg_ParseTupleX(src: PyObject; fmt: PChar; AllArgs: array of const) : LongBool;
+function PyArg_ParseTupleX(src: PyObject; const fmt: PChar; AllArgs: array of const) : LongBool;
 asm
  push edi
  push esi
@@ -982,33 +987,33 @@ end;
 
 function Py_BuildValueDD(v1, v2: Double) : PyObject;
 type
- F = function(fmt: PChar; v1, v2: Double) : PyObject; cdecl;
+ F = function(const fmt: PChar; v1, v2: Double) : PyObject; cdecl;
 begin
  Result:=F(Py_BuildValue)('dd', v1, v2);
 end;
 
 function Py_BuildValueDDD(v1, v2, v3: Double) : PyObject;
 type
- F = function(fmt: PChar; v1, v2, v3: Double) : PyObject; cdecl;
+ F = function(const fmt: PChar; v1, v2, v3: Double) : PyObject; cdecl;
 begin
  Result:=F(Py_BuildValue)('ddd', v1, v2, v3);
 end;
 
 function Py_BuildValueD5(v1, v2, v3, v4, v5: Double) : PyObject;
 type
- F = function(fmt: PChar; v1, v2, v3, v4, v5: Double) : PyObject; cdecl;
+ F = function(const fmt: PChar; v1, v2, v3, v4, v5: Double) : PyObject; cdecl;
 begin
  Result:=F(Py_BuildValue)('ddddd', v1, v2, v3, v4, v5);
 end;
 
 function Py_BuildValueODD(v1: PyObject; v2, v3: Double) : PyObject;
 type
- F = function(fmt: PChar; v1: PyObject; v2, v3: Double) : PyObject; cdecl;
+ F = function(const fmt: PChar; v1: PyObject; v2, v3: Double) : PyObject; cdecl;
 begin
  Result:=F(Py_BuildValue)('Odd', v1, v2, v3);
 end;
 
-{function PyArg_ParseTupleAndKeywordsX(arg, kwdict: PyObject; fmt: PChar; var kwlist: PChar; AllArgs: array of const) : LongBool;
+{function PyArg_ParseTupleAndKeywordsX(arg, kwdict: PyObject; const fmt: PChar; var kwlist: PChar; AllArgs: array of const) : LongBool;
 pascal; assembler; asm
  mov ecx, [AllArgs-4]
  mov edx, [AllArgs]
@@ -1032,7 +1037,7 @@ end;}
 {$IFDEF Debug}
 procedure RefError;
 begin
- Raise InternalE('Python Reference error');
+ Raise InternalE('Python Reference count error');
 end;
 {$ENDIF}
 
@@ -1143,7 +1148,7 @@ begin
   if o <> nil then Py_DECREF(o);
 end;
 
-{function PySeq_Length(o: PyObject) : Integer;
+(*function PySeq_Length(o: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF};
 begin
  with PyTypeObject(o^.ob_type)^ do
   if (tp_as_sequence=Nil) or not Assigned(tp_as_sequence^.sq_length) then
@@ -1152,14 +1157,14 @@ begin
    Result:=tp_as_sequence^.sq_length(o);
 end;
 
-function PySeq_Item(o: PyObject; index: Integer) : PyObject;
+function PySeq_Item(o: PyObject; index: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject;
 begin
  with PyTypeObject(o^.ob_type)^ do
   if (tp_as_sequence=Nil) or not Assigned(tp_as_sequence^.sq_item) then
    Result:=Nil
   else
    Result:=tp_as_sequence^.sq_item(o, index);
-end;}
+end;*)
 
 initialization
   PythonLib:=0;

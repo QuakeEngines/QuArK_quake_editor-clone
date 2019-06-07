@@ -94,7 +94,7 @@ var
 {var
  FNoTempDelete : Boolean = False;}
 
-procedure PythonUpdateAll;
+procedure PythonUpdateAllForms;
 procedure AutoFocus(Control: TWinControl);
 function GetParentPyForm(Control: TControl) : TPyForm;
 function NewPyForm(Q: QFileObject) : TPyForm;
@@ -120,42 +120,45 @@ function ClickItemNow(obj: PyObject; Options: Integer; nForm: TPyForm) : Boolean
 var
  callback, arglist, callresult: PyObject;
 begin
- Result:=PyObject_HasAttrString(obj, 'onclick');
- if Result then
-  begin
-   callback:=PyObject_GetAttrString(obj, 'onclick');
-   if callback=Nil then Exit;
-   try
-    if callback<>Py_None then
-     begin
-      ClickForm(nForm);
-      arglist:=Py_BuildValueX('(O)', [obj]);
-      if arglist=Nil then Exit;
-      if Options and cioHourglass <> 0 then
-       ProgressIndicatorStart(0,0);
-      try
-       try
-        callresult:=PyEval_CallObject(callback, arglist);
-       finally
-        Py_DECREF(arglist);
-       end;
-       if callresult=nil then
-        begin
-         PythonCodeEnd;
-         Exit;
-        end;
-       Py_XDECREF(callresult);
-      finally
+ try
+  Result:=PyObject_HasAttrString(obj, 'onclick');
+  if Result then
+   begin
+    callback:=PyObject_GetAttrString(obj, 'onclick');
+    if callback=Nil then Exit;
+    try
+     if callback<>Py_None then
+      begin
+       ClickForm(nForm);
+       arglist:=Py_BuildValueX('(O)', [obj]);
+       if arglist=Nil then Exit;
        if Options and cioHourglass <> 0 then
-        ProgressIndicatorStop;
+        ProgressIndicatorStart(0,0);
+       try
+        try
+         callresult:=PyEval_CallObject(callback, arglist);
+        finally
+         Py_DECREF(arglist);
+        end;
+        if callresult=nil then
+         begin
+          PythonCodeEnd;
+          Exit;
+         end;
+        Py_XDECREF(callresult);
+       finally
+        if Options and cioHourglass <> 0 then
+         ProgressIndicatorStop;
+       end;
       end;
-     end;
-   finally
-    Py_DECREF(callback);
-   end;
-   if Options and cioPythonCodeEnd <> 0 then
-    PythonCodeEnd;
+    finally
+     Py_DECREF(callback);
+    end;
   end;
+ finally
+  if Options and cioPythonCodeEnd <> 0 then
+   PythonCodeEnd;
+ end;
 end;
 
 procedure PyFormsClickItem(Options: Integer; nForm: TPyForm);
@@ -245,8 +248,8 @@ var
  Tb: TQkToolbar;
  R: TRect;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nCaption:='tool bar';
   nButtons:=Nil;
   Closeable:=Nil;
@@ -270,6 +273,7 @@ begin
   Result:=Tb.TbObject;
   Py_INCREF(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -281,6 +285,7 @@ var
  C: TComponent;
  obj: PyObject;
 begin
+ Result:=nil;
  try
   Result:=PyList_New(0);
   if PyWindow(self)^.Form<>Nil then
@@ -295,6 +300,7 @@ begin
        end;
      end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -306,6 +312,7 @@ var
  C: TComponent;
  obj: PyObject;
 begin
+ Result:=nil;
  try
   Result:=PyList_New(0);
   if PyWindow(self)^.Form<>Nil then
@@ -320,6 +327,7 @@ begin
        end;
      end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -332,6 +340,7 @@ var
  obj: PyObject;
  L: TList;
 begin
+ Result:=nil;
  try
   L:=TList.Create; try
   if PyWindow(self)^.Form<>Nil then
@@ -355,6 +364,7 @@ begin
    end;
   finally L.Free; end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -366,8 +376,8 @@ var
  nCaption: PChar;
  nFlags: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nFlags:=0;
   nCaption:='';
   if not PyArg_ParseTupleX(args, '|is', [@nFlags, @nCaption]) then
@@ -380,11 +390,12 @@ begin
       Exit;
      end;
     Fw:=TPyFloatingWnd.CreateCustom(Form, nFlags, nCaption);
-    Result:=Fw.WindowObject;
+    Result:=Fw.WindowObject; //FIXME: INCREF?
     Fw.WindowObject^.Hidden:=True;
     LayoutMgrFromPanelObj(Form.MainPanelC).InsertControl(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -396,6 +407,7 @@ var
  C: TComponent;
  obj: PyObject;
 begin
+ Result:=nil;
  try
   Result:=PyList_New(0);
   if PyWindow(self)^.Form<>Nil then
@@ -410,6 +422,7 @@ begin
        end;
      end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -421,8 +434,8 @@ var
  nCaption: PChar;
  nFlags: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nFlags:=0;
   nCaption:='';
   if not PyArg_ParseTupleX(args, '|is', [@nFlags, @nCaption]) then
@@ -435,11 +448,12 @@ begin
       Exit;
      end;
     Fw:=TPyFullscreenWnd.CreateCustom(Form, nFlags, nCaption);
-    Result:=Fw.WindowObject;
+    Result:=Fw.WindowObject; //FIXME: INCREF?
     Fw.WindowObject^.Hidden:=True;
     LayoutMgrFromPanelObj(Form.MainPanelC).InsertControl(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -449,8 +463,8 @@ function wMacro(self, args: PyObject) : PyObject; cdecl;
 var
  nMacro: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@nMacro]) then
    Exit;
   with PyWindow(self)^ do
@@ -466,6 +480,7 @@ begin
    end;
   Result:=PyInt_FromLong(1);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -475,8 +490,8 @@ function wChooseColor(self, args: PyObject) : PyObject; cdecl;
 var
  Color: TColor;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'i', [@Color]) then
    Exit;
   if (PyWindow(self)^.Form<>Nil) and ChooseColor(PyWindow(self)^.Form, Color) then
@@ -484,6 +499,7 @@ begin
   else
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -491,6 +507,7 @@ end;
 
 function wToFront(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   if PyWindow(self)^.Form<>Nil then
    with PyWindow(self)^.Form do
@@ -500,6 +517,7 @@ begin
     end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -507,6 +525,7 @@ end;
 
 function wToBack(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   if PyWindow(self)^.Form<>Nil then
    with PyWindow(self)^.Form do
@@ -518,6 +537,7 @@ begin
     end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -528,8 +548,8 @@ var
  ok: PyObject;
  Sender: TObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   ok:=Nil;
   if not PyArg_ParseTupleX(args, '|O', [@ok]) then
    Exit;
@@ -540,6 +560,7 @@ begin
    GlobalDoCancel(Sender);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -607,6 +628,7 @@ var
  I: Integer;
  ac: TControl;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -635,10 +657,9 @@ begin
          begin
           with PyWindow(self)^ do
            if (Form=Nil) or (Form.FileObject=Nil) then
-            Result:=Py_None
+            Result:=PyNoResult
            else
-            Result:=@Form.FileObject.PythonObj;
-          Py_INCREF(Result);
+            Result:=GetPyObj(Form.FileObject);
           Exit;
          end
         else if StrComp(attr, 'focus') = 0 then
@@ -697,6 +718,7 @@ begin
     Py_INCREF(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -792,7 +814,7 @@ begin
  Result.PythonMacro:=Info.PythonMacro;
 end;
 
-procedure PythonUpdateAll;
+procedure PythonUpdateAllForms;
 var
  I: Integer;
  F: TForm;
@@ -886,9 +908,9 @@ begin
  DestroyMenu(MenuBarHandle);
  WndObject^.Form:=Nil;
  Py_DECREF(WndObject);
- Py_XDECREF(NumShortCuts);
- Py_XDECREF(ShortCuts);
- Py_XDECREF(MenuBar);
+ Py_DECREF(NumShortCuts);
+ Py_DECREF(ShortCuts);
+ Py_DECREF(MenuBar);
  Py_XDECREF(Info);
  FreeCallbacks;
  Callbacks.Free;
@@ -997,7 +1019,8 @@ begin
           PoppedUp:=True;
         end;
       end;
-      finally Py_XDECREF(obj);
+    finally
+      Py_XDECREF(obj);
     end;
   finally
     if not PoppedUp then
@@ -1047,7 +1070,7 @@ end;
 procedure TPyForm.wmInitMenuPopup;
 var
  Info: TOldMenuItemInfo;
- obj, result: PyObject;
+ obj, items: PyObject;
  g_Form1Menu: TPopupMenu;
  H: HMenu;
  I, IdBase: Integer;
@@ -1091,16 +1114,19 @@ begin
   end;
  obj:=PyObject(Callbacks[Info.wID-1]);
  if obj=Nil then Exit;
- Py_INCREF(obj); try
- ClickItem(obj, cioImmediate, Self);
- result:=PyObject_GetAttrString(obj, 'items');
- if result=Nil then Exit;
+ Py_INCREF(obj);
  try
-  FillMenu(Msg.wParam, result, False);
+  ClickItem(obj, cioImmediate, Self);
+  items:=PyObject_GetAttrString(obj, 'items');
+  if items=Nil then Exit;
+  try
+   FillMenu(Msg.wParam, items, False);
+  finally
+   Py_DECREF(items);
+  end;
  finally
-  Py_DECREF(result);
+  Py_DECREF(obj);
  end;
- finally Py_DECREF(obj); end;
 end;
 
 procedure TPyForm.DisplayPopupMenu(const P: TPoint; ExcludeRect: PRect; List: PyObject; DoubleClk: Boolean);

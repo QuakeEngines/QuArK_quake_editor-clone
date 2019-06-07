@@ -227,10 +227,12 @@ end;
 
 function cClose(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   PyComponent(self).cClose;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -238,10 +240,12 @@ end;
 
 function cShow(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   PyComponent(self)^.SetHidden(False);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -249,10 +253,12 @@ end;
 
 function cHide(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   PyComponent(self)^.SetHidden(True);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -262,8 +268,8 @@ function cInvalidate(self, args: PyObject) : PyObject; cdecl;
 var
  Internal: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   Internal:=0;
   if not PyArg_ParseTupleX(args, '|i', [@Internal]) then
    Exit;
@@ -273,6 +279,7 @@ begin
    PyComponent(self).Command(cmdInternalInvalidate);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -280,10 +287,12 @@ end;
 
 function cRepaint(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   PyComponent(self).Command(cmdRepaint);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -291,10 +300,12 @@ end;
 
 function cUpdate(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   PyComponent(self).Command(cmdUpdate);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -306,8 +317,8 @@ var
  mnu: PyObject;
  F: TPyForm;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   Q.X:=0;
   Q.Y:=MaxInt;
   if not PyArg_ParseTupleX(args, 'O!|ii', [PyList_Type, @mnu, @Q.X, @Q.Y]) then
@@ -332,6 +343,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -358,6 +370,7 @@ var
  C: TControl;
  F: TComponent;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -454,6 +467,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -549,6 +563,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
  except
   EBackToPython;
+  Result:=-1;
  end;
 end;
 

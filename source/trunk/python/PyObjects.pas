@@ -171,11 +171,13 @@ end;
 
 function GetObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   Result:=QkObjFromPyObj(self).PyGetAttr(attr);
   if Result=Nil then
    PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -202,6 +204,7 @@ var
  Q: QObject;
  s {$IFDEF PyObjDEBUG}, s1 {$ENDIF}: string;
 begin
+ Result:=Nil;
  try
   Q:=QkObjFromPyObj(self);
 {$IFDEF PyObjDEBUG}
@@ -215,6 +218,7 @@ begin
 {$ENDIF}
   Result:=PyString_FromString(PChar(s));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -224,8 +228,8 @@ function qSubItem(self, args: PyObject) : PyObject; cdecl;
 var
  Index: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'i', [@Index]) then
    Exit;
   with QkObjFromPyObj(self) do
@@ -236,10 +240,10 @@ begin
       PyErr_SetString(QuarkxError, PChar(LoadStr1(4420)));
       Exit;
      end;
-    Result:=@SubElements[Index].PythonObj;
-    Py_INCREF(Result);
+    Result:=GetPyObj(SubElements[Index]);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -250,8 +254,8 @@ var
  Obj1: PyObject;
  nParent, nChild: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @Obj1]) then
    Exit;
   nChild:=QkObjFromPyObj(Obj1);
@@ -261,6 +265,7 @@ begin
   nParent.SubElements.Add(nChild);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -272,8 +277,8 @@ var
  nParent, nChild: QObject;
  Index: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'iO!', [@Index, @TyObject_Type, @Obj1]) then
    Exit;
   nChild:=QkObjFromPyObj(Obj1);
@@ -293,6 +298,7 @@ begin
   nParent.SubElements.Insert(Index, nChild);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -304,8 +310,8 @@ var
  nParent, nChild: QObject;
  Index: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@Obj1]) then
    Exit;
   nParent:=QkObjFromPyObj(self);
@@ -334,6 +340,7 @@ begin
   nParent.SubElements.Delete(Index);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -344,14 +351,15 @@ var
  nName: PChar;
  nParent: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@nName]) then
    Exit;
   nParent:=QkObjFromPyObj(self);
   nParent.Acces;
   Result:=GetPyObj(nParent.SubElements.FindName(nName));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -362,14 +370,15 @@ var
  nName: PChar;
  nParent: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@nName]) then
    Exit;
   nParent:=QkObjFromPyObj(self);
   nParent.Acces;
   Result:=GetPyObj(nParent.SubElements.FindShortName(nName));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -380,14 +389,15 @@ var
  Spec: PChar;
  Q: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@Spec]) then
    Exit;
   Q:=QkObjFromPyObj(self);
   Q.Acces;
   Result:=PyInt_FromLong(Q.IntSpec[Spec]);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -399,8 +409,8 @@ var
  Q: QObject;
  value: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'si', [@Spec, @value]) then
    Exit;
   Q:=QkObjFromPyObj(self);
@@ -408,6 +418,7 @@ begin
   Q.IntSpec[Spec]:=value;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -417,11 +428,13 @@ function qToggleSel(self, args: PyObject) : PyObject; cdecl;
 var
  Q: QObject;
 begin
+ Result:=Nil;
  try
   Q:=QkObjFromPyObj(self);
   Q.ToggleSelMult;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -433,18 +446,19 @@ var
  obj: PyObject;
 {nparent: PyObject;}
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   obj:=Py_None;
   if not PyArg_ParseTupleX(args, '|O', [@obj]) then
    Exit;
   Q:=QkObjFromPyObj(self);
- {nparent:=@Q.FParent.PythonObj;
+ {nparent:=GetPyObj(Q.FParent);
   if not PyArg_ParseTupleX(args, '|O!', [@TyObject_Type, @nparent]) then
    Exit;}
   Q1:=Q.Clone({QkObjFromPyObj(nparent)}Nil, PyObject_IsTrue(obj));
   Result:=GetPyObj(Q1);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -454,13 +468,14 @@ function qAcceptItem(self, args: PyObject) : PyObject; cdecl;
 var
  Obj1: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @Obj1]) then
    Exit;
   Result:=PyInt_FromLong(Ord(
    ieCanDrop in QkObjFromPyObj(self).IsExplorerItem(QkObjFromPyObj(Obj1))));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -468,9 +483,11 @@ end;
 
 function qNextInGroup(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   Result:=GetPyObj(QkObjFromPyObj(self).NextInGroup);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -484,8 +501,8 @@ var
  WantClass, Browse: QObjectClass;
  Q: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   bc:=Nil;
   if not PyArg_ParseTupleX(args, 'ss|s', [@name, @wc, @bc]) then
    Exit;
@@ -503,6 +520,7 @@ begin
   Result:=QListToPyList(L);
   finally L.Free; end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -512,13 +530,14 @@ function qCopyAllData(self, args: PyObject) : PyObject; cdecl;
 var
  src: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @src]) then
    Exit;
   QkObjFromPyObj(self).CopyAllData(QkObjFromPyObj(src), False);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -530,8 +549,8 @@ var
  count: Integer;
  Q: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's#', [@src, @count]) then
    Exit;
   Q:=QkObjFromPyObj(self);
@@ -539,6 +558,7 @@ begin
   ConstructObjsFromText(Q, src, count);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -551,8 +571,8 @@ var
  Sel1: Boolean;
  Info: TDisplayDetails;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   o:=Nil;
   if not PyArg_ParseTupleX(args, '|O', [@o]) then
    Exit;
@@ -565,8 +585,9 @@ begin
   if Info.Icon=Nil then
    Result:=PyNoResult
   else
-   Result:=Info.Icon;
+   Result:=Info.Icon; //No Py_INCREF here; Q.DisplayDetails did that already
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -590,6 +611,7 @@ var
  I, N: Integer;
  o: PyObject;
 begin
+ Result:=Nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -630,10 +652,7 @@ begin
            if FParent=Nil then
             Result:=PyNoResult
            else
-            begin
-             Result:=@FParent.PythonObj;
-             Py_INCREF(Result);
-            end;
+            Result:=GetPyObj(FParent);
            Exit;
           end;
    's': if StrComp(attr, 'selected') = 0 then
@@ -656,8 +675,7 @@ begin
            Result:=PyList_New(N);
            for I:=0 to N-1 do
             begin
-             o:=@SubElements[I].PythonObj;
-             Py_INCREF(o);
+             o:=GetPyObj(SubElements[I]);
              PyList_SetItem(Result, I, o);
             end;
            Exit;
@@ -672,6 +690,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -715,6 +734,7 @@ end;
 
 function GetFileObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   case attr[0] of
    'f': if StrComp(attr, 'filename') = 0 then
@@ -726,6 +746,7 @@ begin
   end;
   Result:=GetObjAttr(self, attr);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -766,8 +787,8 @@ var
  PF: ^Single;
 (* PI: ^Integer;*)
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   P:=PyString_AsString(o);
   if P=Nil then Exit;
   Spec:=P;
@@ -813,9 +834,9 @@ begin
     S:=Specifics[I];
     I:=Length(Spec)+1;
     Result:=PyString_FromStringAndSize(PChar(S)+I, Length(S)-I);
-   {Py_INCREF(Result);}
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -943,15 +964,17 @@ var
  Q: QObject;
  E: TQkExplorer;
 begin
+ Result:=Nil;
  try
-  Result:=PyNoResult;
   Q:=QkObjFromPyObj(self);
   if Q=nil then
     exit;
   E:=ExplorerFromObject(Q);
   if E<>nil then
     E.Refresh;
+  Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -962,15 +985,17 @@ var
  Q: QObject;
  nSpec: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=PyNoResult;
   if not PyArg_ParseTupleX(args, 's', [@nSpec]) then
     Exit;
   Q:=QkObjFromPyObj(self);
   if Q=nil then
     exit;
   Q.Specifics.Add(nSpec);
+  Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -981,8 +1006,8 @@ var
  Q, Q1: QObject;
  obj: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=PyNoResult;
   if not PyArg_ParseTupleX(args, 'O', [@obj]) then
     Exit;
   Q:=QkObjFromPyObj(self);
@@ -993,6 +1018,7 @@ begin
     exit;
   Result:=PyInt_FromLong(Ord(Q.IsAllowedParent(Q1)));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

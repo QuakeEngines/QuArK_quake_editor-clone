@@ -61,7 +61,7 @@ type
           procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function GetOutputMapFileName : String;
-          procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+          procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
         end;
  QQkm = class(QMap)
         public
@@ -324,7 +324,7 @@ begin
  BuildCorrectFileName(Result);
 end;
 
-procedure QMap.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QMap.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 begin
  if FirstMap='' then
   FirstMap:='*';

@@ -2402,8 +2402,8 @@ var
  Poly: TPolyedre;
  I: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [PyList_Type, @lst]) then
    Exit;
   L1:=TQList.Create;
@@ -2427,6 +2427,7 @@ begin
    L1.Free;
   end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2440,8 +2441,8 @@ var
  S: PSurface;
  BoolResult: Boolean;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   face:=Nil;
   if not PyArg_ParseTupleX(args, 'O!|O!', [@TyObject_Type, @poly, @TyObject_Type, @face]) then
    Exit;
@@ -2485,6 +2486,7 @@ begin
     end;
   Result:=PyInt_FromLong(Ord(BoolResult));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2496,8 +2498,8 @@ var
  Me: TPolyedre;
  I: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   poly:=self;
 //  if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @poly]) then
 //   Exit;
@@ -2508,9 +2510,9 @@ begin
   for I:=0 to Me.SubElements.Count-1 do
     if Me.SubElements[i] is TFace then
       Me.SubElements[i].Flags := Me.SubElements[i].Flags or ofTreeViewSubElement;
-  Result:=Py_None;
-  Py_INCREF(Result);
+  Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2560,10 +2562,9 @@ begin
   'p': if StrComp(attr, 'pieceof') = 0 then
         begin
          if FPyNoParent and (FParent<>Nil) then
-          Result:=@FParent.PythonObj
+          Result:=GetPyObj(FParent)
          else
-          Result:=Py_None;
-         Py_INCREF(Result);
+          Result:=PyNoResult;
          Exit;
         end;
   'v': if StrComp(attr, 'vertices') = 0 then
@@ -4275,8 +4276,8 @@ var
  S: PSurface;
  J: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @nobj]) then
    Exit;
   S:=(QkObjFromPyObj(self) as TFace).FaceOfPoly;
@@ -4294,6 +4295,7 @@ begin
    end;
   Raise EError(4446);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -4301,6 +4303,7 @@ end;
 
 function fRevertToEnhTex(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as TFace do
    begin
@@ -4309,6 +4312,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -4318,8 +4322,8 @@ function fDistortion(self, args: PyObject) : PyObject; cdecl;
 var
  v1, v2: PyVect;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @v1, @TyVect_Type, @v2]) then
    Exit;
   with QkObjFromPyObj(self) as TFace do
@@ -4329,6 +4333,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -4342,8 +4347,8 @@ var
  v: array[1..3] of PyVect;
  AltTexSrc: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   AltTexSrc:=Nil;
   if not PyArg_ParseTupleX(args, 'i|O', [@mode, @AltTexSrc]) then
    Exit;
@@ -4362,13 +4367,17 @@ begin
    begin
     for I:=1 to 3 do
      v[I]:=MakePyVect(P[I]);
-    Result:=Py_BuildValueX('OOO', [v[1], v[2], v[3]]);
-    for I:=3 downto 1 do
-     Py_DECREF(v[I]);
+    try
+     Result:=Py_BuildValueX('OOO', [v[1], v[2], v[3]]);
+    finally
+     for I:=3 downto 1 do
+      Py_DECREF(v[I]);
+    end;
    end
   else
    Result:=PyNoResult;
  except
+  Result:=Nil;
   EBackToPython;
   Result:=Nil;
  end;
@@ -4381,8 +4390,8 @@ var
  AltTexSrc: PyObject;
 {V2, V3: TVect;}
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   AltTexSrc:=Nil;
   if not PyArg_ParseTupleX(args, '(O!O!O!)i|O', [@TyVect_Type, @v[1], @TyVect_Type, @v[2], @TyVect_Type, @v[3], @mode, @AltTexSrc]) then
    Exit;
@@ -4408,12 +4417,11 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
 end;
-
-
 
 function fAxisBase(self, args: PyObject) : PyObject; cdecl;
 var
@@ -4423,8 +4431,9 @@ var
   v: array[1..3] of PyVect;
   AltTexSrc: PyObject;
   Orig, TexS, TexT : TVect;
-
+  vS, vT: PyVect;
 begin
+  Result:=Nil;
   try
     AltTexSrc:=Nil;
     with QkObjFromPyObj(self) as TFace do
@@ -4439,14 +4448,22 @@ begin
           T[I]:=CoordShift(P[I], Orig, TexS, TexT);
           v[I]:=MakePyVect(T[I]);
         end;
-        Result:=Py_BuildValueX('OO', [MakePyVect(TexS),MakePyVect(TexT)]);
-        for I:=2 downto 1 do
-          Py_DECREF(v[I]);
+        vS:=MakePyVect(TexS);
+        vT:=MakePyVect(TexT);
+        try
+         Result:=Py_BuildValueX('OO', [vS, vT]);
+        finally
+         for I:=2 downto 1 do
+           Py_DECREF(v[I]);
+         Py_DECREF(vS);
+         Py_DECREF(vT);
+        end;
       end
       else
         Result:=PyNoResult;
     end
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -4454,6 +4471,7 @@ end;
 
 function fSwapSides(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as TFace do
    begin
@@ -4462,6 +4480,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -4469,6 +4488,7 @@ end;
 
 function fSwapSides_leavetex(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as TFace do
    begin
@@ -4477,6 +4497,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -4488,8 +4509,8 @@ var
  S: PSurface;
  L: TQList;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @nobj]) then
    Exit;
   S:=(QkObjFromPyObj(self) as TFace).FaceOfPoly;
@@ -4505,9 +4526,9 @@ begin
      end;
     S:=S^.NextF;
    end;
-  Raise EError(4446); //FIXME: We are never reaching the next line? What is the point of it then?
-  Result:=PyNoResult;
+  Raise EError(4446);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

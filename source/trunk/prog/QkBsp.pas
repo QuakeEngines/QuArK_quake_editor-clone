@@ -272,7 +272,7 @@ type
           procedure CloseStructure;
           procedure VerticesAddRef(Delta: Integer);
           function GetAltTextureSrc : QObject;
-          procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+          procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
           function PyGetAttr(attr: PChar) : PyObject; override;
           Function GetTextureFolder: QObject;
           (*Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;*)
@@ -893,7 +893,7 @@ begin
   Result:=TBSPHull.Create(Self, Index, nParent);
 end;
 
-procedure QBsp.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QBsp.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 var
  mapname: PyObject;
  S: String;
@@ -919,11 +919,13 @@ end;
 
 function qReloadStructure(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as QBsp do
    ReLoadStructure;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -931,11 +933,13 @@ end;
 
 function qCloseStructure(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with QkObjFromPyObj(self) as QBsp do
    CloseStructure;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -954,6 +958,7 @@ begin
      Result:=GetClosePlanes(r);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1557,6 +1562,7 @@ begin
      Result:=GetNearPlanes(r,QBsp(QkObjFromPyObj(bsp)));
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

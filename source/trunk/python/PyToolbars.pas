@@ -335,12 +335,14 @@ end;
 
 function tUpdate(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with PyToolbar(self)^ do
    if QkToolbar<>Nil then
     PostMessage(QkToolbar.Handle, wm_InternalMessage, wp_UpdateButtons, 0);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -348,11 +350,13 @@ end;
 
 function tClose(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with PyToolbar(self)^ do
    QkToolbar.Free;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -360,6 +364,7 @@ end;
 
 function tShow(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with PyToolbar(self)^ do
    if QkToolbar<>Nil then
@@ -369,6 +374,7 @@ begin
     end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -376,6 +382,7 @@ end;
 
 function tHide(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with PyToolbar(self)^ do
    if QkToolbar<>Nil then
@@ -385,6 +392,7 @@ begin
     end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -425,6 +433,7 @@ var
 {S: String;}
  Dock: TWinControl;
 begin
+ Result:=Nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -505,6 +514,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -586,9 +596,9 @@ begin
           end;
     'o': if StrComp(attr, 'onshowhide')=0 then
           begin
-           Py_INCREF(value);
            Py_DECREF(FOnShowHide);
            FOnShowHide:=value;
+           Py_INCREF(value);
            if (value<>Py_None) and (QkToolbar<>Nil) then
             QkToolbar.OnClose:=ShowHide;
            Exit;
@@ -1074,26 +1084,28 @@ begin
     try
      mnu:=GetPythonValue(obj, Py_BuildValueX('(O)', [BtnObject]), False);
      if mnu=Nil then Exit;
-     if mnu=Py_None then
-      begin
-       if Enabled then
-        Repaint;
-       Exit;
-      end;
-     FMenuShowing:=1;
      try
-      Invalidate;
-      R.TopLeft:=ClientToScreen(Point(0,0));
-      R.BottomRight:=ClientToScreen(Point(Width,Height));
-      F.DisplayPopupMenu(Point(R.Left,R.Bottom), @R, mnu, False);
-      drag:=FMenuShowing=-1;
+      if mnu=Py_None then
+       begin
+        if Enabled then
+         Repaint;
+        Exit;
+       end;
+      FMenuShowing:=1;
+      try
+       Invalidate;
+       R.TopLeft:=ClientToScreen(Point(0,0));
+       R.BottomRight:=ClientToScreen(Point(Width,Height));
+       F.DisplayPopupMenu(Point(R.Left,R.Bottom), @R, mnu, False);
+       drag:=FMenuShowing=-1;
+      finally
+       FMenuShowing:=0;
+      end;
      finally
       Py_DECREF(mnu);
-      FMenuShowing:=0;
      end;
     finally
      Py_DECREF(obj);
-    {Application.ProcessMessages;}
     end;
     ActiveButton:=Nil;
     Perform(WM_LBUTTONUP, 0, 0);
@@ -1537,12 +1549,14 @@ end;
 
 function bpUpdate(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
   with PyControlF(self)^ do
    if QkControl<>Nil then
     PostMessage((QkControl as TQkBtnPanel).Handle, wm_InternalMessage, wp_UpdateButtons, 0);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1571,6 +1585,7 @@ var
  I: Integer;
 {Attr1: PyObjectPtr;}
 begin
+ Result:=Nil;
  try
   for I:=Low(MethodTable2) to High(MethodTable2) do
    if StrComp(attr, MethodTable2[I].ml_name) = 0 then
@@ -1608,6 +1623,7 @@ begin
     Py_INCREF(Result);
    end};
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1672,7 +1688,6 @@ end;
 initialization
 
 finalization
-
-CheckTimer.Free;
+ CheckTimer.Free;
 
 end.

@@ -1796,7 +1796,7 @@ begin
          begin
            for K:=0 to Count-1 do
            begin
-            VDest^:=VecAdd(VSrc^,ModelOrg);
+            VDest^:=Vec3Add(VSrc^,ModelOrg);
             Inc(VSrc);
             Inc(VDest);
            end;
@@ -1805,7 +1805,7 @@ begin
          begin
            for K:=0 to Count-1 do
            begin
-             VDest^:=VecAdd(VectByMatrix(mRotationMatrix,VSrc^), ModelOrg);
+             VDest^:=Vec3Add(VectByMatrix(mRotationMatrix,VSrc^), ModelOrg);
              Inc(VSrc);
              Inc(VDest);
            end;
@@ -2014,6 +2014,7 @@ end;*)
 function TTreeMapEntity.PyGetAttr(attr: PChar) : PyObject;
 var
   BBox: TBBoxInfo;
+  v1, v2: PyVect;
 begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
@@ -2021,8 +2022,13 @@ begin
   'b': if StrComp(attr, 'bbox')=0 then
         begin
          if GetBBoxInfo(BBox) then
-          Result:=Py_BuildValueX('OO', [MakePyVect3(BBox[0], BBox[1], BBox[2]),
-                                        MakePyVect3(BBox[3], BBox[4], BBox[5])])
+          begin
+           v1:=MakePyVect3(BBox[0], BBox[1], BBox[2]);
+           v2:=MakePyVect3(BBox[3], BBox[4], BBox[5]);
+           Result:=Py_BuildValueX('OO', [v1, v2]);
+           Py_DECREF(v1);
+           Py_DECREF(v2);
+          end
          else
           Result:=PyNoResult;
          Exit;

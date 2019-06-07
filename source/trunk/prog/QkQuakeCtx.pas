@@ -296,11 +296,13 @@ end;
 
 function qMakeAddonFromQctx(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
    with QkObjFromPyObj(self) as QQuakeCtx do
      MakeAddonFromQctx;
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -308,11 +310,13 @@ end;
 
 function qMakeTexturesFromQctx(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
    with QkObjFromPyObj(self) as QQuakeCtx do
      MakeTexturesFromQctx;
    Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

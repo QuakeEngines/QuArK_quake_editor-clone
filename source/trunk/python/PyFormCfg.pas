@@ -156,8 +156,8 @@ var
   end;
 
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nForm:=Nil;
   if not PyArg_ParseTupleX(args, 'O|O', [@nList, @nForm]) then
    Exit;
@@ -187,6 +187,7 @@ begin
   finally nLinks.Free; end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -198,8 +199,8 @@ var
  ntag: Integer;
  State: TCheckBoxState;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'si', [@nspec, @ntag]) then
    Exit;
   with PyControlF(self)^ do
@@ -213,6 +214,7 @@ begin
    else Result:=PyNoResult;
   end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -224,8 +226,8 @@ var
  ntag: Integer;
  ncz: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   ncz:=Nil;
   if not PyArg_ParseTupleX(args, 'si|O', [@nspec, @ntag, @ncz]) then
    Exit;
@@ -234,6 +236,7 @@ begin
     (QkControl as TPyFormCfg).ToggleBitSpec(nspec, ntag, (ncz=Nil) or PyObject_IsTrue(ncz));
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -243,8 +246,8 @@ function fUserAction(self, args: PyObject) : PyObject; cdecl;
 var
  cmd: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'i', [@cmd]) then
    Exit;
   with PyControlF(self)^ do
@@ -252,6 +255,7 @@ begin
     (QkControl as TPyFormCfg).InternalMenuCommand(cmd);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -285,6 +289,7 @@ var
  Attr1: PyObjectPtr;
  I, Count: Integer;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -412,6 +417,7 @@ begin
     Py_INCREF(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

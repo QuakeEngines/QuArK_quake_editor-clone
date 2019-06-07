@@ -1141,8 +1141,8 @@ begin
    S:=Specifics.Values['Macro'];
    if S<>'' then
     begin
-       Py_XDECREF(CallMacroEx(Py_BuildValueX('Oi', [@PythonObj, Index]),
-    S));    end;
+       Py_XDECREF(CallMacroEx(Py_BuildValueX('Oi', [@PythonObj, Index]), S));
+    end;
   end;
 end;
 

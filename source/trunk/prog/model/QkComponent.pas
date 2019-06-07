@@ -102,6 +102,7 @@ var
   fg: QFrameGroup;
   f: QFrame;
 begin
+  Result:=Nil;
   try
     with QkObjFromPyObj(self) as QComponent do begin
       fg:=FrameGroup;
@@ -120,6 +121,7 @@ begin
       Result:=GetPyObj(CurrentFrame);
     end;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -136,9 +138,9 @@ var
   f1, f2, f3: boolean;
   v1,v2,v3: Integer;
 begin
+  Result:=nil;
   try
-    result:=nil;
-    if not PyArg_ParseTupleX(args, 'iii', [@v1, @v2,@v3]) then
+    if not PyArg_ParseTupleX(args, 'iii', [@v1, @v2, @v3]) then
       exit;
     with QkObjFromPyObj(self) as QComponent do begin
       cnt:=Triangles(tris2);
@@ -185,6 +187,7 @@ begin
     end;
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -194,8 +197,8 @@ function qShowHideComp(self, args: PyObject) : PyObject; cdecl;
 var
   index: Integer;
 begin
+  result:=nil;
   try
-    result:=nil;
     if not PyArg_ParseTupleX(args, 'i', [@Index]) then
       exit;
     with QkObjFromPyObj(self) as QComponent do begin
@@ -203,6 +206,7 @@ begin
     end;
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -213,8 +217,8 @@ var
   u: PyObject;
   Q: QObject;
 begin
+  Result:=nil;
   try
-    Result:=Nil;
     if not PyArg_ParseTupleX(args, 'O', [@u]) then
       Exit;
     Q:=QkObjFromPyObj(u);
@@ -224,6 +228,7 @@ begin
       SetCurrentFrame(QFrame(Q));
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -234,8 +239,8 @@ var
   lst: PyObject;
   Q: TQList;
 begin
+  Result:=Nil;
   try
-    Result:=Nil;
     if not PyArg_ParseTupleX(args, 'O!', [PyList_Type, @lst]) then
       Exit;
     Q:=TQList.Create;
@@ -249,6 +254,7 @@ begin
       Q.Free;
     end;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;
@@ -259,8 +265,8 @@ var
   u: PyObject;
   Q: QObject;
 begin
+  Result:=nil;
   try
-    Result:=nil;
     if not PyArg_ParseTupleX(args, 'O', [@u]) then
       Exit;
     Q:=QkObjFromPyObj(u);
@@ -269,6 +275,7 @@ begin
     end;
     Result:=PyNoResult;
   except
+    Py_XDECREF(Result);
     EBackToPython;
     Result:=Nil;
   end;

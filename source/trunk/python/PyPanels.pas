@@ -1153,6 +1153,7 @@ var
  I, Count: Integer;
  obj: PyObject;
 begin
+ Result:=Nil;
  try
   with LayoutMgrFromPanelObj(self) do
    begin
@@ -1163,9 +1164,10 @@ begin
       obj:=PyList_GetItem(Controls, I);
       Py_INCREF(obj);
       PyList_SetItem(Result, I, obj);
-     end; 
-   end;  
+     end;
+   end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1177,8 +1179,8 @@ var
  Flags: Integer;
  Mgr: TLayoutMgr;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if nAlign=lpClient then
    begin
     nSize:=0;
@@ -1206,6 +1208,7 @@ begin
   else
    Mgr.InsertControl2(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1240,6 +1243,7 @@ function pNewExplorer(self, args: PyObject) : PyObject; cdecl;
 var
  Mgr: TLayoutMgr;
 begin
+ Result:=Nil;
  try
   Mgr:=LayoutMgrFromPanelObj(self);
   with TPythonExplorer.Create(Mgr.GetOwner.Owner) do
@@ -1250,6 +1254,7 @@ begin
    end;
   Mgr.InsertControl(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1260,6 +1265,7 @@ var
  F: TPyForm;
  Mgr: TLayoutMgr;
 begin
+ Result:=Nil;
  try
   Mgr:=LayoutMgrFromPanelObj(self);
   with TPyFormCfg.Create(Mgr.GetOwner.Owner) do
@@ -1274,6 +1280,7 @@ begin
    end;
   Mgr.InsertControl(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1284,8 +1291,8 @@ var
  Mgr: TLayoutMgr;
  Renderer: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   Renderer:=Nil;
   if not PyArg_ParseTupleX(args, '|s', [@Renderer]) then
    Exit;
@@ -1301,6 +1308,7 @@ begin
    end;
   Mgr.InsertControl(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1311,8 +1319,8 @@ var
  nImage: PyObject;
  Mgr: TLayoutMgr;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nImage:=Nil;
   if not PyArg_ParseTupleX(args, '|O', [@nImage]) then
    Exit;
@@ -1327,6 +1335,7 @@ begin
    end;
   Mgr.InsertControl(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1337,8 +1346,8 @@ var
  nButtons: PyObject;
  Mgr: TLayoutMgr;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nButtons:=Nil;
   if not PyArg_ParseTupleX(args, '|O!', [PyList_Type, @nButtons]) then
    Exit;
@@ -1353,6 +1362,7 @@ begin
    end;
   Mgr.InsertControl(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1376,6 +1386,7 @@ function GetPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
 begin
+ Result:=Nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -1423,6 +1434,7 @@ begin
   end;
   Result:=GetControlAttr(self, attr, 'panel');
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

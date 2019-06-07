@@ -52,12 +52,10 @@ function MatrixFromRows(const V1, V2, V3 : TVect) : TMatrixTransformation;
 function Determinant(const Matrice: TMatrixTransformation) : TDouble;
 function VectByMatrix(const Matrice : TMatrixTransformation; const V: TVect) : TVect; overload;
 function VectByMatrix(const Matrice : TMatrixTransformation; const V: vec3_t) : vec3_t; overload;
-function VecAdd(const V1, V2: vec3_t) : vec3_t;
 
 function RotMatrixZ(V: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
 function RotMatrixY(V: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
 function RotMatrixPitchRoll(Pitch: TDouble;Roll: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
-
 
  {------------------------}
 
@@ -289,13 +287,6 @@ begin
    Result[0]:=Matrice[1,1]*V[0]+Matrice[1,2]*V[1]+Matrice[1,3]*V[2]{+Matrice[1,4]};
    Result[1]:=Matrice[2,1]*V[0]+Matrice[2,2]*V[1]+Matrice[2,3]*V[2]{+Matrice[2,4]};
    Result[2]:=Matrice[3,1]*V[0]+Matrice[3,2]*V[1]+Matrice[3,3]*V[2]{+Matrice[3,4]};
-end;
-
-function VecAdd(const V1, V2: vec3_t) : vec3_t;
-begin
-   Result[0]:=V1[0]+V2[0];
-   Result[1]:=V1[1]+V2[1];
-   Result[2]:=V1[2]+V2[2];
 end;
 
 end.

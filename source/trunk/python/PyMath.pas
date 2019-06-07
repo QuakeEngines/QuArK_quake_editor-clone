@@ -271,7 +271,7 @@ function PrintMatrix(self: PyObject) : PyObject; cdecl;
 function MatrixToStr(self: PyObject) : PyObject; cdecl;
 function MakePyMatrix(const nMatrix: TMatrixTransformation; transposed : boolean = false) : PyMatrix;
 
-function MatrixLength(m: PyObject) : Py_ssize_t; cdecl;
+function MatrixLength(m: PyObject) : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
 function MatrixSubscript(m, ij: PyObject) : PyObject; cdecl;
 function MatrixAssSubscript(m, ij, value: PyObject) : Integer; cdecl;
 
@@ -1666,6 +1666,7 @@ var
  V1: TVect;
  o: PyObject;
 begin
+ Result:=Nil;
  try
  {for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -1678,9 +1679,14 @@ begin
          begin
           Result:=PyDict_New();
           o:=PyTuple_New(3);
-          PyTuple_SetItem(o, 0, PyFloat_FromDouble(PyVect(self)^.V.x));
-          PyTuple_SetItem(o, 1, PyFloat_FromDouble(PyVect(self)^.V.y));
-          PyTuple_SetItem(o, 2, PyFloat_FromDouble(PyVect(self)^.V.z));
+          try
+           PyTuple_SetItem(o, 0, PyFloat_FromDouble(PyVect(self)^.V.x));
+           PyTuple_SetItem(o, 1, PyFloat_FromDouble(PyVect(self)^.V.y));
+           PyTuple_SetItem(o, 2, PyFloat_FromDouble(PyVect(self)^.V.z));
+          except
+           Py_DECREF(o);
+           raise;
+          end;
           PyDict_SetItemString(Result, 'v', o);
           Exit;
          end;
@@ -1784,6 +1790,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1865,6 +1872,7 @@ function PrintVect(self: PyObject) : PyObject;
 var
  S: String;
 begin
+ Result:=Nil;
  try
   S:='<vect '+vtos(PyVect(self)^.V)+'>';
   if PyVect(self)^.ST then
@@ -1872,6 +1880,7 @@ begin
                               + ' ' + ftos(PyVectST(self)^.TexT) + '>';
   Result:=PyString_FromString(PChar(S));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -1881,10 +1890,12 @@ function VectToStr(self: PyObject) : PyObject;
 var
  S: String;
 begin
+ Result:=Nil;
  try
   S:=vtos(PyVect(self)^.V);
   Result:=PyString_FromString(PChar(S));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2018,6 +2029,7 @@ function VectorAdd(v1, v2: PyObject) : PyObject;
 var
  W1, W2: TVect;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyVect_Type)
   or (v2^.ob_type <> @TyVect_Type) then
@@ -2036,6 +2048,7 @@ begin
   else
    Result:=MakePyVect3(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2045,6 +2058,7 @@ function VectorSubtract(v1, v2: PyObject) : PyObject;
 var
  W1, W2: TVect;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyVect_Type)
   or (v2^.ob_type <> @TyVect_Type) then
@@ -2061,6 +2075,7 @@ begin
   else
    Result:=MakePyVect3(W1.X-W2.X, W1.Y-W2.Y, W1.Z-W2.Z);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2070,6 +2085,7 @@ function VectorMultiply(v1, v2: PyObject) : PyObject;
 var
  W1, W2, W: TVect;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyVect_Type)
   or (v2^.ob_type <> @TyVect_Type) then
@@ -2100,6 +2116,7 @@ begin
      Result:=MakePyVect3(W1.X*W2.X, W1.Y*W2.X, W1.Z*W2.X);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2110,6 +2127,7 @@ var
  W1, W2: TVect;
  f: TDouble;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyVect_Type)
   or (v2^.ob_type <> @TyVect_Type) then
@@ -2127,6 +2145,7 @@ begin
   else
    Result:=MakePyVect3(W1.X*f, W1.Y*f, W1.Z*f);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2136,6 +2155,7 @@ function VectorNegative(v1: PyObject) : PyObject;
 var
  W1: TVect;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyVect_Type then
    Raise EError(4443);
@@ -2147,6 +2167,7 @@ begin
   else
    Result:=MakePyVect3(-W1.X, -W1.Y, -W1.Z);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2154,11 +2175,13 @@ end;
 
 function VectorPositive(v1: PyObject) : PyObject;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyVect_Type then
    Raise EError(4443);
   Result:=MakePyVect(PyVect(v1)^.V);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2166,12 +2189,14 @@ end;
 
 function VectorAbsolute(v1: PyObject) : PyObject;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyVect_Type then
    Raise EError(4443);
   with PyVect(v1)^.V do
    Result:=PyFloat_FromDouble(Sqrt(Sqr(X)+Sqr(Y)+Sqr(Z)));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2199,6 +2224,7 @@ function VectorXor(v1, v2: PyObject) : PyObject;
 var
  W1, W2: TVect;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyVect_Type)
   or (v2^.ob_type <> @TyVect_Type) then
@@ -2210,6 +2236,7 @@ begin
    Raise EError(4443);
   Result:=MakePyVect(Cross(W1,W2));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2247,6 +2274,7 @@ var
  I: Integer;
  obj: array[1..3] of PyObject;
 begin
+ Result:=Nil;
  try
  {for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -2265,9 +2293,12 @@ begin
           with PyMatrix(self)^ do
            for I:=1 to 3 do
             obj[I]:=MakePyVect3(M[1,I], M[2,I], M[3,I]);
-          Result:=Py_BuildValueX('OOO', [obj[1], obj[2], obj[3]]);
-          for I:=3 downto 1 do
-           Py_DECREF(obj[I]);
+          try
+           Result:=Py_BuildValueX('OOO', [obj[1], obj[2], obj[3]]);
+          finally
+           for I:=3 downto 1 do
+            Py_DECREF(obj[I]);
+          end;
           Exit;
          end;
    't':  if StrComp(attr, 'transposed')=0 then
@@ -2280,15 +2311,19 @@ begin
           with PyMatrix(self)^ do
            for I:=1 to 3 do
             obj[I]:=Py_BuildValueDDD(M[I,1], M[I,2], M[I,3]);
-          Result:=Py_BuildValueX('OOO', [obj[1], obj[2], obj[3]]);
-          for I:=3 downto 1 do
-           Py_DECREF(obj[I]);
+          try
+           Result:=Py_BuildValueX('OOO', [obj[1], obj[2], obj[3]]);
+          finally
+           for I:=3 downto 1 do
+            Py_DECREF(obj[I]);
+          end;
           Exit;
          end;
   end;
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2298,10 +2333,12 @@ function PrintMatrix(self: PyObject) : PyObject;
 var
  S: String;
 begin
+ Result:=Nil;
  try
   S:='<matrix '+mxtos(PyMatrix(self)^.M)+'>';
   Result:=PyString_FromString(PChar(S));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2311,10 +2348,12 @@ function MatrixToStr(self: PyObject) : PyObject;
 var
  S: String;
 begin
+ Result:=Nil;
  try
   S:=mxtos(PyMatrix(self)^.M);
   Result:=PyString_FromString(PChar(S));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2329,7 +2368,7 @@ begin
     Result^.M:=nMatrix;
 end;
 
-function MatrixLength(m: PyObject) : Py_ssize_t;
+function MatrixLength(m: PyObject) : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF};
 begin
  try
   Raise EError(4444);
@@ -2343,14 +2382,15 @@ function MatrixSubscript(m, ij: PyObject) : PyObject;
 var
  I, J: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(ij, 'ii:matrix[i,j]', [@I, @J]) then
    Exit;
   if (I<0) or (J<0) or (I>=3) or (J>=3) then
    Raise EError(4444);
   Result:=PyFloat_FromDouble(PyMatrix(m)^.M[I+1,J+1]);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2381,6 +2421,7 @@ var
  M: TMatrixTransformation;
  I, J: Integer;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyMatrix_Type)
   or (v2^.ob_type <> @TyMatrix_Type)
@@ -2392,6 +2433,7 @@ begin
     M[I,J]:=PyMatrix(v1)^.M[I,J] + PyMatrix(v2)^.M[I,J];
   Result:=MakePyMatrix(M);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2402,6 +2444,7 @@ var
  M: TMatrixTransformation;
  I, J: Integer;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyMatrix_Type)
   or (v2^.ob_type <> @TyMatrix_Type)
@@ -2413,6 +2456,7 @@ begin
     M[I,J]:=PyMatrix(v1)^.M[I,J] - PyMatrix(v2)^.M[I,J];
   Result:=MakePyMatrix(M);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2424,6 +2468,7 @@ var
  v3: PyObject;
  I, J: Integer;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyMatrix_Type)
   or (v2^.ob_type <> @TyMatrix_Type) then
@@ -2459,6 +2504,7 @@ begin
    end;
   Result:=MakePyMatrix(M);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2470,6 +2516,7 @@ var
  F: TDouble;
  I, J: Integer;
 begin
+ Result:=Nil;
  try
   if (v1^.ob_type <> @TyMatrix_Type)
   or (v2^.ob_type <> @TyMatrix_Type) then
@@ -2499,6 +2546,7 @@ begin
    end;
   Result:=MakePyMatrix(M);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2509,6 +2557,7 @@ var
  M: TMatrixTransformation;
  I, J: Integer;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyMatrix_Type then
    Raise EError(4444);
@@ -2517,6 +2566,7 @@ begin
     M[I,J]:=-PyMatrix(v1)^.M[I,J];
   Result:=MakePyMatrix(M);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2524,11 +2574,13 @@ end;
 
 function MatrixPositive(v1: PyObject) : PyObject;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyMatrix_Type then
    Raise EError(4444);
   Result:=MakePyMatrix(PyMatrix(v1)^.M);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2536,11 +2588,13 @@ end;
 
 function MatrixAbsolute(v1: PyObject) : PyObject;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyMatrix_Type then
    Raise EError(4444);
   Result:=PyFloat_FromDouble(Determinant(PyMatrix(v1)^.M));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -2567,11 +2621,13 @@ end;
 
 function MatrixInvert(v1: PyObject) : PyObject;
 begin
+ Result:=Nil;
  try
   if v1^.ob_type <> @TyMatrix_Type then
    Raise EError(4444);
   Result:=MakePyMatrix(MatriceInverse(PyMatrix(v1)^.M));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

@@ -59,11 +59,11 @@ var
  P1, P2: TPoint;
  v1, v2: PyVect;
 begin
+ Result:=Nil;
  try
   if Assigned(PyCanvasObj(self)^.Canvas) then
    begin
     g_DrawInfo.DC:=PyCanvasObj(self)^.Canvas.Handle;
-    Result:=Nil;
     if PyObject_Length(args)=2 then
      begin
       if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @v1, @TyVect_Type, @v2]) then
@@ -82,6 +82,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -91,14 +92,15 @@ function cRectangle(self, args: PyObject) : PyObject; cdecl;
 var
  P1, P2: TPoint;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
    Exit;
   if Assigned(PyCanvasObj(self)^.Canvas) then
    Rectangle95(PyCanvasObj(self)^.Canvas.Handle, P1.X, P1.Y, P2.X, P2.Y);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -108,14 +110,15 @@ function cEllipse(self, args: PyObject) : PyObject; cdecl;
 var
  P1, P2: TPoint;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
    Exit;
   if Assigned(PyCanvasObj(self)^.Canvas) then
    Ellipse95(PyCanvasObj(self)^.Canvas.Handle, P1.X, P1.Y, P2.X, P2.Y);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -126,8 +129,8 @@ var
  P: TPoint;
  Color: TColorRef;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'iii', [@P.X, @P.Y, @Color]) then
    Exit;
   if Assigned(PyCanvasObj(self)^.Canvas) then
@@ -136,6 +139,7 @@ begin
    Color:=TColorRef(-1);
   Result:=PyInt_FromLong(Color);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -146,8 +150,9 @@ var
  P: TPoint;
  Color: TColorRef;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;  { note : Color is a dummy parameter }
+  //Color:=CLR_NONE; //Not needed: Color is a dummy parameter
   if not PyArg_ParseTupleX(args, 'ii|i', [@P.X, @P.Y, @Color]) then
    Exit;
   if Assigned(PyCanvasObj(self)^.Canvas) then
@@ -156,6 +161,7 @@ begin
    Color:=TColorRef(-1);
   Result:=PyInt_FromLong(Color);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -167,8 +173,8 @@ var
  Color: TColorRef;
  im: PyImage1;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   Color:=CLR_NONE;
   if not PyArg_ParseTupleX(args, 'O!ii', [@TyImage1_Type, @im, @P.X, @P.Y, @Color]) then
    Exit;
@@ -176,6 +182,7 @@ begin
    im^.Draw(PyCanvasObj(self)^.Canvas.Handle, P.X, P.Y, Color);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -208,10 +215,10 @@ var
  BmpInfo: TBitmapInfo256;
  BitmapInfo: PBitmapInfo;
 begin
+ Result:=Nil;
  try
   if Assigned(PyCanvasObj(self)^.Canvas) then
    begin
-    Result:=Nil;
     lgr:=1;
     if not PyArg_ParseTupleX(args, 'O!(iiii)|i', [@TyObject_Type, @tx, @R.Left, @R.Top, @R.Right, @R.Bottom, @lgr]) then
      Exit;
@@ -331,6 +338,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -344,10 +352,10 @@ var
  Pt, Pt1: PPoint;
  Coord: TCoordinates;
 begin
+ Result:=Nil;
  try
   if Assigned(PyCanvasObj(self)^.Canvas) then
    begin
-    Result:=Nil;
     ccw:=Py_None;
     if not PyArg_ParseTupleX(args, 'O!|O', [PyList_Type, @lst, @ccw]) then
      Exit;
@@ -398,6 +406,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -408,14 +417,15 @@ var
  X, Y: Integer;
  Text: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'iis', [@X, @Y, @Text]) then
    Exit;
   if Assigned(PyCanvasObj(self)^.Canvas) then
    PyCanvasObj(self)^.Canvas.TextOut(X, Y, Text);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -426,8 +436,8 @@ var
  Text: PChar;
  w,h: Integer;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@Text]) then
    Exit;
   if Assigned(PyCanvasObj(self)^.Canvas) then
@@ -443,6 +453,7 @@ begin
    end;
   Result:=Py_BuildValueX('ii', [w,h]);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -452,6 +463,7 @@ function cReset(self, args: PyObject) : PyObject; cdecl;
 var
  C: TColor;
 begin
+ Result:=nil;
  try
   if g_DrawInfo.BasePen=White_pen then
    C:=clWhite
@@ -470,6 +482,7 @@ begin
   Result:=self;
   Py_INCREF(Result);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -496,6 +509,7 @@ var
  I: Integer;
  S: String;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -617,6 +631,7 @@ begin
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=Nil;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

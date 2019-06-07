@@ -48,7 +48,7 @@ type
                 procedure AddFileWithPath(PathAndShortName: String; Q: QFileObject; SetName: Boolean);
                 function ExtractTo(PathBase: String) : Integer;
                 function ExtractEntitiesTo(PathBase: String) : Integer;
-                procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
+                procedure Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList); override;
                 function PyGetAttr(attr: PChar) : PyObject; override;
                 function TestConversionType(I: Integer) : QFileObjectClass; override;
                 function ConversionFrom(Source: QFileObject) : Boolean;     override;
@@ -593,7 +593,7 @@ begin
  finally ProgressIndicatorStop; end;
 end;
 
-procedure QPakFolder.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
+procedure QPakFolder.Go1(maplist, extracted: PyObject; var FirstMap: String; var QCList: TQList);
 begin
  RecGO1('', extracted);
 end;
@@ -602,14 +602,15 @@ function pExtract(self, args: PyObject) : PyObject; cdecl;
 var
  pathbase: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@pathbase]) then
    Exit;
   ProgressIndicatorStart(0,0); try
   Result:=PyInt_FromLong((QkObjFromPyObj(self) as QPakFolder).ExtractTo(pathbase));
   finally ProgressIndicatorStop; end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -619,12 +620,13 @@ function pGetFolder(self, args: PyObject) : PyObject; cdecl;
 var
  path: PChar;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@path]) then
    Exit;
   Result:=GetPyObj((QkObjFromPyObj(self) as QPakFolder).GetFolder(path));
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

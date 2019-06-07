@@ -292,17 +292,20 @@ var
 begin
  couple:=PyTuple_New(3);
  if couple=Nil then Exit;
- CCoord.CheckVisible(P);
- PyTuple_SetItem(couple, 0, CCoord.MakePyVectPtf(P));
- Py_INCREF(@PythonObj);
- PyTuple_SetItem(couple, 1, @PythonObj);
+ try
+  CCoord.CheckVisible(P);
+  PyTuple_SetItem(couple, 0, CCoord.MakePyVectPtf(P));
+  Py_INCREF(@PythonObj);
+  PyTuple_SetItem(couple, 1, @PythonObj);
 
- if Extra=Nil then Extra:=Py_None;
- Py_INCREF(Extra);
- PyTuple_SetItem(couple, 2, Extra);
+  if Extra=Nil then Extra:=Py_None;
+  Py_INCREF(Extra);
+  PyTuple_SetItem(couple, 2, Extra);
 
- PyList_Append(Liste, couple);
- Py_DECREF(couple);
+  PyList_Append(Liste, couple);
+ finally
+  Py_DECREF(couple);
+ end;
 end;
 
 (*procedure Q3DObject.ResultatAnalyseClic(var Liste: PAnalyseClic; nH: TDouble);
@@ -380,8 +383,8 @@ var
  V1: PyVect;
  nGrid: TDouble;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   nGrid:=0;
   if not PyArg_ParseTupleX(args, 'O!|d', [@TyVect_Type, @V1, @nGrid]) then
    Exit;
@@ -397,6 +400,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  PY_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -406,8 +410,8 @@ function qForceToGrid(self, args: PyObject) : PyObject; cdecl;
 var
  nGrid: TDouble;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'd', [@nGrid]) then
    Exit;
   if nGrid>0 then
@@ -422,6 +426,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -432,8 +437,8 @@ var
  V1: PyVect;
  M1: PyMatrix;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @V1, @TyMatrix_Type, @M1]) then
    Exit;
   g_DrawInfo.ModeDeplacement:=mdLinear;
@@ -446,6 +451,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -453,8 +459,8 @@ end;
 
 function qInflate(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'd', [@g_DrawInfo.ClicZ]) then
    Exit;
   g_DrawInfo.ModeDeplacement:=mdInflate;
@@ -466,6 +472,7 @@ begin
    end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

@@ -132,21 +132,20 @@ begin
  Result:=False;
  if fnt<>Py_None then
   begin
-   arglist:=Py_BuildValueX('OOO', [self, old, new]);
-   if arglist=Nil then Exit;
    try
-    callresult:=PyEval_CallObject(fnt, arglist);
-   finally
-    Py_DECREF(arglist);
-   end;
-   if callresult=nil then
-    begin
-     PythonCodeEnd;
-     Exit;
+    arglist:=Py_BuildValueX('OOO', [self, old, new]);
+    if arglist=Nil then Exit;
+    try
+     callresult:=PyEval_CallObject(fnt, arglist);
+    finally
+     Py_DECREF(arglist);
     end;
-   Py_XDECREF(callresult);
-   Result:=True;
-   PythonCodeEnd;
+    if callresult=nil then Exit;
+    Py_DECREF(callresult);
+    Result:=True;
+   finally
+    PythonCodeEnd;
+   end;
   end;
 end;
 
@@ -278,20 +277,19 @@ begin
  if FOnUndo=Py_None then
    Exit;
  obj:=GetUndoModule(False);
- arglist:=Py_BuildValueX('OO', [ExplorerObject, obj]);
- if arglist=Nil then Exit;
  try
-  callresult:=PyEval_CallObject(FOnUndo, arglist);
- finally
-  Py_DECREF(arglist);
- end;
- if callresult=nil then
-  begin
-   PythonCodeEnd;
-   Exit;
+  arglist:=Py_BuildValueX('OO', [ExplorerObject, obj]);
+  if arglist=Nil then Exit;
+  try
+   callresult:=PyEval_CallObject(FOnUndo, arglist);
+  finally
+   Py_DECREF(arglist);
   end;
- Py_XDECREF(callresult);
- PythonCodeEnd;
+  if callresult=nil then Exit;
+  Py_DECREF(callresult);
+ finally
+  PythonCodeEnd;
+ end;
 end;
 
  {------------------------}
@@ -301,8 +299,8 @@ var
  Q: QObject;
  obj: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@obj]) then
    Exit;
   Q:=QkObjFromPyObj(obj);
@@ -313,6 +311,7 @@ begin
     (QkControl as TPythonExplorer).AddRoot(Q);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -320,12 +319,14 @@ end;
 
 function eClear(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   with PyControlF(self)^ do
    if QkControl<>Nil then
     (QkControl as TPythonExplorer).ClearView;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -333,6 +334,7 @@ end;
 
 function eSelChanged(self, args: PyObject) : PyObject; cdecl;
 begin
+ Result:=nil;
  try
   with PyControlF(self)^ do
    if QkControl<>Nil then
@@ -343,6 +345,7 @@ begin
      end;
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -353,8 +356,8 @@ var
  obj, expd: PyObject;
  Q: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   expd:=Nil;
   if not PyArg_ParseTupleX(args, 'O!|O', [@TyObject_Type, @obj, @expd]) then
    Exit;
@@ -366,6 +369,7 @@ begin
        ToggleExpanding(Q);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -376,9 +380,9 @@ var
  obj: PyObject;
  Q: QObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
-  if not PyArg_ParseTupleX(args, 'O!|O', [@TyObject_Type, @obj]) then
+  if not PyArg_ParseTupleX(args, 'O!', [@TyObject_Type, @obj]) then
    Exit;
   Q:=QkObjFromPyObj(obj);
   if (Q<>Nil) then
@@ -388,6 +392,7 @@ begin
        ExpandAll(Q);
   Result:=PyNoResult;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -453,6 +458,7 @@ var
  I: Integer;
  L: TQList;
 begin
+ Result:=nil;
  try
   for I:=Low(MethodTable) to High(MethodTable) do
    if StrComp(attr, MethodTable[I].ml_name) = 0 then
@@ -517,6 +523,7 @@ begin
     Py_INCREF(Result);
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
