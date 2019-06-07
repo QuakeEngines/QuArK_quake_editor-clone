@@ -1068,7 +1068,8 @@ procedure TLayoutMgr.SectionResizedEvt(Sender: TObject; nPosition: Integer);
 var
  Rect: TRect;
  FullSize: Integer;
- obj1: PyObject;
+ obj1, obj2: PyObject;
+ I, Count: Integer;
 begin
  AlignControls(@Rect, Nil);
  with Sender as TQSplitter do
@@ -1086,8 +1087,21 @@ begin
    if FullSize<=3 then Exit;
    Inc(nPosition, 3);
    try
-    obj1:=PyFloat_FromDouble(nPosition/FullSize);
-    PyTuple_SetItem(Sections[Orientation], not Tag, obj1);
+    Count:=PyObject_Length(Sections[Orientation]);
+    obj1:=PyTuple_New(Count);
+    for I:=0 to Count-1 do
+    begin
+      if I=not Tag then
+        obj2:=PyFloat_FromDouble(nPosition/FullSize)
+      else
+      begin
+        obj2:=PyTuple_GetItem(Sections[Orientation], I);
+        Py_INCREF(obj2);
+      end;
+      PyTuple_SetItem(obj1, I, obj2);
+    end;
+    Py_DECREF(Sections[Orientation]);
+    Sections[Orientation]:=obj1;
    finally
     PythonCodeEnd;
    end;
