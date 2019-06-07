@@ -105,30 +105,37 @@ type
    closure : Pointer;
  end;
 
- descrgetfunc      = function (ob1, ob2, ob3 : PyObject) : PyObject; cdecl;
- descrsetfunc      = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
- initproc          = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
- newfunc           = function (t: PyTypeObject; ob1, ob2 : PyObject) : PyObject; cdecl;
- allocfunc         = function (t: PyTypeObject; i : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}) : PyObject; cdecl;
- freefunc          = procedure(ptr: Pointer); cdecl;
- FnRichCmpFunc       = function (ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
-
  FnUnaryFunc         = function(o1: PyObject) : PyObject; cdecl;
  FnBinaryFunc        = function(o1,o2: PyObject) : PyObject; cdecl;
  FnTernaryFunc       = function(o1,o2,o3: PyObject) : PyObject; cdecl;
  FnInquiry           = function(o: PyObject) : Integer; cdecl;
  {$IFDEF PYTHON25}FnLenfunc           = function(o: PyObject) : Py_ssize_t; cdecl;{$ENDIF}
+ FnCoercion      = function(var o1, o2: PyObject) : Integer; cdecl;
  FnIntArgFunc        = function(o: PyObject; i1: Integer) : PyObject; cdecl;
- FnIntintargFunc     = function(o: PyObject; i1, i2: Integer) : PyObject; cdecl;
+ FnIntIntArgFunc     = function(o: PyObject; i1, i2: Integer) : PyObject; cdecl;
  {$IFDEF PYTHON25}FnSSizeArgFunc      = function(o: PyObject; i1: Py_ssize_t) : PyObject; cdecl;{$ENDIF}
  {$IFDEF PYTHON25}FnSSizeSSizeArgFunc = function(o: PyObject; i1: Py_ssize_t; i2: Py_ssize_t) : PyObject; cdecl;{$ENDIF}
-
  FnIntObjArgProc        = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
  FnIntIntObjArgProc     = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
  {$IFDEF PYTHON25}FnSSizeObjArgProc      = function(o: PyObject; i: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
  {$IFDEF PYTHON25}FnSSizeSSizeObjArgProc = function(o: PyObject; i1, i2: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
  FnObjObjArgProc        = function(o1,o2,o3: PyObject) : Integer; cdecl;
 
+ //buffer interface
+ FnReadBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ FnWriteBufferProc   = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ FnSegCountProc      = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ FnCharBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: PChar): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
+ {$IFDEF PYTHON26}
+ FnGetBufferProc     = function(o: PyObject; p: Pointer; i: Integer): Integer; cdecl;
+ FnReleaseBufferProc = procedure(o: PyObject; p: Pointer); cdecl;
+ {$ENDIF}
+
+ FnObjObjProc      = function(ob1, obj2: PyObject): integer; cdecl;
+ FnVisitProc       = function(ob1: PyObject; ptr: Pointer): integer; cdecl;
+ FnTraverseProc    = function(ob1: PyObject; proc: FnVisitProc; ptr: Pointer): integer; cdecl;
+
+ FnFreeFunc      = procedure(ptr: Pointer); cdecl;
  FnDestructor    = procedure(o: PyObject); cdecl;
  FnPrintFunc     = function(o: PyObject; f: CFILE; i: Integer) : Integer; cdecl;
  FnGetAttrFunc   = function(o: PyObject; attr: PChar) : PyObject; cdecl;
@@ -138,22 +145,14 @@ type
  FnCmpFunc       = function(o1, o2: PyObject) : Integer; cdecl;
  FnReprfunc      = function(o: PyObject) : PyObject; cdecl;
  FnHashfunc      = function(o: PyObject) : LongInt; cdecl;
- FnCoercion      = function(var o1, o2: PyObject) : Integer; cdecl;
-
- FnObjObjProc      = function(ob1, obj2: PyObject): integer; cdecl;
- FnVisitProc       = function(ob1: PyObject; ptr: Pointer): integer; cdecl;
- FnTraverseProc    = function(ob1: PyObject; proc: FnVisitProc; ptr: Pointer): integer; cdecl;
+ FnRichCmpFunc       = function (ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
  FnGetIterFunc     = function(ob1 : PyObject) : PyObject; cdecl;
  FnIterNextFunc    = function(ob1 : PyObject) : PyObject; cdecl;
-
- FnReadBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
- FnWriteBufferProc   = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
- FnSegCountProc      = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
- FnCharBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: PChar): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
- {$IFDEF PYTHON26}
- FnGetBufferProc     = function(o: PyObject; p: Pointer; i: Integer): Integer; cdecl;
- FnReleaseBufferProc = procedure(o: PyObject; p: Pointer); cdecl;
- {$ENDIF}
+ FnDescrGetFunc      = function (ob1, ob2, ob3 : PyObject) : PyObject; cdecl;
+ FnDescrSetFunc      = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
+ FnInitProc          = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
+ FnNewFunc           = function (t: PyTypeObject; ob1, ob2 : PyObject) : PyObject; cdecl;
+ FnAllocFunc         = function (t: PyTypeObject; i : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}) : PyObject; cdecl;
 
  PyNumberMethods = ^TyNumberMethods;
  TyNumberMethods = packed record
@@ -262,13 +261,13 @@ type
                  tp_getset           : PPyGetSetDef;
                  tp_base             : PyTypeObject;
                  tp_dict             : PyObject;
-                 tp_descr_get        : descrgetfunc;
-                 tp_descr_set        : descrsetfunc;
+                 tp_descr_get        : FnDescrGetFunc;
+                 tp_descr_set        : FnDescrSetFunc;
                  tp_dictoffset       : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}LongInt{$ENDIF};
-                 tp_init             : initproc;
-                 tp_alloc            : allocfunc;
-                 tp_new              : newfunc;
-                 tp_free             : freefunc; // Low-level free-memory routine
+                 tp_init             : FnInitProc;
+                 tp_alloc            : FnAllocFunc;
+                 tp_new              : FnNewFunc;
+                 tp_free             : FnFreeFunc; // Low-level free-memory routine
                  tp_is_gc            : FnInquiry; // For PyObject_IS_GC
                  tp_bases            : PyObject;
                  tp_mro              : PyObject; // method resolution order
@@ -618,7 +617,7 @@ end;
 
  {-------------------}
 
-function GoodPythonVersion(NumberToCheck: Integer; PythonVersionNumber: TVersionNumber) : boolean;
+function GoodPythonVersion(NumberToCheck: Integer; const PythonVersionNumber: TVersionNumber) : boolean;
 begin
   //This function checks if the Python version 'encoded' in NumberToCheck
   //is equal or higher to the given PythonVersionNumber
@@ -1173,4 +1172,3 @@ finalization
   //FIXME: This apparently creates problems...
   //UnInitializePython;
 end.
-
