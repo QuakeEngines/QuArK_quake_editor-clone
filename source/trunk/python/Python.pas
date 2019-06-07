@@ -115,11 +115,11 @@ type
  FnIntIntArgFunc     = function(o: PyObject; i1, i2: Integer) : PyObject; cdecl;
  {$IFDEF PYTHON25}FnSSizeArgFunc      = function(o: PyObject; i1: Py_ssize_t) : PyObject; cdecl;{$ENDIF}
  {$IFDEF PYTHON25}FnSSizeSSizeArgFunc = function(o: PyObject; i1: Py_ssize_t; i2: Py_ssize_t) : PyObject; cdecl;{$ENDIF}
- FnIntObjArgProc        = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
- FnIntIntObjArgProc     = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
- {$IFDEF PYTHON25}FnSSizeObjArgProc      = function(o: PyObject; i: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
+ FnIntObjArgProc     = function(o: PyObject; i: Integer; o2: PyObject) : Integer; cdecl;
+ FnIntIntObjArgProc  = function(o: PyObject; i1, i2: Integer; o2: PyObject) : Integer; cdecl;
+ {$IFDEF PYTHON25}FnSSizeObjArgProc   = function(o: PyObject; i: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
  {$IFDEF PYTHON25}FnSSizeSSizeObjArgProc = function(o: PyObject; i1, i2: Py_ssize_t; o2: PyObject) : Integer; cdecl;{$ENDIF}
- FnObjObjArgProc        = function(o1,o2,o3: PyObject) : Integer; cdecl;
+ FnObjObjArgProc     = function(o1,o2,o3: PyObject) : Integer; cdecl;
 
  //buffer interface
  FnReadBufferProc    = function(o: PyObject; i: {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; p: Pointer): {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}; cdecl;
@@ -145,14 +145,14 @@ type
  FnCmpFunc       = function(o1, o2: PyObject) : Integer; cdecl;
  FnReprfunc      = function(o: PyObject) : PyObject; cdecl;
  FnHashfunc      = function(o: PyObject) : LongInt; cdecl;
- FnRichCmpFunc       = function (ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
- FnGetIterFunc     = function(ob1 : PyObject) : PyObject; cdecl;
- FnIterNextFunc    = function(ob1 : PyObject) : PyObject; cdecl;
- FnDescrGetFunc      = function (ob1, ob2, ob3 : PyObject) : PyObject; cdecl;
- FnDescrSetFunc      = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
- FnInitProc          = function (ob1, ob2, ob3 : PyObject) : Integer; cdecl;
- FnNewFunc           = function (t: PyTypeObject; ob1, ob2 : PyObject) : PyObject; cdecl;
- FnAllocFunc         = function (t: PyTypeObject; i : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}) : PyObject; cdecl;
+ FnRichCmpFunc   = function(ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
+ FnGetIterFunc   = function(ob1 : PyObject) : PyObject; cdecl;
+ FnIterNextFunc  = function(ob1 : PyObject) : PyObject; cdecl;
+ FnDescrGetFunc  = function(ob1, ob2, ob3 : PyObject) : PyObject; cdecl;
+ FnDescrSetFunc  = function(ob1, ob2, ob3 : PyObject) : Integer; cdecl;
+ FnInitProc      = function(ob1, ob2, ob3 : PyObject) : Integer; cdecl;
+ FnNewFunc       = function(t: PyTypeObject; ob1, ob2 : PyObject) : PyObject; cdecl;
+ FnAllocFunc     = function(t: PyTypeObject; i : {$IFDEF PYTHON25}Py_ssize_t{$ELSE}Integer{$ENDIF}) : PyObject; cdecl;
 
  PyNumberMethods = ^TyNumberMethods;
  TyNumberMethods = packed record
