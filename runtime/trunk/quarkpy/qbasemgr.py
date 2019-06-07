@@ -479,31 +479,21 @@ class BaseLayout:
         Trash.cmd = "del"
         Trash.ondrop = self.editor.trash1drop
         Undo = qtoolbar.macrobtn("MURD", "Multiple undo/redo||Multiple undo/redo:\n\nThe icon will open up the undo/redo display. |intro.mapeditor.misctools.html#undoredo", ico_maped, 6)
-        try:
+        if self.editor.MODE == SS_MAP:
+            NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
+            NewGroup.cmd = "newgroup"
             bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
             bb.margins = (2,1)
-        except:
-            try:
-                if self.editor.MODE == SS_MODEL:
-                    if not ico_dict.has_key('mdlobjs'):
-                        ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
-                    ico_mdlobjs = ico_dict['mdlobjs']
-                    NewBBoxGroup = qtoolbar.button(self.editor.editcmdclick, "New BBox sub-group||New BBox sub-group:\n\nCreates a new BBox sub-group in the tree-view 'Misc' folder, where you can place bbox (poly bounding and collision) objects in.|intro.modeleditor.misctools.html#bboxsubgroup", ico_mdlobjs, 8)
-                    NewBBoxGroup.cmd = "newbboxgroup"
-                    NewSkinsGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the selected component's 'Skins' folder, where you can place skin objects in, used for Quake1 animation skins.|intro.modeleditor.misctools.html#skinsubgroup", ico_mdlobjs, 0)
-                    NewSkinsGroup.cmd = "newskingroup"
-                    bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewBBoxGroup, NewSkinsGroup])
-                    bb.margins = (2,1)
-                else:
-                    NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
-                    NewGroup.cmd = "newgroup"
-                    bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
-                    bb.margins = (2,1)
-            except:
-                NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
-                NewGroup.cmd = "newgroup"
-                bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
-                bb.margins = (2,1)
+        elif self.editor.MODE == SS_MODEL:
+            if not ico_dict.has_key('mdlobjs'):
+                ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
+            ico_mdlobjs = ico_dict['mdlobjs']
+            NewBBoxGroup = qtoolbar.button(self.editor.editcmdclick, "New BBox sub-group||New BBox sub-group:\n\nCreates a new BBox sub-group in the tree-view 'Misc' folder, where you can place bbox (poly bounding and collision) objects in.|intro.modeleditor.misctools.html#bboxsubgroup", ico_mdlobjs, 8)
+            NewBBoxGroup.cmd = "newbboxgroup"
+            NewSkinsGroup = qtoolbar.button(self.editor.editcmdclick, "New skins sub-group||New skins sub-group:\n\nCreates a new Skins sub-group in the selected component's 'Skins' folder, where you can place skin objects in, used for Quake1 animation skins.|intro.modeleditor.misctools.html#skinsubgroup", ico_mdlobjs, 0)
+            NewSkinsGroup.cmd = "newskingroup"
+            bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewBBoxGroup, NewSkinsGroup])
+            bb.margins = (2,1)
 
         self.bs_multipagespanel(bottompanel)
         self.bs_userobjects(toppanel)
