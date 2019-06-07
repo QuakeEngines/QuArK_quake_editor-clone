@@ -66,7 +66,6 @@ type
   end;
 
 var
-  g_ConsoleForm: TConsoleForm;
   g_Ty_InternalConsole: TyObject = (ob_refcnt: 1);
 
  {-------------------}
@@ -85,9 +84,6 @@ procedure CloseConsoleFile;
 procedure ClearConsoleFile;
 procedure WriteConsoleFile(const Text: String);
 
-const
-  CONSOLE_FILENAME = 'Console.txt';
-
  {-------------------}
 
 implementation
@@ -98,11 +94,14 @@ uses Qk1, QkObjects, QkExceptions, Quarkx, PyProcess, Setup,
      QkApplPaths, ExtraFunctionality;
 
 var
+  g_ConsoleForm: TConsoleForm;
+
   ConsoleFile: TextFile;
   ConsoleFileOpened: boolean;
   ConsoleFilename: string;
 
 const
+  CONSOLE_FILENAME = 'Console.txt';
   MinConsoleWidth  = 80;
   MaxConsoleWidth  = 80;
   MinConsoleHeight = 60;
