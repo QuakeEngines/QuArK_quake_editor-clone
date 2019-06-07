@@ -1085,8 +1085,12 @@ begin
     end;
    if FullSize<=3 then Exit;
    Inc(nPosition, 3);
-   obj1:=PyFloat_FromDouble(nPosition/FullSize);
-   PyTuple_SetItem(Sections[Orientation], not Tag, obj1);
+   try
+    obj1:=PyFloat_FromDouble(nPosition/FullSize);
+    PyTuple_SetItem(Sections[Orientation], not Tag, obj1);
+   finally
+    PythonCodeEnd;
+   end;
   end;
  AlignControls(Nil, Nil);
 end;
@@ -1113,15 +1117,19 @@ begin
     end;
    if FullSize<=3 then Exit;
    I:=not Tag;
-   Count:=PyObject_Length(Sections[Orientation]);
-   if I=0 then
-    f1:=0.0
-   else
-    f1:=Abs(PyFloat_AsDouble(PyTuple_GetItem(Sections[Orientation], I-1)));
-   if I+1>=Count then
-    f3:=1.0
-   else
-    f3:=PyFloat_AsDouble(PyTuple_GetItem(Sections[Orientation], I+1));
+   try
+    Count:=PyObject_Length(Sections[Orientation]);
+    if I=0 then
+     f1:=0.0
+    else
+     f1:=Abs(PyFloat_AsDouble(PyTuple_GetItem(Sections[Orientation], I-1)));
+    if I+1>=Count then
+     f3:=1.0
+    else
+     f3:=PyFloat_AsDouble(PyTuple_GetItem(Sections[Orientation], I+1));
+   finally
+    PythonCodeEnd;
+   end;
    Min:=Base + Round(FullSize*f1) + 10;
    Max:=Base + Round(FullSize*f3) - 14;
   end;
