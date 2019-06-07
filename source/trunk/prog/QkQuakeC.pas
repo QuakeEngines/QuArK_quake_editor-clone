@@ -610,16 +610,19 @@ begin
   end;
  if Execute then
   begin
-   o2:=PyList_New(0);
-   o1:=PyString_FromString(PChar(OutputProgsDat));
-   PyList_Append(o2, o1);
-   Py_DECREF(o1);
-   o1:=PyList_New(0);
    try
-    Py_XDECREF(CallMacroEx(Py_BuildValueX('OOOs', [o1, Py_None, o2, PChar(LastCompileCfgFile)]), 'buildmaps'));
-   finally
-    Py_DECREF(o2);
+    o2:=PyList_New(0);
+    o1:=PyString_FromString(PChar(OutputProgsDat));
+    PyList_Append(o2, o1);
     Py_DECREF(o1);
+    o1:=PyList_New(0);
+    try
+     Py_XDECREF(CallMacroEx(Py_BuildValueX('OOOs', [o1, Py_None, o2, PChar(LastCompileCfgFile)]), 'buildmaps'));
+    finally
+     Py_DECREF(o2);
+     Py_DECREF(o1);
+    end;
+   finally
     PythonCodeEnd;
    end;
   end;

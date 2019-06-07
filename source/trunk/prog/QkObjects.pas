@@ -1215,21 +1215,24 @@ begin
       Py_INCREF(D.Icon)
     else
     begin
-      args:=Py_BuildValueX('(O)', [@PythonObj]);
-      if args<>Nil then
-      begin
-        try
-          D.Icon:=PyEval_CallObject(D.Icon, args);
-        finally
-          Py_DECREF(args);
-        end;
-        if (D.Icon<>Nil) and (D.Icon^.ob_type <> @TyImage1_Type) then
+      try
+        args:=Py_BuildValueX('(O)', [@PythonObj]);
+        if args<>Nil then
         begin
-          Py_DECREF(D.Icon);  { Image1 expected }
-          D.Icon:=Nil;
+          try
+            D.Icon:=PyEval_CallObject(D.Icon, args);
+          finally
+            Py_DECREF(args);
+          end;
+          if (D.Icon<>Nil) and (D.Icon^.ob_type <> @TyImage1_Type) then
+          begin
+            Py_DECREF(D.Icon);  { Image1 expected }
+            D.Icon:=Nil;
+          end;
         end;
+      finally
+        PythonCodeEnd;
       end;
-      PythonCodeEnd;
     end;
   end;
 
