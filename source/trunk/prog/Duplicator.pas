@@ -123,25 +123,28 @@ var
  dupclass, dupmethod: PyObject;
 begin
  Result:=Nil;
- if args=Nil then Exit;
- dupclass:=CallMacro(@PythonObj, 'duplicator');
- if dupclass=Nil then Exit;
  try
-  dupmethod:=PyObject_GetAttrString(dupclass, PChar(MethodName));
-  if dupmethod=Nil then Exit;
+  if args=Nil then Exit;
   try
+   dupclass:=CallMacro(@PythonObj, 'duplicator');
+   if dupclass=Nil then Exit;
    try
-    Result:=PyEval_CallObject(dupmethod, args);
+    dupmethod:=PyObject_GetAttrString(dupclass, PChar(MethodName));
+    if dupmethod=Nil then Exit;
+    try
+     Result:=PyEval_CallObject(dupmethod, args);
+    finally
+     Py_DECREF(dupmethod);
+    end;
    finally
-    Py_DECREF(args);
+    Py_DECREF(dupclass);
    end;
   finally
-   Py_DECREF(dupmethod);
+   Py_DECREF(args);
   end;
  finally
-  Py_DECREF(dupclass);
+  PythonCodeEnd;
  end;
- PythonCodeEnd;
 end;*)
 
 function TDuplicator.BuildImages;
