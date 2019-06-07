@@ -138,9 +138,9 @@ type
  FnFreeFunc      = procedure(ptr: Pointer); cdecl;
  FnDestructor    = procedure(o: PyObject); cdecl;
  FnPrintFunc     = function(o: PyObject; f: CFILE; i: Integer) : Integer; cdecl;
- FnGetAttrFunc   = function(o: PyObject; attr: PChar) : PyObject; cdecl;
+ FnGetAttrFunc   = function(o: PyObject; const attr: PChar) : PyObject; cdecl;
  FnGetAttrOFunc  = function(o: PyObject; attr: PyObject) : PyObject; cdecl;
- FnSetAttrFunc   = function(o: PyObject; attr: PChar; v: PyObject) : Integer; cdecl;
+ FnSetAttrFunc   = function(o: PyObject; const attr: PChar; v: PyObject) : Integer; cdecl;
  FnSetAttrOFunc  = function(o: PyObject; attr: PyObject; v: PyObject) : Integer; cdecl;
  FnCmpFunc       = function(o1, o2: PyObject) : Integer; cdecl;
  FnReprfunc      = function(o: PyObject) : PyObject; cdecl;

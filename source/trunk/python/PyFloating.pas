@@ -61,8 +61,8 @@ type
 
  {------------------------}
 
-function GetFloatingAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetFloatingAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function GetFloatingAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function SetFloatingAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyFloating_Type: TyTypeObject =
@@ -326,7 +326,7 @@ begin
   end;
 end;
 
-function GetFloatingAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function GetFloatingAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
@@ -413,7 +413,7 @@ begin
  end;
 end;
 
-function SetFloatingAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function SetFloatingAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
  P: PChar;

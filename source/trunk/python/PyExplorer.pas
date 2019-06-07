@@ -57,8 +57,8 @@ type
 
  {------------------------}
 
-function GetExplorerAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetExplorerAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function GetExplorerAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function SetExplorerAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyExplorer_Type: TyTypeObject =
@@ -452,7 +452,7 @@ begin
   end;
 end;
 
-function GetExplorerAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function GetExplorerAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
@@ -529,7 +529,7 @@ begin
  end;
 end;
 
-function SetExplorerAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function SetExplorerAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
  I, Count: Integer;

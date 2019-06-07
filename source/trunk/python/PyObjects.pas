@@ -37,8 +37,8 @@ procedure PyListToQList(list: PyObject; L: TQList; Cls: QObjectClass);
 function GetPySpecArg(var Spec: String; value: PyObject) : String;
 
 procedure PythonObjDestructor(o: PyObject); cdecl;
-function GetObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetObjAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function GetObjAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function SetObjAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 function ObjRepr(self: PyObject) : PyObject; cdecl;
 {function GetFileObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 function SetFileObjAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;}
@@ -169,7 +169,7 @@ begin
  end;
 end;
 
-function GetObjAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function GetObjAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
 begin
  Result:=Nil;
  try
@@ -183,7 +183,7 @@ begin
  end;
 end;
 
-function SetObjAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function SetObjAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 begin
  try
   if QkObjFromPyObj(self).PySetAttr(attr, value) then

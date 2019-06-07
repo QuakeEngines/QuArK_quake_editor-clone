@@ -32,8 +32,8 @@ type
 
  {------------------------}
 
-function GetCanvasAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetCanvasAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function GetCanvasAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function SetCanvasAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyCanvas_Type: TyTypeObject =
@@ -504,7 +504,7 @@ const
    (ml_name: 'painttexture'; ml_meth: cPaintTexture; ml_flags: METH_VARARGS),
    (ml_name: 'reset';        ml_meth: cReset;        ml_flags: METH_VARARGS));
 
-function GetCanvasAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function GetCanvasAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
  S: String;
@@ -637,7 +637,7 @@ begin
  end;
 end;
 
-function SetCanvasAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function SetCanvasAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Mode1: Integer;
 begin

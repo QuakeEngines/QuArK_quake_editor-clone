@@ -222,8 +222,8 @@ function MakePyVectv(const v3: vec3_t) : PyVect;
 {function MakePyVectvArray(Source: vec3_p; Count: Integer) : PyVect;}
 function PyVect_AsPP(V: PyVect) : TPointProj;
 
-function GetVectAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function GetVectAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function SetVectAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 function CompareVect(v1, v2: PyObject) : Integer; cdecl;
 function PrintVect(self: PyObject) : PyObject; cdecl;
 function VectToStr(self: PyObject) : PyObject; cdecl;
@@ -268,7 +268,7 @@ var
 
  {------------------------}
 
-function GetMatrixAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function GetMatrixAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
 function PrintMatrix(self: PyObject) : PyObject; cdecl;
 function MatrixToStr(self: PyObject) : PyObject; cdecl;
 function MakePyMatrix(const nMatrix: TMatrixTransformation; transposed : boolean = false) : PyMatrix;
@@ -1661,7 +1661,7 @@ end;*)
    (ml_name: 'insertitem';    ml_meth: qInsertItem;    ml_flags: METH_VARARGS),
    (ml_name: 'removeitem';    ml_meth: qRemoveItem;    ml_flags: METH_VARARGS));}
 
-function GetVectAttr(self: PyObject; attr: PChar) : PyObject;
+function GetVectAttr(self: PyObject; const attr: PChar) : PyObject;
 {var
  I, N: Integer;}
 var
@@ -1798,7 +1798,7 @@ begin
  end;
 end;
 
-function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer;
+function SetVectAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer;
 var
  o: PyObject;
 begin
@@ -2271,7 +2271,7 @@ end;
 
  {------------------------}
 
-function GetMatrixAttr(self: PyObject; attr: PChar) : PyObject;
+function GetMatrixAttr(self: PyObject; const attr: PChar) : PyObject;
 var
  I: Integer;
  obj: array[1..3] of PyObject;

@@ -102,7 +102,7 @@ type
     procedure AlignControls(Simulation: PRect; SimCtrl: PyComponent);
     procedure AlignControlsRec;
     procedure InvalidateAlignment;
-    procedure InsertControl(nControl: PyObject);   { backward-compatilibity alignment }
+    procedure InsertControl(nControl: PyObject);   { backward-compatibility alignment }
     procedure InsertControl2(nControl: PyObject);  { lower-priority alignment }
     procedure RemoveControl(nControl: PyObject);
     function GetOwner : TQkMainPanel;
@@ -112,8 +112,8 @@ type
  {-------------------}
 
 procedure PanelDestructor(o: PyObject); cdecl;
-function GetPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetPanelAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function GetPanelAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function SetPanelAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyPanel_Type: TyTypeObject =
@@ -1382,7 +1382,7 @@ const
    (ml_name: 'newpanel';       ml_meth: wNewFullPanel;   ml_flags: METH_VARARGS),
    (ml_name: 'controls';       ml_meth: pControls;       ml_flags: METH_VARARGS));
 
-function GetPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function GetPanelAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
 begin
@@ -1440,7 +1440,7 @@ begin
  end;
 end;
 
-function SetPanelAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+function SetPanelAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
 var
  nS: TPanelSections;
  Orien: TSplitOrientation;
