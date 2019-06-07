@@ -145,7 +145,7 @@ begin
           PythonCodeEnd;
           Exit;
          end;
-        Py_XDECREF(callresult);
+        Py_DECREF(callresult);
        finally
         if Options and cioHourglass <> 0 then
          ProgressIndicatorStop;
@@ -223,19 +223,19 @@ var
 begin
  if FCallback<>Nil then
   begin
-   arglist:=Py_BuildValue('()');
-   if arglist=Nil then Exit;
    try
-    result:=PyEval_CallObject(FCallback, arglist);
-   finally
-    Py_DECREF(arglist);
-   end;
-   if result=nil then
-    begin
-     PythonCodeEnd;
-     Exit;
+    arglist:=Py_BuildValue('()');
+    if arglist=Nil then Exit;
+    try
+     result:=PyEval_CallObject(FCallback, arglist);
+    finally
+     Py_DECREF(arglist);
     end;
-   Py_XDECREF(result);
+    if result=nil then Exit;
+    Py_DECREF(result);
+   finally
+    PythonCodeEnd;
+   end;
   end;
 end;*)
 
