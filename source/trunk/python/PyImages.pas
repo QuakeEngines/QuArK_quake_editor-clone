@@ -23,6 +23,7 @@ unit PyImages;
 interface
 
 {$I DelphiVer.inc}
+{$INCLUDE PyVersions.inc}
 
 uses Windows, Messages, SysUtils, Classes, Graphics, CommCtrl, Python,
      QkObjects, Controls, Forms, ComCtrls, PyControls, QkForm, qmath;
@@ -352,7 +353,7 @@ begin
  end;
 end;
 
-function ImageList_length(self: PyObject) : {$IFDEF Python25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
+function ImageList_length(self: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 begin
  try
   Result:=ImageList_GetImageCount(PyImageList(self)^.Handle);
@@ -362,7 +363,7 @@ begin
  end;
 end;
 
-function ImageList_item(self: PyObject; i: {$IFDEF Python25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
+function ImageList_item(self: PyObject; i: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 begin
  Result:=nil;
  try

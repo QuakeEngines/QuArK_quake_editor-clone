@@ -22,6 +22,8 @@ unit QkModelBone;
 
 interface
 
+{$INCLUDE ..\Python\PyVersions.inc}
+
 uses SysUtils, QkMdlObject, QkObjects, qmath, qmatrices, Python, QkBoneGroup;
 
 {

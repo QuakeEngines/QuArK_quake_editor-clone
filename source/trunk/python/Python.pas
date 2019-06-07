@@ -40,7 +40,7 @@ type
  CFILE = Pointer;
 
  {$IFDEF PYTHON25}
- Py_ssize_t = size_t;
+ Py_ssize_t = ssize_t;
  Py_ssize_tPtr = ^Py_ssize_t;
  {$ENDIF}
 
@@ -188,7 +188,7 @@ type
                       sq_concat: FnBinaryfunc;
                       sq_repeat: {$IFDEF PYTHON25}FnSSizeArgfunc{$ELSE}FnIntArgFunc{$ENDIF};
                       sq_item: {$IFDEF PYTHON25}FnSSizeArgfunc{$ELSE}FnIntArgFunc{$ENDIF};
-                      sq_slice: {$IFDEF PYTHON25}FnSSizeSSizeArgfunc;{$ELSE}FnIntIntArgFunc{$ENDIF};
+                      sq_slice: {$IFDEF PYTHON25}FnSSizeSSizeArgfunc{$ELSE}FnIntIntArgFunc{$ENDIF};
                       sq_ass_item: {$IFDEF PYTHON25}FnSSizeObjArgproc{$ELSE}FnIntObjArgProc{$ENDIF};
                       sq_ass_slice: {$IFDEF PYTHON25}FnSSizeSSizeObjArgproc{$ELSE}FnIntIntObjArgProc{$ENDIF};
                       sq_contains: FnObjObjProc;

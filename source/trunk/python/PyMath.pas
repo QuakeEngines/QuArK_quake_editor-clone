@@ -22,6 +22,8 @@ unit PyMath;
 
 interface
 
+{$INCLUDE PyVersions.inc}
+
 uses Windows, SysUtils, qmath, qmatrices, Python, Quarkx;
 
 const

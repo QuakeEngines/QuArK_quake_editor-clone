@@ -154,6 +154,7 @@ const
 //This type does't exist at all in Delphi 7:
 type
   size_t = Cardinal;  //This appears to be true in (32-bit) Delphi
+  ssize_t = Integer;  //This appears to be true in (32-bit) Delphi
 
 implementation
 
