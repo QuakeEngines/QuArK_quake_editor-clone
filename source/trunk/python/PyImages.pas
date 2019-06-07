@@ -651,30 +651,32 @@ begin
   Flags:=Flags or mbClick
  else
   Flags:=Flags or mbDragging;
- arglist:=Py_BuildValueX('Oiii', [ImageObject, X, Y, Flags]);
- if arglist=Nil then Exit;
  try
-  rslt:=PyEval_CallObject(FOnClick, arglist);
+  arglist:=Py_BuildValueX('Oiii', [ImageObject, X, Y, Flags]);
+  if arglist=Nil then Exit;
+  try
+   rslt:=PyEval_CallObject(FOnClick, arglist);
+  finally
+   Py_DECREF(arglist);
+  end;
+  if rslt=nil then Exit;
+  try
+   if (rslt<>Nil) and PyObject_IsTrue(rslt) then
+    begin
+     MouseCapture:=True;
+     OnMouseMove:=MouseMoveEvt;
+    end
+   else
+    begin
+     MouseCapture:=False;
+     OnMouseMove:=Nil;
+    end;
+  finally
+   Py_XDECREF(rslt);
+  end;
  finally
-  Py_DECREF(arglist);
+  PythonCodeEnd;
  end;
- if rslt=nil then
-  begin
-   PythonCodeEnd;
-   Exit;
-  end;
- if (rslt<>Nil) and PyObject_IsTrue(rslt) then
-  begin
-   MouseCapture:=True;
-   OnMouseMove:=MouseMoveEvt;
-  end
- else
-  begin
-   MouseCapture:=False;
-   OnMouseMove:=Nil;
-  end;
- Py_XDECREF(rslt);
- PythonCodeEnd;
 end;
 
 procedure TPyImageControl.MouseUp;
