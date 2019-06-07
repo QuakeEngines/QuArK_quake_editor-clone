@@ -634,6 +634,7 @@ var
  L: TStringList;
  I: Integer;
 begin
+ Result:=Nil;
  try
   L:=TStringList.Create; try
   L.Sorted:=True;
@@ -643,6 +644,7 @@ begin
    PyList_SetItem(Result, I, PyString_FromString(PChar(L[I])));
   finally L.Free; end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -653,8 +655,8 @@ var
  tOld, tNew: PChar;
  u: PyObject;
 begin
+ Result:=Nil;
  try
-  Result:=Nil;
   u:=Nil;
   if not PyArg_ParseTupleX(args, 'ss|O', [@tOld, @tNew, @u]) then
    Exit;
@@ -664,6 +666,7 @@ begin
     Result:=PyInt_FromLong(ReplaceTexture(tOld, tNew, (u<>Nil) and PyObject_IsTrue(u)));
    end;
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
@@ -673,12 +676,14 @@ function qRebuildAll(self, args: PyObject) : PyObject; cdecl;
 var
  InvPoly, InvFaces: Integer;
 begin
+ Result:=Nil;
  try
   InvPoly:=0;
   InvFaces:=0;
   BuildPolyhedronsNow(QkObjFromPyObj(self), InvPoly, InvFaces);
   Result:=Py_BuildValueX('ii', [InvPoly, InvFaces]);
  except
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;

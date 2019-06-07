@@ -72,9 +72,9 @@ type
 
 function ImageList_length(self: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 function ImageList_item(self: PyObject; i: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
-procedure FreeImageList(o: PyObject); cdecl;
+procedure ImageListDestructor(o: PyObject); cdecl;
 function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
-procedure FreeImage1(o: PyObject); cdecl;
+procedure Image1Destructor(o: PyObject); cdecl;
 
 
 const
@@ -87,14 +87,14 @@ var
   (ob_refcnt:      1;
    tp_name:        'imagelist';
    tp_basicsize:   SizeOf(TyImageList);
-   tp_dealloc:     FreeImageList;
+   tp_dealloc:     ImageListDestructor;
    tp_as_sequence: @TyImageList_Seq;
    tp_doc:         'A list of fixed-size icon.');
  TyImage1_Type: TyTypeObject =
   (ob_refcnt:      1;
    tp_name:        'image1';
    tp_basicsize:   SizeOf(TyImage1);
-   tp_dealloc:     FreeImage1;
+   tp_dealloc:     Image1Destructor;
    tp_getattr:     GetImage1Attr;
    tp_doc:         'A single icon in an image list.');
 
@@ -327,7 +327,7 @@ begin
  end;
 end;
 
-procedure FreeImage1(o: PyObject); cdecl;
+procedure Image1Destructor(o: PyObject); cdecl;
 var
  I: Integer;
 begin
@@ -377,7 +377,7 @@ begin
  end;
 end;
 
-procedure FreeImageList(o: PyObject); cdecl;
+procedure ImageListDestructor(o: PyObject); cdecl;
 {$IFDEF Debug}
 var
  I: Integer;
@@ -391,7 +391,7 @@ begin
     for B:=False to True do
      for I:=Images[B].Count-1 downto 0 do
       if Images[B][I]<>Nil then
-       Raise InternalE('FreeImageList non-empty');
+       Raise InternalE('ImageListDestructor non-empty');
     {$ENDIF}
     ImageList_Destroy(Handle);
     Images[True].Free;
@@ -566,8 +566,7 @@ var
 begin
  if BitmapCopy=0 then
   begin
-  {AllocConsole;
-   Writeln('BitmapCopy for ' + IntToHex(Integer(@Self), 8));}
+   //Log('BitmapCopy for ' + IntToHex(Integer(@Self), 8));}
 
    P:=GetSize;
    Dest.X:=GetSystemMetrics(sm_CxMenuCheck);
