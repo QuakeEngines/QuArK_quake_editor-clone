@@ -2173,10 +2173,12 @@ begin
 end;*)
 
 procedure TForm1.AppShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
+const
+ HintHidePauseSecs = 15; //4
 var
  I, Code: Integer;
 begin
- Application.HintHidePause:=(15 * 1000); {4000;}
+ Application.HintHidePause:=(HintHidePauseSecs * 1000);
  if HintStr<>'' then
   begin
   {if (Form4<>Nil) and (ModeEcran3D<>0) and Form3D.DessinEnCours then
