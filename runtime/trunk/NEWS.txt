@@ -13,6 +13,8 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Many fixes to Python object handling to reduce reference counting errors.
+
 * [DanielPharos]: Improvements to .rmf file loading: many more things are now loading properly,
           - including groups, entities with brushes, and the origin of entities.
 
