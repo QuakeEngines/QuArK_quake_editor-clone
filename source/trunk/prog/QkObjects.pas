@@ -433,7 +433,7 @@ const
   chrFloatSpec = 128;
 
 {$IFDEF Debug}
-var g_MemQObject: TQList;
+var g_MemQObject: TList; //Cannot be TQList, as that uses QObject.AddRef
 {$ENDIF}
 
  {------------------------}
