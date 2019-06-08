@@ -608,6 +608,11 @@ var
   TagList: TQList;
   z_result: boolean;
 begin
+  if GetRoot.Specifics.Values['md3_autolink_done']<>'' then
+  begin
+    Result:=True;
+    Exit;
+  end;
   z_result:=true;
   mg:=GetRoot.GetMisc;
   TagList:=TQList.Create;
@@ -645,6 +650,7 @@ begin
   finally
     TagList.Free;
   end;
+  GetRoot.Specifics.Values['md3_autolink_done']:='1';
   result:=z_result;
 end;
 
@@ -673,8 +679,9 @@ begin
 //  Log('attaching %s to %s',[self.name, model.name]);
   model.acces;
   other_root:=model.getRoot;
+  other_root:=QModelRoot(other_root.clone(getroot, false));
   other_root.Specifics.Values['linked_to']:=tag_name;
-  getroot.SubElements.add(other_root.clone(getroot, false));
+  getroot.SubElements.add(other_root);
 {  for i:=0 to other_root.subelements.count-1 do
   begin
     if other_root.subelements[i] is QComponent then

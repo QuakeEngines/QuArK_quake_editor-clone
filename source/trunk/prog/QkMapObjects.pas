@@ -1681,8 +1681,8 @@ begin
    else
      QQkl(Mdl).getRoot.setFrames(Round(Q.GetFloatSpec('mdlframe', 0)));
 
-   // Check for auto-tag linking for .md3 files and derivatives (Doom3 ?? STVEF ??)
-   if Q.Specifics.Values['md3_autolink']='1' then // auto link tags to models
+   // Check for auto-link tagging for .md3 files and derivatives
+   if Q.Specifics.Values['md3_autolink']='1' then
      if (mdl is QMD3File) then
        QMD3File(mdl).TryAutoLoadParts;
 
