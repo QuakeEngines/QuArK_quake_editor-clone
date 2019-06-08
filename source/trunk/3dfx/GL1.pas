@@ -835,8 +835,6 @@ var
   Glu32Lib: HMODULE;
 
   GLExtensions: TStringList = nil;
-  WinSwapHintLoaded: Boolean = false;
-  WinSwapHint: Pointer;
 
   DummyWindow: HWND;
   DummyDC: HDC;
@@ -1055,12 +1053,6 @@ begin
     begin
       GLExtensions.Free;
       GlExtensions:=nil;
-    end;
-
-    if WinSwapHintLoaded then
-    begin
-      WinSwapHint:=nil;
-      WinSwapHintLoaded:=False;
     end;
 
     //DanielPharos: This cannot be freed, because the pixel format will then be forgotten,
