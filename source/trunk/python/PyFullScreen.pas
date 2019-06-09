@@ -50,8 +50,8 @@ type
 
  {------------------------}
 
-function GetFullscreenAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetFullscreenAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetFullscreenAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetFullscreenAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyFullscreen_Type: TyTypeObject =
@@ -213,7 +213,7 @@ begin
   end;
 end;
 
-function GetFullscreenAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetFullscreenAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
@@ -286,7 +286,7 @@ begin
    end;
   Attr1:=GetFullscreenObject(self, attr);
   if Attr1=Nil then
-   Result:=GetControlAttr(self, attr, 'floating')
+   Result:=GetControlAttr(self, attr, 'fullscreen')
   else
    begin
     Result:=Attr1^;
@@ -299,7 +299,7 @@ begin
  end;
 end;
 
-function SetFullscreenAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetFullscreenAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
  P: PChar;

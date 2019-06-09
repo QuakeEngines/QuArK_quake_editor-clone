@@ -76,8 +76,8 @@ type
 
  {-------------------}
 
-function GetWindowAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetWindowAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetWindowAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetWindowAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyWindow_Type: TyTypeObject =
@@ -622,7 +622,7 @@ begin
  Result:=Nil;
 end;
 
-function GetWindowAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetWindowAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
@@ -724,7 +724,7 @@ begin
  end;
 end;
 
-function SetWindowAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetWindowAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
  nRect: TRect;

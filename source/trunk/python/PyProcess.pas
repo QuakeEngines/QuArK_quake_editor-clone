@@ -27,8 +27,8 @@ uses Windows, SysUtils, Classes, QkObjects, Undo, Quarkx, Python;
  {-------------------}
 
 procedure ProcessObjDestructor(o: PyObject); cdecl;
-function GetProcessAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetProcessAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetProcessAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetProcessAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 type
  PyProcessObject = ^TyProcessObject;
@@ -416,7 +416,7 @@ const
  MethodTable: array[0..0] of TyMethodDef =
   ((ml_name: 'onexit';      ml_meth: pOnExit;      ml_flags: METH_VARARGS));
 
-function GetProcessAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetProcessAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
  ExitCode: DWORD;
@@ -450,7 +450,7 @@ begin
  end;
 end;
 
-function SetProcessAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetProcessAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 begin
  try
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));

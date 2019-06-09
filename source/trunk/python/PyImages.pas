@@ -73,7 +73,7 @@ type
 function ImageList_length(self: PyObject) : {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}; cdecl;
 function ImageList_item(self: PyObject; i: {$IFDEF PYTHON25} Py_ssize_t {$ELSE} Integer {$ENDIF}) : PyObject; cdecl;
 procedure ImageListDestructor(o: PyObject); cdecl;
-function GetImage1Attr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
 procedure Image1Destructor(o: PyObject); cdecl;
 
 
@@ -100,8 +100,8 @@ var
 
  {-------------------}
 
-function GetImageCtrlAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetImageCtrlAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetImageCtrlAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetImageCtrlAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyImageCtrl_Type: TyTypeObject =
@@ -301,7 +301,7 @@ end;
 
  {-------------------}
 
-function GetImage1Attr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
 begin
  Result:=nil;
  try
@@ -804,7 +804,7 @@ begin
   end;
 end;
 
-function GetImageCtrlAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetImageCtrlAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
@@ -852,7 +852,7 @@ begin
  end;
 end;
 
-function SetImageCtrlAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetImageCtrlAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
 begin

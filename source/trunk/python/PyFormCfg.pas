@@ -48,8 +48,8 @@ type
 
  {------------------------}
 
-function GetFormCfgAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetFormCfgAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetFormCfgAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetFormCfgAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyFormCfg_Type: TyTypeObject =
@@ -284,7 +284,7 @@ begin
   end;
 end;
 
-function GetFormCfgAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetFormCfgAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I, Count: Integer;
@@ -423,7 +423,7 @@ begin
  end;
 end;
 
-function SetFormCfgAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetFormCfgAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
 begin

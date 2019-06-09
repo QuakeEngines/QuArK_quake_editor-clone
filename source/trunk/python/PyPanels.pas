@@ -112,8 +112,8 @@ type
  {-------------------}
 
 procedure PanelDestructor(o: PyObject); cdecl;
-function GetPanelAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetPanelAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetPanelAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyPanel_Type: TyTypeObject =
@@ -1404,7 +1404,7 @@ const
    (ml_name: 'newpanel';       ml_meth: wNewFullPanel;   ml_flags: METH_VARARGS),
    (ml_name: 'controls';       ml_meth: pControls;       ml_flags: METH_VARARGS));
 
-function GetPanelAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
 begin
@@ -1462,7 +1462,7 @@ begin
  end;
 end;
 
-function SetPanelAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetPanelAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  nS: TPanelSections;
  Orien: TSplitOrientation;

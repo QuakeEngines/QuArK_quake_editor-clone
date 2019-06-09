@@ -203,8 +203,8 @@ type
 var
  CurrentMapView : TPyMapView = TPyMapView(-1);
 
-function GetMapViewAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetMapViewAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetMapViewAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetMapViewAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyMapView_Type: TyTypeObject =
@@ -2898,7 +2898,7 @@ begin
   end;
 end;
 
-function GetMapViewAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetMapViewAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  Attr1: PyObjectPtr;
  I: Integer;
@@ -3083,7 +3083,7 @@ begin
  end;
 end;
 
-function SetMapViewAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetMapViewAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  Attr1: PyObjectPtr;
  Vm: TMapViewMode;

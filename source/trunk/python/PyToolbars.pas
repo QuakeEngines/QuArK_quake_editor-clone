@@ -124,8 +124,8 @@ var
  CurrentMenuButton: TQkToolbarButton = Nil;
 
 procedure ToolbarDestructor(o: PyObject); cdecl;
-function GetToolbarAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetToolbarAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetToolbarAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetToolbarAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyToolbar_Type: TyTypeObject =
@@ -139,8 +139,8 @@ var
 
  {-------------------}
 
-function GetBtnPanelAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
-function SetBtnPanelAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function GetBtnPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
+function SetBtnPanelAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 
 var
  TyBtnPanel_Type: TyTypeObject =
@@ -427,7 +427,7 @@ begin
  Result:=Nil;
 end;*)
 
-function GetToolbarAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetToolbarAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
 {S: String;}
@@ -520,7 +520,7 @@ begin
  end;
 end;
 
-function SetToolbarAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetToolbarAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  P: PChar;
  Dock: TComponent;
@@ -1580,7 +1580,7 @@ begin
   end;
 end;}
 
-function GetBtnPanelAttr(self: PyObject; const attr: PChar) : PyObject; cdecl;
+function GetBtnPanelAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 var
  I: Integer;
 {Attr1: PyObjectPtr;}
@@ -1629,7 +1629,7 @@ begin
  end;
 end;
 
-function SetBtnPanelAttr(self: PyObject; const attr: PChar; value: PyObject) : Integer; cdecl;
+function SetBtnPanelAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
 var
  P: TPoint;
 {Attr1: PyObjectPtr;}
