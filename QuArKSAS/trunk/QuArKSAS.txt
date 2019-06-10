@@ -1,22 +1,23 @@
 QuArK SAS (Steam Access System)
 -------------------------------
-Version 1.04?
-?? ??? ????
+Version 1.04
+@@ @@@ @@@@
 
 
 
 Program description
 -------------------
-QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you should be logged in. It produces a log-file which allows for easy diagnosing when the program for some reason doesn't work properly. It's designed to be as light-weighted as possible (that's why there is no GUI), and to run on as many systems as possible.
+QuArK SAS is a small command-line utility that allows you to extract files from Steam. For this to work, Steam must be running, and you should be logged in. It produces a log-file which allows for easy diagnosing when the program for some reason doesn't work properly. It's designed to be as light-weighted as possible (that's why there is no GUI), and to run on as many systems as possible. (Windows XP or higher is required.)
 
 The executable file has to be placed in the right folder to work:
 
-engine     | directory                                                 | executable filename     | remarks
------------|-----------------------------------------------------------|-------------------------|--------- - - -
-old        | %Steam%/steamapps/%username%/sourcesdk/bin                | QuArKSAS.exe            | Not used anymore
-source2006 | %Steam%/steamapps/%username%/sourcesdk/bin/ep1/bin        | QuArKSAS.exe            | Previously known as: ep1
-source2007 | %Steam%/steamapps/%username%/sourcesdk/bin/source2007/bin | QuArKSAS_source2007.exe | Previously known as: orangebox
-source2009 | %Steam%/steamapps/%username%/sourcesdk/bin/orangebox/bin  | QuArKSAS_orangebox.exe  |
+engine     | directory                                                 | executable filename     | SDK version | remarks
+-----------|-----------------------------------------------------------|-------------------------|------------------------- - - -
+old        | %Steam%/steamapps/%username%/sourcesdk/bin                | QuArKSAS.exe            | 1?          | Not used anymore
+source2006 | %Steam%/steamapps/%username%/sourcesdk/bin/ep1/bin        | QuArKSAS.exe            | 2           | 
+source2007 | %Steam%/steamapps/%username%/sourcesdk/bin/source2007/bin | QuArKSAS_source2007.exe | 3           | Previously known as: orangebox
+source2009 | %Steam%/steamapps/%username%/sourcesdk/bin/source2009/bin | QuArKSAS_source2009.exe | 4           | Also known as: Source 2013 SP
+source2013 | %Steam%/steamapps/%username%/sourcesdk/bin/orangebox/bin  | QuArKSAS_orangebox.exe  | 5           | Also known as: Source MP
 
 When not placed in the correct directory, QuArK SAS will not be able to find several Steam files (like tier0.dll) and will crash on startup. Also, make sure you've run the Source SDK at least once before (or manually refresh its contents), so the Steam files are set-up properly.
 
@@ -54,7 +55,7 @@ The source code of this program is freely available (also see 'License' below), 
 
 In order to compile the source code, create a mod for the right engine through the Source SDK. Extract the source code into a folder in the 'utils' directory inside the mod directory. For example: *mod_dir*\utils\QuArKSAS.
 
-The source code should compile perfectly fine with any modern C++ compiler, under Win32. I've used Visual C++ Express 2010, freely available for download from Microsoft. Even though Steam now also runs on Mac OS, I've (currently) got no plans for porting, although I doubt it would be that difficult.
+The source code should compile perfectly fine with any modern C++ compiler, under Win32. The binary version has been compiled with Visual C++ 2017, freely available for download from Microsoft. This version of VC++ restricts the binary to newer versions of Windows, but the code should compile for any version of Win32, with any C++ compliant compiler. Even though Steam now also runs on Mac OS, I've (currently) got no plans for porting, although I doubt it would be that difficult.
 
 
 
@@ -74,6 +75,11 @@ This program is primarily made for usage by the map/model editor Quake Army Knif
 
 Version changes
 ---------------
+Version 1.04 - @:
+	Switched to Visual C++ 2017.
+	Converted more code to C++.
+	Utility can now handle paths ending with slashes.
+
 Version 1.03 - 31 July 2011:
 	Adjusted for newest Source SDK release, with the new engine naming scheme.
 	Cleanup of source-code.
@@ -105,7 +111,7 @@ License
 -------
 This program is distributed under the MIT license:
 
-Copyright (c) 2007-2011 DanielPharos
+Copyright (c) 2007-201@ DanielPharos
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

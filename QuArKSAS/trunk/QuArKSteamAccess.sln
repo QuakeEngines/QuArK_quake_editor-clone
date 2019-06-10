@@ -1,6 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 14.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuArKSteamAccess", "QuArKSteamAccess.vcxproj", "{9132A559-B5E9-4A46-830B-7C3C046DE62E}"
 EndProject
 Global
