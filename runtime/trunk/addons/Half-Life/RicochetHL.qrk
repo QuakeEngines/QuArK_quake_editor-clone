@@ -1,0 +1,275 @@
+QQRKSRC1
+
+{
+  Description = "Ricochet Data Add-on"
+
+  Ricochet directory infos.qctx =
+  {
+      Game = "Half-Life"
+      SourceDir = "ricochet"
+      GameDir = "ricochet"
+  }
+
+  Toolbox Folders.qtx =
+  {
+    Toolbox = "New map items..."
+    Root = "Ricochet.qtxfolder"
+    Ricochet.qtxfolder =
+    {
+      ;desc = "Created from ricochet.fgd"
+      Ricochet Entities.qtxfolder =
+      {
+        info_* entities.qtxfolder =
+        {
+          info_player_deathmatch:e =
+          {
+            origin = "0 0 0"
+          }
+          info_player_spectator:e =
+          {
+            origin = "0 0 0"
+          }
+          info_player_start:e =
+          {
+            origin = "0 0 0"
+          }
+          info_ricochet:e =
+          {
+            origin = "0 0 0"
+          }
+          info_teleport_destination:e =
+          {
+            origin = "0 0 0"
+          }
+        }
+        item_* entities.qtxfolder =
+        {
+          item_powerup:e =
+          {
+            origin = "0 0 0"
+          }
+        }
+        other entities.qtxfolder =
+        {
+          worldspawn:b =
+          {
+            ;desc = "World entity"
+            skyname = "disc"
+            sounds = "1"
+            MaxRange = "4096"
+            startdark = "0"
+            gametitle = "0"
+            newunit = "0"
+            defaultteam = "0"
+            no_arena = "1"
+          }
+        }
+        trigger_* entities.qtxfolder =
+        {
+          trigger_discreturn:b =
+          {
+            ;incl = "defpoly"
+          }
+          trigger_fall:b =
+          {
+            ;incl = "defpoly"
+          }
+          trigger_jump:b =
+          {
+            ;incl = "defpoly"
+            height = "128"
+          }
+        }
+      }
+    }
+  }
+  Entity Forms.fctx =
+  {
+    t_worldspawn:incl =
+    {
+      message: =
+      {
+        txt = "&"
+        hint = "Map Description / Title"
+      }
+      skyname: =
+      {
+        txt = "&"
+        hint = "environment map (cl_skyname)"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "CD track to play"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "Default light level"
+      }
+      WaveHeight: =
+      {
+        txt = "&"
+        hint = "Default Wave Height"
+      }
+      MaxRange: =
+      {
+        txt = "&"
+        hint = "Max viewable distance"
+      }
+      chaptertitle: =
+      {
+        txt = "&"
+        hint = "Chapter Title Message"
+      }
+      startdark: =
+      {
+        txt = "&"
+        hint = "Level Fade In"
+        typ = "C"
+        items = "No"$0D"Yes"
+        values = "0"$0D"1"
+      }
+      gametitle: =
+      {
+        txt = "&"
+        hint = "Display game title"
+        typ = "C"
+        items = "No"$0D"Yes"
+        values = "0"$0D"1"
+      }
+      newunit: =
+      {
+        txt = "&"
+        hint = "New Level Unit"
+        typ = "C"
+        items = "No, keep current"$0D"Yes, clear previous levels"
+        values = "0"$0D"1"
+      }
+      mapteams: =
+      {
+        txt = "&"
+        hint = "Map Team List"
+      }
+      defaultteam: =
+      {
+        txt = "&"
+        hint = "Default Team"
+        typ = "C"
+        items = "Fewest Players"$0D"First Team"
+        values = "0"$0D"1"
+      }
+      no_arena: =
+      {
+        txt = "&"
+        hint = "Game mode"
+        typ = "C"
+        items = "Arena"$0D"Deathmatch"
+        values = "0"$0D"1"
+      }
+    }
+    worldspawn:form =
+    {
+      t_worldspawn = "!"
+    }
+    t_info_player_start:incl =
+    {
+      t_PlayerClass = "!"
+    }
+    info_player_start:form =
+    {
+      t_info_player_start = "!"
+    }
+    t_info_player_deathmatch:incl =
+    {
+      t_PlayerClass = "!"
+      target: =
+      {
+        txt = "&"
+        hint = "Target"
+      }
+      master: =
+      {
+        txt = "&"
+        hint = "Master"
+      }
+    }
+    info_player_deathmatch:form =
+    {
+      t_info_player_deathmatch = "!"
+    }
+    t_info_ricochet:incl =
+    {
+      t_Angles = "!"
+    }
+    info_ricochet:form =
+    {
+      t_info_ricochet = "!"
+    }
+    t_info_player_spectator:incl =
+    {
+      t_PlayerClass = "!"
+      target: =
+      {
+        txt = "&"
+        hint = "Target"
+      }
+      master: =
+      {
+        txt = "&"
+        hint = "Master"
+      }
+    }
+    info_player_spectator:form =
+    {
+      t_info_player_spectator = "!"
+    }
+    t_info_teleport_destination:incl =
+    {
+      bbox = '-16 16 0 16 16 16'
+      t_PlayerClass = "!"
+      t_Targetname = "!"
+    }
+    info_teleport_destination:form =
+    {
+      t_info_teleport_destination = "!"
+    }
+    t_item_powerup:incl =
+    {
+      bbox = '-16 -16 -16 16 16 32'
+      t_Weapon = "!"
+      t_Targetx = "!"
+    }
+    item_powerup:form =
+    {
+      t_item_powerup = "!"
+    }
+    t_trigger_discreturn:incl =
+    {
+    }
+    trigger_discreturn:form =
+    {
+      t_trigger_discreturn = "!"
+    }
+    t_trigger_fall:incl =
+    {
+    }
+    trigger_fall:form =
+    {
+      t_trigger_fall = "!"
+    }
+    t_trigger_jump:incl =
+    {
+      t_Target = "!"
+      height: =
+      {
+        txt = "&"
+        hint = "Height"
+      }
+    }
+    trigger_jump:form =
+    {
+      t_trigger_jump = "!"
+    }
+  }
+}
