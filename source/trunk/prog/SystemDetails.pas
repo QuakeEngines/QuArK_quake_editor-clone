@@ -1378,10 +1378,10 @@ var
   buf: string;
 begin
   Log(LOG_VERBOSE, 'Gathering user information...');
-  n:=254;
+  n:=UNLEN+1; //Include room for the 0-terminating character
   SetLength(buf,n);
   GetUserName(PChar(buf),n);
-  SetLength(buf,n-1);
+  SetLength(buf,n-1); //Cut off the 0-terminating character
   result:=buf;
 end;
 

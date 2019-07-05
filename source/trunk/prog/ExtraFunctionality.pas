@@ -69,6 +69,8 @@ const
 
   INVALID_SET_FILE_POINTER = DWORD(-1);
 
+  UNLEN = 256; // Maximum user name length, in characters (not bytes), excluding terminating 0-characters.
+
 var
   SetDllDirectory: function (lpPathName : LPCTSTR) : BOOL; stdcall;
   IsWow64Process: function (hProcess : THandle; var Wow64Process : BOOL): BOOL; stdcall;
