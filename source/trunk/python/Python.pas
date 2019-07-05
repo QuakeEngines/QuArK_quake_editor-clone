@@ -452,15 +452,14 @@ PyInt_AsLong: function (o: PyObject) : LongInt; cdecl;
 //(only limited by the amount of available memory)
 //PyLong_FromLong: function (Value : LongInt) : PyObject; cdecl;
 //PyLong_FromUnsignedLong: function (Value : Longword) : PyObject; cdecl;
+//PyLong_FromSsize_t: function (Value : Py_ssize_t) : PyObject; cdecl; //New in Python 2.6
+//PyLong_FromSize_t: function (Value : size_t) : PyObject; cdecl; //New in Python 2.6
 //PyLong_FromDouble: function (Value : Double) : PyObject; cdecl;
-//PyLong_FromSize_t: function (Value : size_t) : PyObject; cdecl;
-//PyLong_FromSsize_t: function (Value : Py_ssize_t) : PyObject; cdecl;
 //PyLong_AsLong: function (o : PyObject) : LongInt; cdecl;
-//PyLong_AsLongAndOverflow: function (o : PyObject, overflow : PInt);
-//PyAPI_FUNC(unsigned long) PyLong_AsUnsignedLong(PyObject *); //NOT PROPERLY CONVERTED
-//PyAPI_FUNC(unsigned long) PyLong_AsUnsignedLongMask(PyObject *); //NOT PROPERLY CONVERTED
-//PyAPI_FUNC(Py_ssize_t) PyLong_AsSsize_t(PyObject *); //NOT PROPERLY CONVERTED
-
+//PyLong_AsLongAndOverflow: function (o : PyObject, overflow : PInteger) : LongInt; cdecl; //New in Python 2.7
+//PyLong_AsSsize_t: function(o : PyObject) : Py_ssize_t; cdecl; //New in Python 2.6
+//PyLong_AsUnsignedLong: function(o : PyObject) : Longword; cdecl;
+//PyLong_AsUnsignedLongMask: function (o : PyObject) : Longword; cdecl; //New in Python 2.3
 
 PyFloat_FromDouble: function (Value: Double) : PyObject; cdecl;
 PyFloat_AsDouble: function (o: PyObject) : Double; cdecl;
@@ -786,7 +785,7 @@ begin
   //Process Py_GetVersion to find version number
   FoundGoodVersion:=False;
   FoundOwnVersion:=False;
-  
+
   //DanielPharos: We're going to assume the Python version information always
   //is formated as integers delimited by periods '.', with the number starting
   //after a space ' '.
@@ -1167,8 +1166,4 @@ end;*)
 
 initialization
   PythonLib:=0;
-
-finalization
-  //FIXME: This apparently creates problems...
-  //UnInitializePython;
 end.
