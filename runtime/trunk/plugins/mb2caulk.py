@@ -1,5 +1,6 @@
-"""   QuArK  -  Quake Army Knife Bezier shape makers
+"""   QuArK  -  Quake Army Knife
 
+Caulk plugin
 """
 
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE

@@ -1,12 +1,10 @@
-"""   QuArK  -  Quake Army Knife Bezier shape makers
+"""   QuArK  -  Quake Army Knife
 
-
+Bezier shape makers
 """
-
 
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
-#
 
 ########################################################
 #

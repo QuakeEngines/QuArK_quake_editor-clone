@@ -31,7 +31,6 @@ for menitem, keytag in [(Rebuild3Ds, "Rebuild3D")]:
 
 
 def newfinishdrawing(editor, view, oldfinish=quarkpy.mdleditor.ModelEditor.finishdrawing):
-
     oldfinish(editor, view)
   #  if not MapOption("Rebuild3D"):return
 

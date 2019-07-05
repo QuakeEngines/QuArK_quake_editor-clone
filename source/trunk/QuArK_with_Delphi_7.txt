@@ -8,11 +8,11 @@ Obtain Delphi 7 Personal from www.borland.com (you need to register to complete 
 
 Get the latest QuArK source from SourceForge (something like 20M, but you get lots of little files instead of one big zip file).
 
-If you're going to use QuArK 6.3 or older, you should also get (if you haven't already got it) the mini Python installer (minipy) from the QuArK downloads page (1M).  Note that these versions of QuArK require Python 1.5.1 or 1.5.2 - you can install a more recent version of Python but QuArK will not work with any version other than 1.5.1 and 1.5.2.
+If you're going to use QuArK 6.3 or older, you should also get (if you haven't already got it) the mini Python installer (Minipy) from the QuArK downloads page (1M).  Note that these versions of QuArK require Python 1.5.1 or 1.5.2 - you can install a more recent version of Python but QuArK will not work with any version other than 1.5.1 and 1.5.2.
 
 That is basically all you need to develop for QuArK, however it is a generally held belief that you should test your changes before releasing them, and to do that you will need to have at least one of the supported games installed on your PC, and also the relevant build pack/s (build packs can be downloaded from the QuArK web site).
 
-This from Tiglari on the Python versions: QuArK will work with either; the current .exe looks for a .dll called python151 and uses it if it can, because there are some bugs in 151 (which is the Minipy) that cause certain Python code to work in 152 but not 151/Minipy.  So *if* you want to have 152 installed and to QuArK development, first install the minipy and rename the .dll to Python151 (in Windows/System), then install 1.52, and this won't interfere.  Python 2 doesn't have any collisions with the Minipy, and the infobase build script (build.py) works fine with Python 2.2.2 (latest stable).
+This from Tiglari on the Python versions: QuArK will work with either; the current .exe looks for a .dll called python151 and uses it if it can, because there are some bugs in 151 (which is the Minipy) that cause certain Python code to work in 152 but not 151/Minipy.  So *if* you want to have 152 installed and to QuArK development, first install the Minipy and rename the .dll to Python151 (in Windows/System), then install 1.52, and this won't interfere.  Python 2 doesn't have any collisions with the Minipy, and the infobase build script (build.py) works fine with Python 2.2.2 (latest stable).
 
 Compiling QuArK
 ---------------
@@ -67,4 +67,3 @@ Questions should probably be directed to the QuArK-Python forum which I monitor 
 
 Rowdy
 30-Dec-2002
-

@@ -29,7 +29,7 @@ Important ! Follow the steps below !
 
     Important : with Delphi 2 and 3, if the source code of any component is
     modified, you must do Component, Rebuild library. Be careful about it as
-    Wincvs will probably not explicitely warn you that the component source code
+    Wincvs will probably not explicitly warn you that the component source code
     was modified. With later versions of Delphi I guess (but I'm not sure) that
     recompiling occurs automatically.
 
