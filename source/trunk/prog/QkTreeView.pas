@@ -475,16 +475,19 @@ var
            Etat.Icon:=InternalImages[iiUnknown,0];
            Py_XINCREF(Etat.Icon);
           end;
-         Image1:=PyImage1(Etat.Icon);
-         if (Image1=Nil)
-         or not ImageList_DrawEx(Image1^.ImageList^.Handle, Image1^.Index,
-          DC, X,Y, 16,16, BkColor, BkColor, Mode[Item.Flags and ofNotLoadedToMemory <> 0]) then
-           begin
-            R.Left:=X;
-            R.Right:=X+16;
-            FillRect(DC, R, Brush);
-           end;
-         Py_XDECREF(Etat.Icon);
+         try
+          Image1:=PyImage1(Etat.Icon);
+          if (Image1=Nil)
+          or not ImageList_DrawEx(Image1^.ImageList^.Handle, Image1^.Index,
+           DC, X,Y, 16,16, BkColor, BkColor, Mode[Item.Flags and ofNotLoadedToMemory <> 0]) then
+            begin
+             R.Left:=X;
+             R.Right:=X+16;
+             FillRect(DC, R, Brush);
+            end;
+         finally
+          Py_XDECREF(Etat.Icon);
+         end;
          if (Item.Flags and (ofFileLink or ofTreeViewSubElement) = ofFileLink or ofTreeViewSubElement)
          and (InternalImages[iiLinkOverlay,0]<>Nil) and (InternalImages[iiLinkOverlay,0]^.ob_type = @TyImage1_Type) then
           with PyImage1(InternalImages[iiLinkOverlay,0])^ do

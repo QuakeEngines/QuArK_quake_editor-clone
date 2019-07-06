@@ -1226,7 +1226,8 @@ begin
           end;
           if (D.Icon<>Nil) and (D.Icon^.ob_type <> @TyImage1_Type) then
           begin
-            Py_DECREF(D.Icon);  { Image1 expected }
+            Log(LOG_WARNING, 'QObject.DisplayDetails: Not a "image1" object; ignoring as icon.');
+            Py_DECREF(D.Icon);
             D.Icon:=Nil;
           end;
         end;

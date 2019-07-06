@@ -191,7 +191,7 @@ procedure TextsToMenuShortCuts(Texts: TStringList);
 implementation
 
 uses QkFileObjects, qmath, Setup, Qk1, Toolbar1, ToolBox1,
-     TbUndoMenu, Undo, ObjProp, Config, Game, Dialogs,
+     TbUndoMenu, Undo, ObjProp, Config, Game, Dialogs, Logging,
      QkMacro, FormCfg, Running, Output1, PyImages, Quarkx, QkConsts,
      QkExplorer, PyMapView, PyToolbars, PyControls, QkFormCfg;
 
@@ -369,6 +369,7 @@ end;
 constructor TQkForm.Create(AOwner: TComponent);
 begin
  inherited;
+ Log(LOG_VERBOSE, 'Now creating form ('+Self.Caption+')...');
  ShowHint:=True;
  OnMouseWheelDown:=MouseWheelDown;
  OnMouseWheelUp:=MouseWheelUp;
@@ -384,6 +385,7 @@ destructor TQkForm.Destroy;
 var
  Dummy: TCloseAction;
 begin
+ Log(LOG_VERBOSE, 'Now closing form ('+Self.Caption+')...');
  if Assigned(OnClose) then
   begin
    Dummy:=caFree;
