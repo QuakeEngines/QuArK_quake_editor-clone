@@ -1542,7 +1542,7 @@ begin
       J:=0;
       repeat
         Source:=PVertex(Vertices[NoSommet]);
-        TamponArete^:=not NoSommet;
+        TamponArete^:=not Word(NoSommet);
         repeat
           with Base^[NoSommet] do
           begin
