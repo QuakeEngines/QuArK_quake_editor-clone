@@ -13,6 +13,8 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Added HL1 Ricochet addon.
+
 * [DanielPharos]: Many fixes to Python object handling to reduce reference counting errors.
 
 * [DanielPharos]: Improvements to .rmf file loading: many more things are now loading properly,
