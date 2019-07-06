@@ -1911,7 +1911,7 @@ begin
                    if DropDownCount > 1 then
                      ComboBox.DropDownCount:=DropDownCount;
                  end;
-                 if S[2]='L' then
+                 if (Length(S) > 1) and (S[2]='L') then
                   ComboBox.Style:=csDropDownList;
                 {if GrayForm and gfGray = 0 then
                   ComboBox.BorderStyle:=bsNone;}
@@ -1920,7 +1920,7 @@ begin
                  ComboBox.Tag:=I+1;
                  ComboBox.Items.Text:=TextValues;
                  ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
-                 if S[2]<>'L' then
+                 if (Length(S) < 2) or (S[2]<>'L') then
                   ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
@@ -2012,36 +2012,36 @@ begin
            'P': begin  { Python Macro Button}
                  if GrayForm and gfGray <> 0 then
                   ExtraVertSpace:=1;
-                 case S[2] of  {Make a row of buttons}
-                   'M':
-                     begin
-                      N:=StrToInt(Values['Num']);
-                      Captions:=Values['Caps'];
-                      J:=X;
-                      for BI:=1 to N do
-                      begin
-                        Btn:=TToolbarButton97.Create(Self);
-                        Btn.SetBounds(J, Y, 20, LineHeight+ExtraVertSpace);
-                        Btn.Caption:=Captions[BI];
-                        Btn.Color:=clBtnFace;
-                        Btn.Parent:=SB;
-                        Btn.OnClick:=PyMMacroClick;
-                        Btn.Hint:=Values['Hint'+IntToStr(BI)];
-                        Btn.Tag:=I+1;
-                        Inc(J,20);
-                      end
-                     end
+                 if (Length(S) > 1) and (S[2]='M') then {Make a row of buttons}
+                  begin
+                   N:=StrToInt(Values['Num']);
+                   Captions:=Values['Caps'];
+                   J:=X;
+                   for BI:=1 to N do
+                    begin
+                     Btn:=TToolbarButton97.Create(Self);
+                     Btn.SetBounds(J, Y, 20, LineHeight+ExtraVertSpace);
+                     Btn.Caption:=Captions[BI];
+                     Btn.Color:=clBtnFace;
+                     Btn.Parent:=SB;
+                     Btn.OnClick:=PyMMacroClick;
+                     Btn.Hint:=Values['Hint'+IntToStr(BI)];
+                     Btn.Tag:=I+1;
+                     Inc(J,20);
+                    end;
+                  end
                  else
-                 Btn:=TToolbarButton97.Create(Self);
-                 Btn.SetBounds(X,Y,W,LineHeight+ExtraVertSpace);
-                 Btn.Caption:=Values['Cap'];
-                 Btn.Color:=clBtnFace;
-                 Btn.Parent:=SB;
-                 Btn.Hint:=HintMsg;
-                 Btn.Tag:=I+1;
-                 Btn.OnClick:=PyMacroClick;
-                 ResultCtrl:=Btn;
-                 end
+                  begin
+                   Btn:=TToolbarButton97.Create(Self);
+                   Btn.SetBounds(X,Y,W,LineHeight+ExtraVertSpace);
+                   Btn.Caption:=Values['Cap'];
+                   Btn.Color:=clBtnFace;
+                   Btn.Parent:=SB;
+                   Btn.Hint:=HintMsg;
+                   Btn.Tag:=I+1;
+                   Btn.OnClick:=PyMacroClick;
+                   ResultCtrl:=Btn;
+                  end;
                 end;
            'S': if (Txt=Nil) or not (Txt is TLabel) then
                  begin  { Separator }
