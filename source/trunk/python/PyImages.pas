@@ -893,6 +893,17 @@ end;
 
  {-------------------}
 
+procedure InitializeInternalImages;
+var
+ I: Integer;
+begin
+ for I:=Low(InternalImages) to High(InternalImages) do
+  begin
+   InternalImages[I,0]:=nil;
+   InternalImages[I,1]:=nil;
+  end;
+end;
+
 procedure FinalizeInternalImages;
 var
  I: Integer;
@@ -906,7 +917,7 @@ end;
 
 
 initialization
-  FillChar(InternalImages, SizeOf(InternalImages), 0);
+  InitializeInternalImages;
 
 finalization
   FinalizeInternalImages;
