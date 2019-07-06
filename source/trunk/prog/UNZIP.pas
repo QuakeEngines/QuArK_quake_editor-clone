@@ -40,18 +40,22 @@ uses Windows, SysUtils, Classes;
 function UnZipFile(fs: TStream; {<-- INPUT} ms: TStream {<-- OUTPUT}; offset: longint {Of LocalHeader in Zip File}): integer;
            {Returns Zero if all is well}
 
+implementation
+
+{$R-}         {No range checking}
+
 { pkzip header in front of every file in archive }
 type
   TLocalfileheader = packed record
-    version_needed: SmallInt;
-    bit_flag: SmallInt;
-    compression_method: SmallInt;
-    last_mod_datetime: Longint;
-    crc_32: Longint;
-    compressed: Longint;
-    uncompressed: Longint;
-    filename_len: SmallInt;
-    extrafield_len: SmallInt;
+    version_needed: Word;
+    bit_flag: Word;
+    compression_method: Word;
+    last_mod_datetime: Longword;
+    crc_32: Longword;
+    compressed: Longword;
+    uncompressed: Longword;
+    filename_len: Word;
+    extrafield_len: Word;
   end;
 
 {Error codes returned by the main unzip functions}
@@ -73,8 +77,6 @@ const
   unzip_ZipFileOpenError = -14; { can't open zip file }
   unzip_SeriousError     = -100;  {serious error}
   unzip_MissingParameter = -500; {missing parameter}
-
-implementation
 
 const
   { filename length }
