@@ -1,5 +1,6 @@
 Unit trees;
 
+{$J+}
 {$T-}
 {$define ORG_DEBUG}
 {
