@@ -473,7 +473,7 @@ can be passed to it causing that object to be opened in an external editor.
 PM
 </td><td valign=top>
 <b>Button array</b>,<br>
-same as above, for multiple buttons. Each button gets one character out of Cap as it's caption.<br>
+same as above, for multiple buttons. Each button gets one character out of Cap as its caption.<br>
 
 While all buttons will fire the same script they will also send their index so the script can identify the exact button.
 </td><td>
