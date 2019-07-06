@@ -1714,8 +1714,11 @@ end;
 procedure TPyMapView.DeleteScene;
 begin
  Invalidate;
- FScene.Free;
- FScene:=Nil;
+ if FScene<>Nil then
+ begin
+  FScene.Free;
+  FScene:=Nil;
+ end;
 end;
 
 procedure TPyMapView.SetViewMode;
