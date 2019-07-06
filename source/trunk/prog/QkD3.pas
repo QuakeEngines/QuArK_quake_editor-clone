@@ -333,7 +333,10 @@ begin
   if Name=LoadStr1(5699) then   { complex stage }
    Result:=Nil   { to do: check for animated stages }
   else
+  begin
+   Log(LOG_VERBOSE,'attempting to load '+Name);
    Result:=NeedGameFile(Name, '') as QPixelSet;
+  end;
  end;
 end;
 

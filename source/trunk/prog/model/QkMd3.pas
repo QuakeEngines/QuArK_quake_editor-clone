@@ -352,6 +352,7 @@ begin
   shader_texturename:=copy(tex_name, 1, pos('.', tex_name)-1);
 
   try
+    Log(LOG_VERBOSE,'attempting to load '+shader_filename);
     shader_file:=needgamefile(shader_filename, '');
     if shader_file = nil then
       exit;
@@ -450,6 +451,7 @@ begin
     // files (pure mode) that have been loaded for the game.
     if (Skin = NIL) then
     begin
+      Log(LOG_VERBOSE,'attempting to load '+base_tex_name);
       try
         ImageFile := NeedGameFile(base_tex_name, '');
       except
@@ -659,6 +661,7 @@ var
   FileObj2: QObject;
 begin
   Result:=false;
+  Log(LOG_VERBOSE,'attempting to load '+filename);
   FileObj2:=NeedGameFile(filename, '');
   if FileObj2=nil then
   begin

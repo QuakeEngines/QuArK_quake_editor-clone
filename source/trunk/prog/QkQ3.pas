@@ -319,7 +319,7 @@ begin
      end;
    end;
  end;
-   
+
  { If no image could be found yet, try the shader-name itself }
  if Result=Nil then
  begin
@@ -330,7 +330,7 @@ begin
      Result:=nil;
    end;
  end;
- 
+
  { tiglari }
  {alex
  end;

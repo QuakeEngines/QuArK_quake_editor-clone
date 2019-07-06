@@ -285,6 +285,7 @@ var
 begin
   Result:=nil;
   try
+    Log(LOG_VERBOSE,'attempting to load '+tex_name);
     try
       tex:=NeedGameFile(tex_name, '');
     except

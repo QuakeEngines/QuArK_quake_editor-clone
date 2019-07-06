@@ -369,7 +369,7 @@ end;
 constructor TQkForm.Create(AOwner: TComponent);
 begin
  inherited;
- Log(LOG_VERBOSE, 'Now creating form ('+Self.Caption+')...');
+ Log(LOG_VERBOSE, 'Now creating form... ('+Self.Caption+')');
  ShowHint:=True;
  OnMouseWheelDown:=MouseWheelDown;
  OnMouseWheelUp:=MouseWheelUp;
@@ -385,7 +385,7 @@ destructor TQkForm.Destroy;
 var
  Dummy: TCloseAction;
 begin
- Log(LOG_VERBOSE, 'Now closing form ('+Self.Caption+')...');
+ Log(LOG_VERBOSE, 'Now closing form... ('+Self.Caption+')');
  if Assigned(OnClose) then
   begin
    Dummy:=caFree;
