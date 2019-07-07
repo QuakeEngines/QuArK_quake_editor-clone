@@ -33,26 +33,26 @@ typedef GrHint_t GrHints_t; //Hmm, why is there a naming conflict here?
 
 
 typedef struct { //__declspec(align(4))?
-    GrLOD_t smallLod, largeLod;
-    GrAspectRatio_t aspectRatio;
-    GrTextureFormat_t format;
-    void *data;
+	GrLOD_t smallLod, largeLod;
+	GrAspectRatio_t aspectRatio;
+	GrTextureFormat_t format;
+	void *data;
 } GrTexInfo;
 
 #define GR_TEXFMT_RGB_565  10
 #define GR_TEXFMT_RGB_443  222    // custom internal format
 
 typedef struct { //__declspec(align(4))?
-    float sow, tow, oow;
+	float sow, tow, oow;
 } GrTmuVertex;
 
 typedef struct { //__declspec(align(4))?
-    float x, y, z;
-    float r, g, b;
-    float ooz;
-    float a;
-    float oow;
-    GrTmuVertex tmuvtx[2];
+	float x, y, z;
+	float r, g, b;
+	float ooz;
+	float a;
+	float oow;
+	GrTmuVertex tmuvtx[2];
 } GrVertex;
 
 
@@ -63,7 +63,7 @@ typedef struct { //__declspec(align(4))?
 #define OOWTABLEBITS     16
 #define OOWTABLESIZE     (1<<OOWTABLEBITS)
 #define OOWTABLEBASE     (OOWTABLESIZE<<MINWBITS)
-#define MAXOOWBIAS       (int)(OOWTABLEBASE/MAXW)
+#define MAXOOWBIAS       (unsigned int)(OOWTABLEBASE/MAXW)
 
 
 void __declspec(dllexport) __stdcall grTexSource(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *info);

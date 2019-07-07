@@ -72,114 +72,114 @@ int oow_table_mode;
 
 void BuildFullPalette(void)
 {
-  int l;
-  unsigned int i,j,s,cs,fogmax;
-  int ls[COLORSCHEMES*3];
-  int lsfactor[SOLIDCOLORSCHEMES*3];
-  float lightfactor;
+	int l;
+	unsigned int i,j,s,cs,fogmax;
+	int ls[COLORSCHEMES*3];
+	int lsfactor[SOLIDCOLORSCHEMES*3];
+	float lightfactor;
 
-  fogmax = FOGMAX;
-  if (unifiedpalette)
-  {
-    if (colormode & GR_COLORCOMBINE_TEXTURE)
-      cs = COLORSCHEMES;
-    else
-    {
-      cs = SOLIDCOLORSCHEMES;
-      fogmax = SOLIDFOGMAX;
-    }
-    for (s=0; s<cs; s++)
-    {
-      lsfactor[s*3] = SchemeBaseColor[s] & 0xFF;
-      lsfactor[s*3+1] = (SchemeBaseColor[s]>>8) & 0xFF;
-      lsfactor[s*3+2] = (SchemeBaseColor[s]>>16) & 0xFF;
-    }
-  }
+	fogmax = FOGMAX;
+	if (unifiedpalette)
+	{
+	    if (colormode & GR_COLORCOMBINE_TEXTURE)
+			cs = COLORSCHEMES;
+		else
+		{
+			cs = SOLIDCOLORSCHEMES;
+			fogmax = SOLIDFOGMAX;
+		}
+		for (s=0; s<cs; s++)
+		{
+			lsfactor[s*3] = SchemeBaseColor[s] & 0xFF;
+			lsfactor[s*3+1] = (SchemeBaseColor[s]>>8) & 0xFF;
+		lsfactor[s*3+2] = (SchemeBaseColor[s]>>16) & 0xFF;
+		}
+	}
 
-  fullpalette = (FxU32*)malloc(4*256*256);
-  if (!fullpalette)
-  {
-    abort();
-  }
-  lightfactor = 1.0/(fogmax-1);
-  for (j=0; j<fogmax; j++)
-  {
-    //l = 256*4-1 - (c1*(4-j&3) + fogtable[j/4]*(j&3));
-    if (flatdisplay)
-    {
-      l = j*(256*4)/(fogmax-1);
-    }
-    else
-    {
-      float l1 = 1.0-(j*lightfactor);
-      l1 = (l1*l1 + l1) * 0.5;
-/*    l1 *= l1;
-      l1 *= l1;
-      l1 *= l1;*/
-      l = (int)((1-l1) * (256*4));
-    }
-    #ifdef FULLBRIGHT
-    l = 256*4;
-    #endif
+	fullpalette = (FxU32*)malloc(4*256*256);
+	if (!fullpalette)
+	{
+		abort();
+	}
+	lightfactor = 1.0/(fogmax-1);
+	for (j=0; j<fogmax; j++)
+	{
+		//l = 256*4-1 - (c1*(4-j&3) + fogtable[j/4]*(j&3));
+		if (flatdisplay)
+		{
+			l = j*(256*4)/(fogmax-1);
+		}
+		else
+		{
+			float l1 = 1.0-(j*lightfactor);
+			l1 = (l1*l1 + l1) * 0.5;
+/*			l1 *= l1;
+			l1 *= l1;
+			l1 *= l1;*/
+			l = (int)((1-l1) * (256*4));
+		}
+		#ifdef FULLBRIGHT
+		l = 256*4;
+		#endif
 
-    if (unifiedpalette)
-    {
-      if (colormode & GR_COLORCOMBINE_TEXTURE)
-      {
-        for (s=0; s<COLORSCHEMES*3; s++)
-          ls[s] = l*lsfactor[s];
-        for (i=0; i<256; i++)
-        {
-          int c = currentpalette[i];
-          unsigned int base = 256*i+j;
-          for (s=0; s<COLORSCHEMES*3; s+=3, base+=FOGMAX)
-            fullpalette[base] = (l_macro(ls[s], c&0xFF))
-                              | (l_macro(ls[s+1], (c>>8)&0xFF) << 8)
-                              | (l_macro(ls[s+2], c>>16) << 16);
-        }
-      }
-      else
-      {
-        unsigned int base = j;
-        for (s=0; s<SOLIDCOLORSCHEMES; s++, base+=SOLIDFOGMAX)
-          fullpalette[base] = (z_macro(l*lsfactor[s*3]))
-                            | (z_macro(l*lsfactor[s*3+1]) << 8)
-                            | (z_macro(l*lsfactor[s*3+2]) << 16);
-      }
-    }
-    else
-    {
-      unsigned int rr,gg,bb;
-      unsigned int base = j;
-      int l24 = 0x24*l;
-      int l11 = 0x11*l;
-      int rcount, gcount, bcount;
-    
-      for (bb=0x03*l, bcount=0; bcount<8; bb+=l24, bcount++)
-        for (gg=gcount=0; gcount<16; gg+=l11, gcount++)
-          for (rr=rcount=0; rcount<16; rr+=l11, rcount++)
-          {
-            fullpalette[base] = (z_macro(rr) << 16)
-                              | (z_macro(gg) << 8)
-                              | (z_macro(bb));
-            #ifdef DEBUGCOLORS
-            if (l)
-              printf("%06x  ", fullpalette[base]);
-            #endif
-            base+=FOGMAX;
-          }
-    }
-  }
+		if (unifiedpalette)
+		{
+			if (colormode & GR_COLORCOMBINE_TEXTURE)
+			{
+				for (s=0; s<COLORSCHEMES*3; s++)
+					ls[s] = l*lsfactor[s];
+				for (i=0; i<256; i++)
+				{
+					int c = currentpalette[i];
+					unsigned int base = 256*i+j;
+					for (s=0; s<COLORSCHEMES*3; s+=3, base+=FOGMAX)
+						fullpalette[base] = (l_macro(ls[s], c&0xFF))
+						                  | (l_macro(ls[s+1], (c>>8)&0xFF) << 8)
+						                  | (l_macro(ls[s+2], c>>16) << 16);
+				}
+			}
+			else
+			{
+				unsigned int base = j;
+				for (s=0; s<SOLIDCOLORSCHEMES; s++, base+=SOLIDFOGMAX)
+					fullpalette[base] = (z_macro(l*lsfactor[s*3]))
+					                  | (z_macro(l*lsfactor[s*3+1]) << 8)
+					                  | (z_macro(l*lsfactor[s*3+2]) << 16);
+			}
+		}
+		else
+		{
+			unsigned int rr,gg,bb;
+			unsigned int base = j;
+			int l24 = 0x24*l;
+			int l11 = 0x11*l;
+			int rcount, gcount, bcount;
+
+			for (bb=0x03*l, bcount=0; bcount<8; bb+=l24, bcount++)
+				for (gg=gcount=0; gcount<16; gg+=l11, gcount++)
+					for (rr=rcount=0; rcount<16; rr+=l11, rcount++)
+					{
+						fullpalette[base] = (z_macro(rr) << 16)
+						                  | (z_macro(gg) << 8)
+						                  | (z_macro(bb));
+						#ifdef DEBUGCOLORS
+						if (l)
+						printf("%06x  ", fullpalette[base]);
+						#endif
+						base+=FOGMAX;
+					}
+		}
+	}
 //  FULL-BRIGHT COLORLESS debug version :
-/*for (i=0; i<65536; i++)
-    //if (i&1)
-      fullpalette[i] = i<<4;*/
+/*	for (i=0; i<65536; i++)
+	//if (i&1)
+		fullpalette[i] = i<<4;*/
 }
 
 void FreeFullPalette(void)
 {
-  free(fullpalette);
-  fullpalette=0;
+	free(fullpalette);
+	fullpalette=0;
 }
 
 #define c_macro(b,c)  (((b)*(FxU8)(c))>>12)
@@ -188,37 +188,37 @@ void FreeFullPalette(void)
 
 void FillCurrentPalette(void)
 {
-  unsigned int i;
-  FxU32 c;
-  if (!unifiedpalettemode)
-  {
-    if (schemecolor == 0xFFFFFF)
-      for (i=0; i<256; i++)
-      {
-        c = texturepalette[i];
-        currentpalette[i] = PACKCOLOR(c);
-        #ifdef DEBUGCOLORS
-        printf("%08x  ", currentpalette[i]);
-        #endif
-      }
-    else
-    {
-      FxU32 rbase = schemecolor & 0xFF;
-      FxU32 gbase = (schemecolor>>8) & 0xFF;
-      FxU32 bbase = (schemecolor>>17) & 0x7F;
-      for (i=0; i<256; i++)
-      {
-        c = texturepalette[i];
-        currentpalette[i] = (c_macro(rbase, c>>16) << 21)
-                          | (c_macro(gbase, c>>8) << 25)
-                          | (c_macro(bbase, c) << 29);
-        #ifdef DEBUGCOLORS
-        printf("%08x  ", currentpalette[i]);
-        #endif
-      }
-    }
-  }
-  texturepaletteok = 1;
+	unsigned int i;
+	FxU32 c;
+	if (!unifiedpalettemode)
+	{
+		if (schemecolor == 0xFFFFFF)
+			for (i=0; i<256; i++)
+			{
+				c = texturepalette[i];
+				currentpalette[i] = PACKCOLOR(c);
+				#ifdef DEBUGCOLORS
+				printf("%08x  ", currentpalette[i]);
+				#endif
+			}
+		else
+		{
+			FxU32 rbase = schemecolor & 0xFF;
+			FxU32 gbase = (schemecolor>>8) & 0xFF;
+			FxU32 bbase = (schemecolor>>17) & 0x7F;
+			for (i=0; i<256; i++)
+			{
+				c = texturepalette[i];
+				currentpalette[i] = (c_macro(rbase, c>>16) << 21)
+				                  | (c_macro(gbase, c>>8) << 25)
+				                  | (c_macro(bbase, c) << 29);
+		        #ifdef DEBUGCOLORS
+		        printf("%08x  ", currentpalette[i]);
+		        #endif
+			}
+		}
+	}
+	texturepaletteok = 1;
 }
 
 int __stdcall softgQuArK(void)
@@ -228,30 +228,30 @@ int __stdcall softgQuArK(void)
 
 void FillOowTable(int fogmask)
 {
-  if (!flatdisplay)
-  {
-    unsigned int i;
-    float base, factor, val;
+	if (!flatdisplay)
+	{
+		unsigned int i;
+		float base, factor, val;
 
-    base = oow_to_w[MAXOOWBIAS];
-    factor = fogmask/(oow_to_w[OOWTABLESIZE-1]-base);
-    for (i=0; i<OOWTABLESIZE; i++)
-    {
-       // oow_to_w[MAXOOWBIAS] -> 0    MINW -> fogmask<<16
-      val = (oow_to_w[i]-base)*factor;
-      if (val<=0)
-        oow_to_pix[i] = i;
-      else
-        oow_to_pix[i] = i | (((int)val) << 16);
-    }
-  }
-  else
-  {
-    unsigned int i;
-    fogmask++;
-    for (i=0; i<OOWTABLESIZE; i++)
-      oow_to_pix[i] = i | (((i*fogmask) >> OOWTABLEBITS) << 16);
-  }
+		base = oow_to_w[MAXOOWBIAS];
+		factor = fogmask/(oow_to_w[OOWTABLESIZE-1]-base);
+		for (i=0; i<OOWTABLESIZE; i++)
+		{
+			// oow_to_w[MAXOOWBIAS] -> 0    MINW -> fogmask<<16
+			val = (oow_to_w[i]-base)*factor;
+			if (val<=0)
+				oow_to_pix[i] = i;
+			else
+				oow_to_pix[i] = i | (((int)val) << 16);
+		}
+	}
+	else
+	{
+		unsigned int i;
+		fogmask++;
+		for (i=0; i<OOWTABLESIZE; i++)
+			oow_to_pix[i] = i | (((i*fogmask) >> OOWTABLEBITS) << 16);
+	}
 }
 
 void setschemecolor(void)
@@ -359,42 +359,42 @@ void __stdcall grHints(GrHints_t type, FxU32 hintMask)
 
 void __stdcall grTexSource(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *info)
 {
-  int texwbits, texhbits;
-  int size1=8-info->largeLod;
+	int texwbits, texhbits;
+	int size1=8-info->largeLod;
 
-  //texsource=info;
-  texdata = (FxU8*) info->data;
-  if (info->aspectRatio<=3)
-    texwbits=size1;
-  else
-    texwbits=size1-(info->aspectRatio-3);
-  texh1 = texwbits;
-  texwmask = (1<<texwbits) - 1;
-  if (info->aspectRatio>=3)
-    texhbits=size1;
-  else
-    texhbits=size1-(3-info->aspectRatio);
-  texhmask = (1<<texhbits) - 1;
-  stowbase = 1.0/(256>>size1);
-  #ifdef DEBUG
-  printf("texwbits=%d   texwmask=%d   texhbits=%d   texhmask=%d\n", texwbits, texwmask, texhbits, texhmask);
-  #endif
+	//texsource=info;
+	texdata = (FxU8*) info->data;
+	if (info->aspectRatio<=3)
+		texwbits=size1;
+	else
+		texwbits=size1-(info->aspectRatio-3);
+	texh1 = texwbits;
+	texwmask = (1<<texwbits) - 1;
+	if (info->aspectRatio>=3)
+		texhbits=size1;
+	else
+		texhbits=size1-(3-info->aspectRatio);
+	texhmask = (1<<texhbits) - 1;
+	stowbase = 1.0/(256>>size1);
+	#ifdef DEBUG
+	printf("texwbits=%d   texwmask=%d   texhbits=%d   texhmask=%d\n", texwbits, texwmask, texhbits, texhmask);
+	#endif
 
-  if (info->format == GR_TEXFMT_RGB_565)
-  {   // in-place convertion to internal format
-    FxU16 *p = (FxU16*)texdata;
-    FxU16 *end = p + (1 << (texwbits+texhbits));
-    while (p<end)
-    {
-      FxU16 value = *p;
-      *p++ = ((value<<11)&0xE000) | ((value&0x0780)<<2) | ((value&0xF000)>>7);
-    }
-    info->format = GR_TEXFMT_RGB_443;
-  }
-  if (info->format == GR_TEXFMT_RGB_443)
-    unifiedpalettemode |= 4;
-  else
-    unifiedpalettemode &= ~4;
+	if (info->format == GR_TEXFMT_RGB_565)
+	{   // in-place convertion to internal format
+		FxU16 *p = (FxU16*)texdata;
+		FxU16 *end = p + (1 << (texwbits+texhbits));
+		while (p<end)
+		{
+			FxU16 value = *p;
+			*p++ = ((value<<11)&0xE000) | ((value&0x0780)<<2) | ((value&0xF000)>>7);
+		}
+		info->format = GR_TEXFMT_RGB_443;
+	}
+	if (info->format == GR_TEXFMT_RGB_443)
+		unifiedpalettemode |= 4;
+	else
+		unifiedpalettemode &= ~4;
 }
 
 
@@ -1028,77 +1028,77 @@ void __stdcall grDrawTriangle(const GrVertex *a, const GrVertex *b, const GrVert
 
 void __stdcall grBufferClear(GrColor_t color, GrAlpha_t alpha, FxU16 depth)
 {
-  memset(framebuffer, 0, framecount*sizeof(FxU32));
+	memset(framebuffer, 0, framecount*sizeof(FxU32));
 }
 
 /*void grFogTable(void *table)
 {
-  if (fullpalette)
-    FreeFullPalette();
-  memcpy(&fogtable, table, sizeof(fogtable));
+	if (fullpalette)
+		FreeFullPalette();
+	memcpy(&fogtable, table, sizeof(fogtable));
 }*/
 
 void __stdcall grTexDownloadTable(GrChipID_t tmu, GrTexTable_t type, void *data)
 {
-  if (unifiedpalette)
-  {
-    if (fullpalette)
-      FreeFullPalette();
-    memcpy(&currentpalette, data, sizeof(currentpalette));
-  }
-  else
-  {
-    texturepalette = (FxU32*)data;
-    texturepaletteok = 0;
-  }
+	if (unifiedpalette)
+	{
+		if (fullpalette)
+			FreeFullPalette();
+		memcpy(&currentpalette, data, sizeof(currentpalette));
+	}
+	else
+	{
+		texturepalette = (FxU32*)data;
+		texturepaletteok = 0;
+	}
 }
 
 void __stdcall grGlideInit(void)
 {
-  unsigned int i;
+	unsigned int i;
 
-  fogdensity = 1;
-  oow_to_w[0] = 1.0*OOWTABLEBASE;
-  for (i=1; i<OOWTABLESIZE; i++)
-    oow_to_w[i] = (1.0*OOWTABLEBASE)/i;
-  colormode = GR_COLORCOMBINE_TEXTURE;
-  flatdisplay = 0;
-  setunifiedpalette(0);
+	fogdensity = 1;
+	oow_to_w[0] = 1.0*OOWTABLEBASE;
+	for (i=1; i<OOWTABLESIZE; i++)
+		oow_to_w[i] = (1.0*OOWTABLEBASE)/i;
+	colormode = GR_COLORCOMBINE_TEXTURE;
+	flatdisplay = 0;
+	setunifiedpalette(0);
 }
 
 void __stdcall grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
 {
-  if (framebuffer)
-    free(framebuffer);
-  framew = maxx-minx;
-  frameh = maxy-miny;
-  framecount = framew*frameh;
-  firstcol = minx;
-  firstrow = miny;
-  framebuffer = (FxU32*)malloc(framecount*sizeof(FxU32));
-  if (!framebuffer)
-  {
-    abort();
-  }
+	if (framebuffer)
+		free(framebuffer);
+	framew = maxx-minx;
+	frameh = maxy-miny;
+	framecount = framew*frameh;
+	firstcol = minx;
+	firstrow = miny;
+	framebuffer = (FxU32*)malloc(framecount*sizeof(FxU32));
+	if (!framebuffer)
+	{
+		abort();
+	}
 }
 
 FxBool __stdcall grSstWinOpen(FxU32 hwnd, GrScreenResolution_t res, GrScreenRefresh_t ref, GrColorFormat_t cformat, GrOriginLocation_t org_loc, int num_buffers, int num_aux_buffers)
 {
-  grClipWindow(0,0,640,480);
-  return 1;
+	grClipWindow(0,0,640,480);
+	return 1;
 }
 
 void __stdcall grSstWinClose(void)
 {
-  free(framebuffer);
-  framebuffer=0;
-  if (fullpalette)
-    FreeFullPalette();
+	free(framebuffer);
+	framebuffer=0;
+	if (fullpalette)
+		FreeFullPalette();
 }
 
 /*void guFogGenerateExp2(void *reserved1, float density)
 {
-  if (fullpalette)
-    FreeFullPalette();
-  fogdensity = density;
+	if (fullpalette)
+		FreeFullPalette();
+	fogdensity = density;
 }*/
