@@ -30,9 +30,8 @@ uses Windows, Classes, Setup, SysUtils,
 
 type
  TViewRect = record
-              R: TRect;
+              R: TRect; //Rect sent to the renderer
               Left, Top, Right, Bottom, ProjDx, ProjDy: FxFloat;
-              DoubleSize: Boolean;
              end;
 
  TGlideSceneObject = class(TSceneObject)
@@ -45,7 +44,6 @@ type
    ViewRect: TViewRect;
    FogTableCache: ^GrFogTable_t;
    GlideLoaded: Boolean;
-   function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -874,14 +872,14 @@ end;*)
 procedure TGlideSceneObject.ClearFrame;
 var
  L, T, R, B: Integer;
- Special: Boolean;
+ DepthMaskModified: Boolean;
 
   procedure ClearFrame1(X,Y,W,H: Integer);
   begin
    grClipWindow(X,Y,X+W,Y+H);
-   if not Special then
+   if not DepthMaskModified then
     begin
-     Special:=True;
+     DepthMaskModified:=True;
      grDepthMask(FXFALSE);
     end;
    ClearBuffers(FRAME_COLOR);
@@ -892,12 +890,12 @@ begin
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
  B:=ViewRect.R.Bottom;
- Special:=False;
- if L>0 then  ClearFrame1(0, T, L, B-T);
- if T>0 then  ClearFrame1(0, 0, ScreenSizeX, T);
+ DepthMaskModified:=False;
+ if L>0 then ClearFrame1(0, T, L, B-T);
+ if T>0 then ClearFrame1(0, 0, ScreenSizeX, T);
  if R<ScreenSizeX then ClearFrame1(R, T, ScreenSizeX-R, B-T);
  if B<ScreenSizeY then ClearFrame1(0, B, ScreenSizeX, ScreenSizeY-B);
- if Special then
+ if DepthMaskModified then
   grDepthMask(FXTRUE);
 end;
 
@@ -1033,16 +1031,8 @@ begin
      if (oow>Maxoow) or (oow<0) then Inc(nOffScreen, os_Back) else
      if (oow<Minoow)            then Inc(nOffScreen, os_Far);
     end;
-   if ViewRect.DoubleSize then
-    begin
-     x:=PP.x*0.5 + ViewRect.ProjDx;
-     y:=ViewRect.ProjDy - PP.y*0.5;
-    end
-   else
-    begin
-     x:=PP.x + ViewRect.ProjDx;
-     y:=ViewRect.ProjDy - PP.y;
-    end;
+    x:=PP.x + ViewRect.ProjDx;
+    y:=ViewRect.ProjDy - PP.y;
 
    if x<ViewRect.Left   then Inc(nOffScreen, os_Left) else
    if x>ViewRect.Right  then Inc(nOffScreen, os_Right);
@@ -1771,18 +1761,6 @@ begin
  end;
 end;
 
-function TGlideSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
-begin
- Result:=False;
- L:=ViewRect.R.Left and not 3;
- R:=(ViewRect.R.Right+3) and not 3;
- with bmiHeader do
-  begin
-   biWidth:=R-L;
-   biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
-  end;
-end;
-
 procedure TGlideSceneObject.Draw3DView;
 var
  I, L, R, T, B, Count1: Integer;
@@ -1818,8 +1796,9 @@ begin
    biPlanes:=1;
    biBitCount:=24;
    biCompression:=BI_RGB;
+   biWidth:=ViewRect.R.Right-ViewRect.R.Left;
+   biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
   end;
- ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
  SetViewDC(True);
@@ -1830,13 +1809,15 @@ begin
    try
     FillChar(info, SizeOf(info), 0);
     info.size := sizeof(GrLfbInfo_t);
-    if not grLfbLock(GR_LFB_READ_ONLY or GR_LFB_IDLE, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_ANY, FXFALSE, info) then //FIXME: GR_LFBWRITEMODE_565 ?
+    if not grLfbLock(GR_LFB_READ_ONLY or GR_LFB_IDLE, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY, GR_ORIGIN_UPPER_LEFT, FXFALSE, info) then
       Raise EErrorFmt(6200, ['grLfbLock']);
     try
+      if info.writeMode <> GR_LFBWRITEMODE_565 then
+        Raise EErrorFmt(6200, ['grLfbLock']);
       I:=bmiHeader.biHeight;
       SrcPtr:=info.lfbptr;
-      Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*Integer(info.strideInBytes));
-      Count1:=(R-L) div 4;
+      Inc(PChar(SrcPtr), ViewRect.R.Left*2 + (ScreenSizeY-ViewRect.R.Bottom)*Integer(info.strideInBytes));
+      Count1:=(ViewRect.R.Right-ViewRect.R.Left) div 4;
       asm
        push esi
        push edi
@@ -1910,8 +1891,8 @@ begin
      B:=T+bmiHeader.biHeight;
      FrameBrush:=0;
      try
-       if L>0 then  Frame(0, T, L, B-T);
-       if T>0 then  Frame(0, 0, ScreenX, T);
+       if L>0 then Frame(0, T, L, B-T);
+       if T>0 then Frame(0, 0, ScreenX, T);
        if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
        if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
      finally
@@ -1955,6 +1936,9 @@ begin
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
+ ViewRect.R.Left:=ViewRect.R.Left and not 3;
+ ViewRect.R.Right:=(ViewRect.R.Right+3) and not 3;
+
  if Coord=nil then
   begin
    ViewRect.ProjDx:=(VertexSnapper+ScreenCenterX);
@@ -1966,7 +1950,6 @@ begin
    ViewRect.ProjDy:=(VertexSnapper+ScreenCenterY)+Coord.ScrCenter.Y;
   end;
 
- ViewRect.DoubleSize:=False;
  ViewRect.Left  := ViewRect.R.Left  + (VertexSnapper-0.5);
  ViewRect.Top   := ViewRect.R.Top   + (VertexSnapper-0.5);
  ViewRect.Right := ViewRect.R.Right + (VertexSnapper+0.5);
