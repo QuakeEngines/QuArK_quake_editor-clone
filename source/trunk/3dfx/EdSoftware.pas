@@ -33,8 +33,8 @@ uses Windows, Classes, Setup, SysUtils,
 { $DEFINE DebugLOG}
 { $DEFINE DebugSOFTLIMITS}
 
-const
 (*
+const
  MinW = 64.0;
  MaxW = 65535.0-128.0;    { Note: constants copied from PyMath3D }
  Minoow = 1.0001/MaxW;
@@ -42,14 +42,9 @@ const
  RFACTOR_1 = 32768*1.1;
 *)
 
- ScreenSizeX = 640;
- ScreenSizeY = 480;
- ScreenCenterX = ScreenSizeX div 2;
- ScreenCenterY = ScreenSizeY div 2;
-
 type
  TViewRect = record
-              R: TRect;
+              R: TRect; //Rect sent to the renderer
               Left, Top, Right, Bottom, ProjDx, ProjDy: FxFloat;
               DoubleSize: Boolean;
              end;
@@ -66,7 +61,6 @@ type
    FogTableCache: ^GrFogTable_t;
    RendererVersion: Integer;
    RendererLoaded: Boolean;
-   function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -675,7 +669,13 @@ end;
  {------------------------}
 
 const
+ //We need some margin to avoid floating point rounding noise
+ //cutting off parts that needs to be drawn at the edges, and
+ //similarly to avoid drawing outside of the buffer.
  SOFTMARGIN = 2;
+
+ RendererSizeX = 640;
+ RendererSizeY = 480;
 
 type
  TV1 = record
@@ -723,36 +723,34 @@ begin
 end;*)
 
 procedure TSoftwareSceneObject.ClearFrame;
-const
- SX = ScreenSizeX;
- SY = ScreenSizeY;
 var
  L, T, R, B: Integer;
- Special: Boolean;
+ DepthMaskModified: Boolean;
 
   procedure ClearFrame1(X,Y,W,H: Integer);
   begin
    grClipWindow(X,Y,X+W,Y+H);
-   if not Special and Assigned(grDepthMask) then
+   if not DepthMaskModified and Assigned(grDepthMask) then
     begin
-     Special:=True;
+     DepthMaskModified:=True;
      grDepthMask(FXFALSE);
     end;
    ClearBuffers(FRAME_COLOR);
   end;
 
 begin
- Exit; //FIXME: ?
+ //DanielPharos: Currently unsupported by the software renderer (ClearBuffers clears everything, always)
+ Exit;
  L:=ViewRect.R.Left;
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
  B:=ViewRect.R.Bottom;
- Special:=False;
- if L>0 then  ClearFrame1(0, T, L, B-T);
- if T>0 then  ClearFrame1(0, 0, SX, T);
- if R<SX then ClearFrame1(R, T, SX-R, B-T);
- if B<SY then ClearFrame1(0, B, SX, SY-B);
- if Special then
+ DepthMaskModified:=False;
+ if L>0 then ClearFrame1(0, T, L, B-T);
+ if T>0 then ClearFrame1(0, 0, RendererSizeX, T);
+ if R<RendererSizeX then ClearFrame1(R, T, RendererSizeX-R, B-T);
+ if B<RendererSizeY then ClearFrame1(0, B, RendererSizeX, RendererSizeY-B);
+ if DepthMaskModified then
   grDepthMask(FXTRUE);
 end;
 
@@ -920,10 +918,10 @@ begin
    oow:=ooWFactor/Dist;
    x:=(Delta[0]*Right[0]
      + Delta[1]*Right[1]
-     + Delta[2]*Right[2]) * oow + ScreenCenterX;
+     + Delta[2]*Right[2]) * oow + (RendererSizeX div 2);
    y:=(Delta[0]*Up[0]
      + Delta[1]*Up[1]
-     + Delta[2]*Up[2]) * oow + ScreenCenterY;
+     + Delta[2]*Up[2]) * oow + (RendererSizeY div 2);
    nOffScreen:=0;
    if x<ViewRectLeft   then Inc(nOffScreen, os_Left) else
    if x>ViewRectRight  then Inc(nOffScreen, os_Right);
@@ -1618,28 +1616,11 @@ begin
  end;
 end;
 
-function TSoftwareSceneObject.ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
-begin
- Result:=False;
- L:=ViewRect.R.Left and not 3;
- R:=(ViewRect.R.Right+3) and not 3;
- with bmiHeader do
-  begin
-   biWidth:=R-L;
-   biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
-   Inc(biHeight, 2*SOFTMARGIN);
-   if SoftBufferFormat>0 then
-    begin
-     biWidth:=biWidth*2;
-     biHeight:=biHeight*2;
-     Result:=True;
-    end;
-  end;
-end;
-
 procedure TSoftwareSceneObject.Draw3DView;
 var
  L, R, T, B: Integer;
+ RenderedWidth, RenderedHeight: Integer;
+ AdjustedSoftMargin: Integer;
  bmiHeader: TBitmapInfoHeader;
  BmpInfo: TBitmapInfo;
  Bits: Pointer;
@@ -1665,33 +1646,49 @@ begin
    biPlanes:=1;
    biBitCount:=24;
    biCompression:=BI_RGB;
+   biWidth:=(ViewRect.R.Right-ViewRect.R.Left)+2*SOFTMARGIN;
+   biHeight:=(ViewRect.R.Bottom-ViewRect.R.Top)+2*SOFTMARGIN;
+   if ViewRect.DoubleSize then
+    begin
+     biWidth:=biWidth*2;
+     biHeight:=biHeight*2;
+    end;
   end;
- ScreenExtent(L, R, bmiHeader);
  BmpInfo.bmiHeader:=bmiHeader;
 
  SetViewDC(True);
  try
+   RenderedWidth:=ViewRect.R.Right-ViewRect.R.Left;
+   RenderedHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
+   AdjustedSoftMargin:=SOFTMARGIN;
+   if ViewRect.DoubleSize then
+    begin
+     RenderedWidth:=RenderedWidth*2;
+     RenderedHeight:=RenderedHeight*2;
+     AdjustedSoftMargin:=AdjustedSoftMargin*2;
+    end;
+   L:=(ScreenX-RenderedWidth) div 2;
+   T:=(ScreenY-RenderedHeight) div 2;
+   R:=L+RenderedWidth;
+   B:=T+RenderedHeight;
+   FrameBrush:=0;
+   try
+     if L>0 then Frame(0, T, L, B-T);
+     if T>0 then Frame(0, 0, ScreenX, T);
+     if R<ScreenX-1 then Frame(R, T, ScreenX-R, B-T);
+     if B<ScreenY-1 then Frame(0, B, ScreenX, ScreenY-B);
+   finally
+     if FrameBrush<>0 then
+      DeleteObject(FrameBrush);
+   end;
+
    DIBSection:=CreateDIBSection(ViewDC,bmpInfo,DIB_RGB_COLORS,Bits,0,0);
    if DIBSection = 0 then
      Raise EErrorFmt(6100, ['CreateDIBSection']);
    try
      softgLoadFrameBuffer(Bits, SoftBufferFormat);
 
-     L:=(ScreenX-bmiHeader.biWidth) div 2;
-     T:=(ScreenY-bmiHeader.biHeight) div 2;
-     R:=L+bmiHeader.biWidth;
-     B:=T+bmiHeader.biHeight;
-     FrameBrush:=0;
-     try
-       if L>0 then  Frame(0, T, L, B-T);
-       if T>0 then  Frame(0, 0, ScreenX, T);
-       if R<ScreenX then Frame(R, T, ScreenX-R, B-T);
-       if B<ScreenY then Frame(0, B, ScreenX, ScreenY-B);
-     finally
-       if FrameBrush<>0 then
-        DeleteObject(FrameBrush);
-     end;
-     if SetDIBitsToDevice(ViewDC, L, T, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+     if SetDIBitsToDevice(ViewDC, L, T, R-L, B-T, AdjustedSoftMargin,AdjustedSoftMargin,
       0,bmiHeader.biHeight, Bits, BmpInfo, DIB_RGB_COLORS) = 0 then
        Raise EErrorFmt(6100, ['SetDIBitsToDevice']);
    finally
@@ -1704,59 +1701,100 @@ end;
 
 procedure TSoftwareSceneObject.SetViewSize(SX, SY: Integer);
 var
- XMargin, YMargin: Integer;
+ XMargin, YMargin: Integer; //Width/height that the frame needs to fill up.
+ RendererAdjustedSizeX, RendererAdjustedSizeY: Integer;
 begin
  if SX<1 then SX:=1;
  if SY<1 then SY:=1;
  ScreenX:=SX;
  ScreenY:=SY;
- if SoftBufferFormat>0 then
-  begin
-   SX:=(SX+1) div 2;
-   SY:=(SY+1) div 2;
-  end;
+
+ ViewRect.DoubleSize:=(SoftBufferFormat>0);
 
  if DisplayMode=dmFullScreen then
   begin
-   XMargin:=0;
-   YMargin:=0;
+   ViewRect.R.Left:=0;
+   ViewRect.R.Top:=0;
+   //FIXME: How to handle DoubleSize? And SOFTMARGIN?
+   ViewRect.R.Right:=RendererSizeX;
+   ViewRect.R.Bottom:=RendererSizeY;
   end
  else
   begin
-   XMargin:=(ScreenSizeX-SX) div 2;
-   YMargin:=(ScreenSizeY-SY) div 2;
-  end;
+   SX:=(SX+3) and not 3; //Needs to be a multiple of 4
+   SY:=(SY+1) and not 1; //Needs to be a multiple of 2
 
- ViewRect.R.Left:=XMargin;
- ViewRect.R.Top:=YMargin;
- ViewRect.R.Right:=ScreenSizeX-XMargin;
- ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- ViewRect.R.Left:=((ViewRect.R.Left-2) and not 3) + 2;
- ViewRect.R.Right:=((ViewRect.R.Right+3+2) and not 3) - 2;
-
- if Coord=nil then
-  begin
-   if SoftBufferFormat>0 then
-     ViewRect.DoubleSize:=True
-   else
-     ViewRect.DoubleSize:=False;
-   ViewRect.ProjDx:=ScreenCenterX;
-   ViewRect.ProjDy:=ScreenCenterY;
-  end
- else
-  begin
-   if SoftBufferFormat>0 then
+   if ViewRect.DoubleSize then
     begin
-     ViewRect.DoubleSize:=True;
-     ViewRect.ProjDx:=ScreenCenterX-0.5*Coord.ScrCenter.X;
-     ViewRect.ProjDy:=ScreenCenterY+0.5*Coord.ScrCenter.Y;
+     RendererAdjustedSizeX:=RendererSizeX div 2;
+     RendererAdjustedSizeY:=RendererSizeY div 2;
     end
    else
     begin
-     ViewRect.DoubleSize:=False;
-     ViewRect.ProjDx:=ScreenCenterX-Coord.ScrCenter.X;
-     ViewRect.ProjDy:=ScreenCenterY+Coord.ScrCenter.Y;
+     RendererAdjustedSizeX:=RendererSizeX;
+     RendererAdjustedSizeY:=RendererSizeY;
     end;
+   XMargin:=(SX-RendererAdjustedSizeX) div 2;
+   YMargin:=(SY-RendererAdjustedSizeY) div 2;
+   if XMargin<0 then
+    begin
+     //The RendererSize is larger than what we need; clip it.
+     ViewRect.R.Left:=-XMargin;
+     ViewRect.R.Right:=RendererAdjustedSizeX+XMargin; //Note: XMargin is negative!
+    end
+   else
+    begin
+     //The RendererSize isn't large enough; we'll draw some framing.
+     ViewRect.R.Left:=0;
+     ViewRect.R.Right:=RendererAdjustedSizeX;
+    end;
+   if YMargin<0 then
+    begin
+     //The RendererSize is larger than what we need; clip it.
+     ViewRect.R.Top:=-YMargin;
+     ViewRect.R.Bottom:=RendererAdjustedSizeY+YMargin; //Note: YMargin is negative!
+    end
+   else
+    begin
+     //The RendererSize isn't large enough; we'll draw some framing.
+     ViewRect.R.Top:=0;
+     ViewRect.R.Bottom:=RendererAdjustedSizeY;
+    end;
+   if ViewRect.DoubleSize then
+    begin
+     ViewRect.R.Left:=ViewRect.R.Left+2*SOFTMARGIN;
+     ViewRect.R.Top:=ViewRect.R.Top+2*SOFTMARGIN;
+     ViewRect.R.Right:=ViewRect.R.Right+2*SOFTMARGIN;
+     ViewRect.R.Bottom:=ViewRect.R.Bottom+2*SOFTMARGIN;
+    end
+   else
+    begin
+     ViewRect.R.Left:=ViewRect.R.Left+SOFTMARGIN;
+     ViewRect.R.Top:=ViewRect.R.Top+SOFTMARGIN;
+     ViewRect.R.Right:=ViewRect.R.Right+SOFTMARGIN;
+     ViewRect.R.Bottom:=ViewRect.R.Bottom+SOFTMARGIN;
+    end;
+  end;
+
+ if Coord=nil then
+  begin
+   ViewRect.ProjDx:=RendererSizeX div 2;
+   ViewRect.ProjDy:=RendererSizeY div 2;
+  end
+ else
+  begin
+   ViewRect.ProjDx:=(RendererSizeX div 2)-Coord.ScrCenter.X;
+   ViewRect.ProjDy:=(RendererSizeY div 2)+Coord.ScrCenter.Y;
+  end;
+ if ViewRect.DoubleSize then
+  begin
+   ViewRect.ProjDx:=(ViewRect.ProjDx*0.5)+2*SOFTMARGIN;
+   ViewRect.ProjDy:=(ViewRect.ProjDy*0.5)+2*SOFTMARGIN;
+  end
+ else
+  begin
+   ViewRect.ProjDx:=ViewRect.ProjDx+SOFTMARGIN;
+   ViewRect.ProjDy:=ViewRect.ProjDy+SOFTMARGIN;
   end;
  ViewRect.Left  := ViewRect.R.Left;
  ViewRect.Top   := ViewRect.R.Top;
