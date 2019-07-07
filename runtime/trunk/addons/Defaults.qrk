@@ -102,6 +102,8 @@ QQRKSRC1
       }
       Software 3D:config =
       {
+        ResolutionX = '-1'
+        ResolutionY = '-1'
         StillQuality = "0"
         MovingQuality = "2"
         Form = "GeneralSoftware3D"
@@ -7974,6 +7976,16 @@ QQRKSRC1
     {
       Style = "3"
       L1: = {Typ="S" Txt="---- Software 3D driver only ----"}
+      ResolutionX: = {
+        Txt="Resolution width"
+        Typ="EF1"
+        Hint = "The maximum width of the rendered image; lower is faster (minimum: 320, -1 for unlimited)"
+      }
+      ResolutionY: = {
+        Txt="Resolution height"
+        Typ="EF1"
+        Hint = "The maximum height of the rendered image; lower is faster (minimum: 200, -1 for unlimited)"
+      }
       StillQuality: = {
         Txt="Image quality"
         Typ="CL"

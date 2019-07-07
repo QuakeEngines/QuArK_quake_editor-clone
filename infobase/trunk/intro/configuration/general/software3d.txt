@@ -3,8 +3,12 @@ author: Decker, DanielPharos
 
 <img align=right>software3d.png</img>
 If you have selected 'Software-only' in the 3D-viewer, then you can here change
-how fast the software-render should be able to draw things in the 3D-window,
-while standing still and while walking/moving around.
+how the software-render should to draw things in the 3D-window.
 
-Low quality will cut the rendering resolution in half, and smoothed will smooth
-out the roughness a little.
+<i>Resolution width</i>. The maximum width of the rendered image. Setting a limit will prevent slow performance with large viewports, however, the rendered image will be cut-off in such cases. The minimum value is 320, and use the value -1 for no limit in width.
+
+<i>Resolution height</i>. The maximum height of the rendered image. Setting a limit will prevent slow performance with large viewports, however, the rendered image will be cut-off in such cases. The minimum value is 200, and use the value -1 for no limit in height.
+
+<i>Image quality</i>. The image quality when standing still. Low quality will cut the rendering resolution in half, speeding up the rendering. Smoothed will do the same, but will also smooth out the roughness a little at the cost of a little bit of performance.
+
+<i>Quality while moving</i>. The image quality while moving around. Low quality will cut the rendering resolution in half, speeding up the rendering. Smoothed will do the same, but will also smooth out the roughness a little at the cost of a little bit of performance.

@@ -13,6 +13,10 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Provide a new setting for the software renderer to limit the maximum
+          - resolution at which is renders. This used to be the case, but this code was broken
+          - in the past, and contained underflow errors leading to renderer crashes.
+
 * [DanielPharos]: Added HL1 Ricochet addon.
 
 * [DanielPharos]: Many fixes to Python object handling to reduce reference counting errors.

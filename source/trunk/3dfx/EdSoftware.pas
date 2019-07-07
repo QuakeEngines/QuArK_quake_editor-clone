@@ -54,6 +54,7 @@ type
    FBuildNo: LongWord;
    FVertexList: TMemoryStream;
    VOID_COLOR, FRAME_COLOR: GrColor_t;
+   FRendererSizeX, FRendererSizeY: Integer;
    CurrentAlpha: TColorRef;
    Fog: Boolean;
    ViewRect: TViewRect;
@@ -61,6 +62,10 @@ type
    FogTableCache: ^GrFogTable_t;
    RendererVersion: Integer;
    RendererLoaded: Boolean;
+   function GetRendererSizeX: Integer;
+   function GetRendererSizeY: Integer;
+   property RendererSizeX: Integer read GetRendererSizeX write FRendererSizeX;
+   property RendererSizeY: Integer read GetRendererSizeY write FRendererSizeY;
  protected
    ScreenX, ScreenY: Integer;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
@@ -348,6 +353,12 @@ begin
  FRAME_COLOR:=FrameColor;
 
  Setup:=SetupSubSet(ssGeneral, 'Software 3D');
+ RendererSizeX:=Round(Setup.GetFloatSpec('ResolutionX', 640));
+ if (FRendererSizeX<>-1) and (RendererSizeX<320) then
+  RendererSizeX:=320;
+ RendererSizeY:=Round(Setup.GetFloatSpec('ResolutionY', 480));
+ if (FRendererSizeY<>-1) and (RendererSizeY<200) then
+  RendererSizeY:=200;
  if (DisplayMode=dmWindow) or (DisplayMode=dmFullScreen) then
  begin
    Fog:=Setup.Specifics.Values['Fog']<>'';   //DanielPharos: This is not an option at the moment
@@ -673,9 +684,6 @@ const
  //cutting off parts that needs to be drawn at the edges, and
  //similarly to avoid drawing outside of the buffer.
  SOFTMARGIN = 2;
-
- RendererSizeX = 640;
- RendererSizeY = 480;
 
 type
  TV1 = record
@@ -1800,6 +1808,22 @@ begin
  ViewRect.Top   := ViewRect.R.Top;
  ViewRect.Right := ViewRect.R.Right;
  ViewRect.Bottom:= ViewRect.R.Bottom;
+end;
+
+function TSoftwareSceneObject.GetRendererSizeX: Integer;
+begin
+ Result:=FRendererSizeX;
+ if Result=-1 then
+  Result:=ScreenX;
+ Result:=(Result+3) and not 3; //Needs to be a multiple of 4
+end;
+
+function TSoftwareSceneObject.GetRendererSizeY: Integer;
+begin
+ Result:=FRendererSizeY;
+ if Result=-1 then
+  Result:=ScreenY;
+ Result:=(Result+1) and not 1; //Needs to be a multiple of 2
 end;
 
 function TSoftwareSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
