@@ -215,4 +215,3 @@ initialization
 finalization
   CloseLogFile;
 end.
-
