@@ -522,7 +522,7 @@ begin
         begin
           VertexNo:=Tris2^.triangle[J+1];
           if VertexNo>=mhead.vertex_num then
-           raise exception.create(''); //@
+           raise EError(5810);
           //The following lines result in FALSE range check errors, because
           //the array's size is not defined up front. Let's disable range
           //check errors for this bit (if they were enabled).
@@ -754,13 +754,11 @@ begin
           ObjectGameCode := CharModeJeu;
       end
       else if (head.id='RDM5') {and (head.version=2)} then
-        //FIXME
-        Raise exception.create('RDM5-md3s currently not supported')
+        Raise EError(5807)
       else if (head.id='2LGM') then
-        //FIXME
-        Raise exception.create('2LGM-md3s currently not supported')
+        Raise EError(5808)
       else
-        Raise exception.create('Unknown md3 format found ('+head.id+')');
+        Raise EErrorFmt(5809, [String(head.id)]);
       Root:=Loaded_Root;
       Misc:=Root.GetMisc;
       if head.BoundFrame_num<>0 then
@@ -959,7 +957,7 @@ begin
              try
                OModelTag.FindAllSubObjects('', QTagFrame, nil, TagFrames);
                if TagFrames.Count<>head.BoundFrame_num then
-                 raise exception.create(''); //@
+                 raise EError(5811);
                OTagFrame:=QTagFrame(TagFrames[I]);
 
                PasToChar(tag.name, OModelTag.Name);
@@ -996,7 +994,7 @@ begin
          Position1:=F.Position;
          FillChar(mesh, SizeOf(mesh), 0);
          F.WriteBuffer(mesh, SizeOf(mesh));
-         
+
          Comp:=QComponent(Components[I]);
          mesh.id[1]:=head.id[1];
          mesh.id[2]:=head.id[2];

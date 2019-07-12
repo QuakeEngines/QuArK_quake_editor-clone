@@ -1063,6 +1063,11 @@ Strings = {
     5804: "Exception at address %p: %s",
     5805: "Unable to find file in pak file",
     5806: "Macro %s not found",
+    5807: "RDM5-md3s currently not supported",
+    5808: "2LGM-md3s currently not supported",
+    5809: "Unknown md3 format found ('%s')",
+    5810: "Invalid vertex number",
+    5811: "Tag frame number mismatch",
 
     # DanielPharos would like to reserve 6000 .. 6099 for all renderers
     6000: "Unable to create SceneObject//%s",
