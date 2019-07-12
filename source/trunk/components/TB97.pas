@@ -1587,7 +1587,7 @@ begin
     if Message.WParam <> 0 then begin
       GetWindowRect (Handle, R2);
       { An invalid region is generally passed when the window is first created }
-      if SelectClipRgn(DC, Message.WParam) = ERROR then begin
+      if SelectClipRgn(DC, HRGN(Message.WParam)) = ERROR then begin
         NewClipRgn := CreateRectRgnIndirect(R2);
         SelectClipRgn (DC, NewClipRgn);
         DeleteObject (NewClipRgn);
@@ -2947,7 +2947,7 @@ end;
 procedure TToolbar97.WMNCPaint (var Message: TMessage);
 begin
   inherited;
-  DrawNCArea (Message.WParam, True, True, True);
+  DrawNCArea (HRGN(Message.WParam), True, True, True);
 end;
 
 procedure DrawDragRect (const DC: HDC; const NewRect, OldRect: PRect;
