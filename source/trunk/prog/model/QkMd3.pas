@@ -521,12 +521,23 @@ begin
         with CTris^[J] do
         begin
           VertexNo:=Tris2^.triangle[J+1];
-          //DanielPharos: The following line results in FALSE range check errors!
-          with texCoord^[Tris2^.triangle[J+1]] do
+          if VertexNo>=mhead.vertex_num then
+           raise exception.create(''); //@
+          //The following lines result in FALSE range check errors, because
+          //the array's size is not defined up front. Let's disable range
+          //check errors for this bit (if they were enabled).
+          {$IfOpt R+}
+          {$Define RangeChecksWereEnabled}
+          {$R-}
+          {$EndIf}
+          with texCoord^[VertexNo] do
           begin
             S:=round(vec[1]*Size.X);
             T:=round(vec[2]*Size.Y);
           end;
+          {$IfDef RangeChecksWereEnabled}
+          {$R+}
+          {$EndIf}
         end;
       end;
       Inc(CTris);

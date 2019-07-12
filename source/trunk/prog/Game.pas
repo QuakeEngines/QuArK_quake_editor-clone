@@ -1123,6 +1123,13 @@ begin
  try
    Log^.palVersion:=$300;
    Log^.palNumEntries:=256;
+   //The following lines result in FALSE range check errors, because
+   //the array's size is not defined up front. Let's disable range
+   //check errors for this bit (if they were enabled).
+   {$IfOpt R+}
+   {$Define RangeChecksWereEnabled}
+   {$R-}
+   {$EndIf}
    for I:=0 to 255 do
     with Log^.palPalEntry[I], BmpInfo.bmiColors[I] do
      begin
@@ -1135,10 +1142,20 @@ begin
       peFlags:=0;
       rgbReserved:=0;
      end;
+   {$IfDef RangeChecksWereEnabled}
+   {$R+}
+   {$EndIf}
    if Assigned(Palette) then
     Palette^:=CreatePalette(Log^);
    if Assigned(PaletteReelle) then
     begin
+     //The following lines result in FALSE range check errors, because
+     //the array's size is not defined up front. Let's disable range
+     //check errors for this bit (if they were enabled).
+     {$IfOpt R+}
+     {$Define RangeChecksWereEnabled}
+     {$R-}
+     {$EndIf}
      for I:=0 to 255 do
       with Log^.palPalEntry[I] do
        begin
@@ -1146,6 +1163,9 @@ begin
         peGreen:=Lmp[I,1];
         peBlue:=Lmp[I,2];
        end;
+     {$IfDef RangeChecksWereEnabled}
+     {$R+}
+     {$EndIf}
      PaletteReelle^:=CreatePalette(Log^);
     end;
  finally
