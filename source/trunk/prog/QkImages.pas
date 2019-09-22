@@ -697,9 +697,11 @@ var
   ImgData, PalData, AlphaData: String;
   DestImg, DestPal, DestAlpha: PChar;
   I, J: Integer;
+  K: Cardinal;
   Width, Height: Integer;
   PaddingSource, PaddingDest: Integer;
   V: array[1..2] of Single;
+  PaletteSize: Cardinal;
 
   //FreeImage:
   FIBuffer: FIMEMORY;
@@ -741,13 +743,24 @@ begin
       FIConvertedImage:=FreeImage_ConvertTo8Bits(FIImage);
       SourcePalette:=FreeImage_GetPalette(FIConvertedImage);
 
+      PaletteSize:=FreeImage_GetColorsUsed(FIConvertedImage);
+      if (PaletteSize=0) or (PaletteSize>256) then
+        LogAndRaiseError(FmtLoadStr1(5738, [FormatName]));
+
       DestPal:=PChar(PalData) + Length(Spec2);
-      for I:=0 to 255 do
+      for K:=0 to PaletteSize-1 do
       begin
-        PRGB(DestPal)^[2]:=PRGB(SourcePalette)^[0];
-        PRGB(DestPal)^[1]:=PRGB(SourcePalette)^[1];
-        PRGB(DestPal)^[0]:=PRGB(SourcePalette)^[2];
-        Inc(SourcePalette, 4); //FreeImage's palette is a RGBQUAD
+        PRGB(DestPal)^[0]:=SourcePalette.rgbRed;
+        PRGB(DestPal)^[1]:=SourcePalette.rgbGreen;
+        PRGB(DestPal)^[2]:=SourcePalette.rgbBlue;
+        Inc(SourcePalette, SizeOf(RGBQuad));
+        Inc(DestPal, 3);
+      end;
+      for K:=PaletteSize to 255 do
+      begin
+        PRGB(DestPal)^[0]:=0;
+        PRGB(DestPal)^[1]:=0;
+        PRGB(DestPal)^[2]:=0;
         Inc(DestPal, 3);
       end;
 

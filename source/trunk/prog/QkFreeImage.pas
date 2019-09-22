@@ -189,6 +189,7 @@ var
   FreeImage_GetPalette: function (dib : FIBITMAP) : PRGBQuad; stdcall;
   FreeImage_GetImageType: function (dib : FIBITMAP) : FREE_IMAGE_TYPE; stdcall;
   FreeImage_GetColorType: function (dib : FIBITMAP) : FREE_IMAGE_COLOR_TYPE; stdcall;
+  FreeImage_GetColorsUsed: function (dib : FIBITMAP) : Cardinal; stdcall;
   FreeImage_ConvertTo8Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
   FreeImage_ConvertTo24Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
   FreeImage_ConvertTo32Bits: function (dib : FIBITMAP) : FIBITMAP; stdcall;
@@ -267,6 +268,7 @@ begin
       FreeImage_GetPalette   := InitDllPointer(HFreeImage, '_FreeImage_GetPalette@4');
       FreeImage_GetImageType := InitDllPointer(HFreeImage, '_FreeImage_GetImageType@4');
       FreeImage_GetColorType := InitDllPointer(HFreeImage, '_FreeImage_GetColorType@4');
+      FreeImage_GetColorsUsed := InitDllPointer(HFreeImage, '_FreeImage_GetColorsUsed@4');
       FreeImage_ConvertTo8Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo8Bits@4');
       FreeImage_ConvertTo24Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo24Bits@4');
       FreeImage_ConvertTo32Bits := InitDllPointer(HFreeImage, '_FreeImage_ConvertTo32Bits@4');
@@ -343,6 +345,7 @@ begin
       FreeImage_GetPalette            := nil;
       FreeImage_GetImageType          := nil;
       FreeImage_GetColorType          := nil;
+      FreeImage_GetColorsUsed         := nil;
       FreeImage_ConvertTo8Bits        := nil;
       FreeImage_ConvertTo24Bits       := nil;
       FreeImage_ConvertTo32Bits       := nil;
