@@ -276,8 +276,8 @@ class BaseLayout:
         if self.editor.MODE == SS_MODEL:
             import mdlhandles
             mdlhandles.AddRemoveEyeHandles(self.editor, view)
-        floating.show()
         self.floating3DWindows.append(floating)
+        floating.show()
 
         #Trigger a rebuild of the handles and a refresh of the views
         self.editor.layout.explorer.selchanged()
@@ -370,10 +370,11 @@ class BaseLayout:
         quarkx.openfullscreen(self.editor.Root, 'QuArK Fullscreen')
 
     def closeall3DWindows(self):
-        for floating in self.floating3DWindows:
-            floating.close()
-        for fullscreen in self.fullscreen3DWindows:
-            fullscreen.close()
+        # Can't use a for-loop here, because the lists get changed in their respective onclose-handlers
+        while len(self.floating3DWindows) != 0:
+            self.floating3DWindows[0].close()
+        while len(self.fullscreen3DWindows) != 0:
+            self.fullscreen3DWindows[0].close()
 
     def setupdepth(self, view):
         pass    # abstract
@@ -398,7 +399,7 @@ class BaseLayout:
                 cfg = cfg[1:]
 
     def writeconfig(self, config):
-          # can be overridden
+        # can be overridden
         if self.leftpanel is not None:
             config["LPAtLeft"] = "1"[:self.leftpanel.align=="right"]
             config.setint("LeftPanel", self.leftpanel.size)
