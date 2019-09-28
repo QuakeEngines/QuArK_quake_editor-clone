@@ -390,8 +390,9 @@ begin
       Exit;
      end;
     Fw:=TPyFloatingWnd.CreateCustom(Form, nFlags, nCaption);
-    Result:=Fw.WindowObject; //FIXME: INCREF?
     Fw.WindowObject^.Hidden:=True;
+    Result:=Fw.WindowObject;
+    Py_INCREF(Result);
     LayoutMgrFromPanelObj(Form.MainPanelC).InsertControl(Result);
    end;
  except

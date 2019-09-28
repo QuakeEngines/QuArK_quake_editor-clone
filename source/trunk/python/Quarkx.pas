@@ -540,7 +540,6 @@ begin
    Temp.Caption:=s;
      //DefWindowProc(g_Form1.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
   Result:=Temp.WindowObject;
-  Py_INCREF(Result);
  except
   Py_XDECREF(Result);
   EBackToPython;
