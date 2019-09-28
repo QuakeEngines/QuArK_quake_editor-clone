@@ -939,29 +939,30 @@ begin
  Result:=_PyObject_NewVar(t,i,o);
 end;}
 
+//Note: This function can only handle Args-elements that are 4 bytes in size (DWORD's), so it will NOT work with Double's!
 function Py_BuildValueX(const fmt: PChar; Args: array of const) : PyObject;
 asm                     { Comments added by Decker, but I'm not sure they are correct!! }
  push edi               { save the value of edi for later retrieval }
- add ecx, ecx           { multiply ecx with 2}
+ add ecx, ecx           { multiply ecx with 2 (ecx = the number of elements in the Args array, minus 1) }
  add ecx, ecx           { multiply ecx with 2 again - so in reality its "ecx = ecx * 4" }
- lea edi, [ecx+8]       { load edi register with the result of "ecx + 8" }
- add ecx, ecx           { multiply ecx with 2 - now it would have been "ecx = ecx * 8" }
- add ecx, edx
+ lea edi, [ecx+8]       { load edi register with the result of "ecx + 8"; this is the number of bytes we're going to push onto the stack }
+ add ecx, ecx           { multiply ecx with 2 - now it would have been "ecx = ecx * 8"; "array of const" stores its elements per 8 bytes }
+ add ecx, edx           { this will now point to the last argument we need to send through }
  @L1:
-  push dword ptr [ecx]
-  sub ecx, 8
-  cmp ecx, edx
- jnb @L1
- push fmt
- call Py_BuildValue
- add esp, edi
- pop edi                { get the saved value of edi }
+  push dword ptr [ecx]  { push an argument onto the stack }
+  sub ecx, 8            { subtract 8 from our argument pointer }
+  cmp ecx, edx          { compare with the first argument; i.e. did we just push the last argument onto the stack? }
+ jnb @L1                { jump to L1 if "not below"; i.e. we're not done with the Args-array yet }
+ push fmt               { push the fmt-string onto the stack as well, making it the first argument for Py_BuildValue }
+ call Py_BuildValue     { call Py_BuildValue }
+ add esp, edi           { remove the arguments we pushed onto the stack }
+ pop edi                { restore the saved value of edi }
 end;
 
 function PyArg_ParseTupleX(src: PyObject; const fmt: PChar; AllArgs: array of const) : LongBool;
 asm
- push edi
- push esi
+ push edi               { save the value of edi for later retrieval }
+ push esi               { save the value of esi for later retrieval }
  mov esi, edx
  mov edx, ecx
  mov ecx, [esp+16]
@@ -979,8 +980,8 @@ asm
  push eax
  call PyArg_ParseTuple
  add esp, edi
- pop esi
- pop edi
+ pop esi                { restore the saved value of esi }
+ pop edi                { restore the saved value of edi }
 end;
 
 function Py_BuildValueDD(v1, v2: Double) : PyObject;
