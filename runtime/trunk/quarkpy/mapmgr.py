@@ -199,7 +199,6 @@ class MapLayout(BaseLayout):
         self.bezierform.setdata([], quarkx.getqctxlist(':form', "Bezier")[-1])
         self.bezierform.onchange = self.bezierformchange
         self.bezierview = fp.newmapview()
-        # bezierzoombtn.views = [self.bezierview]
         self.bezierview.color = NOCOLOR
         self.bezierview.viewtype = "panel"
         bezierzoombtn.views = [self.bezierview]
@@ -756,9 +755,8 @@ class MapLayout(BaseLayout):
         self.editor.ok(undo, Strings[621])
 
     def flagsclick(self, m):
-        ff = self.faceflags
         form = None
-        if ff is None:
+        if self.faceflags is None:
             if mapeditor() is not self.editor: return
             flist = quarkx.getqctxlist(":form", "TextureFlags")
             if not len(flist):
@@ -777,7 +775,7 @@ class MapLayout(BaseLayout):
             df.flags = DF_AUTOFOCUS | DF_LOCAL
             self.faceflags = ff
         self.loadfaceflags(form)
-        ff.show()
+        self.faceflags.show()
 
     def faceflagsclose(self, sender):
         self.faceflags = None
