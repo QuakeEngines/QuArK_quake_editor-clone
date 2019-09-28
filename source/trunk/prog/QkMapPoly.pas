@@ -4377,7 +4377,7 @@ begin
   else
    Result:=PyNoResult;
  except
-  Result:=Nil;
+  Py_XDECREF(Result);
   EBackToPython;
   Result:=Nil;
  end;
