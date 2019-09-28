@@ -99,9 +99,8 @@ class ReloadDlg (quarkpy.qmacro.dialogbox):
         qmacro.dialogbox.onclose(self, dlg)
 
     def cancel(self, dlg):
-        self.src = None 
+        self.src = None
         qmacro.dialogbox.close(self, dlg)
-
 
 
 
