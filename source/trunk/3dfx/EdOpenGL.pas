@@ -942,6 +942,13 @@ begin
       biPlanes:=1;
       biBitCount:=24;
       biCompression:=BI_RGB;
+
+      if (biWidth=0) or (biHeight=0) then
+      begin
+        //Nothing to draw at the moment...!
+        InvalidateRect(ViewWnd, nil, false);
+        Exit;
+      end;
     end;
     BmpInfo.bmiHeader:=bmiHeader;
 
