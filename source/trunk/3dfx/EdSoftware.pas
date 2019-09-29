@@ -269,7 +269,6 @@ constructor TSoftwareSceneObject.Create;
 begin
  inherited;
  FVertexList:=TMemoryStream.Create;
- SolidColors:=(RenderMode=rmSolidcolor);
 end;
 
 procedure TSoftwareSceneObject.Init(nCoord: TCoordinates; nDisplayMode: TDisplayMode; nDisplayType: TDisplayType;
@@ -789,7 +788,7 @@ begin
 
  if Assigned(guColorCombineFunction) then
  begin
-   if SolidColors then
+   if RenderMode=rmSolidcolor then
      guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
    else
      guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
@@ -1266,7 +1265,7 @@ begin
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
 
- NeedTex:=not SolidColors;
+ NeedTex:=(RenderMode=rmTextured);
 
  Surf:=PList^.Surf;
  SurfEnd:=PChar(Surf)+PList^.SurfSize;
@@ -1281,7 +1280,7 @@ begin
     begin
       nColor:=SwapColor(AlphaColor);
 
-      if SolidColors then
+      if RenderMode = rmSolidcolor then
       begin
         with PList^.Texture^ do
         begin

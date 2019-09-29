@@ -157,7 +157,6 @@ type
    ViewEntities: TViewEntities;
    TranspFactor: Single;
    ErrorMsg: String;
-   SolidColors: Boolean;
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
    FarDistance: TDouble;
    FogDensity: Single;

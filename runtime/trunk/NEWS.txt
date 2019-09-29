@@ -14,6 +14,8 @@
 
 6.6.0 Beta 7
 ============
+* [DanielPharos]: Fixed solid color mode not working in Software and Glide renderers.
+
 * [DanielPharos]: Provide a new setting for the software renderer to limit the maximum
           - resolution at which it renders. This used to be the case, but this code was broken
           - in the past, and contained underflow errors leading to renderer crashes.
