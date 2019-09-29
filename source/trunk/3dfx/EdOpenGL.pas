@@ -2110,7 +2110,7 @@ begin
         //
         //DanielPharos: This line fixes a subtle bug. LightNR is a cardinal, so if it's
         //zero, the max bound of the for-loop overflows into max_int. -> The loop isn't
-        //skipped! 
+        //skipped!
         if OpenGLLights <> 0 then
         //
         for LightNR := 0 to OpenGLLights-1 do
