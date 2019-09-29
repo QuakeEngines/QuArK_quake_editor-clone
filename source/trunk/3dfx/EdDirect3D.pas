@@ -574,6 +574,8 @@ end;
 
 procedure TDirect3DSceneObject.ClearScene;
 var
+ l_Res: HResult;
+ LightNR: DWORD;
  PL: PLightList;
 begin
   while Assigned(Lights) do
@@ -582,7 +584,16 @@ begin
     Lights:=PL^.Next;
     Dispose(PL);
   end;
-  NumberOfLights:=0;
+  if NumberOfLights<>0 then
+  begin
+    for LightNR := 0 to NumberOfLights-1 do
+    begin
+      l_Res:=D3DDevice.LightEnable(LightNR, False);
+      if (l_Res <> D3D_OK) then
+        raise EErrorFmt(6403, ['LightEnable', DXGetErrorString9(l_Res)]);
+    end;
+    NumberOfLights:=0;
+  end;
   inherited;
 end;
 
@@ -1035,12 +1046,17 @@ begin
     begin
       light._Type := Direct3D9.D3DLIGHT_POINT;
       light.Diffuse := D3DXColorFromDWord(PL^.Color);
+      light.Specular := D3DXColorFromDWord(0);
+      light.Ambient := D3DXColorFromDWord(0);
       light.Position := D3DXVECTOR3(PL^.Position[0], PL^.Position[1], PL^.Position[2]);
+      light.Direction := D3DXVECTOR3(0.0, 0.0, 0.0);
       light.Range := GetMapLimit();
-
-      light.Attenuation0 := 1.0;
+      light.Falloff := 0.0;
+      light.Attenuation0 := 0.0;
       light.Attenuation1 := 0.0;
       light.Attenuation2 := 1.0 / (SetupGameSet.GetFloatSpec('LightIntensityScale', 7500.0) * PL^.Brightness);
+      light.Theta := 0.0;
+      light.Phi := 0.0;
 
       l_Res:=D3DDevice.SetLight(LightCurrent, light);
       if (l_Res <> D3D_OK) then
@@ -1378,14 +1394,16 @@ begin
           //skipped!
           if OpenGLLights <> 0 then
           //
-          PO:=Direct3DLightList;
-          for LightNR := 0 to OpenGLLights-1 do
           begin
-            l_Res:=D3DDevice.LightEnable(PO^, True);
-            if (l_Res <> D3D_OK) then
-              raise EErrorFmt(6403, ['LightEnable', DXGetErrorString9(l_Res)]);
+            PO:=Direct3DLightList;
+            for LightNR := 0 to OpenGLLights-1 do
+            begin
+              l_Res:=D3DDevice.LightEnable(PO^, True);
+              if (l_Res <> D3D_OK) then
+                raise EErrorFmt(6403, ['LightEnable', DXGetErrorString9(l_Res)]);
 
-            Inc(PO, 1);
+              Inc(PO, 1);
+            end;
           end;
         end;
 
