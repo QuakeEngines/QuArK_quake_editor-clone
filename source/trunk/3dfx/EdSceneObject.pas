@@ -1210,7 +1210,7 @@ begin
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (Alpha shl 24);
-               
+
                // if the texture has alpha channel its probably transparent
                if Assigned(PList^.Texture^.SourceTexture) then
                begin
