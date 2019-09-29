@@ -1142,11 +1142,16 @@ begin
               Source32:=Pointer(Source);
               for X:=DrawRect.Left to DrawRect.Right - 1 do
               begin
-                Dest^:=((Source32^) and $000003FF);
+                //We can't stuff 10 bits into 8 bits...! So we need to cut off
+                //the last 2 bits of every color
+                //Dest^:=((Source32^) and $000003FF);
+                Dest^:=((Source32^) and $000003FC) shr 2;
                 Inc(Dest);
-                Dest^:=((Source32^) and $000FFC00) shr 10;
+                //Dest^:=((Source32^) and $000FFC00) shr 10;
+                Dest^:=((Source32^) and $000FF000) shr 12;
                 Inc(Dest);
-                Dest^:=((Source32^) and $3FF00000) shr 20;
+                //Dest^:=((Source32^) and $3FF00000) shr 20;
+                Dest^:=((Source32^) and $3FC00000) shr 22;
                 Inc(Dest);
                 Inc(Source32);
               end;
