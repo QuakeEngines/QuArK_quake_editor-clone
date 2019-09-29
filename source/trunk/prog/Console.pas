@@ -101,11 +101,12 @@ var
   ConsoleFilename: string;
 
 const
-  CONSOLE_FILENAME = 'Console.txt';
-  MinConsoleWidth  = 80;
-  MaxConsoleWidth  = 80;
-  MinConsoleHeight = 60;
-  MaxConsoleHeight = 600;
+  CONSOLE_FILENAME  = 'Console.txt';
+  MinConsoleWidth   = 80;
+  MaxConsoleWidth   = 80;
+  MinConsoleHeight  = 60;
+  MaxConsoleHeight  = 600;
+  ConsoleFontHeight = 15;
 
 type
  TPipeLine = record
@@ -464,7 +465,7 @@ begin
  if not ConsoleReady then Exit;
  if ConsoleFont=0 then
   begin
-   ConsoleFont:=CreateFont(15, 0, 0, 0, FW_DONTCARE, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH or FF_DONTCARE, Nil);
+   ConsoleFont:=CreateFont(ConsoleFontHeight, 0, 0, 0, FW_DONTCARE, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH or FF_DONTCARE, Nil);
    Str:=StringOfChar('M', ConsoleWidth);
    Font:=SelectObject(DC, ConsoleFont); try
    if GetTextExtentPoint32(DC, PChar(Str), ConsoleWidth, Size) then
@@ -477,7 +478,7 @@ begin
      Exit;
     end
    else
-    LineHeight:=15;
+    LineHeight:=ConsoleFontHeight;
    finally SelectObject(DC, Font); end;
   end;
  X:=Display.HorzScrollBar.Position;
