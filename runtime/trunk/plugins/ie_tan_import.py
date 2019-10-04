@@ -440,7 +440,7 @@ class tan_obj:
         temp_data = file.read(struct.calcsize(self.binary_format))
         data = struct.unpack(self.binary_format, temp_data)
 
-        # To avoid dupeicate skin names from being imported, we change the name.
+        # To avoid duplicate skin names from being imported, we change the name.
         used_skin_names = []
         for item in editor.Root.subitems:
             if item.type == ":mc" and not item.name.startswith(ModelFolder + "_" + ModelName):
