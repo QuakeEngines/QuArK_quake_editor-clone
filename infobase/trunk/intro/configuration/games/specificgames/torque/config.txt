@@ -1,18 +1,18 @@
 title: Configuration
 author: cdunde
 
-In this short tutorial I will be showing you how to quickly setup Quark to compile maps
+In this short tutorial I will be showing you how to quickly setup QuArK to compile maps
 for the Torque game engine. To create maps for Torque you must download a version of its <g>build tool</g>, the <link download_tools>map2dif_DEBUG.exe</link> file. There are a number of different versions available on the Internet, but I recommend using the <link download_tools>0.900r-beta version</link>.
 
-<table border=0 cellspacing=0>
-<tr><td valign=top align=left>
+<div style="overflow: auto;">
+<img align=right>torque_config1.png</img>
 To keep things organized it is best to create a new folder in your Torque directory called "QuArK files" and place the file there. As you acquire other versions to try out you can place them in this same folder location as long as you change the file name to something that will not match any that are already there, to keep from over writing them. The name does not matter, the file will still work. Adding the version number or particular project name you use it with is the best way to help identify which one you want to use. You can change which one you want to use at any time.
 
 <b>Part 1 – Setting up QuArK to work with Torque</b>
 
-In this section we will quickly go over how to setup Quark to work with Torque.
-To start with load up Quark, you should be greeted with the 'Quark Explorer' panel.
-The Quark Explorer allows you to define which game environment you wish to work in,
+In this section we will quickly go over how to setup QuArK to work with Torque.
+To start with load up QuArK, you should be greeted with the 'QuArK Explorer' panel.
+The QuArK Explorer allows you to define which game environment you wish to work in,
 as well as doing many other things.
 
 First we need to select the game we want to map for. We do this by simply going
@@ -20,20 +20,16 @@ to the 'Games' button located on the top right of the Explorer panel, once press
 will present you with a drop list of all the currently available games, select
 Torque as shown in the screen shot to the right.
 
-Next we need to setup Quark to work with the Torque compiler, to do so go back to the
-'Games' button and press the 'Configuration' button at the bottom of the list. 
+Next we need to setup QuArK to work with the Torque compiler, to do so go back to the
+'Games' button and press the 'Configuration' button at the bottom of the list.
 
 Once selected a new window will be opened called 'Configuration', making sure you have
 Torque selected on the left navigation panel, (under the Games Tab) as we now need
 to fill out some of the necessary game settings on the right of the Configuration panel which is shown in the next image just below.
-</td>
-<td>
-<img valign=top align=right>torque_config1.png</img>
-</td></tr>
-</table>
+</div>
 
-<table border=0 cellspacing=0>
-<tr><td valign=top align=left>
+<div style="overflow: auto;">
+<img align=right>torque_config2.png</img>
 As you can see in the image to the right, most of the settings have already been set with a default entry.
 
 <i><u>Torque converter</u></i>: This is a single drop down item. But you can type in any file name for other versions.
@@ -60,13 +56,9 @@ Or you can download a package we have created. See <a href="intro.configuration.
 
 <i><u>1st thru 6th and 9th program</u></i>: Only the "...program-executable (path optional)" lines need to be change using the <b>...</b> button. Navigate to where you have put the map2dif file you wish to use and select it. Once the 1st program is set then the rest will open to that same folder.
 
-After you have finished setting Quark to work with the Torque compiler, simply hit the 'Apply' button, and then press the 'OK' button to<br>
-close the Configuration panel. This will put you back in the Quark Explorer.
-</td>
-<td>
-<img valign=top align=right>torque_config2.png</img>
-</td></tr>
-</table>
+After you have finished setting QuArK to work with the Torque compiler, simply hit the 'Apply' button, and then press the 'OK' button to<br>
+close the Configuration panel. This will put you back in the QuArK Explorer.
+</div>
 
 <b>Part 2 – Compiling</b>
 
