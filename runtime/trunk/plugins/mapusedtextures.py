@@ -48,30 +48,51 @@ def createusedtextures(ToolBox, editor=None):
     Folder.flags = Folder.flags | qutils.OF_TVSUBITEM
 
     UsedTexturesList = quarkx.texturesof([editor.Root])
- #   NoImageFile = None
     for UsedTextureName in UsedTexturesList:
         UsedTexture = quarkx.newobj(UsedTextureName + ".wl")
- #       if quarkx.setupsubset()["ShadersPath"] is not None:
- #           try:
- #               GameFilesPath = quarkx.getquakedir()+"/"+quarkx.getbasedir()
- #               UsedTexture["a"] = GameFilesPath+"/"+quarkx.setupsubset()["ShadersPath"]+"sky.shader"+"[textures/"+UsedTextureName+("]")
- #           except:
- #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
- #       else:
- #           try:
- #               UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
- #           except:
- #               NoImageFile = 1
-        if quarkx.setupsubset().shortname == "Half-Life2":
+
+        #Based on QkTextures.pas:
+        texture = quarkx.loadtexture(UsedTextureName)
+        if (texture.type == '.wl') and texture["w"]: #Quake2
+            UsedTexture["w"] = quarkx.getbasedir()
+            if texture["PakFile"]:
+                UsedTexture["PakFile"] = texture["PakFile"]
+        elif (texture.type == '.wl') and texture["m"]: #Heretic2
+            UsedTexture["m"] = quarkx.getbasedir()
+            if texture["PakFile"]:
+                UsedTexture["PakFile"] = texture["PakFile"]
+        elif (texture.type == '.wl') and texture["i"]: #Sin
+            UsedTexture["i"] = quarkx.getbasedir()
+            if texture["PakFile"]:
+                UsedTexture["PakFile"] = texture["PakFile"]
+        elif (texture.type == '.wl') and texture["k"]: #KingPin
+            UsedTexture["k"] = quarkx.getbasedir()
+            if texture["PakFile"]:
+                UsedTexture["PakFile"] = texture["PakFile"]
+            #FIXME: Copy v, f, and c too?
+        elif (texture.type == '.wl') and texture["l"]: #SOF
+            UsedTexture["l"] = quarkx.getbasedir()
+            if texture["PakFile"]:
+                UsedTexture["PakFile"] = texture["PakFile"]
+        elif (texture.type == '.wl') and texture["v"]: #HL2
             UsedTexture["v"] = quarkx.getbasedir()
-        else:
-            UsedTexture["a"] = quarkx.getquakedir()+"/"+quarkx.getbasedir()
+            if texture["PakFile"]:
+                UsedTexture["PakFile"] = texture["PakFile"]
+        elif (texture.type == '.wl') and texture["a"]: #Quake3
+            UsedTexture["a"] = quarkx.getbasedir()
+            if texture["b"]:
+                UsedTexture["b"] = texture["b"]
+        else: #Quake
+            if texture["d"]: #.wad file link
+                UsedTexture["d"] = texture["d"]
+                if texture["h"]: #Half-Life texture link
+                    UsedTexture["h"] = texture["h"]
+                UsedTexture["s"] = quarkx.getbasedir()
+            else: #Quake 1 link
+                UsedTexture["b"] = texture["b"]
+                UsedTexture["s"] = quarkx.getbasedir()
         UsedTexture.flags = UsedTexture.flags | qutils.OF_TVSUBITEM
         Folder.appenditem(UsedTexture)
- #   if NoImageFile is not None:
- #       pass
- #   else:
- #       ToolBox.appenditem(Folder)
     ToolBox.appenditem(Folder)
     return
 
@@ -80,7 +101,7 @@ def texturebrowser(reserved=None, oldtexturebrowser=mapbtns.texturebrowser):
     tbx_list = quarkx.findtoolboxes("Texture Browser...")
     ToolBoxName, ToolBox, flag = tbx_list[0]
     createusedtextures(ToolBox)
-    
+
     oldtexturebrowser(reserved)
 mapbtns.texturebrowser = texturebrowser
 
