@@ -16,7 +16,6 @@ Info = {
    "quark":         "Version 6.6.0 Beta 4" }
 
 import struct, sys, os, time, operator, math
-from math import sqrt
 import quarkx
 import quarkpy.qutils
 from types import *
@@ -433,7 +432,7 @@ class skb_obj:
                     QuArK_Bone.vtx_pos = {}
                     QuArK_Bone['show'] = (1.0,)
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
-                 #   QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                 #   QuArK_Bone.rotmatrix = quarkx.matrix((math.sqrt(2)/2, -math.sqrt(2)/2, 0), (math.sqrt(2)/2, math.sqrt(2)/2, 0), (0, 0, 1))
                     QuArK_Bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
@@ -544,7 +543,6 @@ class skb_obj:
             self.ComponentList.append(Component)
 
         # To sort and place the components in their proper order.
-        import operator
         templist = []
         for name in range(len(self.ComponentList)):
             try:

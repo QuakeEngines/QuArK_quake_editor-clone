@@ -16,7 +16,6 @@ Info = {
    "quark":         "Version 6.6.0 Beta 4" }
 
 import struct, sys, os, time, math
-from math import sqrt
 import quarkx
 import quarkpy.qutils
 from types import *
@@ -45,7 +44,7 @@ def CalcQW(qx, qy, qz):
     if qw<0:
         qw=0
     else:
-        qw = -sqrt(qw)
+        qw = -math.sqrt(qw)
     return qw
 
 ######################################################
@@ -660,7 +659,7 @@ class skd_obj:
                     QuArK_Bone.vtx_pos = {}
                     QuArK_Bone['show'] = (1.0,)
                     QuArK_Bone['position'] = QuArK_Bone.position.tuple
-                 #   QuArK_Bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
+                 #   QuArK_Bone.rotmatrix = quarkx.matrix((math.sqrt(2)/2, -math.sqrt(2)/2, 0), (math.sqrt(2)/2, math.sqrt(2)/2, 0), (0, 0, 1))
                     QuArK_Bone.rotmatrix = quarkx.matrix((1, 0, 0), (0, 1, 0), (0, 0, 1))
                     QuArK_Bone['draw_offset'] = (0.0,0.0,0.0)
                     QuArK_Bone['scale'] = (1.0,)
