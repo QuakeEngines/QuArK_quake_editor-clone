@@ -1,0 +1,13 @@
+title: Spotlights
+author:
+
+<b>Question:</b><br>
+When using FreeImage as the loading library, why do certain PCX file
+don't load correctly as seem to have a randomized color palette?
+
+<b>Answer:</b><br>
+This is a known issue with some Quake 2 .PCX files; technically,
+they are corrupt. Both QuArK and DevIL compensate for it, but
+FreeImage doesn't, resulting in a corrupt palette. In other words:
+don't use FreeImage for loading PCX files if you encounter this issue.
+

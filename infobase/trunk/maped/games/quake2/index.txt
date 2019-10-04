@@ -6,6 +6,7 @@ desc: turret_breach_2
 desc: spotlights
 desc: doors_with_keys
 desc: framerates
+desc: freeimagepcx
 
 If you have any questions, problems or find solutions regarding this topic, please post them in the
 <link communication>QuArK forum/mailing-list</link>.
