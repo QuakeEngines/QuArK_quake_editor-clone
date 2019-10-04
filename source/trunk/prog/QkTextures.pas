@@ -1078,7 +1078,7 @@ begin
         S:=Specifics.Values['d'];
         if S<>'' then
         begin  { .wad file link }
-          Ext:=Specifics.Values['h'];
+          Ext:=Specifics.Values['h']; { Half-Life texture link }
           if Ext='' then
           begin
             ChangeGameMode(mjNotQuake2, True);
