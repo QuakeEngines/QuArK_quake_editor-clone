@@ -14,11 +14,11 @@ depends on the game you are using. In Quake 2, for example, you must set a flag 
 <ref> ./usingmapeditor </ref> above; but if you didn't know that you had to use a flag for Quake 2 and a "func_ladder" for
 Half-Life, read on.
 
-The game-dependant features are not related to QuArK itself: All the map editors available on the Internet will provide you
+The game-dependent features are not related to QuArK itself: All the map editors available on the Internet will provide you
 with a list of entities and textures and settings; what these settings actually do is programmed in the game itself. For
 information about this subject, you can look for general documentation at <a target="_blank" href="http://www.planetquake.com">PlanetQuake</a>.
 The other sources are Quake editing forums. You can use the
-<link forums>QuArK forums</link> (please mention explicitely which game you
+<link forums>QuArK forums</link> (please mention explicitly which game you
 are using!). See also the links (right column in the current design)
 <link website>on the web site</link>, as well as the <link infobase>on-line docs</link>.
 There is also a <a href="http://quark.planetquake.gamespy.com/armin/adv-quake2.html">Quake 2 - specific page</a> on the web site.
