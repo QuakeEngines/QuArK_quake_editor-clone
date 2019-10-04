@@ -1022,8 +1022,8 @@ begin
             MaterialFile.Acces;  { load the .mtr file (if not already loaded), meaning this loads the entire .mtr file.}
 
             // GameTexturesPath is the IMAGE MAIN folder, for the link, with a forward slash, textures/ .
-            // TexName is the IMAGE SUB folder, forward slash and texture name (without the file .tga suffex like alphalabs/a_1fwall21b)
-            // So the "Link" line below is really TWO items linked togeather:
+            // TexName is the IMAGE SUB folder, forward slash and texture name (without the file .tga suffix like alphalabs/a_1fwall21b)
+            // So the "Link" line below is really TWO items linked together:
             // game folder/material folder/material file full name + IMAGE MAIN folder/IMAGE SUB folder/texture file (short) name.
             // for example, we want to link to the IMAGE file for the Doom3 alphalabs/a_1fwall21b material we would have:
             // base + materials/alphalabs.mtr + textures/alphalabs/a_lfwall21b
