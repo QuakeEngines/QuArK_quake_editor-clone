@@ -1284,7 +1284,7 @@ QQRKSRC1
         }
         func_wall:b =
         {
-          ;desc = "Make a wall appear or dissappear by connecting a func_butto"
+          ;desc = "Make a wall appear or disappear by connecting a func_butto"
            "n to this."
           poly:p =
           {
