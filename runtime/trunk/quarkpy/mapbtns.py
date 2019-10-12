@@ -198,20 +198,20 @@ def prepareobjecttodrop(editor, obj):
                 raise RuntimeError("Problem with 'Default polyhedron size'")
         except:
             defpolysize = [64, 64, 64] # must be an array of three values
-        oldincl = oldincl.lower()
-        if (oldincl.find("poly") > -1):
+        oldincl = oldincl.lower().split(",")
+        if ("defpoly" in oldincl) or ("poly" in oldincl):
             # Create a default-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex))
-        if (oldincl.find("trigger") > -1):
+        if "trigger" in oldincl:
             # Create a trigger-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_trigger, "trigger poly"))
-        if (oldincl.find("clip") > -1):
+        if "clip" in oldincl:
             # Create a clip-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_clip, "clip poly"))
-        if (oldincl.find("origin") > -1):
+        if "origin" in oldincl:
             # Create a origin-poly half the X/Y-size, and 1.5 less the Z-size
             obj.appenditem(newcubeXYZ(defpolysize[0]/2, defpolysize[1]/2, defpolysize[2]/1.5, tex_for_origin, "origin poly"))
-        if (oldincl.find("caulk") > -1):
+        if "caulk" in oldincl:
             # Create a caulk-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_caulk, "caulk poly"))
 

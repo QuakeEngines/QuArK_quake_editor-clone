@@ -211,7 +211,7 @@ def prepareobjecttodrop(editor, obj):
         for bone in obj.subitems:
             resetbones(bone)
 
-    oldincl = obj[";incl"]
+    #oldincl = obj[";incl"]
     obj[";desc"] = None
     obj[";incl"] = None
 
