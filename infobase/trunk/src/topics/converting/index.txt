@@ -1,0 +1,8 @@
+title: Converting between Delphi and Python
+author: DanielPharos
+
+The Delphi class <tt>QObject</tt> contains the Python object as well; see its public member <tt>PythonObj</tt>. In a sense, the Python object is embedded into the Delphi object.
+
+This also allows the Delphi code to easily find the Delphi object belonging to a Python object (assuming it was made through the Delphi-code); see <tt>QkObjFromPyObj1</tt> in the Python\PyObjects.pas file.
+
+<tt>Py_BuildValueX</tt> does not handle float arguments ('f') properly; make them into Python Floats through <tt>PyFloat_FromDouble</tt>, and send them through as objects. The same goes for double arguments ('d'); see their dedicated functions.
