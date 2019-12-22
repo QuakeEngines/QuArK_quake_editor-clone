@@ -8482,7 +8482,7 @@ QQRKSRC1
       AutoSave: = {
         Typ = "EF1"
         Txt = "Auto-Save every (minutes) :"
-        Hint = "the map you are editing will be saved automatically each time this amount of minutes elasped (0=disabled)"
+        Hint = "the map you are editing will be saved automatically each time this amount of minutes elapsed (0=disabled)"
       }
       AutoSaveRun: = {
         Typ = "X"
