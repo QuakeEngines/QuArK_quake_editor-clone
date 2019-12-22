@@ -10337,31 +10337,7 @@ QQRKSRC1
 
   defpoly:incl =      // default polyhedron
   {
-    ;incl[] = "[:Map:Building:DefPoly]"   // equals one of the polyhedrons below
-  }
-  poly128:incl =      // default 128x128x128 polyhedron for brush entities
-  {
-    poly:p =
-    {
-      east:f   = {v= '64 0 0 64 128 0 64 0 128'   tex="[auto]"}
-      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' tex="[auto]" m="1"}
-      north:f  = {v= '0 64 0 0 64 128 128 64 0'   tex="[auto]" m="1"}
-      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' tex="[auto]"}
-      up:f     = {v= '0 0 64 128 0 64 0 128 64'   tex="[auto]"}
-      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' tex="[auto]" m="1"}
-    }
-  }
-  poly64:incl =      // default 64x64x64 polyhedron for brush entities
-  {
-    poly:p =
-    {
-      east:f   = {v='32 -32 -32 32 96 -32 32 -32 96'    tex="[auto]"}
-      west:f   = {v='-32 -32 -32 -32 -32 96 -32 96 -32' tex="[auto]" m="1"}
-      north:f  = {v='-32 32 -32 -32 32 96 96 32 -32'    tex="[auto]" m="1"}
-      south:f  = {v='32 -32 -32 160 -32 -32 32 -32 96'  tex="[auto]"}
-      up:f     = {v='-32 -32 32 96 -32 32 -32 96 32'    tex="[auto]"}
-      down:f   = {v='-32 -32 -32 -32 96 -32 96 -32 -32' tex="[auto]" m="1"}
-    }
+    ;incl[] = "[:Map:Building:DefPoly]"
   }
   NewMap1:incl =
   {
