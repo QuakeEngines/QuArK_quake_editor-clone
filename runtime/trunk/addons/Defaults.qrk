@@ -8493,7 +8493,7 @@ QQRKSRC1
       DefPoly: = {
         Typ     = "C"
         Txt     = "Default brush-entity size"
-        Items   = ""
+        Items   = "256x256x256"
                $0D"128x128x128"
                $0D"96x96x96"
                $0D"64x64x64"
