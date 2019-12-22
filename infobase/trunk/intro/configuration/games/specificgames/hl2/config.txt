@@ -88,6 +88,8 @@ of the Game directory setting.
 game. This directory should contain the compilers.
 
 <li>Set the Compiler version setting to the type of compiler the game uses.
+
+<li>Set the Format and layout of the file archives setting to the game file location layout Steam is using.
 </ul>
 
 The compiler settings should work just fine, but if they need to be changed and you
