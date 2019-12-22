@@ -81,7 +81,7 @@ viewport opens.
 <i>Workaround for GDI</i>. Some systems allows direct GDI drawing onto
 rendered viewports. More modern systems do not support this anymore.
 
-<i>WorkaroundFPExceptions</i>. Some OpenGL implementations assume
+<i>Workaround for FP exceptions</i>. Some OpenGL implementations assume
 floating point exceptions are disabled (which they are not in QuArK),
 causing rendering failures. Enable this option to ignore floating
 point exceptions during OpenGL rendering.
