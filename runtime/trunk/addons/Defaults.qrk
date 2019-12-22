@@ -2840,7 +2840,7 @@ QQRKSRC1
       }
       Building:config =
       {
-        DefPoly         = "128x128x128"
+        DefPoly         = "64x64x64"
         WallWidth       = '-8'
         mpOffset        = '0 0 64'
         mpZoom          = '2'
