@@ -1024,7 +1024,7 @@ QQRKSRC1
         trigger_bidirectional:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_entdist:e =
         {
@@ -1034,37 +1034,37 @@ QQRKSRC1
         trigger_formation:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_location:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_visible:e =
         {

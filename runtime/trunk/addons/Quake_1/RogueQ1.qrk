@@ -64,8 +64,8 @@ QQRKSRC1
 
                         pendulum:e = { origin="0 0 0" angle="360" }
 
-                        trigger_earthquake:b = { angle="360" ;incl="defpoly" }
-                        trigger_earthquake_kill:b = { angle="360" ;incl="defpoly" }
+                        trigger_earthquake:b = { angle="360" ;incl="trigger" }
+                        trigger_earthquake_kill:b = { angle="360" ;incl="trigger" }
                     }
                 }
 	}

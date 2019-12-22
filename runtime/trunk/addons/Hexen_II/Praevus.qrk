@@ -2969,7 +2969,7 @@ QQRKSRC1
        trigger_deathtouch:b = 
        {
          ;desc = "Kills anything that has a matching targetname and touches it."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_hub_intermission:e = 
        {
@@ -2990,7 +2990,7 @@ QQRKSRC1
        {
          ;desc = "sets skill level to the value of 'noise'."
          noise = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_stop:e = 
        {

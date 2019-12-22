@@ -1601,7 +1601,7 @@ QQRKSRC1
         trigger_autosave:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "AutoSave Trigger"
         }
         trigger_camera:e =
@@ -1620,14 +1620,14 @@ QQRKSRC1
         trigger_cdaudio:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger CD Audio"
           health = "-1"
         }
         trigger_changelevel:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger: Change level"
           changedelay = "0"
         }
@@ -1647,13 +1647,13 @@ QQRKSRC1
         trigger_endsection:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "EndSection Trigger"
         }
         trigger_gravity:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger Gravity"
           gravity = "1"
         }
@@ -1666,7 +1666,7 @@ QQRKSRC1
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger player hurt"
           dmg = "10"
           delay = "0"
@@ -1675,7 +1675,7 @@ QQRKSRC1
         trigger_monsterjump:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger monster jump"
           speed = "40"
           height = "128"
@@ -1683,20 +1683,20 @@ QQRKSRC1
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger: Activate multiple"
           wait = "10"
         }
         trigger_once:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger: Activate once"
         }
         trigger_push:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger player push"
           speed = "40"
         }
@@ -1710,43 +1710,43 @@ QQRKSRC1
         trigger_tank:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Tank Trigger"
         }
         trigger_tankoutofgas:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Tank Trigger out of Gas"
         }
         trigger_tankshell:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "TankShellTriggered"
         }
         trigger_teleport:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger teleport"
         }
         trigger_transition:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger: Select Transition Area"
         }
         trigger_teleport:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger teleport"
         }
         trigger_transition:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger: Select Transition Area"
         }
       }

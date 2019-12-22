@@ -179,7 +179,7 @@ QQRKSRC1
                             skin="1"
                             frame="1"
                 }
-                trigger_custom:b = { angle="360" ;incl="defpoly" ;desc="Trigger for custom_item" }
+                trigger_custom:b = { angle="360" ;incl="trigger" ;desc="Trigger for custom_item" }
                 misc_fireball:e = { angle="360" origin="0 0 0" ;desc="Small fireball"
                             speed="40"
                 }
@@ -392,45 +392,45 @@ QQRKSRC1
             }
             Trigger_.qtxfolder =
             {
-                trigger_changelevel:b = { angle="360" ;incl="defpoly" ;desc="Trigger: Change level" }
-                trigger_once:b = { angle="360" ;incl="defpoly" ;desc="Trigger: Activate once" }
-                trigger_multiple:b = { angle="360" ;incl="defpoly" ;desc="Trigger: Activate multiple"
+                trigger_changelevel:b = { angle="360" ;incl="trigger" ;desc="Trigger: Change level" }
+                trigger_once:b = { angle="360" ;incl="trigger" ;desc="Trigger: Activate once" }
+                trigger_multiple:b = { angle="360" ;incl="trigger" ;desc="Trigger: Activate multiple"
                             wait="10"
                 }
-                trigger_onlyregistered:b = { angle="360" ;incl="defpoly" ;desc="Trigger: Registered only" }
-                trigger_secret:b = { angle="360" ;incl="defpoly" ;desc="Trigger: Secret"
+                trigger_onlyregistered:b = { angle="360" ;incl="trigger" ;desc="Trigger: Registered only" }
+                trigger_secret:b = { angle="360" ;incl="trigger" ;desc="Trigger: Secret"
                             wait="10"
                 }
-                trigger_teleport:b = { angle="360" ;incl="defpoly" ;desc="Trigger teleport" }
-                trigger_qtele:b = { angle="360" ;incl="defpoly" ;desc="Trigger teleport silent" }
-                trigger_setskill:b = { angle="360" ;incl="defpoly" ;desc="Trigger set skill"
+                trigger_teleport:b = { angle="360" ;incl="trigger" ;desc="Trigger teleport" }
+                trigger_qtele:b = { angle="360" ;incl="trigger" ;desc="Trigger teleport silent" }
+                trigger_setskill:b = { angle="360" ;incl="trigger" ;desc="Trigger set skill"
                             message="1"
                 }
                 trigger_relay:e = { angle="360" origin="0 0 0" ;desc="Trigger relay" }
-                trigger_monsterjump:b = { angle="360" ;incl="defpoly" ;desc="Trigger monster jump"
+                trigger_monsterjump:b = { angle="360" ;incl="trigger" ;desc="Trigger monster jump"
                             speed="40"
                             height="128"
                 }
                 trigger_counter:e = { angle="360" origin="0 0 0" ;desc="Trigger counter"
                             count="2"
                 }
-                trigger_push:b = { angle="360" ;incl="defpoly" ;desc="Trigger player push"
+                trigger_push:b = { angle="360" ;incl="trigger" ;desc="Trigger player push"
                             speed="40"
                             sounds="0"
                 }
-                trigger_hurt:b = { angle="360" ;incl="defpoly" ;desc="Trigger player hurt"
+                trigger_hurt:b = { angle="360" ;incl="trigger" ;desc="Trigger player hurt"
                             dmg="10"
                             cnt="0"
                 }
-                trigger_fog:b = { angle="360" ;incl="defpoly" ;desc="Trigger_fog"
+                trigger_fog:b = { angle="360" ;incl="trigger" ;desc="Trigger_fog"
                             fog_disable="1"
                             fog_start="50"
                             fog_end="1500"
                 }
-                trigger_console:b = { angle="360" ;incl="defpoly" ;desc="trigger_console"
+                trigger_console:b = { angle="360" ;incl="trigger" ;desc="trigger_console"
                             wait="4"
                 }
-                trigger_camera:b = { angle="360" ;incl="defpoly" ;desc="Trigger Camera"
+                trigger_camera:b = { angle="360" ;incl="trigger" ;desc="Trigger Camera"
                             script="0"
                             script_delay="0"
                 }

@@ -297,42 +297,42 @@ QQRKSRC1
         trigger_damage:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_friendlychain:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_lookat:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_mount:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_use:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
       }
     }

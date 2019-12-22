@@ -71,14 +71,14 @@ QQRKSRC1
         origin = "0 0 0"
         angle = "360"
         ;desc = "Teleporter (all trigger_tags are trigger by walkover"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_changelevel:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "Changes to another level"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_counter:e =
         {
@@ -91,56 +91,56 @@ QQRKSRC1
         origin = "0 0 0"
         angle = "360"
         ;desc = "Changes Skill level"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_once:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "Triggers action only once"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_multiple:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "trigger action (can be triggered more than once)"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_onlyregistered:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "Only triggers if game is registered (registered == 1)"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_secret:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "trigger action and award secret credit"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_monsterjump:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "walking monsters that touch this will jump"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_hurt:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "any object touching this will be hurt"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_push:b =
         {
         origin = "0 0 0"
         angle = "360"
         ;desc = "pushes player in any direction (like a windtunnel)"
-        ;incl = "defpoly"
+        ;incl = "trigger"
         }
         trigger_relay:e =
         {

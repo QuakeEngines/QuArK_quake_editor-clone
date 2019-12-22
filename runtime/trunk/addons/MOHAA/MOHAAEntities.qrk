@@ -254,42 +254,42 @@ QQRKSRC1
         trigger_changelevel:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_clickitem:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multipleall:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_pushany:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_pushobject:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_relay:e =
         {
@@ -299,32 +299,32 @@ QQRKSRC1
         trigger_save:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_secret:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_use:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_useonce:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_vehicle:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
       }
       vis_* entities.qtxfolder =

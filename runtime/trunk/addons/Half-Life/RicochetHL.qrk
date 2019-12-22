@@ -68,15 +68,15 @@ QQRKSRC1
         {
           trigger_discreturn:b =
           {
-            ;incl = "defpoly"
+            ;incl = "trigger"
           }
           trigger_fall:b =
           {
-            ;incl = "defpoly"
+            ;incl = "trigger"
           }
           trigger_jump:b =
           {
-            ;incl = "defpoly"
+            ;incl = "trigger"
             height = "128"
           }
         }

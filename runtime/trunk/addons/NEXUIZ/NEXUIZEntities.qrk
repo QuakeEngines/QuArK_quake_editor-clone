@@ -313,38 +313,38 @@ QQRKSRC1
       {
         trigger_cmd:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Command trigger."
         }
         trigger_counter:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "This takes multiple triggers before it fires."
         }
         trigger_delay:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Delay trigger."
         }
         trigger_hurt:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "This causes damage to the player when he touches this."
         }
         trigger_impulse:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "This trigger acts like a damper/accelerator field."
         }
         trigger_multiple:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Use this if you want something to a be trigger more than on"
            "ce."
         }
         trigger_push:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Pushes the player in a given direction."
         }
         trigger_relay:e =
@@ -355,13 +355,13 @@ QQRKSRC1
         }
         trigger_swamp:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "This will slow players down and damages them."
         }
         trigger_teleport:b =
         {
           target = "[auto]"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Teleports the player to a targeted misc_teleport_dest."
         }
       }

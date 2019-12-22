@@ -1089,7 +1089,7 @@ QQRKSRC1
         trigger_teleport:b =
         {
           ;desc = "Players touching this will be teleported."
-          ;incl = "defpoly"
+          ;incl = "trigger"
           poly:p =
           {
             east:f =

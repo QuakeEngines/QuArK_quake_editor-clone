@@ -174,7 +174,7 @@ QQRKSRC1
         }
         trigger_capture_area:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Defines a capture area for Warsow "$22"iTDM"$22" mode"
         }
       }
@@ -648,34 +648,34 @@ QQRKSRC1
         }
         trigger_counter:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Acts as an intermediary for an action that takes multiple i"
            "nputs."
         }
         trigger_gravity:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Any player that touches this will change his gravity fracti"
            "on."
         }
         trigger_hurt:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "When player touches this it will hurt it by the dmg field."
         }
         trigger_multiple:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Will trigger everytime player comes in contact with it."
         }
         trigger_once:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Use this to trigger something only once."
         }
         trigger_push:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Pushes the player in a given direction."
         }
         trigger_relay:e =
@@ -687,7 +687,7 @@ QQRKSRC1
         trigger_teleport:b =
         {
           target = "[auto]"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Teleports the player to a targeted misc_teleport_dest."
         }
       }

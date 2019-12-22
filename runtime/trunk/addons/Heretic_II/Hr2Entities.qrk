@@ -2040,19 +2040,19 @@ QQRKSRC1
           ;desc = "Variable sized repeatable trigger, which posts a UNSUSPEND "
            "message to its target."
           target = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_Damage:b =
         {
           ;desc = "Any entity that Touches this will be Damaged."
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_Deactivate:b =
         {
           ;desc = "Variable sized repeatable trigger, which posts a SUSPEND me"
            "ssage to its target."
           target = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_Gravity:e =
         {
@@ -2064,7 +2064,7 @@ QQRKSRC1
           ;desc = "Walking monsters that Touch this will jump in the direction"
            " of the trigger's angle"
           angle = "0"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_always:e =
         {
@@ -2079,7 +2079,7 @@ QQRKSRC1
            "nputs."
           target = ""
           targetname = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_elevator:e =
         {
@@ -2090,33 +2090,33 @@ QQRKSRC1
         {
           ;desc = "End game trigger. once used, game over"
           targetname = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_farclip:b =
         {
           ;desc = "Allows the console var Farclip to be reset"
           scale = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_fogdensity:b =
         {
           ;desc = "Sets the value of r_fog_density"
           target = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_goto_buoy:b =
         {
           ;desc = "A monster touching this trigger will find the buoy with the"
            " pathtarget targetname and head for it if it can."
           pathtarget = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_lightning:b =
         {
           ;desc = "Triggers a lightning bolt"
           target = ""
           targetname = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
           origin:p =
           {
             east:f =
@@ -2159,47 +2159,47 @@ QQRKSRC1
           ;desc = "When triggered it updates Player with the percentage of the"
            " level completed."
           count = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_mission_give:b =
         {
           ;desc = "Gives player(s) the current mission objectives"
           message = ""
           targetname = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_mission_take:b =
         {
           ;desc = "Removes player(s) the current mission objectives"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           ;desc = "Variable sized repeatable trigger."
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           ;desc = "Triggers once, then removes itself."
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_playerpushbutton:b =
         {
           ;desc = "Makes player model perform buttonpush animation on use."
           target = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_playerpushlever:b =
         {
           ;desc = "Triggers player to know he is near a lever."
           target = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_playerusepuzzle:b =
         {
           ;desc = "Brush entity activated by player for puzzle"
           target = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
@@ -2207,7 +2207,7 @@ QQRKSRC1
           angle = "0"
           speed = ""
           zangle = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_puzzle:e =
         {
@@ -2221,12 +2221,12 @@ QQRKSRC1
         trigger_quake:b =
         {
           ;desc = "Triggers an earth quake"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_quit_to_menu:b =
         {
           ;desc = "Player only, quits to menu"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_relay:e =
         {

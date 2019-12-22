@@ -2218,17 +2218,17 @@ QQRKSRC1
        trigger_camerause:b =
        {
          ;desc = "Variable size trigger activates a camera."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_changelevel:b =
        {
          ;desc = "Level-change trigger."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_damagetargets:b =
        {
          ;desc = "Player-damaging trigger"
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_damagetargetsfixed:e =
        {
@@ -2238,17 +2238,17 @@ QQRKSRC1
        trigger_damagethreshold:b =
        {
          ;desc = "Trigger damaging targets after taking a big enough hit."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_exit:b =
        {
          ;desc = "Variable size trigger displaying Exit sign."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_hurt:b =
        {
          ;desc = "Variable size trigger thats will inflict damage when touched."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_lightramp:e =
        {
@@ -2258,17 +2258,17 @@ QQRKSRC1
        trigger_multiple:b =
        {
          ;desc = "Variable size repeatable trigger."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_mutate:b =
        {
          ;desc = "Transform players into a mutant."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_once:b =
        {
          ;desc = "One-shot trigger"
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_particles:e =
        {
@@ -2279,12 +2279,12 @@ QQRKSRC1
        {
          ;desc = "Variable size trigger. Pushes players, monsters, actors and projectiles as if they were caught in a heavy wind when touched."
          angle = "0"
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_pushany:b =
        {
          ;desc = "Same thing as a trigger_push but will push entities in any direction set by "$22"angles"$22"."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_randomparticles:e =
        {
@@ -2304,7 +2304,7 @@ QQRKSRC1
        trigger_secret:b =
        {
          ;desc = "Variable size secret counter trigger."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_speaker:e =
        {
@@ -2314,17 +2314,17 @@ QQRKSRC1
        trigger_thread:b =
        {
          ;desc = "Calls a script thread when touched or killed."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_use:b =
        {
          ;desc = "Variable size trigger that fires its targets when simultanously touched and 'used' by a player."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_useonce:b =
        {
          ;desc = "Variable size trigger that fires its targets when simultanously touched and 'used' by a player. Triggers once, then removes itself."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
      }
      vehicles.qtxfolder = {

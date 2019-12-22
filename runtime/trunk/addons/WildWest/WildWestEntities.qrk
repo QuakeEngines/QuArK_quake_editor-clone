@@ -528,42 +528,42 @@ QQRKSRC1
         trigger_deathCheck:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_flagonly:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_objective_info:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
       }
       weapon_* entities.qtxfolder =

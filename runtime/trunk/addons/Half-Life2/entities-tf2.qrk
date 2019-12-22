@@ -233,7 +233,7 @@ QQRKSRC1
       {
         trigger_capture_area:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Capture Area"
           team_cancap_2 = "1"
           team_cancap_3 = "1"

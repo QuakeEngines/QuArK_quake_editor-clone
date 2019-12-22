@@ -479,7 +479,7 @@ QQRKSRC1
                     {
                     map = "start"
                     ;desc = "Changes to another level"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_counter:e =
                     {
@@ -491,35 +491,35 @@ QQRKSRC1
                     {
                     dmg = "5"
                     ;desc = "Any object touching this will be hurt"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_monsterjump:b =
                     {
                     angle = "0"
                     ;desc = "Walking monsters that touch this will jump"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_multiple:b =
                     {
                     ;desc = "Triggers action (can be triggered more than once)"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_once:b =
                     {
                     ;desc = "Triggers action only once"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_onlyregistered:b =
                     {
                     ;desc = "Only triggers if game is registered"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_push:b =
                     {
                     angle = "0"
                     speed = "1000"
                     ;desc = "Pushes player in any direction (like a windtunnel)"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_relay:e =
                     {
@@ -530,18 +530,18 @@ QQRKSRC1
                     {
                     sounds = "1"
                     ;desc = "Awards credit for secret"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_setskill:b =
                     {
                     message = "1"
                     ;desc = "Changes skill level"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
                 trigger_teleport:b =
                     {
                     ;desc = "Teleporter (all trigger_tags are triggered by walkover"
-                    ;incl = "defpoly"
+                    ;incl = "trigger"
                     }
             }
 

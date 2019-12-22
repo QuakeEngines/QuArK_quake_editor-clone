@@ -185,7 +185,10 @@ var
  I, J: Integer;
  L: TStringList;
  S: String;
+ PlaceInclBack: TStringList; //Needed to prevent infinite looping
 begin
+ PlaceInclBack:=TStringList.Create; try
+ PlaceInclBack.Delimiter:=',';
  Q.Acces;
  Q.Specifics.Values[SpecDesc]:='';
  repeat
@@ -205,9 +208,19 @@ begin
   L:=TStringList.Create; try
   L.Text:=S;
   for J:=0 to L.Count-1 do
+  begin
+   if (L[J] = 'defpoly') or (L[J] = 'poly') or (L[J] = 'trigger') or (L[J] = 'clip') or (L[J] = 'origin') or (L[J] = 'caulk') then
+   begin
+    //Skip this one; the Python code will handle it!
+    PlaceInclBack.Add(L[J]);
+    continue;
+   end;
    DoIncludeData(Q, Source, L[J]);
+  end;
   finally L.Free; end;
  until False;
+ Q.Specifics.Values[SpecIncl]:=PlaceInclBack.DelimitedText;
+ finally PlaceInclBack.Free; end;
 
  S:=Q.Specifics.Values[SpecCopy];
  if S='' then Exit;

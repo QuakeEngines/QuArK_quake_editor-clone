@@ -261,7 +261,10 @@ def D3typeEntList(root, QuArKpath, gamename, gamefileslocation,
                     else:
                         eo.write('        %s:b =\n' % entName)
                         eo.write('        {\n')
-                        eo.write('          ;incl = "defpoly"\n')
+                        if entName.startswith("trigger_"):
+                            eo.write('          ;incl = "defpoly"\n')
+                        else:
+                            eo.write('          ;incl = "defpoly"\n')
                 else:
                     eo.write('        %s:e =\n' % entName)
                     eo.write('        {\n')

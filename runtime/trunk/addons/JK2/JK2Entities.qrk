@@ -294,7 +294,7 @@ QQRKSRC1
         trigger_push:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_visible:e =
         {
@@ -304,37 +304,37 @@ QQRKSRC1
         trigger_hurt:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_location:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_always:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_entdist:b =
         {
           ;desc = ""
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
       }
       Target.qtxfolder =

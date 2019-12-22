@@ -430,27 +430,27 @@ QQRKSRC1
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_ladder:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
       }
     }

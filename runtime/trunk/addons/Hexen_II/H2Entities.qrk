@@ -647,18 +647,18 @@ QQRKSRC1
        {
          ;desc = "When used, toggles its target between on and off"
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_attack:b =
        {
          ;desc = "Checks to see if a player touching it has tried to fire."
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_changelevel:b =
        {
          ;desc = "When the player touches this, he gets sent to the map listed in the `map' variable."
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_check:b =
        {
@@ -666,7 +666,7 @@ QQRKSRC1
          netname = ""
          target = ""
          targetname = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_combination_assign:b =
        {
@@ -675,51 +675,51 @@ QQRKSRC1
          target = ""
          targetname = ""
          wait = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_control:b =
        {
          ;desc = "Takes over a ballista when the player is inside of it"
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_counter:b =
        {
          ;desc = "Acts as an intermediary for an action that takes multiple inputs."
          target = ""
          targetname = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_counter_reset:b =
        {
          ;desc = "This will reset a trigger_counter to start counting again as if it hasn't been used yet.  Useful for when you want a counter to count more than once but the counting can be interrupted."
          target = ""
          targetname = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_crosslevel:b =
        {
          ;desc = "Fires triggers on other levels, via matching spawnflags"
          map = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_crosslevel_target:b =
        {
          ;desc = "Triggered by a trigger_crosslevel elsewhere within a unit."
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_deactivate:b =
        {
          ;desc = "When used, toggles its target between on and off"
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_hurt:b =
        {
          ;desc = "Any object touching this will be hurt"
          dmg = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_interval:e =
        {
@@ -734,31 +734,31 @@ QQRKSRC1
          #message = ""
          target = ""
          targetname = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_monsterjump:b =
        {
          ;desc = "Some monsters that touch this will jump in the direction of the trigger's angle"
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_multiple:b =
        {
          ;desc = "Variable sized repeatable trigger.  Must be targeted at one or more entities."
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_once:b =
        {
          ;desc = "Variable sized trigger. Triggers once, then removes itself."
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_push:b =
        {
          ;desc = "Pushes the player in the direction set by angles"
          angle = "360"
          targetname = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_quake:e =
        {
@@ -807,13 +807,13 @@ QQRKSRC1
         }
          target = ""
          targetname = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
        trigger_teleport:b =
        {
          ;desc = "Any object touching this will be transported to the corresponding info_teleport_destination entity. "
          target = ""
-         ;incl = "defpoly"
+         ;incl = "trigger"
        }
      }
      Monsters.qtxfolder = {

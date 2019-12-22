@@ -309,52 +309,52 @@ QQRKSRC1
         trigger_always:b =
         {
           ;desc = "This trigger will always fire. It is activated by the world"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_entdist:b =
         {
           ;desc = "fires if the given entity is within the given distance. Sets itself inactive after one use"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }        
         trigger_hurt:b =
         {
           ;desc = "Any entity that touches this will be hurt. It does dmg points of damage each server frame"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_location:b =
         {
           ;desc = "When an ent is asked for it's location, it will return this ent's message field if it is in it. Always rectangular"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           ;desc = "Variable sized repeatable trigger. Must be targeted at one or more entities"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           ;desc = "Variable sized trigger. Must be targeted at one or more entities."
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
           ;desc = "Must point at a target_position, which will be the apex of the leap"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_shipboundary:b =
         {
           ;desc = "causes vehicle to turn toward target and travel in that direction for a set time when hit"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_space:b =
         {
           ;desc = "causes human clients to suffocate and have no gravity"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           ;desc = "Prediction of teleportation events. Must point at a target_position, which will be the teleport destination."
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_visible:e =
         {

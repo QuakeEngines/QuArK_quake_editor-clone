@@ -459,43 +459,43 @@ QQRKSRC1
         trigger_ammo:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Entity that touches this will get additional ammo."
         }
         trigger_flagonly_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Will call the death function in the object's script."
         }
         trigger_heal:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Entity that touches this will be healed."
         }
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Any entity that touches this will be hurt."
         }
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Variable sized repeatable trigger."
         }
         trigger_objective_info:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Players in this field will see an objective message."
         }
         trigger_once:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Must be targeted at one or more entities."
         }
       }

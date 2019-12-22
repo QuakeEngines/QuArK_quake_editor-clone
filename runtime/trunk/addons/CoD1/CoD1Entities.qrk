@@ -351,20 +351,20 @@ QQRKSRC1
         trigger_damage:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Trigger that responds to taking damage."
         }
         trigger_friendlychain:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Forces any touching entity to be considered on the targeted"
            " friendly chain."
         }
         trigger_hurt:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Any entity that touches this will be hurt."
         }
         trigger_lookat:e =
@@ -376,19 +376,19 @@ QQRKSRC1
         trigger_multiple:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Can be triggered more than once."
         }
         trigger_once:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "Can only be triggered once."
         }
         trigger_use:b =
         {
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "When activated will use its target."
         }
       }

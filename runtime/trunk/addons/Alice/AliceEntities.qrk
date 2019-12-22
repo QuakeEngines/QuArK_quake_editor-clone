@@ -1715,50 +1715,50 @@ QQRKSRC1
           ;desc = "trigger_accelerate"
           model = "c_cheshire.tik"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_catmessage:b =
         {
           ;desc = "trigger_catmessage"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_changelevel:b =
         {
           ;desc = "trigger_changelevel"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_fall:b =
         {
           ;desc = "trigger_fall"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_hurt:b =
         {
           ;desc = "trigger_hurt"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_multiple:b =
         {
           ;desc = "trigger_multiple"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_once:b =
         {
           ;desc = "trigger_once"
           model = "w_me_large.tik"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_push:b =
         {
           ;desc = "trigger_push"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_relay:e =
         {
@@ -1771,13 +1771,13 @@ QQRKSRC1
           ;desc = "trigger_remove"
           model = "w_me_super.tik"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
         trigger_teleport:b =
         {
           ;desc = "trigger_teleport"
           angle = "360"
-          ;incl = "defpoly"
+          ;incl = "trigger"
         }
       }
     }

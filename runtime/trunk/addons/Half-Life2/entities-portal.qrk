@@ -158,7 +158,7 @@ QQRKSRC1
       {
         trigger_portal_cleanser:b =
         {
-          ;incl = "defpoly"
+          ;incl = "trigger"
           ;desc = "A trigger volume that disolves any entities that touch it a"
            "nd fizzles active portals when the player touches it."
         }

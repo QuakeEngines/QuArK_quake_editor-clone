@@ -362,7 +362,10 @@ def BSPtypeEntList(root, QuArKpath, gamename, gamefileslocation,
                     q.write("          origin = \"0 0 0\"\n")
                 else:
                     q.write("          angle = \"360\"\n")
-                    q.write("          ;incl = \"defpoly\"\n")
+                    if fix_name.startswith("trigger_"):
+                        q.write("          ;incl = \"trigger\"\n")
+                    else:
+                        q.write("          ;incl = \"defpoly\"\n")
                 q.write("        }\n")
 
             q.write("      }\n") ### Closes each entitiy's category sub-folder.

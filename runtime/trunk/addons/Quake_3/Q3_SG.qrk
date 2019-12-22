@@ -329,7 +329,7 @@ QQRKSRC1
       }
       Trigger_* entities.qtxfolder =
       {
-        trigger_escape:b =     { ;desc="Touching this will let the team win the round who robbed the bank." ;incl="defpoly" }
+        trigger_escape:b =     { ;desc="Touching this will let the team win the round who robbed the bank." ;incl="trigger" }
       }
     }
   }
