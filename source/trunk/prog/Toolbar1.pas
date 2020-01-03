@@ -489,15 +489,16 @@ var
  FileOp: TSHFILEOPSTRUCT;
  sFrom, sTo: String;
 begin
- sFrom:=GetApplicationPath()+'*.*';
+ sFrom:=ConcatPaths([GetApplicationPath(), '*.*']);
  sTo:=TargetPath;
  FillChar(FileOp, SizeOf(FileOp), 0);
  FileOp.hwnd:=ValidParentForm(Sender).Handle;
  FileOp.wFunc:=FO_COPY;
  FileOp.pFrom:=PChar(sFrom);
  FileOp.pTo:=PChar(sTo);
- FileOp.fFlags:=FOF_ALLOWUNDO or
- SHFileOperation(
+ FileOp.fFlags:=FOF_ALLOWUNDO or FOF_NOCONFIRMATION;
+ if SHFileOperation(FileOp) <> 0 then
+  ;
 end;*)
 
 procedure QMacro.Click(Sender: TComponent);
@@ -665,7 +666,7 @@ begin
          Exit;
         end;
       end;
-     finally Q.AddRef(-1); end; 
+     finally Q.AddRef(-1); end;
     end;*)
  {typInstallation:
     begin
