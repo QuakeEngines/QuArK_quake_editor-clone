@@ -1046,15 +1046,6 @@ begin
  Result:='';
 end;
 
-{function GetIncludePath: String;
-begin
- if g_SetupSet[ssGeneral]=Nil then
-  Result:=GetApplicationPath()
- else
-  Result:=g_SetupSet[ssGeneral].Specifics.Values['IncludePath+']
-   + GetApplicationPath();
-end;}
-
 function InternalVersion : Single;
 begin
  Result:=g_SetupSet[ssGeneral].GetFloatSpec('InternalVersion', 0);

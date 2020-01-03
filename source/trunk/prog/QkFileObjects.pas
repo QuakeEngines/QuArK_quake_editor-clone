@@ -261,7 +261,7 @@ end;
 
 function BindFileQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 var
- pathAndFileName, {IncludePath,} CurDir: String;
+ pathAndFileName, CurDir: String;
  Q: QFileObject;
  NoPath: Boolean;
  searchPaths: QApplPaths;
