@@ -21,7 +21,6 @@ Core of the Map editor.
 #  * dragobject  while the user is dragging the mouse,
 #                is an instance of DragObject (see qhandles.py).
 #
-#py2.4 indicates upgrade change for python 2.4
 
 
 import maphandles

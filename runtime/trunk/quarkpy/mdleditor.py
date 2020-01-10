@@ -28,7 +28,6 @@ NewSellist = []
 BonesSellist = []
 mdleditor = None
 
-#py2.4 indicates upgrade change for python 2.4
 
 class ModelEditor(BaseEditor):
     "The Model Editor."

@@ -8,8 +8,6 @@
 #
 ######################################
 
-#py2.4 indicates upgrade change for python 2.4
-
 import qmacro
 import qtoolbar
 from maputils import *
@@ -27,10 +25,7 @@ class placepersistent_dialogbox(qmacro.dialogbox):
         self.buttons = buttons
         dlg = form.newfloating(self.dlgflags, f["Caption"])
         qmacro.dialogboxes[name] = dlg
-#py2.4        dlg.windowrect = self.windowrect()
-        temp = self.windowrect()   #py2.4
-        dlgwindow = (int(temp[0]), int(temp[1]), int(temp[2]), int(temp[3]))   #py2.4
-        dlg.windowrect = dlgwindow   #py2.4
+        dlg.windowrect = self.windowrect()
         if self.begincolor is not None: dlg.begincolor = self.begincolor
         if self.endcolor is not None: dlg.endcolor = self.endcolor
         dlg.onclose = self.onclose

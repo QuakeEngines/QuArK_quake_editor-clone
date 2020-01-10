@@ -834,7 +834,6 @@ recenter = qmenu.item("&Paste objects at screen center", mRecenter, "|Paste obje
 items = [
     recenter,
     ]
-shortcuts = { }
 
 ticks = toggleitem("Enlarge Vertices &Ticks", "Ticks", (1,1),
       hint="|Enlarge Vertices Ticks:\n\nThis makes the model's ticks 1 size larger for easer viewing.|intro.modeleditor.menu.html#optionsmenu")

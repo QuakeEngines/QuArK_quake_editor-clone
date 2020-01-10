@@ -16,9 +16,6 @@ import mapoptions
 import qhandles
 
 
-
-#py2.4 indicates upgrade change for python 2.4
-
 #
 # Classes that implement operations on all types of Map Objects,
 # e.g. Quake entities, groups, brush entities, duplicators, etc.
@@ -786,7 +783,7 @@ class DefaultDrawEntityLines:
     def drawonesphere(self, entity, sphereradius, org, OriginalOrigin, color, view):
         try:
             radius = sphereradius * view.scale(OriginalOrigin)
-            radius = int(radius)   #py2.4
+            radius = int(radius)
             cv = view.canvas()
             cv.pencolor = color
             cv.penwidth = 2
@@ -800,7 +797,7 @@ class DefaultDrawEntityLines:
         try:
             if entity[nameradius] is not None:
                 radius = float(entity[nameradius]) * view.scale(org)
-                radius = int(radius)   #py2.4
+                radius = int(radius)
                 cv = view.canvas()
                 cv.pencolor = color
                 cv.penwidth = 2

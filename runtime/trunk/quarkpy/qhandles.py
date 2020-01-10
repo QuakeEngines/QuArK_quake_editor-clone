@@ -14,8 +14,6 @@ Generic Mouse handles code.
 # not related to map editing.
 #
 
-#py2.4 indicates upgrade change for python 2.4
-
 
 from qeditor import *
 from qdictionnary import Strings
@@ -344,12 +342,10 @@ class Rotate3DHandle(GenericHandle):
                 cv.pencolor = WHITE
         if p2.visible:
             if fromback:  # viewing from backwards
-#py2.4                cv.draw(self.icon, p2.x-8, p2.y-8)
                 cv.draw(self.icon, int(p2.x)-8, int(p2.y)-8)
                 cv.line(p1, p2)
             else:            # viewing from forwards or from the side
                 cv.line(p1, p2)
-#py2.4                cv.draw(self.icon, p2.x-8, p2.y-8)
                 cv.draw(self.icon, int(p2.x)-8, int(p2.y)-8)
         else:
             cv.line(p1, p2)
@@ -430,7 +426,6 @@ class CenterHandle(GenericHandle):
             cv.reset()
             # cv.pencolor is either black or white depending on the color layout
             cv.brushcolor = (cv.pencolor & self.colormask) ^ self.color
-#py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def drag(self, v1, v2, flags, view):
@@ -480,7 +475,6 @@ class IconHandle(CenterHandle):
     def draw(self, view, cv, draghandle=None):
         p = view.proj(self.pos)
         if p.visible:
-#py2.4            cv.draw(self.icon, p.x-8, p.y-8)
             cv.draw(self.icon, int(p.x)-8, int(p.y)-8)
 
 
@@ -539,8 +533,6 @@ class EyePosition(GenericHandle):
         if p.visible:
             cv = view.canvas()
             cv.pencolor = redcolor
-#py2.4            cv.line(p.x-3, p.y-3, p.x+4, p.y+4)
-#py2.4            cv.line(p.x-3, p.y+3, p.x+4, p.y-4)
             cv.line(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
             cv.line(int(p.x)-3, int(p.y)+3, int(p.x)+4, int(p.y)-4)
         return oldpos
@@ -563,7 +555,6 @@ class EyePosition(GenericHandle):
                     icon = 1
             else:
                 icon = 2 + (quarkx.rnd(math.atan2(v2, v1) * rad2deg / 45) & 7)
-#py2.4            cv.draw(mapicons[icon], p.x-8, p.y-8)
             cv.draw(mapicons[icon], int(p.x)-8, int(p.y)-8)
 
 
@@ -650,7 +641,6 @@ class LinRedHandle(LinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-#py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
             cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
 
     def linoperation(self, list, delta, g1, view):
@@ -692,8 +682,7 @@ class LinSideHandle(LinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-#py2.4            cv.rectangle(p.x-2.5, p.y-2.5, p.x+3.5, p.y+3.5)
-            cv.rectangle(int(p.x)-3, int(p.y)-3, int(p.x)+4, int(p.y)+4)
+            cv.rectangle(int(p.x-2.5), int(p.y-2.5), int(p.x+3.5), int(p.y+3.5))
 
     def buildmatrix(self, delta, g1, view):
         npos = self.pos+delta
@@ -750,7 +739,6 @@ class LinCornerHandle(LinearHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.mgr.color
-#py2.4            cv.polygon([(p.x-3,p.y), (p.x,p.y-3), (p.x+3,p.y), (p.x,p.y+3)])
             cv.polygon([(int(p.x)-3,int(p.y)), (int(p.x),int(p.y)-3), (int(p.x)+3,int(p.y)), (int(p.x),int(p.y)+3)])
 
     def buildmatrix(self, delta, g1, view):
@@ -2031,16 +2019,16 @@ class LinHandlesManager:
         Y = max(cy)
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
-        mX = int(mX)   #py2.4
-        mY = int(mY)   #py2.4
-        X = int(X)     #py2.4
-        Y = int(Y)     #py2.4
-        cx = int(cx)   #py2.4
-        cy = int(cy)   #py2.4
+        mX = int(mX)
+        mY = int(mY)
+        X = int(X)
+        Y = int(Y)
+        cx = int(cx)
+        cy = int(cy)
         dx = X-cx
         dy = Y-cy
         radius = math.sqrt(dx*dx+dy*dy)
-        radius = int(radius)   #py2.4
+        radius = int(radius)
         cv = view.canvas()
         cv.pencolor = self.color
         cv.brushstyle = BS_CLEAR

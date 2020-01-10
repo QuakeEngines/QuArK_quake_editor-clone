@@ -889,6 +889,7 @@ class SphereMakerDragObject(parent):
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = int(drawline)
             screengridstep = int(screengridstep)
@@ -1488,10 +1489,10 @@ class PyramidMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
-        drawline = int(drawline)   #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
@@ -1968,10 +1969,10 @@ class DoubleConeMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
-        drawline = int(drawline)
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
@@ -2042,7 +2043,7 @@ class DoubleConeMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
-        sphere_res = int(sphere_res)   #py2.4
+        sphere_res = int(sphere_res)
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -2514,10 +2515,10 @@ class CylinderMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
-        drawline = int(drawline)
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
@@ -2588,7 +2589,7 @@ class CylinderMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
-        sphere_res = int(sphere_res)   #py2.4
+        sphere_res = int(sphere_res)
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -3010,10 +3011,10 @@ class DomeMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
-        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
@@ -3083,7 +3084,7 @@ class DomeMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
-        sphere_res = int(sphere_res)   #py2.4
+        sphere_res = int(sphere_res)
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -3607,10 +3608,10 @@ class FanMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
-        drawline = int(drawline)
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
@@ -3680,7 +3681,7 @@ class FanMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
-        sphere_res = int(sphere_res)   #py2.4
+        sphere_res = int(sphere_res)
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:
@@ -4231,10 +4232,10 @@ class TorusMakerDragObject(parent):
         else:
             segments = 0
         drawline = float(int(segments))
-        drawline = int(drawline)  #py2.4
         dif = segments - drawline
         if dif > .01 and dif < 1:
             drawline = drawline + 1
+        drawline = int(drawline)
         while drawline >= 1:
             drawline = drawline - 1
             cv.line(centerX-radius, centerY+(screengridstep*drawline), centerX+radius, centerY+(screengridstep*drawline)) # draws X axis line on and ABOVE 0 in Z view
@@ -4326,7 +4327,7 @@ class TorusMakerDragObject(parent):
             sphere_res = abs(dragpointamount.tuple[1]/actualgrid)
         else:
             sphere_res = abs(dragpointamount.tuple[2]/actualgrid)
-        sphere_res = int(sphere_res)   #py2.4
+        sphere_res = int(sphere_res)
 
        ## Stops faces from being drawn if there are less then 3, can't make a poly with only 2 faces
         if facecount < 3:

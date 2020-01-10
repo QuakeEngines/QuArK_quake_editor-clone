@@ -40,7 +40,7 @@ Info = {
    "author":        "peter-b",
    "author e-mail": "peter@peter-b.co.uk",
    "quark":         "6.5 or later" }
-    
+
 __all__ = ['FACE', 'PLANE', 'POINT', 'VTXEDGE', 'FACEEDGE', 'B2CP']
 
 import quarkx
@@ -48,7 +48,6 @@ from quarkpy.maputils import checktree, BS_CLEAR
 from quarkpy.qeditor import mapeditor
 import quarkpy.tagging as nt
 
-#py2.4 indicates upgrade change for python 2.4
 
 # -- Geometry tag keys --------------------------------------------- #
 #   ===================
@@ -80,7 +79,6 @@ def _drawsquare(cv, o, side):
   if o.visible:
     dl = side/2
     cv.brushstyle = BS_CLEAR
-#py2.4    cv.rectangle(o.x+dl, o.y+dl, o.x-dl, o.y-dl)
     cv.rectangle(int(o.x)+dl, int(o.y)+dl, int(o.x)-dl, int(o.y)-dl)
 
 def _drawhighlightface(view, cv, face):

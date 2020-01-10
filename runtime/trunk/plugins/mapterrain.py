@@ -6,8 +6,6 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#py2.4 indicates upgrade change for python 2.4
-
 Info = {
    "plug-in":       "Terrainmaker plugin",
    "desc":          "Making terrain from brushes",
@@ -80,14 +78,14 @@ class TerrainDuplicator2(StandardDuplicator):
           backdist = faces['b'].dist
           frontbacklength = abs((frontnormal*frontdist) - (backnormal*backdist))
           frontbackinterval = wedgeunits
-          wedges = leftrightlength/wedgeunits
+          wedges = int(leftrightlength/wedgeunits)
           upnormal = faces['u'].normal
           downnormal = faces['d'].normal
           updist = faces['u'].dist
           downdist = faces['d'].dist
           updownlength = abs((upnormal*updist) - (downnormal*downdist))
           updowninterval = updownlength/wedgeunits
-          loops = frontbacklength / frontbackinterval
+          loops = int(frontbacklength / frontbackinterval)
 
           if loops > 25 or wedges > 25:
               if detailmesh!="1":
@@ -116,8 +114,8 @@ class TerrainDuplicator2(StandardDuplicator):
                           dupObject["detailmesh"]="1"       # new code by Rowdy
                       quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
-          for loop in range(int(loops)):   #py2.4
-              for wedge in range(int(wedges)):   #py2.4
+          for loop in range(loops):
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -152,7 +150,7 @@ class TerrainDuplicator2(StandardDuplicator):
 
                   result.append(poly)
 
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -282,9 +280,9 @@ class TerrainDuplicator2X(StandardDuplicator):
                           dupObject["detailmesh"]="1"       # new code by Rowdy
                       quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
-          for loop in range(int(loops)):   #py2.4
+          for loop in range(loops):
 #1st pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -317,7 +315,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #2nd pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -351,7 +349,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #3rd pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -384,7 +382,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #4th pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -421,7 +419,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #5th pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -454,7 +452,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #6th pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -491,7 +489,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #7th pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -526,7 +524,7 @@ class TerrainDuplicator2X(StandardDuplicator):
                   result.append(poly)
 
 #8th pass of triangles
-              for wedge in range(int(wedges)):   #py2.4
+              for wedge in range(wedges):
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -626,14 +624,14 @@ class TerrainDuplicator4(StandardDuplicator):
           backdist = faces['b'].dist
           frontbacklength = abs((frontnormal*frontdist) - (backnormal*backdist)) #total length of strech box
           frontbackinterval = wedgeunits
-          wedges = leftrightlength/wedgeunits
+          wedges = int(leftrightlength/wedgeunits)
           upnormal = faces['u'].normal
           downnormal = faces['d'].normal
           updist = faces['u'].dist
           downdist = faces['d'].dist
           updownlength = abs((upnormal*updist) - (downnormal*downdist))
           updowninterval = updownlength/wedgeunits
-          loops = frontbacklength / frontbackinterval
+          loops = int(frontbacklength / frontbackinterval)
 
           if loops > 25 or wedges > 25:
               if detailmesh!="1":
@@ -662,9 +660,9 @@ class TerrainDuplicator4(StandardDuplicator):
                           dupObject["detailmesh"]="1"       # new code by Rowdy
                       quarkpy.mapeditor.MapEditor.finishdrawing = newfinishdrawing
 
-          for loop in range(int(loops)):   #py2.4
+          for loop in range(loops):
 #1st pass of triangles
-              for wedge in range(int(wedges)):   #py2.4  #draws back quarter
+              for wedge in range(wedges):  #draws back quarter
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()
@@ -700,7 +698,7 @@ class TerrainDuplicator4(StandardDuplicator):
 
                   result.append(poly)
 #2nd pass of triangles
-              for wedge in range(int(wedges)):   #py2.4  #draws left quarter
+              for wedge in range(wedges):  #draws left quarter
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush
@@ -738,7 +736,7 @@ class TerrainDuplicator4(StandardDuplicator):
 
                   result.append(poly)
 #3rd pass of triangles
-              for wedge in range(int(wedges)):   #py2.4  #draws front quarter
+              for wedge in range(wedges):  #draws front quarter
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()
@@ -772,7 +770,7 @@ class TerrainDuplicator4(StandardDuplicator):
 
                   result.append(poly)
 #4th pass of triangles
-              for wedge in range(int(wedges)):   #py2.4  #draws right quarter
+              for wedge in range(wedges):  #draws right quarter
                   poly = quarkx.newobj("terrain wedge %d:p" % wedge)
 
                   face = faces['u'].copy()  #draws top face at higth of each brush

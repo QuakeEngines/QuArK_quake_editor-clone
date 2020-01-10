@@ -21,8 +21,6 @@ from quarkpy.maputils import *
 from quarkpy import tagging as nt
 from plugins.mapgeomtags import *
 
-#py2.4 indicates upgrade change for python 2.4
-
 """
 plugins.tagging
 ---------------
@@ -202,9 +200,8 @@ def drawsquare(cv, o, side):
   "function to draw a square around o"
   if o.visible:
     dl = side/2
-    dl = int(dl)  #py2.4
+    dl = int(dl)
     cv.brushstyle = BS_CLEAR
-#py2.4    cv.rectangle(o.x+dl, o.y+dl, o.x-dl, o.y-dl)
     cv.rectangle(int(o.x)+dl, int(o.y)+dl, int(o.x)-dl, int(o.y)-dl)
 
 def drawredface(view, cv, face):

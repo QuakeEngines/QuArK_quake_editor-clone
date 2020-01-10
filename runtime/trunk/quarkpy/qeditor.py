@@ -8,8 +8,6 @@ Various constants and Screen Controls for editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#py2.4 indicates upgrade change for python 2.4
-
 import quarkx
 import qtoolbar
 import qmacro
@@ -791,8 +789,8 @@ class Compass:
         angle1 = self.i*pi2/len(self.Images)
         dx, dy = 40*math.cos(angle1), 45*math.sin(angle1)
         def angle(x,y,s, cv=cv):
-            x = int(x)  #py2.4
-            y = int(y)  #py2.4
+            x = int(x)
+            y = int(y)
             size = cv.textsize(s)
             x = x - size[0]/2
             y = y - size[0]/2
@@ -955,8 +953,7 @@ class VBar:
 
     def VBarDraw(self, ctrl):
         cv = ctrl.canvas()
-#py2.4        cv.draw(self.Images[1], 0, self.i)
-        cv.draw(self.Images[1], 0, int(self.i))
+        cv.draw(self.Images[1], 0, self.i)
 
     def Update(self, angle1):
         self.angle = angle1

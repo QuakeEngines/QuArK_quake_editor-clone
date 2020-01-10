@@ -8,8 +8,6 @@ Management of Bezier patches
 # FOUND IN FILE "COPYING.TXT"
 #
 
-#py2.4 indicates upgrade change for python 2.4
-
 import quarkx
 from maputils import *
 import qhandles
@@ -327,8 +325,7 @@ class CPHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.color #DECKER
- #py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
-            cv.rectangle(int(p.x-3), int(p.y-3), int(p.x+4), int(p.y+4)) #py2.4
+            cv.rectangle(int(p.x-3), int(p.y-3), int(p.x+4), int(p.y+4))
 
             picked=self.b2["picked"]
             if picked is not None:
@@ -339,8 +336,7 @@ class CPHandle(qhandles.GenericHandle):
                         brushstyle = cv.brushstyle
                         cv.pencolor = BLUE
                         cv.brushstyle = BS_CLEAR
- #py2.4                        cv.rectangle(p.x-5, p.y-5, p.x+6, p.y+6)
-                        cv.rectangle(int(p.x-5), int(p.y-5), int(p.x+6), int(p.y+6)) #py2.4
+                        cv.rectangle(int(p.x-5), int(p.y-5), int(p.x+6), int(p.y+6))
                         #cv.brushstyle = brushstyle
 
 
@@ -896,8 +892,7 @@ class CPTextureHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             cv.brushcolor = self.color #DECKER
- #py2.4            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
-            cv.rectangle(int(p.x-3), int(p.y-3), int(p.x+4), int(p.y+4)) #py2.4
+            cv.rectangle(int(p.x-3), int(p.y-3), int(p.x+4), int(p.y+4))
 
     #
     # This is important because in general the derivative

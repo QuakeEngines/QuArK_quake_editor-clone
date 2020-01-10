@@ -20,7 +20,6 @@ from qdictionnary import Strings
 from qeditor import *
 import quarkpy.qhandles # To add change of "Floating 3D view" mouse control between Map and Model editors.
 
-#py2.4 indicates upgrade change for python 2.4
 
 ModesHint = "|Each view can be set to one of three rendering modes :\n\nWireframe : all polygons are drawn as lines, entities as points, etc.\n\nSolid : each polygon is drawn in a single, solid color.\n\nTextured : polygon and models are displayed with their texture."
 
@@ -268,7 +267,7 @@ class BaseLayout:
         setup = quarkx.setupsubset(SS_GENERAL, "3D View")
         r = setup["WndRect"]
         #floating.windowrect = quarkx.screenrect()
-        r = (int(r[0]), int(r[1]), int(r[2]), int(r[3]))   #py2.4
+        r = (int(r[0]), int(r[1]), int(r[2]), int(r[3]))
         floating.windowrect = r
         floating.rect = r[2:]
 

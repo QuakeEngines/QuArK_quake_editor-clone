@@ -22,7 +22,6 @@ import mdlentities
 import qmenu
 import qbaseeditor
 
-#py2.4 indicates upgrade change for python 2.4
 
 # Globals
 cursorposatstart = None
@@ -4038,16 +4037,16 @@ class ModelEditorLinHandlesManager:
         Y = max(cy)
         cx = (X+mX)*0.5
         cy = (Y+mY)*0.5
-        mX = int(mX)   #py2.4
-        mY = int(mY)   #py2.4
-        X = int(X)     #py2.4
-        Y = int(Y)     #py2.4
-        cx = int(cx)   #py2.4
-        cy = int(cy)   #py2.4
+        mX = int(mX)
+        mY = int(mY)
+        X = int(X)
+        Y = int(Y)
+        cx = int(cx)
+        cy = int(cy)
         dx = X-cx
         dy = Y-cy
         radius = math.sqrt(dx*dx+dy*dy)
-        radius = int(radius)   #py2.4
+        radius = int(radius)
         cv = view.canvas()
         cv.pencolor = self.color
         cv.brushstyle = BS_CLEAR
