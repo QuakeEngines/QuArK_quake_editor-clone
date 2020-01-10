@@ -27,21 +27,12 @@ ico_dict['ico_terrmodes'] = LoadIconSet1("maptrm", 1.0)
 
 ## below are new, not sure what is needed to keep
 import quarkx
-import quarkpy.mapmenus
-import quarkpy.mapentities
 import quarkpy.mapeditor
-import quarkpy.mapcommands
-import quarkpy.mapoptions
 import quarkpy.mapbtns
 import quarkpy.qtoolbar
-import mapsnapobject
-import mergepolys
 import quarkpy.maphandles
-from quarkpy.maputils import *
-import maptagpoint
+import math
 from math import *
-
-import quarkpy.qhandles
 from quarkpy.qhandles import *
 
 ## think I need these below
@@ -49,10 +40,9 @@ from quarkpy.qhandles import *
 from quarkpy.qeditor import *
 from quarkpy.qdictionnary import Strings
 import quarkpy.qmenu
-import quarkpy.qbaseeditor
 from tagging import *
 from faceutils import *
-from  maptagside import *
+from maptagside import *
 
 
 ########## not sure if I need these items below-test later ############

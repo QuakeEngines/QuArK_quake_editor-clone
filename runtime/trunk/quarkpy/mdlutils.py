@@ -3300,7 +3300,6 @@ def addbone(editor, comp, pos):
     new_bone['parent_name'] = "None"
     new_bone.position = pos
     new_bone['position'] = pos.tuple
-    from math import sqrt
     new_bone.rotmatrix = quarkx.matrix((sqrt(2)/2, -sqrt(2)/2, 0), (sqrt(2)/2, sqrt(2)/2, 0), (0, 0, 1))
     new_bone['draw_offset'] = (0.0,0.0,0.0)
     new_bone['scale'] = (1.0,)

@@ -18,7 +18,7 @@ Info = {
 
 # Python specific modules import.
 import quarkx
-import sys, struct, os, math, Lib, Lib.base64
+import sys, struct, os, Lib, Lib.base64
 from quarkpy.qutils import *
 from quarkpy.qeditor import MapColor # Strictly needed for QuArK bones MapColor call.from types import *
 import quarkpy.qhandles
