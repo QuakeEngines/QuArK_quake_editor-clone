@@ -220,7 +220,7 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
 
         # Gather information about what is to be created
         tex     = self.src["tex"]
-        sides   =(self.src["sides"])[0]
+        sides   = int((self.src["sides"])[0])
 
         try:
             # Set; Down-Outer-Radius-X, Down-Outer-Radius-Y, Up-Outer-Radius-X, Up-Outer-Radius-Y
@@ -418,13 +418,16 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
 
         # Remove broken polys and faces then Drop the items
 
+        removedfaces = False
         p.rebuildall()
         list = p.findallsubitems("", ':p')+p.findallsubitems("", ':f')
-        list = filter(lambda p: p.broken, list)
-        faces = list
-        for face in faces:
+        for face in filter(lambda p: p.broken, list):
             if face.broken:
-                face.parent.removeitem(face)
+                removedfaces = True
+                if face.parent is not None:
+                    face.parent.removeitem(face)
+        if removedfaces:
+            quarkx.msgbox("Some of the generated faces were broken and removed. The shape is probably too complex!", quarkpy.qutils.MT_WARNING, quarkpy.qutils.MB_OK)
 
 
         quarkpy.mapbtns.dropitemsnow(self.editor, [p], "make n sided prism")
