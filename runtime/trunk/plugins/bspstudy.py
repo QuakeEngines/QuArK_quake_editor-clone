@@ -147,7 +147,7 @@ def CheckPlanesClick(m):
     
     closeones = getClosePlanes(close, editor)
 #    editor.layout.explorer.sellist=closeones
-#    quarkx.msgbox("%d suspicious planes found"%len(closeones),2,4)
+#    quarkx.msgbox("%d suspicious planes found"%len(closeones), quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
 
     class pack:
       "stick stuff here"
@@ -217,7 +217,7 @@ def NodesClick(m,editor=None):
         return
     try:
         nodes=editor.nodes
-        quarkx.msgbox("Nodes already gotten",2,4)
+        quarkx.msgbox("Nodes already gotten", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
         editor.layout.explorer.uniquesel=nodes
     except:
         root = editor.Root
@@ -373,7 +373,7 @@ def nearPlanesClickFunc(m,o,editor):
             nearones = getNearPlanes(close,o, editor)
         #   debug('near '+`nearones`)
         #    editor.layout.explorer.sellist=closeones
-        #    quarkx.msgbox("%d suspicious planes found"%len(closeones),2,4)
+        #    quarkx.msgbox("%d suspicious planes found"%len(closeones), quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
 
             class pack:
               "stick stuff here"
@@ -457,8 +457,8 @@ def collectFacesClickFunc(m,o,editor):
               except:
                 pass
               i=i+1;
-#            quarkx.msgbox(`i`+' faces tried',2,4)                    
-            quarkx.msgbox(`len(coplanar)`+' coplanar faces',2,4)            
+#            quarkx.msgbox(`i`+' faces tried', quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+            quarkx.msgbox(`len(coplanar)`+' coplanar faces', quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
             editor.layout.explorer.sellist = coplanar
 
 class PlaneType(quarkpy.mapentities.EntityManager):

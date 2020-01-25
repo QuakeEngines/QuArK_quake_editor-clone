@@ -144,7 +144,7 @@ class MakeHLXTreeDlg(MakeXTreeDlg):
     aface["v"] = (-self.twidth/2,-self.twidth/2,0, -self.twidth/2,self.twidth/2,0, self.twidth/2,-self.twidth/2,0)
     aface["tex"] = nulltex
     g.appenditem(aface)
-       
+
     ang=pi*2/self.planes
     addang=pi/self.planes/2
     addlen=sin(addang)/cos(addang)*self.twidth/2
@@ -192,7 +192,7 @@ class MakeHLXTreeDlg(MakeXTreeDlg):
         e.appenditem(p)
     # Drop the items
     quarkpy.mapbtns.dropitemsnow(self.editor, [g], "make x-tree")
-    
+
 class MakeSinXTreeDlg(MakeXTreeDlg):
   dlgdef = MakeXTreeDlg.dlgdef + """
         alternate: = {
