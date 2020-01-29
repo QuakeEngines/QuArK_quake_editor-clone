@@ -101,7 +101,6 @@ type
                    Brush: HBrush;
                   end;
   TBackgroundImage = record
-                      NeedToFree: Boolean;
                       Image: QPixelSet;
                       center: TVect;
                       scale: Single;
@@ -282,8 +281,8 @@ begin
  MapViewObject^.Close;
  SceneConfigSrc.AddRef(-1);
  Scene.Free;
- if BackgroundImage.NeedToFree then
-  BackgroundImage.Image.Free;
+ if BackgroundImage.Image<>Nil then
+  BackgroundImage.Image.AddRef(-1);
  Py_DECREF(FHandles);
  Py_DECREF(CurrentHandle);
  Py_DECREF(FBoundingBoxes);
@@ -3145,18 +3144,19 @@ begin
             begin
              if objX = Py_None then
               begin
-               if NeedToFree then
-                Image.Free;
-               Image:=nil;
-               NeedToFree:=False;
+               if Image<>Nil then
+                begin
+                 Image.Free;
+                 Image:=nil;
+                end;
               end
              else if objX^.ob_type = @TyObject_Type then
               begin
                Q:=QkObjFromPyObj(objX);
                if not (Q is QPixelSet) then
                 Exit;
+               Q.AddRef(+1);
                Image:=QPixelSet(Q);
-               NeedToFree:=False;
               end
              else
               begin
@@ -3166,8 +3166,8 @@ begin
                F:=ExactFileLink(S, nil, True);
                if not (F is QPixelSet) then
                 raise EError(4621);
+               F.AddRef(+1);
                Image:=QPixelSet(F);
-               NeedToFree:=True;
               end;
             end;
            Result:=0;
