@@ -274,15 +274,20 @@ end;
 destructor TPyMapView.Destroy;
 begin
  Py_XDECREF(OldCameraPos);
+ OldCameraPos:=Nil;
  Py_DECREF(FOnCameraMove);
  FOnCameraMove:=Nil;
  SetAnimation(False);
  Canvas.Free;
  MapViewObject^.Close;
  SceneConfigSrc.AddRef(-1);
- Scene.Free;
+ FScene.Free;
+ FScene:=Nil;
  if BackgroundImage.Image<>Nil then
-  BackgroundImage.Image.AddRef(-1);
+  begin
+   BackgroundImage.Image.AddRef(-1);
+   BackgroundImage.Image:=nil;
+  end;
  Py_DECREF(FHandles);
  Py_DECREF(CurrentHandle);
  Py_DECREF(FBoundingBoxes);
@@ -3146,7 +3151,7 @@ begin
               begin
                if Image<>Nil then
                 begin
-                 Image.Free;
+                 Image.AddRef(-1);
                  Image:=nil;
                 end;
               end
