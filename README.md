@@ -1,4 +1,4 @@
-# QuakeEngines/QuArK_Quake_Level_Editor-clone
+# QuArK_quake_editor-clone
 Unofficial mirror of Quake Army Knife (QuArK) level editor repo.  
 Official repository - https://sourceforge.net/p/quark/code/HEAD/tree/source/trunk/  
 Please use sourceforge link for pull requests and reporting issues.  
